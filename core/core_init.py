@@ -5,7 +5,7 @@ import esper
 import pygame
 
 from common import BoundingBox, EventProcessor, PositionTracker
-from layer1.cards import CardMovementProcessor, deck_obj, draw_card, play_card
+from layer1.cards import CardMovementProcessor, deck_obj
 from layer2 import GameCamera, Plain, WorldEnum
 from layer2.rendering import (
     CardSprite,
