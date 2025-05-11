@@ -4,17 +4,10 @@ import logging
 import esper
 import pygame
 
-from common import (
-    BoundingBox,
-    EventProcessor,
-    GameCamera,
-    Plain,
-    PositionTracker,
-    WorldEnum,
-)
-from common.audio import init_audio
-from rendering import RenderingProcessor, RenderLayerEnum
-from ui import UIProcessor, bind_keyboard_events
+from common import BoundingBox, EventProcessor, PositionTracker
+from layer2 import GameCamera, Plain, WorldEnum
+from layer2.rendering import RenderingProcessor, RenderLayerEnum, load_images
+from layer2.ui import UIProcessor, bind_keyboard_events, init_audio
 
 from . import global_vars
 from .dying import DyingProcessor
@@ -139,6 +132,7 @@ def init() -> None:
     # game world
     esper.switch_world(WorldEnum.GAME)
     init_game_world_esper()
+    load_images()
     esper.process()
     logger.info(f"{esper.current_world} world init finished")
 
