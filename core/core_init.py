@@ -5,7 +5,7 @@ import esper
 import pygame
 
 from common import BoundingBox, EventProcessor, PositionTracker
-from layer1.cards import CardMovementProcessor, deck_obj, draw_card
+from layer1.cards import CardMovementProcessor, deck_obj, draw_card, play_card
 from layer2 import GameCamera, Plain, WorldEnum
 from layer2.rendering import (
     CardSprite,
@@ -21,6 +21,10 @@ from .event_handlers import bind_events as bind_core_events
 from .log import logger
 from .scene_switcher import SceneSwitcher
 from .tracker_tags import TrackedByGameTracker, TrackedByUITracker
+
+GAME_CAM_WIDTH = 256
+GAME_CAM_HEIGHT = 144
+PIXEL_SIZE = 1080 / GAME_CAM_HEIGHT
 
 SEED = None
 
@@ -100,18 +104,21 @@ def init_game_world_esper() -> None:
     # Create processors
     ui_position_tracker = PositionTracker(TrackedByUITracker, UI_game_plain)
     game_position_tracker = PositionTracker(TrackedByGameTracker, game_plain)
-    game_cam_bb = BoundingBox(0, 230, 0, 130)
+    game_cam_bb = BoundingBox(0, GAME_CAM_WIDTH, 0, GAME_CAM_HEIGHT)
     _ = esper.create_entity(game_cam_bb, GameCamera())
 
     card_movement_processor = CardMovementProcessor(game_cam_bb)
 
     render_layer_dict = {
-        RenderLayerEnum.GAME: (game_position_tracker, BoundingBox(00, 230, 00, 130))
+        RenderLayerEnum.GAME: (
+            game_position_tracker,
+            BoundingBox(00, GAME_CAM_WIDTH, 00, GAME_CAM_HEIGHT),
+        )
     }
     display_surf = pygame.display.get_surface()
     if display_surf is None:
         raise RuntimeError("Display failed to init")
-    renderer = RenderingProcessor(display_surf, render_layer_dict, 8)
+    renderer = RenderingProcessor(display_surf, render_layer_dict, PIXEL_SIZE)
 
     event_processor = EventProcessor()
     ui_processor = UIProcessor(ui_position_tracker)
@@ -149,15 +156,3 @@ def init() -> None:
     logger.info(f"{esper.current_world} world init finished")
 
     logger.info("Finished init!!")
-
-    draw_card()
-    draw_card()
-    draw_card()
-    draw_card()
-    draw_card()
-
-    draw_card()
-    draw_card()
-    draw_card()
-    draw_card()
-    draw_card()

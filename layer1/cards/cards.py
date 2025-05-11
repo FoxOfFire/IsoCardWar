@@ -6,7 +6,7 @@ from typing import Callable, Dict, List, Optional, Type
 
 import esper
 
-from common import BoundingBox
+from common import BoundingBox, Health
 
 from .log import logger
 
@@ -33,6 +33,8 @@ def noop() -> None:
 
 
 def get_card_center_offset(ent: int) -> float:
+    if ent not in deck_obj.hand:
+        return -1
     hand_size = len(deck_obj.hand)
     index = deck_obj.hand.index(ent)
 
@@ -65,11 +67,14 @@ deck_obj: Deck = Deck()
 
 
 def play_card(ent: int) -> None:
+    if ent not in deck_obj.hand:
+        return
     logger.info(f"playing card {ent}")
     deck_obj.hand.remove(ent)
     card = esper.component_for_entity(ent, Card)
     card.effect()
     deck_obj.discard.append(card)
+    esper.component_for_entity(ent, Health).hp = 0
 
 
 def shuffle_deck() -> None:
@@ -84,24 +89,32 @@ def shuffle_deck() -> None:
     deck_obj.deck = new
 
 
-def draw_card() -> None:
+def draw_card() -> int:
     logger.info("drawing card")
     if len(deck_obj.deck) == 0:
         deck_obj.deck = deck_obj.discard
         deck_obj.discard = []
         shuffle_deck()
+
+    if len(deck_obj.deck) == 0:
+        logger.warning("out of cards!")
+        return -1
+
     card = deck_obj.deck.pop()
 
     if deck_obj.tracker_tag is None or deck_obj.sprite is None:
         raise RuntimeError("failed to initialise deck_obj")
-    off_x = 40 * len(deck_obj.hand)
-    off_y = 80
+    off_x = 0
+    off_y = 90
     bb = BoundingBox(
         off_x, off_x + CARD_WIDTH * ROOT_TWO, off_y, off_y + CARD_HEIGHT * ROOT_TWO
     )
     logger.info(bb)
-    ent = esper.create_entity(card, bb, deck_obj.tracker_tag(), deck_obj.sprite())
+    ent = esper.create_entity(
+        card, bb, deck_obj.tracker_tag(), deck_obj.sprite(), Health()
+    )
     deck_obj.hand.append(ent)
+    return ent
 
 
 def add_card(card: Card) -> None:

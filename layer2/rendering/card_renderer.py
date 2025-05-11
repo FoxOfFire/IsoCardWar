@@ -42,7 +42,7 @@ class CardRenderer:
             )
 
             surf.blit(CARD_IMAGES[CardImageEnum.BASIC][0], surf.get_rect())
-            surf.blit(CARD_TYPES[CardTypeEnum.BASIC][0], surf.get_rect())
+            surf.blit(CARD_TYPES[CardTypeEnum.BASIC], surf.get_rect())
 
             rotated_surf = pygame.transform.rotate(surf, sprite.angle)
             screen.blit(rotated_surf, rotated_surf.get_rect(center=bb.center))

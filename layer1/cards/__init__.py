@@ -8,5 +8,6 @@ from .cards import (
     deck_obj,
     draw_card,
     get_card_center_offset,
+    play_card,
     shuffle_deck,
 )

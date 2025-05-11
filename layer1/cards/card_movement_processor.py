@@ -10,6 +10,9 @@ class CardMovementProcessor(esper.Processor):
         self.cam_bb = cam_bb
 
     def process(self) -> None:
+        if len(deck_obj.hand) == 0:
+            return
+
         for ent, _ in esper.get_component(Card):
             bb = esper.component_for_entity(ent, BoundingBox)
             delta = (
