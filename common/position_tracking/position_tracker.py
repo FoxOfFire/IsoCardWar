@@ -86,7 +86,7 @@ class PositionTracker(esper.Processor):
         """
         Adds newly tagged entities,
         removes dead entities from tracker, always call this after entities are killed,
-        does not support espert.delete_entity(..., immediate=True)
+        does not support esper.delete_entity(..., immediate=True)
         updates entity bounding boxes in index
         """
         for entity, (b_box, _) in esper.get_components(BoundingBox, self.__tag_type):
@@ -110,7 +110,7 @@ class PositionTracker(esper.Processor):
 
                 next_bb = b_box.after_update()
 
-                # Can't remove the code dublication from this without getattr horror
+                # Can't remove the code duplication from this without getattr horror
                 overhang_left = self.__plain_bb.left - next_bb.left
                 if overhang_left > 0:
                     b_box.move_right(overhang_left)
@@ -162,7 +162,7 @@ class PositionTracker(esper.Processor):
 
     def intersect(self, bounding_box: BoundingBox) -> list[int]:
         """
-        Returns a list of entites that are intersecting with the bounding box
+        Returns a list of entities that are intersecting with the bounding box
         """
         return list(self.__index.intersection(bounding_box.points))
 
@@ -183,7 +183,7 @@ class PositionTracker(esper.Processor):
         """
         Returns a list of entity entities
         that intersecting any of the given bounding boxes,
-        paired whith how many bounding boxes the given entity is intersecting
+        paired with how many bounding boxes the given entity is intersecting
         """
         hits = dict[int, int]()
         for bb in bounding_boxes:
@@ -197,12 +197,12 @@ class PositionTracker(esper.Processor):
         self, middle: tuple[float, float], radiuses: Iterable[float]
     ) -> tuple[list[int], list[int]]:
         fast_pass_cull_bb = self.__circle_intersect_cull_bb((middle, max(radiuses)))
-        culled_entites = self.intersect(fast_pass_cull_bb)
+        culled_entities = self.intersect(fast_pass_cull_bb)
 
         hits = dict[int, int]()
         for r in radiuses:
             in_circle = partial(self.__entity_in_circle, circle=(middle, r))
-            for ent in filter(in_circle, culled_entites):
+            for ent in filter(in_circle, culled_entities):
                 hits[ent] = hits.get(ent, 0) + 1
 
         return list(hits.keys()), list(hits.values())

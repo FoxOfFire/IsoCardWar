@@ -5,7 +5,7 @@ import pygame
 
 from common import BoundingBox, PositionTracker
 
-from .game_renderer import GameRenderer
+from .card_renderer import CardRenderer
 from .rendering_utils import RenderLayerEnum, bb_to_rect
 
 
@@ -28,7 +28,7 @@ class RenderingProcessor(esper.Processor):
         )
 
         (game_postrack, game_bb) = layer_info[RenderLayerEnum.GAME]
-        self.game_renderer = GameRenderer(game_postrack)
+        self.game_renderer = CardRenderer(game_postrack)
         self.game_bb = game_bb
         self.game_surf = pygame.Surface((game_bb.width, game_bb.height))
 

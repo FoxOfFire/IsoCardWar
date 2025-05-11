@@ -5,8 +5,14 @@ import esper
 import pygame
 
 from common import BoundingBox, EventProcessor, PositionTracker
+from layer1.cards import CardMovementProcessor, deck_obj, draw_card
 from layer2 import GameCamera, Plain, WorldEnum
-from layer2.rendering import RenderingProcessor, RenderLayerEnum, load_images
+from layer2.rendering import (
+    CardSprite,
+    RenderingProcessor,
+    RenderLayerEnum,
+    load_images,
+)
 from layer2.ui import UIProcessor, bind_keyboard_events, init_audio
 
 from . import global_vars
@@ -88,14 +94,19 @@ def init_game_world_esper() -> None:
         )
     )
 
+    deck_obj.tracker_tag = TrackedByGameTracker
+    deck_obj.sprite = CardSprite
+
     # Create processors
     ui_position_tracker = PositionTracker(TrackedByUITracker, UI_game_plain)
     game_position_tracker = PositionTracker(TrackedByGameTracker, game_plain)
-    game_cam_bb = BoundingBox(0, 100, 0, 100)
+    game_cam_bb = BoundingBox(0, 230, 0, 130)
     _ = esper.create_entity(game_cam_bb, GameCamera())
 
+    card_movement_processor = CardMovementProcessor(game_cam_bb)
+
     render_layer_dict = {
-        RenderLayerEnum.GAME: (game_position_tracker, BoundingBox(10, 110, 10, 110))
+        RenderLayerEnum.GAME: (game_position_tracker, BoundingBox(00, 230, 00, 130))
     }
     display_surf = pygame.display.get_surface()
     if display_surf is None:
@@ -115,6 +126,7 @@ def init_game_world_esper() -> None:
 
     esper.add_processor(event_processor)
     esper.add_processor(dying_proc)
+    esper.add_processor(card_movement_processor)
     esper.add_processor(game_position_tracker)
     game_position_tracker.process()
     esper.add_processor(ui_position_tracker)
@@ -137,3 +149,15 @@ def init() -> None:
     logger.info(f"{esper.current_world} world init finished")
 
     logger.info("Finished init!!")
+
+    draw_card()
+    draw_card()
+    draw_card()
+    draw_card()
+    draw_card()
+
+    draw_card()
+    draw_card()
+    draw_card()
+    draw_card()
+    draw_card()

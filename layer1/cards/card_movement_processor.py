@@ -1,0 +1,22 @@
+import esper
+
+from common import BoundingBox
+
+from .cards import Card, deck_obj, get_card_center_offset
+
+
+class CardMovementProcessor(esper.Processor):
+    def __init__(self, cam_bb: BoundingBox) -> None:
+        self.cam_bb = cam_bb
+
+    def process(self) -> None:
+        for ent, _ in esper.get_component(Card):
+            bb = esper.component_for_entity(ent, BoundingBox)
+            delta = (
+                -bb.center[0]
+                + self.cam_bb.center[0]
+                - get_card_center_offset(ent)
+                * (self.cam_bb.width / len(deck_obj.hand) * 0.8)
+            ) / 20
+            bb.delta_right = delta
+            bb.delta_left = delta
