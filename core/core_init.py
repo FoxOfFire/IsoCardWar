@@ -13,7 +13,7 @@ from common import (
     WorldEnum,
 )
 from common.audio import init_audio
-from rendering import GameSprite, RenderingProcessor, RenderLayerEnum
+from rendering import RenderingProcessor, RenderLayerEnum
 from ui import UIProcessor, bind_keyboard_events
 
 from . import global_vars
@@ -101,19 +101,8 @@ def init_game_world_esper() -> None:
     game_cam_bb = BoundingBox(0, 100, 0, 100)
     _ = esper.create_entity(game_cam_bb, GameCamera())
 
-    esper.create_entity(
-        BoundingBox(10, 100, 10, 100),
-        GameSprite(pygame.Color(0, 100, 200)),
-        TrackedByGameTracker(),
-    )
-    esper.create_entity(
-        BoundingBox(11, 101, 11, 101),
-        GameSprite(pygame.Color(200, 100, 000)),
-        TrackedByGameTracker(),
-    )
-
     render_layer_dict = {
-        RenderLayerEnum.GAME: (game_position_tracker, BoundingBox(10, 100, 10, 100))
+        RenderLayerEnum.GAME: (game_position_tracker, BoundingBox(10, 110, 10, 110))
     }
     display_surf = pygame.display.get_surface()
     if display_surf is None:
