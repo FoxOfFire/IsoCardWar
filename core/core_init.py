@@ -4,16 +4,23 @@ import logging
 import esper
 import pygame
 
-from common import BoundingBox, EventProcessor, PositionTracker, WorldEnum
+from common import (
+    BoundingBox,
+    EventProcessor,
+    GameCamera,
+    Plain,
+    PositionTracker,
+    WorldEnum,
+)
 from common.audio import init_audio
-from rendering import RenderingProcessor
+from rendering import GameSprite, RenderingProcessor, RenderLayerEnum
 from ui import UIProcessor, bind_keyboard_events
 
 from . import global_vars
 from .dying import DyingProcessor
 from .event_handlers import bind_events as bind_core_events
 from .log import logger
-from .scene_switcher import ScenceSwitcher
+from .scene_switcher import SceneSwitcher
 from .tracker_tags import TrackedByGameTracker, TrackedByUITracker
 
 SEED = None
@@ -55,7 +62,7 @@ def init_window() -> None:
 
 def bind_game_events(
     event_processor: EventProcessor,
-    scene_switcher: ScenceSwitcher,
+    scene_switcher: SceneSwitcher,
 ) -> None:
     bind_core_events(event_processor, scene_switcher)
     bind_keyboard_events(event_processor)
@@ -73,28 +80,51 @@ def init_game_world_esper() -> None:
             10000,
             0,
             10000,
-        )
+        ),
+        Plain(),
     )
-
+    display = pygame.display.get_surface()
+    if display is None:
+        raise RuntimeError("No screen found")
     UI_game_plain = esper.create_entity(
         BoundingBox(
             0,
-            pygame.display.get_surface().get_size()[0],
+            display.get_size()[0],
             0,
-            pygame.display.get_surface().get_size()[1],
+            display.get_size()[1],
         )
     )
 
     # Create processors
     ui_position_tracker = PositionTracker(TrackedByUITracker, UI_game_plain)
     game_position_tracker = PositionTracker(TrackedByGameTracker, game_plain)
-    game_renderer = RenderingProcessor(game_position_tracker)
+    game_cam_bb = BoundingBox(0, 100, 0, 100)
+    _ = esper.create_entity(game_cam_bb, GameCamera())
+
+    esper.create_entity(
+        BoundingBox(10, 100, 10, 100),
+        GameSprite(pygame.Color(0, 100, 200)),
+        TrackedByGameTracker(),
+    )
+    esper.create_entity(
+        BoundingBox(11, 101, 11, 101),
+        GameSprite(pygame.Color(200, 100, 000)),
+        TrackedByGameTracker(),
+    )
+
+    render_layer_dict = {
+        RenderLayerEnum.GAME: (game_position_tracker, BoundingBox(10, 100, 10, 100))
+    }
+    display_surf = pygame.display.get_surface()
+    if display_surf is None:
+        raise RuntimeError("Display failed to init")
+    renderer = RenderingProcessor(display_surf, render_layer_dict, 8)
 
     event_processor = EventProcessor()
     ui_processor = UIProcessor(ui_position_tracker)
 
     dying_proc = DyingProcessor(game_position_tracker)
-    scene_switcher = ScenceSwitcher()
+    scene_switcher = SceneSwitcher()
 
     bind_game_events(
         event_processor=event_processor,
@@ -107,7 +137,7 @@ def init_game_world_esper() -> None:
     game_position_tracker.process()
     esper.add_processor(ui_position_tracker)
     esper.add_processor(ui_processor)
-    esper.add_processor(game_renderer)
+    esper.add_processor(renderer)
     esper.add_processor(scene_switcher)
 
 

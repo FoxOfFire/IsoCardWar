@@ -10,4 +10,4 @@ from .position_tracking import (
     PositionTracker,
     TrackingError,
 )
-from .ui_tags import Camera, UIElementComponent
+from .ui_tags import GameCamera, Plain, UIElementComponent
