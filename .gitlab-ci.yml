@@ -1,0 +1,39 @@
+# This image is a bare-bones Debian with python 3.12.9 installed.
+image: python:3.12.9-bookworm
+
+# Cacheing pip deps here
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+
+# Telling runner to persist the pip cache
+cache:
+  paths:
+    - .cache/pip
+
+# We need to run this before every script, because Docker is stateless.
+before_script:
+  - ./scripts/install_pip_deps.sh
+  - source .venv/bin/activate
+
+stages:
+  - run-linters
+  - run-tests
+
+run-linters:
+  stage: run-linters
+  script: ./scripts/run_linters.sh
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+    - if: $CI_PIPELINE_SOURCE == "push"
+      when: never
+
+run-tests:
+  stage: run-tests
+  script: ./scripts/run_tests.sh
+  coverage: '/TOTAL.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+    - if: $CI_PIPELINE_SOURCE == "push"
+      when: never

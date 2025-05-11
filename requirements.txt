@@ -1,0 +1,22 @@
+esper==3.3
+pygame-ce==2.5.3
+rtree==1.4.0
+numpy==2.2.3
+perlin-noise==1.13
+attrs==25.3.0
+pathfinding==1.0.16
+bidict==0.23.1
+
+# Formatters
+black==25.1.0
+
+# Linters
+flake8==7.1.1
+flake8-bugbear==24.12.12
+flake8-pyproject==1.2.3
+mypy==1.15.0
+isort==6.0.1
+
+# Testing frameworks
+pytest==8.3.5
+pytest-cov==6.1.0
