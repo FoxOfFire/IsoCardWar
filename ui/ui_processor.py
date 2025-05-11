@@ -3,7 +3,13 @@ from typing import Set, Tuple
 import esper
 import pygame
 
-from common import BoundingBox, Camera, PositionTracker, UIElementComponent, UIStateEnum
+from common import (
+    BoundingBox,
+    GameCamera,
+    PositionTracker,
+    UIElementComponent,
+    UIStateEnum,
+)
 
 from .log import logger
 
@@ -21,7 +27,7 @@ class UIProcessor(esper.Processor):
         self.world = esper.current_world
         cam_bb = BoundingBox(0, 1, 0, 1)
         for ent, bb in esper.get_component(BoundingBox):
-            if esper.has_component(ent, Camera):
+            if esper.has_component(ent, GameCamera):
                 cam_bb = bb
         self.tracker = ui_tracker
         self.cam_bb = cam_bb
@@ -54,8 +60,8 @@ class UIProcessor(esper.Processor):
             # handling button actions on release
             for ent in self.clicked:
                 tag = esper.component_for_entity(ent, UIElementComponent)
-                if tag.click_funcs is not None:
-                    tag.click_funcs(ent)
+                if tag.click_func is not None:
+                    tag.click_func(ent)
 
         self.clicked = click_buffer
 

@@ -58,6 +58,14 @@ class BoundingBox:
         return ((self.left + self.right) / 2, (self.top + self.bottom) / 2)
 
     @property
+    def width(self) -> float:
+        return self._right - self._left
+
+    @property
+    def height(self) -> float:
+        return self._bottom - self._top
+
+    @property
     def points(self) -> tuple[float, float, float, float]:
         return (self.left, self.right, self.top, self.bottom)
 
@@ -157,7 +165,7 @@ class BoundingBox:
         # https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection
 
         for x, y in [point1, point2]:
-            # This also returns True if the line is conincident
+            # This also returns True if the line is coincidence
             if self.left <= x <= self.right and self.top <= y <= self.bottom:
                 return True  # one of the points is in the BoundingBox
 

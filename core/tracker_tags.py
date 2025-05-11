@@ -7,7 +7,3 @@ class TrackedByUITracker(NamedTuple):
 
 class TrackedByGameTracker(NamedTuple):
     pass
-
-
-class TrackedByMainMenuTracker(NamedTuple):
-    pass

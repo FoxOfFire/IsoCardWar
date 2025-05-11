@@ -39,7 +39,7 @@ To verify that Python has been successfully installed, run:
 pyenv versions
 ```
 
-You should see `3.12.9` in the list of avalible versions.
+You should see `3.12.9` in the list of available versions.
 
 
 ### Clone the repository
@@ -111,7 +111,7 @@ In the output of the second command you should see that the current python comma
 
 We use `pip` to manage python packages. `pip` comes installed with Python.
 
-Requiremnts can be installed automatically with the requirements.txt file founds in the repo root.
+Requirements can be installed automatically with the requirements.txt file founds in the repo root.
 
 Install the requirements into your virtual environment with the following command:
 
@@ -125,12 +125,12 @@ You should see `pip` installing the required python packages.
 
 ### General style
 
-We comform mostly to pep8 guidelines: https://peps.python.org/pep-0008/
+We conform mostly to pep8 guidelines: https://peps.python.org/pep-0008/
 We use the black formatter to ensure this.
 
 ### Type hints
 
-We enforce type hinting in function signatures with `mypy`. Type hinting inside of function bodies is usually unnessecarry. If you need/want to duck-type, use `Any`.
+We enforce type hinting in function signatures with `mypy`. Type hinting inside of function bodies is usually unnecessary. If you need/want to duck-type, use `Any`.
 
 ### Other naming conventions
 
@@ -152,7 +152,7 @@ class ASomeAbstract(ABC):
 
 ### Tools
 
-You can use tools to comform to the rules mentioned above with the floowing tools:
+You can use tools to conform to the rules mentioned above with the flowing tools:
 
 - black
 - isort
@@ -197,7 +197,7 @@ The linters and formatters are installed by `pip`, if you haven't already, from 
 
 ```bash
 python -m venv .venv
-source .venv/bin/activte
+source .venv/bin/activate
 pip3 install -r requirements.txt
 ```
 
@@ -222,7 +222,7 @@ To also run isort, go to "Code Actions On Save", click on "Edit in settings.json
 
 ### Getting started
 
-After cloning the repositiory, and setting it as your working directory, navigate to the `master` branch with:
+After cloning the repository, and setting it as your working directory, navigate to the `master` branch with:
 
 ```bash
 git switch master
