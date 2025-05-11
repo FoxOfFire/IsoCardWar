@@ -3,7 +3,8 @@ from dataclasses import dataclass
 import esper
 import pygame
 
-from common import BoundingBox, GameCamera, PositionTracker
+from common import BoundingBox, PositionTracker
+from layer2 import GameCamera
 
 from .rendering_utils import bb_to_rect
 

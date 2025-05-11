@@ -3,19 +3,14 @@ from typing import Set, Tuple
 import esper
 import pygame
 
-from common import (
-    BoundingBox,
-    GameCamera,
-    PositionTracker,
-    UIElementComponent,
-    UIStateEnum,
-)
+from common import BoundingBox, PositionTracker
+from layer2 import GameCamera, UIElementComponent, UIStateEnum
 
 from .log import logger
 
 
 class UIProcessor(esper.Processor):
-    mousepos: Tuple[int, int]
+    mouse_pos: Tuple[int, int]
     tracker: PositionTracker
     cam_bb: BoundingBox
     hovering: Set[int]
@@ -36,17 +31,17 @@ class UIProcessor(esper.Processor):
         self.prev_click = False
 
     def process(self) -> None:
-        self.mousepos = pygame.mouse.get_pos()
+        self.mouse_pos = pygame.mouse.get_pos()
         mouse_bb = BoundingBox(
-            self.mousepos[0] - 1,
-            self.mousepos[0] + 1,
-            self.mousepos[1] - 1,
-            self.mousepos[1] + 1,
+            self.mouse_pos[0] - 1,
+            self.mouse_pos[0] + 1,
+            self.mouse_pos[1] - 1,
+            self.mouse_pos[1] + 1,
         )
         (left_clicked, middle_clicked, right_clicked) = pygame.mouse.get_pressed()
 
-        # this is nessecarry so that putton presses are not processed multiple times
-        # reset the clicked status of all entitys from the previous frame
+        # this is necessary so that button presses are not processed multiple times
+        # reset the clicked status of all entities from the previous frame
         click_buffer: Set[int] = set()
         if left_clicked:
             for ent in self.clicked:
@@ -65,7 +60,7 @@ class UIProcessor(esper.Processor):
 
         self.clicked = click_buffer
 
-        # reset the hovering status of all entitys from the previous frame
+        # reset the hovering status of all entities from the previous frame
 
         for ent, tag in esper.get_component(UIElementComponent):
             if ent in self.clicked:

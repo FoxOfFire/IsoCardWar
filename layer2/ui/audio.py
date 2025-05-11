@@ -15,7 +15,7 @@ class SoundTypeEnum(StrEnum):
     MONEY = "money"
 
 
-SFX_DIR = Path(".") / "common" / "audio" / "assets"
+SFX_DIR = Path(".") / "layer2" / "ui" / "audio_assets"
 SFX_AUDIO_DICT: Dict[SoundTypeEnum, pygame.mixer.Sound] = {}
 
 

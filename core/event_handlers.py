@@ -3,7 +3,7 @@ import functools
 import pygame
 
 from common import EventProcessor
-from ui import SWITCH_SCENE
+from layer2.ui import SWITCH_SCENE
 
 from .scene_switcher import SceneSwitcher
 
