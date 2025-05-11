@@ -15,11 +15,17 @@ class CardMovementProcessor(esper.Processor):
 
         for ent, _ in esper.get_component(Card):
             bb = esper.component_for_entity(ent, BoundingBox)
-            delta = (
-                -bb.center[0]
-                + self.cam_bb.center[0]
-                - get_card_center_offset(ent)
-                * (self.cam_bb.width / len(deck_obj.hand) * 0.8)
-            ) / 20
+
+            offset = (
+                get_card_center_offset(ent)
+                * self.cam_bb.width
+                / len(deck_obj.hand)
+                * 0.8
+            )
+
+            if len(deck_obj.hand) < 7:
+                offset = get_card_center_offset(ent) * 30
+
+            delta = (self.cam_bb.center[0] - bb.center[0] - (offset)) / 20
             bb.delta_right = delta
             bb.delta_left = delta

@@ -2,7 +2,7 @@ import enum
 import random
 from dataclasses import dataclass
 from math import sqrt
-from typing import Callable, Dict, List, Optional, Type
+from typing import Any, Callable, Dict, List, Optional, Type
 
 import esper
 
@@ -25,11 +25,11 @@ class PriceEnum(enum.StrEnum):
 class Card:
     name: str
     price: Dict[PriceEnum, int]
-    effect: Callable[[], None]
+    effect: Callable[[Optional[Any]], None]
 
 
-def noop() -> None:
-    logger.info("played a card")
+def noop(arg: Optional[Any]) -> None:
+    logger.info(f"played a card with args: {arg}")
 
 
 def get_card_center_offset(ent: int) -> float:
@@ -58,23 +58,9 @@ class Deck:
     def __init__(self) -> None:
         self.tracker_tag: Optional[Type] = None
         self.sprite: Optional[Type] = None
-        self.deck: List[Card] = _create_starting_deck(10)
+        self.deck: List[Card] = _create_starting_deck(20)
         self.hand: List[int] = []
         self.discard: List[Card] = []
-
-
-deck_obj: Deck = Deck()
-
-
-def play_card(ent: int) -> None:
-    if ent not in deck_obj.hand:
-        return
-    logger.info(f"playing card {ent}")
-    deck_obj.hand.remove(ent)
-    card = esper.component_for_entity(ent, Card)
-    card.effect()
-    deck_obj.discard.append(card)
-    esper.component_for_entity(ent, Health).hp = 0
 
 
 def shuffle_deck() -> None:
@@ -87,6 +73,21 @@ def shuffle_deck() -> None:
             )
         )
     deck_obj.deck = new
+
+
+deck_obj: Deck = Deck()
+shuffle_deck()
+
+
+def play_card(ent: int) -> None:
+    if ent not in deck_obj.hand:
+        return
+    logger.info(f"playing card {ent}")
+    deck_obj.hand.remove(ent)
+    card = esper.component_for_entity(ent, Card)
+    card.effect(card.name)
+    deck_obj.discard.append(card)
+    esper.component_for_entity(ent, Health).hp = 0
 
 
 def draw_card() -> int:

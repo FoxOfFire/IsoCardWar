@@ -6,8 +6,8 @@ import pygame
 from common import BoundingBox, PositionTracker
 
 from .card_renderer import CardRenderer
-from .log import logger
-from .rendering_utils import RenderLayerEnum, bb_to_rect
+from .iso_renderer import IsoRenderer
+from .rendering_utils import RenderLayerEnum
 
 
 class ScreenNotFoundException(Exception):
@@ -28,19 +28,23 @@ class RenderingProcessor(esper.Processor):
             (display.get_width() / pixel_size, display.get_height() / pixel_size)
         )
 
-        (game_postrack, game_bb) = layer_info[RenderLayerEnum.GAME]
-        self.game_renderer = CardRenderer(game_postrack)
-        self.game_bb = game_bb
-        self.game_surf = pygame.Surface((game_bb.width, game_bb.height))
-        logger.info(self.screen.get_size())
+        (card_postrack, card_bb) = layer_info[RenderLayerEnum.CARD]
+        self.card_renderer = CardRenderer(card_postrack)
+        self.card_bb = card_bb
+
+        self.game_surf = pygame.Surface((card_bb.width, card_bb.height))
+
+        (iso_postrack, iso_bb) = layer_info[RenderLayerEnum.ISO]
+        self.iso_renderer = IsoRenderer(iso_postrack)
+        self.iso_bb = iso_bb
 
     def process(self) -> None:
 
         self.screen.fill((100, 100, 100))
 
         self.game_surf.fill((0, 239, 130))
-        self.game_renderer.Draw(self.game_surf)
-        self.screen.blit(self.game_surf, bb_to_rect(self.game_bb))
+        self.card_renderer.Draw(self.game_surf)
+        self.screen.blit(self.game_surf, self.game_surf.get_rect())
 
         scaled_screen = pygame.transform.scale(
             self.screen, (self.display.get_width(), self.display.get_height())

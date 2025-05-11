@@ -6,7 +6,9 @@ import pygame
 
 from common import BoundingBox, EventProcessor, PositionTracker
 from layer1.cards import CardMovementProcessor, deck_obj
-from layer2 import GameCamera, Plain, WorldEnum
+from layer2 import GameCameraTag, IsoCameraTag, Plain, SceneSwitcher, WorldEnum
+from layer2.dying import DyingProcessor
+from layer2.event_handlers import bind_events as bind_core_events
 from layer2.rendering import (
     CardSprite,
     RenderingProcessor,
@@ -16,17 +18,17 @@ from layer2.rendering import (
 from layer2.ui import UIProcessor, bind_keyboard_events, init_audio
 
 from . import global_vars
-from .dying import DyingProcessor
-from .event_handlers import bind_events as bind_core_events
 from .log import logger
-from .scene_switcher import SceneSwitcher
-from .tracker_tags import TrackedByGameTracker, TrackedByUITracker
+from .tracker_tags import TrackCards, TrackIso, TrackUI
 
 GAME_CAM_WIDTH = 256
 GAME_CAM_HEIGHT = 144
 PIXEL_SIZE = 1080 / GAME_CAM_HEIGHT
 
 SEED = None
+
+ISO_HEIGHT = 8
+ISO_WIDTH = 8
 
 
 def init_logging() -> None:
@@ -77,49 +79,64 @@ def bind_game_events(
 
 
 def init_game_world_esper() -> None:
-    game_plain = esper.create_entity(
-        BoundingBox(
-            0,
-            10000,
-            0,
-            10000,
-        ),
-        Plain(),
-    )
     display = pygame.display.get_surface()
     if display is None:
         raise RuntimeError("No screen found")
-    UI_game_plain = esper.create_entity(
+
+    game_plain = esper.create_entity(
+        BoundingBox(
+            0,
+            1000,
+            0,
+            1000,
+        ),
+        Plain(),
+    )
+    iso_plain = esper.create_entity(
+        BoundingBox(
+            0,
+            1000,
+            0,
+            ISO_WIDTH,
+        ),
+        Plain(),
+    )
+    ui_plain = esper.create_entity(
         BoundingBox(
             0,
             display.get_size()[0],
             0,
             display.get_size()[1],
-        )
+        ),
+        Plain(),
     )
 
-    deck_obj.tracker_tag = TrackedByGameTracker
+    deck_obj.tracker_tag = TrackCards
     deck_obj.sprite = CardSprite
 
     # Create processors
-    ui_position_tracker = PositionTracker(TrackedByUITracker, UI_game_plain)
-    game_position_tracker = PositionTracker(TrackedByGameTracker, game_plain)
-    game_cam_bb = BoundingBox(0, GAME_CAM_WIDTH, 0, GAME_CAM_HEIGHT)
-    _ = esper.create_entity(game_cam_bb, GameCamera())
+    ui_position_tracker = PositionTracker(TrackUI, ui_plain)
+    game_position_tracker = PositionTracker(TrackCards, game_plain)
+    iso_position_tracker = PositionTracker(TrackIso, iso_plain)
 
-    card_movement_processor = CardMovementProcessor(game_cam_bb)
+    game_cam_bb = BoundingBox(0, GAME_CAM_WIDTH, 0, GAME_CAM_HEIGHT)
+    esper.create_entity(game_cam_bb, GameCameraTag())
+    iso_cam_bb = BoundingBox(0, ISO_WIDTH, 0, ISO_HEIGHT)
+    esper.create_entity(iso_cam_bb, IsoCameraTag())
 
     render_layer_dict = {
-        RenderLayerEnum.GAME: (
+        RenderLayerEnum.CARD: (
             game_position_tracker,
             BoundingBox(00, GAME_CAM_WIDTH, 00, GAME_CAM_HEIGHT),
-        )
+        ),
+        RenderLayerEnum.ISO: (
+            iso_position_tracker,
+            BoundingBox(0, GAME_CAM_WIDTH, 0, GAME_CAM_HEIGHT),
+        ),
     }
-    display_surf = pygame.display.get_surface()
-    if display_surf is None:
-        raise RuntimeError("Display failed to init")
-    renderer = RenderingProcessor(display_surf, render_layer_dict, PIXEL_SIZE)
+    renderer = RenderingProcessor(display, render_layer_dict, PIXEL_SIZE)
 
+    card_movement_processor = CardMovementProcessor(game_cam_bb)
     event_processor = EventProcessor()
     ui_processor = UIProcessor(ui_position_tracker)
 
@@ -134,6 +151,7 @@ def init_game_world_esper() -> None:
     esper.add_processor(event_processor)
     esper.add_processor(dying_proc)
     esper.add_processor(card_movement_processor)
+    esper.add_processor(iso_position_tracker)
     esper.add_processor(game_position_tracker)
     game_position_tracker.process()
     esper.add_processor(ui_position_tracker)

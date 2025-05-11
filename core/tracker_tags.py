@@ -1,9 +1,13 @@
 from typing import NamedTuple
 
 
-class TrackedByUITracker(NamedTuple):
+class TrackUI(NamedTuple):
     pass
 
 
-class TrackedByGameTracker(NamedTuple):
+class TrackCards(NamedTuple):
+    pass
+
+
+class TrackIso(NamedTuple):
     pass

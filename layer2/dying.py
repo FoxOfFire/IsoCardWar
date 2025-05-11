@@ -1,7 +1,6 @@
 import esper
 
-from common import Health
-from common.position_tracking.position_tracker import PositionTracker
+from common import Health, PositionTracker
 
 
 class DyingProcessor(esper.Processor):
