@@ -24,7 +24,7 @@ class CardRenderer:
             BoundingBox,
         )
 
-    def Draw(self, screen: pygame.Surface) -> None:
+    def draw(self, screen: pygame.Surface) -> None:
         def sorter(ent: int) -> int:
             if ent not in deck_obj.hand:
                 return -1

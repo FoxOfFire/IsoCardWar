@@ -8,6 +8,7 @@ import esper
 
 from common import BoundingBox, Health
 
+from .card_utils import CARD_START_X, CARD_START_Y
 from .log import logger
 
 CARD_WIDTH: float = 31.0
@@ -105,10 +106,12 @@ def draw_card() -> int:
 
     if deck_obj.tracker_tag is None or deck_obj.sprite is None:
         raise RuntimeError("failed to initialise deck_obj")
-    off_x = 0
-    off_y = 90
+
     bb = BoundingBox(
-        off_x, off_x + CARD_WIDTH * ROOT_TWO, off_y, off_y + CARD_HEIGHT * ROOT_TWO
+        CARD_START_X,
+        CARD_START_X + CARD_WIDTH * ROOT_TWO,
+        CARD_START_Y,
+        CARD_START_Y + CARD_HEIGHT * ROOT_TWO,
     )
     logger.info(bb)
     ent = esper.create_entity(

@@ -4,6 +4,7 @@ import esper
 import pygame
 
 from common import BoundingBox, PositionTracker
+from layer1.iso_map import Tile
 from layer2 import IsoCameraTag
 
 from .rendering_utils import bb_to_rect, sorter
@@ -29,5 +30,8 @@ class IsoRenderer:
             key=lambda ent: sorter(ent, 3),
         )
         for ent in ent_list:
+            if not esper.has_component(ent, IsoSprite):
+                continue
             bb = esper.component_for_entity(ent, BoundingBox)
-            screen.blit(pygame.Surface((1, 1)), bb_to_rect(bb))
+            tile = esper.component_for_entity(ent, Tile)
+            pygame.draw.rect(screen, tile.col, bb_to_rect(bb))

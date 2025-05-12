@@ -6,11 +6,13 @@ import pygame
 
 from common import BoundingBox, EventProcessor, PositionTracker
 from layer1.cards import CardMovementProcessor, deck_obj
+from layer1.iso_map import make_map, map_obj
 from layer2 import GameCameraTag, IsoCameraTag, Plain, SceneSwitcher, WorldEnum
 from layer2.dying import DyingProcessor
 from layer2.event_handlers import bind_events as bind_core_events
 from layer2.rendering import (
     CardSprite,
+    IsoSprite,
     RenderingProcessor,
     RenderLayerEnum,
     load_images,
@@ -95,9 +97,9 @@ def init_game_world_esper() -> None:
     iso_plain = esper.create_entity(
         BoundingBox(
             0,
-            1000,
-            0,
             ISO_WIDTH,
+            0,
+            ISO_HEIGHT * 100,
         ),
         Plain(),
     )
@@ -111,8 +113,13 @@ def init_game_world_esper() -> None:
         Plain(),
     )
 
+    # dependency injection
     deck_obj.tracker_tag = TrackCards
     deck_obj.sprite = CardSprite
+
+    map_obj.tracker_tag = TrackIso
+    map_obj.sprite = IsoSprite
+    map_obj.size = (ISO_WIDTH, ISO_HEIGHT)
 
     # Create processors
     ui_position_tracker = PositionTracker(TrackUI, ui_plain)
@@ -173,4 +180,5 @@ def init() -> None:
     esper.process()
     logger.info(f"{esper.current_world} world init finished")
 
+    make_map()
     logger.info("Finished init!!")
