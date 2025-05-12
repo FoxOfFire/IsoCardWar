@@ -6,8 +6,6 @@ import pygame
 
 from common import BoundingBox
 
-from .log import logger
-
 
 @dataclass
 class Tile:

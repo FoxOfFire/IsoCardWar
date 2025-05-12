@@ -2,9 +2,8 @@ import esper
 
 from common import BoundingBox
 
-from .cards import Card, deck_obj, get_card_center_offset
-
 from .card_utils import CARD_Y_POS
+from .cards import Card, deck_obj, get_card_center_offset
 
 
 class CardMovementProcessor(esper.Processor):
