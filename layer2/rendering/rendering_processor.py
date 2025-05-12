@@ -42,9 +42,9 @@ class RenderingProcessor(esper.Processor):
 
         self.screen.fill((100, 100, 100))
 
-        self.game_surf.fill((0, 239, 130))
-        self.card_renderer.draw(self.game_surf)
+        self.game_surf.fill((100, 99, 101))
         self.iso_renderer.draw(self.game_surf)
+        self.card_renderer.draw(self.game_surf)
         self.screen.blit(self.game_surf, self.game_surf.get_rect())
 
         scaled_screen = pygame.transform.scale(

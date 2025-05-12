@@ -7,12 +7,17 @@ from common import BoundingBox, PositionTracker
 from layer1.iso_map import Tile
 from layer2 import IsoCameraTag
 
-from .rendering_utils import bb_to_rect, sorter
+from .image_loader import TILE_TYPES, TileTypeEnum
+from .rendering_utils import sorter
 
 
 @dataclass
 class IsoSprite:
     pass
+
+
+OFFSET_X = 50
+OFFSET_Y = 50
 
 
 class IsoRenderer:
@@ -25,13 +30,20 @@ class IsoRenderer:
         )
 
     def draw(self, screen: pygame.Surface) -> None:
+        def sort_by_bottom(ent: int) -> int:
+            tile = esper.try_component(ent, Tile)
+            if tile is None:
+                return -1
+            return tile.x - tile.y
+
         ent_list = sorted(
             self.postrack.intersect(self.bb),
-            key=lambda ent: sorter(ent, 3),
+            key=lambda ent: sort_by_bottom(ent),
         )
         for ent in ent_list:
             if not esper.has_component(ent, IsoSprite):
                 continue
-            bb = esper.component_for_entity(ent, BoundingBox)
             tile = esper.component_for_entity(ent, Tile)
-            pygame.draw.rect(screen, tile.col, bb_to_rect(bb))
+            x = OFFSET_X + (tile.x + tile.y) * 8
+            y = OFFSET_Y + (tile.x - tile.y) * 4
+            screen.blit(TILE_TYPES[TileTypeEnum.BASIC], (x, y))

@@ -2,7 +2,6 @@ from dataclasses import dataclass
 from typing import Optional, Tuple, Type
 
 import esper
-import pygame
 
 from common import BoundingBox
 
@@ -11,7 +10,6 @@ from common import BoundingBox
 class Tile:
     x: int
     y: int
-    col: pygame.Color
 
 
 class Map:
@@ -39,18 +37,11 @@ def make_map() -> None:
     tracker = map_obj.tracker_tag
     sprite = map_obj.sprite
     for i in range(h):
-        bbs = [
-            BoundingBox(i % w, i % w + 1, i, i + 1),
-            BoundingBox(w - i % w - 1, w - i % w, i, i + 1),
-        ]
-        for j in range(len(bbs)):
+        for j in range(w):
+            bb = BoundingBox(i, i + 1, j, j + 1)
             esper.create_entity(
-                bbs[j],
+                bb,
                 sprite(),
                 tracker(),
-                Tile(
-                    round(bbs[j].left),
-                    round(bbs[j].top),
-                    pygame.Color(i * 30, j * 200, 0),
-                ),
+                Tile(round(bb.left), round(bb.top)),
             )
