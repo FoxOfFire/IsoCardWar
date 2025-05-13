@@ -16,7 +16,7 @@ class IsoSprite:
     pass
 
 
-OFFSET_X = 50
+OFFSET_X = 64
 OFFSET_Y = 50
 
 
