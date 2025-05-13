@@ -7,7 +7,7 @@ from common import BoundingBox, PositionTracker
 from layer1.cards import CARD_HEIGHT, CARD_WIDTH, deck_obj, get_card_center_offset
 from layer2 import GameCameraTag
 
-from .image_loader import CARD_IMAGES, CARD_TYPES, CardImageEnum, CardTypeEnum
+from .rendering_images import CARD_IMAGES, CARD_TYPES, CardImageEnum, CardTypeEnum
 
 
 @dataclass

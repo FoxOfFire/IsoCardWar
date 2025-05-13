@@ -2,7 +2,7 @@ import enum
 import random
 from dataclasses import dataclass
 from math import sqrt
-from typing import Any, Callable, Dict, List, Optional, Type
+from typing import Any, Callable, Dict, List, Optional, Type, Unpack
 
 import esper
 
@@ -26,11 +26,14 @@ class PriceEnum(enum.StrEnum):
 class Card:
     name: str
     price: Dict[PriceEnum, int]
-    effect: Callable[[Optional[Any]], None]
+    effect: Callable[[Unpack[Any]], None]
 
 
-def noop(arg: Optional[Any]) -> None:
-    logger.info(f"played a card with args: {arg}")
+def noop(*args: Any) -> None:
+    argc = len(args)
+    logger.info(f"argc: {argc}")
+    for i in range(argc):
+        logger.info(f"arg{i}: {args[i]}")
 
 
 def get_card_center_offset(ent: int) -> float:
@@ -86,7 +89,7 @@ def play_card(ent: int) -> None:
     logger.info(f"playing card {ent}")
     deck_obj.hand.remove(ent)
     card = esper.component_for_entity(ent, Card)
-    card.effect(card.name)
+    card.effect(card.name, "xd")
     deck_obj.discard.append(card)
     esper.component_for_entity(ent, Health).hp = 0
 

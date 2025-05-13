@@ -29,8 +29,8 @@ PIXEL_SIZE = 1080 / GAME_CAM_HEIGHT
 
 SEED = None
 
-ISO_HEIGHT = 8
-ISO_WIDTH = 8
+ISO_MAP_HEIGHT = 8
+ISO_MAP_WIDTH = 8
 
 
 def init_logging() -> None:
@@ -97,9 +97,9 @@ def init_game_world_esper() -> None:
     iso_plain = esper.create_entity(
         BoundingBox(
             0,
-            ISO_WIDTH,
+            ISO_MAP_WIDTH,
             0,
-            ISO_HEIGHT * 100,
+            ISO_MAP_HEIGHT * 100,
         ),
         Plain(),
     )
@@ -119,7 +119,7 @@ def init_game_world_esper() -> None:
 
     map_obj.tracker_tag = TrackIso
     map_obj.sprite = IsoSprite
-    map_obj.size = (ISO_WIDTH, ISO_HEIGHT)
+    map_obj.size = (ISO_MAP_WIDTH, ISO_MAP_HEIGHT)
 
     # Create processors
     ui_position_tracker = PositionTracker(TrackUI, ui_plain)
@@ -128,7 +128,7 @@ def init_game_world_esper() -> None:
 
     game_cam_bb = BoundingBox(0, GAME_CAM_WIDTH, 0, GAME_CAM_HEIGHT)
     esper.create_entity(game_cam_bb, GameCameraTag())
-    iso_cam_bb = BoundingBox(0, ISO_WIDTH, 0, ISO_HEIGHT)
+    iso_cam_bb = BoundingBox(0, ISO_MAP_WIDTH, 0, ISO_MAP_HEIGHT)
     esper.create_entity(iso_cam_bb, IsoCameraTag())
 
     render_layer_dict = {

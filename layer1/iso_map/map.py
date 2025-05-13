@@ -12,14 +12,14 @@ class Tile:
     y: int
 
 
-class Map:
+class MapData:
     def __init__(self) -> None:
         self.tracker_tag: Optional[Type] = None
         self.sprite: Optional[Type] = None
         self.size: Tuple[int, int] = (-1, -1)
 
 
-map_obj = Map()
+map_obj = MapData()
 
 
 def make_map() -> None:

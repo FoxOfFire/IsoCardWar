@@ -7,7 +7,7 @@ from common import BoundingBox, PositionTracker
 from layer1.iso_map import Tile
 from layer2 import IsoCameraTag
 
-from .image_loader import TILE_TYPES, TileTypeEnum
+from .rendering_images import TILE_TYPES, TileTypeEnum
 
 
 @dataclass
