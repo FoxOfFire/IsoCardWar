@@ -12,7 +12,7 @@ class Tile:
     y: int
 
 
-class Map:
+class MapData:
     def __init__(self) -> None:
         self.tracker_tag: Optional[Type] = None
         self.sprite: Optional[Type] = None
