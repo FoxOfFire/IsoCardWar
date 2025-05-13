@@ -67,6 +67,9 @@ class BoundingBox:
 
     @property
     def points(self) -> tuple[float, float, float, float]:
+        """
+        #(left, right, top, bottom)
+        """
         return (self.left, self.right, self.top, self.bottom)
 
     @property

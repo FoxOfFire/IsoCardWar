@@ -19,7 +19,7 @@ class Map:
         self.size: Tuple[int, int] = (-1, -1)
 
 
-map_obj = Map()
+map_obj = MapData()
 
 
 def make_map() -> None:
@@ -45,4 +45,3 @@ def make_map() -> None:
                 tracker(),
                 Tile(round(bb.left), round(bb.top)),
             )
-            # xd

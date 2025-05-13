@@ -2,12 +2,13 @@ import enum
 import random
 from dataclasses import dataclass
 from math import sqrt
-from typing import Callable, Dict, List, Optional, Type
+from typing import Any, Callable, Dict, List, Optional, Type, Unpack
 
 import esper
 
 from common import BoundingBox, Health
 
+from .card_utils import CARD_START_X, CARD_START_Y
 from .log import logger
 
 CARD_WIDTH: float = 31.0
@@ -25,11 +26,14 @@ class PriceEnum(enum.StrEnum):
 class Card:
     name: str
     price: Dict[PriceEnum, int]
-    effect: Callable[[], None]
+    effect: Callable[[Unpack[Any]], None]
 
 
-def noop() -> None:
-    logger.info("played a card")
+def noop(*args: Any) -> None:
+    argc = len(args)
+    logger.info(f"argc: {argc}")
+    for i in range(argc):
+        logger.info(f"arg{i}: {args[i]}")
 
 
 def get_card_center_offset(ent: int) -> float:
@@ -58,23 +62,9 @@ class Deck:
     def __init__(self) -> None:
         self.tracker_tag: Optional[Type] = None
         self.sprite: Optional[Type] = None
-        self.deck: List[Card] = _create_starting_deck(10)
+        self.deck: List[Card] = _create_starting_deck(20)
         self.hand: List[int] = []
         self.discard: List[Card] = []
-
-
-deck_obj: Deck = Deck()
-
-
-def play_card(ent: int) -> None:
-    if ent not in deck_obj.hand:
-        return
-    logger.info(f"playing card {ent}")
-    deck_obj.hand.remove(ent)
-    card = esper.component_for_entity(ent, Card)
-    card.effect()
-    deck_obj.discard.append(card)
-    esper.component_for_entity(ent, Health).hp = 0
 
 
 def shuffle_deck() -> None:
@@ -87,6 +77,21 @@ def shuffle_deck() -> None:
             )
         )
     deck_obj.deck = new
+
+
+deck_obj: Deck = Deck()
+shuffle_deck()
+
+
+def play_card(ent: int) -> None:
+    if ent not in deck_obj.hand:
+        return
+    logger.info(f"playing card {ent}")
+    deck_obj.hand.remove(ent)
+    card = esper.component_for_entity(ent, Card)
+    card.effect(card.name, "xd")
+    deck_obj.discard.append(card)
+    esper.component_for_entity(ent, Health).hp = 0
 
 
 def draw_card() -> int:
@@ -104,10 +109,12 @@ def draw_card() -> int:
 
     if deck_obj.tracker_tag is None or deck_obj.sprite is None:
         raise RuntimeError("failed to initialise deck_obj")
-    off_x = 0
-    off_y = 90
+
     bb = BoundingBox(
-        off_x, off_x + CARD_WIDTH * ROOT_TWO, off_y, off_y + CARD_HEIGHT * ROOT_TWO
+        CARD_START_X,
+        CARD_START_X + CARD_WIDTH * ROOT_TWO,
+        CARD_START_Y,
+        CARD_START_Y + CARD_HEIGHT * ROOT_TWO,
     )
     logger.info(bb)
     ent = esper.create_entity(

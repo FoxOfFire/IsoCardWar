@@ -4,7 +4,7 @@ import esper
 import pygame
 
 from common import BoundingBox, PositionTracker
-from layer2 import GameCamera, UIElementComponent, UIStateEnum
+from layer2.ui_tags import GameCameraTag, UIElementComponent, UIStateEnum
 
 from .log import logger
 
@@ -22,7 +22,7 @@ class UIProcessor(esper.Processor):
         self.world = esper.current_world
         cam_bb = BoundingBox(0, 1, 0, 1)
         for ent, bb in esper.get_component(BoundingBox):
-            if esper.has_component(ent, GameCamera):
+            if esper.has_component(ent, GameCameraTag):
                 cam_bb = bb
         self.tracker = ui_tracker
         self.cam_bb = cam_bb

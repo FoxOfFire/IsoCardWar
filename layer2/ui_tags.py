@@ -10,14 +10,12 @@ class Plain:
     """
 
 
-class GameCamera:
-    """
-    # Camera tag
+class GameCameraTag:
+    pass
 
-    the tag that denotes if an element is the camera
 
-    there should only ever be one entity with this tag
-    """
+class IsoCameraTag:
+    pass
 
 
 def _empty_text() -> str:

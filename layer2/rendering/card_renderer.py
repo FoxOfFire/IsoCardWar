@@ -4,10 +4,10 @@ import esper
 import pygame
 
 from common import BoundingBox, PositionTracker
-from layer1.cards import CARD_HEIGHT, CARD_WIDTH, get_card_center_offset
-from layer2 import GameCamera
+from layer1.cards import CARD_HEIGHT, CARD_WIDTH, deck_obj, get_card_center_offset
+from layer2 import GameCameraTag
 
-from .rendering_utils import CARD_IMAGES, CARD_TYPES, CardImageEnum, CardTypeEnum
+from .rendering_images import CARD_IMAGES, CARD_TYPES, CardImageEnum, CardTypeEnum
 
 
 @dataclass
@@ -20,13 +20,15 @@ class CardRenderer:
         super().__init__()
         self.postrack = postrack
         self.bb = esper.component_for_entity(
-            esper.get_component(GameCamera)[0][0],
+            esper.get_component(GameCameraTag)[0][0],
             BoundingBox,
         )
 
-    def Draw(self, screen: pygame.surface.Surface) -> None:
-        def sorter(ent: int) -> float:
-            return esper.component_for_entity(ent, BoundingBox).left
+    def draw(self, screen: pygame.Surface) -> None:
+        def sorter(ent: int) -> int:
+            if ent not in deck_obj.hand:
+                return -1
+            return deck_obj.hand.index(ent)
 
         ent_list = sorted(self.postrack.intersect(self.bb), key=lambda ent: sorter(ent))
         for ent in ent_list:
@@ -37,9 +39,7 @@ class CardRenderer:
             sprite.angle = get_card_center_offset(ent) * 4
 
             bb = esper.component_for_entity(ent, BoundingBox)
-            surf = pygame.surface.Surface(
-                (CARD_WIDTH, CARD_HEIGHT), flags=pygame.SRCALPHA
-            )
+            surf = pygame.Surface((CARD_WIDTH, CARD_HEIGHT), flags=pygame.SRCALPHA)
 
             surf.blit(CARD_IMAGES[CardImageEnum.BASIC][0], surf.get_rect())
             surf.blit(CARD_TYPES[CardTypeEnum.BASIC], surf.get_rect())
