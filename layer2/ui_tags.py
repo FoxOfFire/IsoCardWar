@@ -18,6 +18,10 @@ class IsoCameraTag:
     pass
 
 
+class TextCameraTag:
+    pass
+
+
 def _empty_text() -> str:
     return " "
 

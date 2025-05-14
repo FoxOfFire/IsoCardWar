@@ -7,6 +7,7 @@ from .cards import (
     add_card,
     deck_obj,
     draw_card,
+    get_card_angle,
     get_card_center_offset,
     play_card,
     shuffle_deck,

@@ -1,26 +1,27 @@
 from dataclasses import dataclass
+from typing import Type
 
 import esper
 import pygame
 
 from common import BoundingBox, PositionTracker
-from layer1.cards import CARD_HEIGHT, CARD_WIDTH, deck_obj, get_card_center_offset
-from layer2 import GameCameraTag
+from layer1.cards import CARD_HEIGHT, CARD_WIDTH, deck_obj, get_card_angle
 
 from .rendering_images import CARD_IMAGES, CARD_TYPES, CardImageEnum, CardTypeEnum
+from .rendering_utils import MaskedSprite
 
 
 @dataclass
-class CardSprite:
-    angle: float = 3
+class CardSprite(MaskedSprite):
+    pass
 
 
 class CardRenderer:
-    def __init__(self, postrack: PositionTracker) -> None:
+    def __init__(self, postrack: PositionTracker, tag: Type) -> None:
         super().__init__()
         self.postrack = postrack
         self.bb = esper.component_for_entity(
-            esper.get_component(GameCameraTag)[0][0],
+            esper.get_component(tag)[0][0],
             BoundingBox,
         )
 
@@ -36,13 +37,15 @@ class CardRenderer:
             if sprite is None:
                 continue
 
-            sprite.angle = get_card_center_offset(ent) * 4
-
             bb = esper.component_for_entity(ent, BoundingBox)
             surf = pygame.Surface((CARD_WIDTH, CARD_HEIGHT), flags=pygame.SRCALPHA)
 
             surf.blit(CARD_IMAGES[CardImageEnum.BASIC][0], surf.get_rect())
             surf.blit(CARD_TYPES[CardTypeEnum.BASIC], surf.get_rect())
 
-            rotated_surf = pygame.transform.rotate(surf, sprite.angle)
-            screen.blit(rotated_surf, rotated_surf.get_rect(center=bb.center))
+            rotated_surf = pygame.transform.rotate(surf, get_card_angle(ent))
+            sprite.mask_offset = rotated_surf.get_rect().topleft
+            sprite.mask = pygame.mask.from_surface(rotated_surf)
+
+            sprite.rect = rotated_surf.get_rect(center=bb.center)
+            screen.blit(rotated_surf, sprite.rect)

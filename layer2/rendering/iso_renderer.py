@@ -1,11 +1,11 @@
 from dataclasses import dataclass
+from typing import Type
 
 import esper
 import pygame
 
 from common import BoundingBox, PositionTracker
 from layer1.iso_map import Tile
-from layer2 import IsoCameraTag
 
 from .rendering_images import TILE_TYPES, TileTypeEnum
 
@@ -20,11 +20,11 @@ OFFSET_Y = 50
 
 
 class IsoRenderer:
-    def __init__(self, postrack: PositionTracker) -> None:
+    def __init__(self, postrack: PositionTracker, tag: Type) -> None:
         super().__init__()
         self.postrack = postrack
         self.bb = esper.component_for_entity(
-            esper.get_component(IsoCameraTag)[0][0],
+            esper.get_component(tag)[0][0],
             BoundingBox,
         )
 

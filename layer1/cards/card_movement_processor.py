@@ -14,23 +14,29 @@ class CardMovementProcessor(esper.Processor):
         if len(deck_obj.hand) == 0:
             return
 
-        for ent, _ in esper.get_component(Card):
+        for ent, card in esper.get_component(Card):
             bb = esper.component_for_entity(ent, BoundingBox)
 
-            offset = (
-                get_card_center_offset(ent)
-                * self.cam_bb.width
-                / len(deck_obj.hand)
-                * 0.8
-            )
+            offset_index = get_card_center_offset(ent)
+            offset = offset_index * self.cam_bb.width / len(deck_obj.hand) * 0.8
 
             if len(deck_obj.hand) < 7:
-                offset = get_card_center_offset(ent) * 30
+                offset = offset_index * 30
 
-            delta_x = (self.cam_bb.center[0] - bb.center[0] - (offset)) / 20
+            delta_x = (
+                self.cam_bb.center[0] - bb.center[0] - (offset)
+            ) / card.anim_speed
             bb.delta_right = delta_x
             bb.delta_left = delta_x
 
-            delta_y = (CARD_Y_POS - bb.center[1]) / 20
+            delta_y = (CARD_Y_POS - bb.center[1]) / card.anim_speed
             bb.delta_top = delta_y
             bb.delta_bottom = delta_y
+            if card.target_angle is None:
+                card.current_angle += (
+                    offset_index * 4 - card.current_angle
+                ) / card.anim_speed
+            else:
+                card.current_angle -= (
+                    card.target_angle - card.current_angle
+                ) / card.anim_speed

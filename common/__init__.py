@@ -9,3 +9,4 @@ from .position_tracking import (
     PositionTracker,
     TrackingError,
 )
+from .text import TextComponent, text_component_from_str
