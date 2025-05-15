@@ -1,7 +1,10 @@
 from dataclasses import dataclass
-from typing import Callable, Optional
+from typing import Callable, Optional, Tuple
+
+import pygame
 
 from .enums import UIStateEnum
+from .log import logger
 
 
 class Plain:
@@ -24,6 +27,21 @@ class TextCameraTag:
 
 def _empty_text() -> str:
     return " "
+
+
+class MaskedSprite:
+    mask: pygame.Mask = pygame.Mask((1, 1), fill=True)
+    rect: pygame.Rect = pygame.Rect(0, 0, 1, 1)
+    mask_offset: Tuple[float, float]
+
+
+@dataclass
+class CardSprite(MaskedSprite):
+    pass
+
+
+def noop(ent: int) -> None:
+    logger.info(f"entity: {ent} clicked")
 
 
 @dataclass

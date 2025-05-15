@@ -1,5 +1,6 @@
 # flake8: noqa
 from .card_movement_processor import CardMovementProcessor
+from .card_utils import MarkerEnum
 from .cards import (
     CARD_HEIGHT,
     CARD_WIDTH,

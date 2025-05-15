@@ -6,8 +6,8 @@ import pygame
 from common import BoundingBox, PositionTracker
 from layer2 import GameCameraTag, IsoCameraTag
 
+from .card_mask_renderer import CardTextRenderer
 from .card_renderer import CardRenderer
-from .card_text_renderer import CardTextRenderer
 from .iso_renderer import IsoRenderer
 from .rendering_utils import RenderLayerEnum
 

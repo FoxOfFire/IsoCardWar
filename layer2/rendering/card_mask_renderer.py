@@ -32,20 +32,26 @@ class CardTextRenderer:
 
             if sprite is None:
                 continue
-            if deck_obj.hand.index(ent) != 2:
-                continue
 
             sprite.mask.invert()
-            i = deck_obj.hand.index(ent)
-            for j in range(i + 1, len(deck_obj.hand)):
-                prev_card_sprite = esper.component_for_entity(
-                    deck_obj.hand[j], CardSprite
+            if ent not in deck_obj.hand:
+                continue
+            this = deck_obj.hand.index(ent)
+            for next in range(this + 1, len(deck_obj.hand)):
+
+                next_card_sprite = esper.component_for_entity(
+                    deck_obj.hand[next], CardSprite
                 )
 
                 sprite.mask.draw(
-                    prev_card_sprite.mask,
+                    next_card_sprite.mask,
                     (
-                        prev_card_sprite.rect.left - sprite.rect.left,
-                        prev_card_sprite.rect.top - sprite.rect.top,
+                        next_card_sprite.rect.left - sprite.rect.left,
+                        next_card_sprite.rect.top - sprite.rect.top,
                     ),
                 )
+        for ent in ent_list:
+            sprite = esper.try_component(ent, CardSprite)
+            if sprite is None:
+                continue
+            sprite.mask.invert()

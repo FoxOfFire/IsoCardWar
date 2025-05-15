@@ -13,7 +13,7 @@ def quit_via_kb(event: Event) -> None:
             draw_card()
         elif event.key == pygame.K_q:
             if len(deck_obj.hand) > 0:
-                play_card(deck_obj.hand[len(deck_obj.hand) - 1])
+                play_card(deck_obj.hand[0])
 
 
 def bind_events(event_processor: EventProcessor) -> None:

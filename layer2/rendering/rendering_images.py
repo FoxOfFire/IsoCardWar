@@ -4,6 +4,8 @@ from typing import Dict, List
 
 import pygame
 
+from layer1.cards import MarkerEnum
+
 
 class CardTypeEnum(enum.Enum):
     BASIC = "basic"
@@ -19,28 +21,40 @@ class TileTypeEnum(enum.Enum):
 
 CARD_TYPE_ASSET_DIR = Path(".") / "layer2" / "rendering" / "assets" / "cards"
 CARD_IMAGE_ASSET_DIR = Path(".") / "layer2" / "rendering" / "assets" / "card_images"
+CARD_MARKER_ASSET_DIR = Path(".") / "layer2" / "rendering" / "assets" / "card_markers"
 TILE_TYPE_ASSET_DIR = Path(".") / "layer2" / "rendering" / "assets" / "tiles"
 
+
 CARD_TYPES: Dict[CardTypeEnum, pygame.Surface] = {}
+CARD_MARKERS: Dict[MarkerEnum, pygame.Surface] = {}
 CARD_IMAGES: Dict[CardImageEnum, List[pygame.Surface]] = {}
 TILE_TYPES: Dict[TileTypeEnum, pygame.Surface] = {}
 
 
 def load_images() -> None:
-    for card_type_val, card_type_name in [(e, e.value) for e in CardTypeEnum]:
+    for card_type, card_type_val in [(e, e.value) for e in CardTypeEnum]:
         CARD_TYPES.update(
             {
-                card_type_val: pygame.image.load(
-                    CARD_TYPE_ASSET_DIR / f"{card_type_name}.png"
+                card_type: pygame.image.load(
+                    CARD_TYPE_ASSET_DIR / f"{card_type_val}.png"
                 ).convert_alpha()
             }
         )
-    for card_image_val, (card_image_name, card_image_frame_cnt) in [
+
+    for card_marker, card_marker_val in [(e, e.value) for e in MarkerEnum]:
+        CARD_MARKERS.update(
+            {
+                card_marker: pygame.image.load(
+                    CARD_MARKER_ASSET_DIR / f"marker{card_marker_val}.png"
+                ).convert_alpha()
+            }
+        )
+    for card_image, (card_image_name, card_image_frame_cnt) in [
         (e, e.value) for e in CardImageEnum
     ]:
         CARD_IMAGES.update(
             {
-                card_image_val: [
+                card_image: [
                     pygame.image.load(
                         CARD_IMAGE_ASSET_DIR
                         / f"{card_image_name}"
@@ -51,11 +65,11 @@ def load_images() -> None:
             }
         )
 
-    for tile_val, tile_name in [(e, e.value) for e in TileTypeEnum]:
+    for tile, tile_val in [(e, e.value) for e in TileTypeEnum]:
         TILE_TYPES.update(
             {
-                tile_val: pygame.image.load(
-                    TILE_TYPE_ASSET_DIR / f"{tile_name}.png"
+                tile: pygame.image.load(
+                    TILE_TYPE_ASSET_DIR / f"{tile_val}.png"
                 ).convert_alpha()
             }
         )
