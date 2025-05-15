@@ -4,7 +4,9 @@ import esper
 import pygame
 
 from common import BoundingBox, PositionTracker
+from layer2 import GameCameraTag, IsoCameraTag
 
+from .card_mask_renderer import CardTextRenderer
 from .card_renderer import CardRenderer
 from .iso_renderer import IsoRenderer
 from .rendering_utils import RenderLayerEnum
@@ -29,23 +31,22 @@ class RenderingProcessor(esper.Processor):
         )
 
         (card_postrack, card_bb) = layer_info[RenderLayerEnum.CARD]
-        self.card_renderer = CardRenderer(card_postrack)
-        self.card_bb = card_bb
-
-        self.game_surf = pygame.Surface((card_bb.width, card_bb.height))
-
         (iso_postrack, iso_bb) = layer_info[RenderLayerEnum.ISO]
-        self.iso_renderer = IsoRenderer(iso_postrack)
+
+        self.card_bb = card_bb
         self.iso_bb = iso_bb
+
+        self.card_renderer = CardRenderer(card_postrack, GameCameraTag)
+        self.iso_renderer = IsoRenderer(iso_postrack, IsoCameraTag)
+        self.text_renderer = CardTextRenderer(card_postrack, GameCameraTag)
 
     def process(self) -> None:
 
         self.screen.fill((100, 100, 100))
 
-        self.game_surf.fill((100, 99, 101))
-        self.iso_renderer.draw(self.game_surf)
-        self.card_renderer.draw(self.game_surf)
-        self.screen.blit(self.game_surf, self.game_surf.get_rect())
+        self.iso_renderer.draw(self.screen)
+        self.card_renderer.draw(self.screen)
+        self.text_renderer.draw(self.screen)
 
         scaled_screen = pygame.transform.scale(
             self.screen, (self.display.get_width(), self.display.get_height())

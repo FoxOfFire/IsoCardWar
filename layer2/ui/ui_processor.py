@@ -1,95 +1,105 @@
-from typing import Set, Tuple
+from typing import Any, Tuple
 
 import esper
 import pygame
 
 from common import BoundingBox, PositionTracker
-from layer2.ui_tags import GameCameraTag, UIElementComponent, UIStateEnum
+from layer1.cards import deck_obj, play_card
+from layer2.tags import GameCameraTag, MaskedSprite, UIElementComponent, UIStateEnum
 
 from .log import logger
 
 
 class UIProcessor(esper.Processor):
-    mouse_pos: Tuple[int, int]
-    tracker: PositionTracker
-    cam_bb: BoundingBox
-    hovering: Set[int]
-    clicked: Set[int]
-    prev_click: bool
-    world: str
 
-    def __init__(self, ui_tracker: PositionTracker) -> None:
-        self.world = esper.current_world
-        cam_bb = BoundingBox(0, 1, 0, 1)
+    def __init__(
+        self, ui_tracker: PositionTracker, display_size: Tuple[int, int]
+    ) -> None:
         for ent, bb in esper.get_component(BoundingBox):
             if esper.has_component(ent, GameCameraTag):
-                cam_bb = bb
+                self.cam_bb = bb
+                break
         self.tracker = ui_tracker
-        self.cam_bb = cam_bb
-        self.clicked = set()
+        self.clicked: int = -1
         logger.info("init finished")
         self.prev_click = False
+
+        self.display_size = display_size
+
+    def clicked_things_stay_clicked(self, mouse_bb: BoundingBox) -> int:
+        click_buffer: int = -1
+        if self.clicked == -1:
+            return click_buffer
+
+        ent = self.clicked
+
+        if ent in self.tracker.intersect(mouse_bb):
+            click_buffer = ent
+        else:
+            esper.component_for_entity(ent, UIElementComponent).state = UIStateEnum.BASE
+
+        return click_buffer
 
     def process(self) -> None:
         self.mouse_pos = pygame.mouse.get_pos()
         mouse_bb = BoundingBox(
-            self.mouse_pos[0] - 1,
-            self.mouse_pos[0] + 1,
-            self.mouse_pos[1] - 1,
-            self.mouse_pos[1] + 1,
+            self.mouse_pos[0] * (self.cam_bb.width / self.display_size[0]),
+            self.mouse_pos[0] * (self.cam_bb.width / self.display_size[0]),
+            self.mouse_pos[1] * (self.cam_bb.height / self.display_size[1]),
+            self.mouse_pos[1] * (self.cam_bb.height / self.display_size[1]),
         )
-        (left_clicked, middle_clicked, right_clicked) = pygame.mouse.get_pressed()
+        (left_clicked, _, _) = pygame.mouse.get_pressed()
 
-        # this is necessary so that button presses are not processed multiple times
-        # reset the clicked status of all entities from the previous frame
-        click_buffer: Set[int] = set()
+        # things that wer clicked on previous frame stay clicked
         if left_clicked:
-            for ent in self.clicked:
-                if ent in self.tracker.intersect(mouse_bb):
-                    click_buffer.add(ent)
-                else:
-                    esper.component_for_entity(ent, UIElementComponent).state = (
-                        UIStateEnum.BASE
-                    )
-        else:
-            # handling button actions on release
-            for ent in self.clicked:
-                tag = esper.component_for_entity(ent, UIElementComponent)
-                if tag.click_func is not None:
-                    tag.click_func(ent)
-
-        self.clicked = click_buffer
+            self.clicked = self.clicked_things_stay_clicked(mouse_bb)
+        # pressing the button on release
+        elif self.clicked != -1 and self.prev_click:
+            tag = esper.component_for_entity(self.clicked, UIElementComponent)
+            if tag.click_func is not None:
+                tag.click_func(self.clicked)
+            if self.clicked in deck_obj.hand:
+                play_card(self.clicked)
+            self.clicked = -1
 
         # reset the hovering status of all entities from the previous frame
-
         for ent, tag in esper.get_component(UIElementComponent):
-            if ent in self.clicked:
+            if ent == self.clicked:
                 continue
             if ent in self.tracker.intersect(mouse_bb) or tag.is_active:
                 tag.state = UIStateEnum.HOVER
             else:
                 tag.state = UIStateEnum.BASE
 
-        # check if mouse is over each item
+        # exiting clicking if continuing to click
         if self.prev_click and left_clicked:
             return
         self.prev_click = left_clicked
 
+        # pressing first intersection of mouse
         for ent in self.tracker.intersect(mouse_bb):
-            if not esper.has_component(ent, UIElementComponent) or (
-                (ent in self.clicked)
+            ui_tag = esper.try_component(ent, UIElementComponent)
+            if ent == self.clicked or (
+                ui_tag is None or not ui_tag.is_visible or not ui_tag.is_clickable
             ):
                 continue
 
-            tag = esper.component_for_entity(ent, UIElementComponent)
-            if not tag.is_visible or not tag.is_clickable:
+            comp: Any
+            bit = 0
+            for comp in esper.components_for_entity(ent):
+                if not isinstance(comp, MaskedSprite):
+                    continue
+                if not comp.rect.collidepoint(mouse_bb.left, mouse_bb.top):
+                    continue
+                bit = comp.mask.get_at(
+                    (mouse_bb.left - comp.rect.left, mouse_bb.top - comp.rect.top)
+                )
+            if bit == 0:
                 continue
 
             if left_clicked:
-
-                tag.state = UIStateEnum.PRESSED
-                self.clicked.add(ent)
-                # logger.info(f"clicked: {ent}")
+                ui_tag.state = UIStateEnum.PRESSED
+                self.clicked = ent
             else:
-                tag.state = UIStateEnum.HOVER
+                ui_tag.state = UIStateEnum.HOVER
             break

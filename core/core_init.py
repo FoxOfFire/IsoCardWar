@@ -7,7 +7,14 @@ import pygame
 from common import BoundingBox, EventProcessor, PositionTracker
 from layer1.cards import CardMovementProcessor, deck_obj
 from layer1.iso_map import make_map, map_obj
-from layer2 import GameCameraTag, IsoCameraTag, Plain, SceneSwitcher, WorldEnum
+from layer2 import (
+    GameCameraTag,
+    IsoCameraTag,
+    Plain,
+    SceneSwitcher,
+    UIElementComponent,
+    WorldEnum,
+)
 from layer2.dying import DyingProcessor
 from layer2.event_handlers import bind_events as bind_core_events
 from layer2.rendering import (
@@ -21,7 +28,7 @@ from layer2.ui import UIProcessor, bind_keyboard_events, init_audio
 
 from . import global_vars
 from .log import logger
-from .tracker_tags import TrackCards, TrackIso, TrackUI
+from .tracker_tags import TrackIso, TrackUI
 
 GAME_CAM_WIDTH = 256
 GAME_CAM_HEIGHT = 144
@@ -85,11 +92,11 @@ def init_game_world_esper() -> None:
     if display is None:
         raise RuntimeError("No screen found")
 
-    game_plain = esper.create_entity(
+    ui_plain = esper.create_entity(
         BoundingBox(
-            0,
+            -30,
             1000,
-            0,
+            -30,
             1000,
         ),
         Plain(),
@@ -103,27 +110,18 @@ def init_game_world_esper() -> None:
         ),
         Plain(),
     )
-    ui_plain = esper.create_entity(
-        BoundingBox(
-            0,
-            display.get_size()[0],
-            0,
-            display.get_size()[1],
-        ),
-        Plain(),
-    )
 
     # dependency injection
-    deck_obj.tracker_tag = TrackCards
+    deck_obj.tracker_tag = TrackUI
     deck_obj.sprite = CardSprite
+    deck_obj.ui_tag = UIElementComponent
 
     map_obj.tracker_tag = TrackIso
     map_obj.sprite = IsoSprite
     map_obj.size = (ISO_MAP_WIDTH, ISO_MAP_HEIGHT)
 
     # Create processors
-    ui_position_tracker = PositionTracker(TrackUI, ui_plain)
-    game_position_tracker = PositionTracker(TrackCards, game_plain)
+    game_position_tracker = PositionTracker(TrackUI, ui_plain)
     iso_position_tracker = PositionTracker(TrackIso, iso_plain)
 
     game_cam_bb = BoundingBox(0, GAME_CAM_WIDTH, 0, GAME_CAM_HEIGHT)
@@ -145,7 +143,7 @@ def init_game_world_esper() -> None:
 
     card_movement_processor = CardMovementProcessor(game_cam_bb)
     event_processor = EventProcessor()
-    ui_processor = UIProcessor(ui_position_tracker)
+    ui_processor = UIProcessor(game_position_tracker, display.get_size())
 
     dying_proc = DyingProcessor(game_position_tracker)
     scene_switcher = SceneSwitcher()
@@ -155,13 +153,16 @@ def init_game_world_esper() -> None:
         scene_switcher=scene_switcher,
     )
 
+    game_position_tracker.process()
+
+    # adding processors
     esper.add_processor(event_processor)
     esper.add_processor(dying_proc)
     esper.add_processor(card_movement_processor)
+
     esper.add_processor(iso_position_tracker)
     esper.add_processor(game_position_tracker)
-    game_position_tracker.process()
-    esper.add_processor(ui_position_tracker)
+
     esper.add_processor(ui_processor)
     esper.add_processor(renderer)
     esper.add_processor(scene_switcher)
