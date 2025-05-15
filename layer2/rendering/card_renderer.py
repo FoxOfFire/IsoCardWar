@@ -15,14 +15,14 @@ from .rendering_images import (
     CardTypeEnum,
 )
 
-MARKER_X = 2
-MARKER_Y = 2
+RELATIVE_MARKER_POS_X = 2
+RELATIVE_MARKER_POS_Y = 2
 
 
 class CardRenderer:
-    def __init__(self, postrack: PositionTracker, tag: Type) -> None:
+    def __init__(self, pos_track: PositionTracker, tag: Type) -> None:
         super().__init__()
-        self.postrack = postrack
+        self.pos_track = pos_track
         self.bb = esper.component_for_entity(
             esper.get_component(tag)[0][0],
             BoundingBox,
@@ -34,7 +34,9 @@ class CardRenderer:
                 return -1
             return deck_obj.hand.index(ent)
 
-        ent_list = sorted(self.postrack.intersect(self.bb), key=lambda ent: sorter(ent))
+        ent_list = sorted(
+            self.pos_track.intersect(self.bb), key=lambda ent: sorter(ent)
+        )
         for ent in ent_list:
             sprite = esper.try_component(ent, CardSprite)
             card = esper.try_component(ent, Card)
@@ -47,10 +49,14 @@ class CardRenderer:
 
             surf.blit(CARD_IMAGES[CardImageEnum.BASIC][0], surf.get_rect())
             surf.blit(CARD_TYPES[CardTypeEnum.BASIC], surf.get_rect())
-            surf.blit(marker_surf, marker_surf.get_rect(topleft=(MARKER_X, MARKER_Y)))
+            surf.blit(
+                marker_surf,
+                marker_surf.get_rect(
+                    topleft=(RELATIVE_MARKER_POS_X, RELATIVE_MARKER_POS_Y)
+                ),
+            )
 
             rotated_surf = pygame.transform.rotate(surf, get_card_angle(ent))
-            sprite.mask_offset = rotated_surf.get_rect().topleft
             sprite.mask = pygame.mask.from_surface(rotated_surf)
 
             sprite.rect = rotated_surf.get_rect(center=bb.center)

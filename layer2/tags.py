@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Callable, Optional, Tuple
+from typing import Callable, Optional
 
 import pygame
 
@@ -32,7 +32,6 @@ def _empty_text() -> str:
 class MaskedSprite:
     mask: pygame.Mask = pygame.Mask((1, 1), fill=True)
     rect: pygame.Rect = pygame.Rect(0, 0, 1, 1)
-    mask_offset: Tuple[float, float]
 
 
 @dataclass
