@@ -14,9 +14,7 @@ from .rendering_images import (
     CardImageEnum,
     CardTypeEnum,
 )
-
-RELATIVE_MARKER_POS_X = 2
-RELATIVE_MARKER_POS_Y = 2
+from .rendering_utils import RELATIVE_MARKER_POS_X, RELATIVE_MARKER_POS_Y
 
 
 class CardRenderer:

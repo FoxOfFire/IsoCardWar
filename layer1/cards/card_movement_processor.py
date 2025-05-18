@@ -2,7 +2,7 @@ import esper
 
 from common import BoundingBox
 
-from .card_utils import CARD_Y_POS
+from .card_utils import CARD_ROTATION_PER_CARD, CARD_Y_POS
 from .cards import Card, deck_obj, get_card_center_offset
 
 
@@ -19,24 +19,23 @@ class CardMovementProcessor(esper.Processor):
 
             offset_index = get_card_center_offset(ent)
             offset = offset_index * self.cam_bb.width / len(deck_obj.hand) * 0.8
-
             if len(deck_obj.hand) < 7:
                 offset = offset_index * 30
 
             delta_x = (
                 self.cam_bb.center[0] - bb.center[0] - (offset)
             ) / card.anim_speed
-            bb.delta_right = delta_x
-            bb.delta_left = delta_x
-
             delta_y = (CARD_Y_POS - bb.center[1]) / card.anim_speed
-            bb.delta_top = delta_y
-            bb.delta_bottom = delta_y
+
+            bb.move(delta_x, delta_y)
+
             if card.target_angle is None:
-                card.current_angle += (
-                    offset_index * 4 - card.current_angle
-                ) / card.anim_speed
+                target_angle = offset_index * CARD_ROTATION_PER_CARD
             else:
-                card.current_angle -= (
-                    card.target_angle - card.current_angle
-                ) / card.anim_speed
+                target_angle = card.target_angle
+            delta_angle = (target_angle - card.current_angle) / card.anim_speed
+
+            if abs(delta_angle) > 0.1:
+                card.current_angle += delta_angle
+            else:
+                card.current_angle = target_angle

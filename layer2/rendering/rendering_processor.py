@@ -6,6 +6,7 @@ import pygame
 from common import BoundingBox, PositionTracker
 from layer2 import GameCameraTag, IsoCameraTag
 
+from .bb_renderer import BBRenderer
 from .card_mask_renderer import CardTextRenderer
 from .card_renderer import CardRenderer
 from .iso_renderer import IsoRenderer
@@ -30,15 +31,16 @@ class RenderingProcessor(esper.Processor):
             (display.get_width() / pixel_size, display.get_height() / pixel_size)
         )
 
-        (card_postrack, card_bb) = layer_info[RenderLayerEnum.CARD]
-        (iso_postrack, iso_bb) = layer_info[RenderLayerEnum.ISO]
+        (card_pos_track, card_bb) = layer_info[RenderLayerEnum.CARD]
+        (iso_pos_track, iso_bb) = layer_info[RenderLayerEnum.ISO]
 
         self.card_bb = card_bb
         self.iso_bb = iso_bb
 
-        self.card_renderer = CardRenderer(card_postrack, GameCameraTag)
-        self.iso_renderer = IsoRenderer(iso_postrack, IsoCameraTag)
-        self.text_renderer = CardTextRenderer(card_postrack, GameCameraTag)
+        self.card_renderer = CardRenderer(card_pos_track, GameCameraTag)
+        self.iso_renderer = IsoRenderer(iso_pos_track, IsoCameraTag)
+        self.text_renderer = CardTextRenderer(card_pos_track, GameCameraTag)
+        self.bb_renderer = BBRenderer(card_pos_track, GameCameraTag)
 
     def process(self) -> None:
 
@@ -47,6 +49,7 @@ class RenderingProcessor(esper.Processor):
         self.iso_renderer.draw(self.screen)
         self.card_renderer.draw(self.screen)
         self.text_renderer.draw(self.screen)
+        # self.bb_renderer.draw(self.screen)
 
         scaled_screen = pygame.transform.scale(
             self.screen, (self.display.get_width(), self.display.get_height())

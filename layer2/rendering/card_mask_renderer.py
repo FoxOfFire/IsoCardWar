@@ -10,9 +10,9 @@ from .card_renderer import CardSprite
 
 
 class CardTextRenderer:
-    def __init__(self, postrack: PositionTracker, tag: Type) -> None:
+    def __init__(self, pos_track: PositionTracker, tag: Type) -> None:
         super().__init__()
-        self.postrack = postrack
+        self.pos_track = pos_track
         self.bb = esper.component_for_entity(
             esper.get_component(tag)[0][0],
             BoundingBox,
@@ -25,7 +25,9 @@ class CardTextRenderer:
             return deck_obj.hand.index(ent)
 
         ent_list = sorted(
-            self.postrack.intersect(self.bb), key=lambda ent: sorter(ent), reverse=False
+            self.pos_track.intersect(self.bb),
+            key=lambda ent: sorter(ent),
+            reverse=False,
         )
         for ent in ent_list:
             sprite = esper.try_component(ent, CardSprite)

@@ -6,7 +6,14 @@ import pygame
 
 from common import BoundingBox, PositionTracker
 from layer1.iso_map import Tile
+from layer2.utils import (
+    ISO_POS_OFFSET_X,
+    ISO_POS_OFFSET_Y,
+    ISO_TILE_OFFSET_X,
+    ISO_TILE_OFFSET_Y,
+)
 
+from .log import logger
 from .rendering_images import TILE_TYPES, TileTypeEnum
 
 
@@ -15,18 +22,15 @@ class IsoSprite:
     pass
 
 
-OFFSET_X = 64
-OFFSET_Y = 50
-
-
 class IsoRenderer:
-    def __init__(self, postrack: PositionTracker, tag: Type) -> None:
+    def __init__(self, pos_track: PositionTracker, tag: Type) -> None:
         super().__init__()
-        self.postrack = postrack
+        self.pos_track = pos_track
         self.bb = esper.component_for_entity(
             esper.get_component(tag)[0][0],
             BoundingBox,
         )
+        logger.info("iso renderer init finished")
 
     def draw(self, screen: pygame.Surface) -> None:
         def sort_by_bottom(ent: int) -> int:
@@ -36,13 +40,13 @@ class IsoRenderer:
             return tile.x - tile.y
 
         ent_list = sorted(
-            self.postrack.intersect(self.bb),
+            self.pos_track.intersect(self.bb),
             key=lambda ent: sort_by_bottom(ent),
         )
         for ent in ent_list:
             if not esper.has_component(ent, IsoSprite):
                 continue
             tile = esper.component_for_entity(ent, Tile)
-            x = OFFSET_X + (tile.x + tile.y) * 8
-            y = OFFSET_Y + (tile.x - tile.y) * 4
+            x = ISO_POS_OFFSET_X + (tile.x + tile.y) * ISO_TILE_OFFSET_X
+            y = ISO_POS_OFFSET_Y + (tile.x - tile.y) * ISO_TILE_OFFSET_Y
             screen.blit(TILE_TYPES[TileTypeEnum.BASIC], (x, y))

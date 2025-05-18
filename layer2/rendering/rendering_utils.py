@@ -5,6 +5,9 @@ import pygame
 
 from common import BoundingBox
 
+RELATIVE_MARKER_POS_X = 2
+RELATIVE_MARKER_POS_Y = 2
+
 
 class RenderLayerEnum(enum.Enum):
     CARD = enum.auto()

@@ -11,6 +11,7 @@ from .card_utils import (
     CARD_START_X,
     CARD_START_Y,
     CARD_WIDTH,
+    MAX_CARD_COUNT,
     ROOT_TWO,
     MarkerEnum,
     PriceEnum,
@@ -102,19 +103,37 @@ def play_card(ent: int) -> None:
     esper.component_for_entity(ent, Health).hp = 0
 
 
-def draw_card() -> int:
+def _check_if_card_can_be_drawn() -> bool:
+    if len(deck_obj.hand) == MAX_CARD_COUNT:
+        logger.info("hand is full")
+        return False
     if len(deck_obj.deck) == 0:
         deck_obj.deck = deck_obj.discard
         deck_obj.discard = []
         shuffle_deck()
 
     if len(deck_obj.deck) == 0:
-        logger.warning("out of cards!")
-        return -1
+        logger.info("out of cards!")
+        return False
 
-    card = deck_obj.deck.pop()
-    card.current_angle = 0
+    return True
 
+
+def _get_new_card_bb() -> BoundingBox:
+    bb_size = ROOT_TWO / 2 * (CARD_HEIGHT + CARD_WIDTH)
+
+    width_offset = (bb_size - CARD_WIDTH) / 2
+    height_offset = (bb_size - CARD_HEIGHT) / 2
+
+    return BoundingBox(
+        CARD_START_X - width_offset,
+        CARD_START_X + width_offset + CARD_WIDTH,
+        CARD_START_Y - height_offset,
+        CARD_START_Y + height_offset + CARD_HEIGHT,
+    )
+
+
+def draw_card() -> int:
     if (
         deck_obj.tracker_tag is None
         or deck_obj.sprite is None
@@ -122,12 +141,12 @@ def draw_card() -> int:
     ):
         raise RuntimeError("failed to initialise deck_obj")
 
-    bb = BoundingBox(
-        CARD_START_X - ROOT_TWO / 2,
-        CARD_START_X + CARD_WIDTH + ROOT_TWO / 2,
-        CARD_START_Y - ROOT_TWO / 2,
-        CARD_START_Y + CARD_HEIGHT + ROOT_TWO / 2,
-    )
+    if not _check_if_card_can_be_drawn():
+        return -1
+    bb = _get_new_card_bb()
+    card = deck_obj.deck.pop()
+    card.current_angle = 0
+    card.target_angle = None
     ent = esper.create_entity(
         card, bb, deck_obj.tracker_tag(), deck_obj.sprite(), deck_obj.ui_tag(), Health()
     )

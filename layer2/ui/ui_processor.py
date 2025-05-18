@@ -57,7 +57,7 @@ class UIProcessor(esper.Processor):
         elif self.clicked != -1 and self.prev_click:
             tag = esper.component_for_entity(self.clicked, UIElementComponent)
             if tag.click_func is not None:
-                tag.click_func(self.clicked)
+                tag.click_func(self.clicked, mouse_bb.center)
             if self.clicked in deck_obj.hand:
                 play_card(self.clicked)
             self.clicked = -1
@@ -85,7 +85,7 @@ class UIProcessor(esper.Processor):
                 continue
 
             comp: Any
-            bit = 0
+            bit = 1
             for comp in esper.components_for_entity(ent):
                 if not isinstance(comp, MaskedSprite):
                     continue
