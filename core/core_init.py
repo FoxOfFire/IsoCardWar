@@ -11,18 +11,14 @@ from layer2 import (
     IsoCameraTag,
     Plain,
     SceneSwitcher,
-    UIElementComponent,
+    TrackIso,
+    TrackUI,
     WorldEnum,
+    ui_event_obj,
 )
 from layer2.dying import DyingProcessor
 from layer2.event_handlers import bind_events as bind_core_events
-from layer2.rendering import (
-    CardSprite,
-    IsoSprite,
-    RenderingProcessor,
-    RenderLayerEnum,
-    load_images,
-)
+from layer2.rendering import IsoSprite, RenderingProcessor, RenderLayerEnum, load_images
 from layer2.ui import UIProcessor, bind_keyboard_events, init_audio
 from layer2.utils import (
     ISO_POS_OFFSET_X,
@@ -33,8 +29,7 @@ from layer2.utils import (
 
 from . import global_vars
 from .log import logger
-from .spawners import spawn_iso_elem
-from .tracker_tags import TrackIso, TrackUI
+from .spawners import spawn_card, spawn_iso_elem
 
 GAME_CAM_WIDTH = 256
 GAME_CAM_HEIGHT = 144
@@ -117,20 +112,6 @@ def init_game_world_esper() -> None:
         Plain(),
     )
 
-    # dependency injection
-    deck_obj.tracker_tag = TrackUI
-    deck_obj.sprite = CardSprite
-    deck_obj.ui_tag = UIElementComponent
-
-    spawn_iso_elem(
-        offset=(ISO_POS_OFFSET_X, ISO_POS_OFFSET_Y),
-        map_size=(ISO_MAP_WIDTH, ISO_MAP_HEIGHT),
-        map_scale=(ISO_TILE_OFFSET_X, ISO_TILE_OFFSET_Y),
-        map_tracker=TrackIso,
-        map_sprite=IsoSprite,
-        ui_tracker=TrackUI,
-    )
-
     # Create processors
     game_position_tracker = PositionTracker(TrackUI, ui_plain)
     iso_position_tracker = PositionTracker(TrackIso, iso_plain)
@@ -177,6 +158,20 @@ def init_game_world_esper() -> None:
     esper.add_processor(ui_processor)
     esper.add_processor(renderer)
     esper.add_processor(scene_switcher)
+
+    # dependency injection
+    deck_obj.spawn_card = spawn_card
+
+    spawn_iso_elem(
+        offset=(ISO_POS_OFFSET_X, ISO_POS_OFFSET_Y),
+        map_size=(ISO_MAP_WIDTH, ISO_MAP_HEIGHT),
+        map_scale=(ISO_TILE_OFFSET_X, ISO_TILE_OFFSET_Y),
+        map_tracker=TrackIso,
+        map_sprite=IsoSprite,
+        ui_tracker=TrackUI,
+    )
+
+    ui_event_obj.iso_pos_track = iso_position_tracker
 
 
 def init() -> None:

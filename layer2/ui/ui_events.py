@@ -1,10 +1,12 @@
-from typing import Tuple
+from collections.abc import Callable
+from dataclasses import dataclass
+from typing import Optional, Tuple
 
 import esper
 import pygame
 
-from common import BoundingBox
-from layer1.iso_map import map_obj
+from common import BoundingBox, PositionTracker
+from layer1.iso_map import Tile, map_obj
 from layer2.tags import GameCameraTag
 
 from .log import logger
@@ -16,10 +18,20 @@ class SelectionException(Exception):
     pass
 
 
+@dataclass
+class UIEventInfo:
+    iso_pos_track: Optional[PositionTracker] = None
+    iso_click_event: Optional[Callable[..., None]] = None
+
+
+ui_event_obj = UIEventInfo()
+
+
 # /\       T~~T
 # /  \ ---\ |  |
 # \  / ---/ |  |
 # \/       L__J
+# https://www.desmos.com/calculator/by4alm9as1
 def _get_transformed_mouse_pos(bb: BoundingBox) -> Tuple[float, float]:
     cam_bb = esper.component_for_entity(
         esper.get_component(GameCameraTag)[0][0], BoundingBox
@@ -38,7 +50,21 @@ def _get_transformed_mouse_pos(bb: BoundingBox) -> Tuple[float, float]:
     return calc_x, calc_y
 
 
-def click_on_tile(ent: int, mouse: Tuple[float, float]) -> None:
+def click_on_tile(ent: int) -> None:
     bb = esper.component_for_entity(ent, BoundingBox)
+    trans_mouse_pos = _get_transformed_mouse_pos(bb)
+    mouse_bb = BoundingBox(
+        trans_mouse_pos[0], trans_mouse_pos[0], trans_mouse_pos[1], trans_mouse_pos[1]
+    )
+    if ui_event_obj.iso_pos_track is None:
+        raise RuntimeError("ui_event_obj iso_pos_track field missing")
 
-    logger.info(_get_transformed_mouse_pos(bb))
+    for intersect in ui_event_obj.iso_pos_track.intersect(mouse_bb):
+        if (
+            esper.component_for_entity(intersect, BoundingBox).points
+            == esper.component_for_entity(
+                ui_event_obj.iso_pos_track.plain, BoundingBox
+            ).points
+        ):
+            continue
+        logger.info(f"{intersect}:\t{esper.component_for_entity(intersect, Tile)}")

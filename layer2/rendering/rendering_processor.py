@@ -40,6 +40,8 @@ class RenderingProcessor(esper.Processor):
         self.card_renderer = CardRenderer(card_pos_track, GameCameraTag)
         self.iso_renderer = IsoRenderer(iso_pos_track, IsoCameraTag)
         self.text_renderer = CardTextRenderer(card_pos_track, GameCameraTag)
+
+        # debug purposes
         self.bb_renderer = BBRenderer(card_pos_track, GameCameraTag)
 
     def process(self) -> None:

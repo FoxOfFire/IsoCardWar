@@ -1,35 +1,43 @@
 import random
 from dataclasses import dataclass
-from typing import Any, Callable, Dict, List, Optional, Type, Unpack
+from typing import Any, Callable, Dict, List, Optional
 
 import esper
 
-from common import BoundingBox, Health
+from common import Health
+from layer1 import MarkerEnum, PriceEnum, set_play_card
 
-from .card_utils import (
-    CARD_HEIGHT,
-    CARD_START_X,
-    CARD_START_Y,
-    CARD_WIDTH,
-    MAX_CARD_COUNT,
-    ROOT_TWO,
-    MarkerEnum,
-    PriceEnum,
-)
+from .card_utils import MAX_CARD_COUNT, OrganizationEnum
 from .log import logger
 
 
+# data
 @dataclass
 class Card:
     name: str
     price: Dict[PriceEnum, int]
     marker: MarkerEnum
-    effect: Callable[[Unpack[Any]], None]
+    effect: Callable[[int], None]
     current_angle: float
     anim_speed: float
     target_angle: Optional[float] = None
 
 
+class Deck:
+    def __init__(self) -> None:
+        self.spawn_card: Optional[Callable[[Card], int]] = None
+        self.selected: Optional[int] = None
+        self.hand: List[int] = []
+        self.deck: List[Card] = _create_starting_deck(20)
+        self.discard: List[Card] = []
+        self.order: OrganizationEnum = OrganizationEnum.MARKER
+
+    def set_order(self, order: OrganizationEnum) -> None:
+        self.order = order
+        sort_hand()
+
+
+# card positioning functions
 def get_card_center_offset(ent: int) -> float:
     if ent not in deck_obj.hand:
         return -1
@@ -44,6 +52,7 @@ def get_card_angle(ent: int) -> float:
     return card.current_angle
 
 
+# helper functions
 def _create_starting_deck(card_count: int) -> List[Card]:
     cards = []
 
@@ -64,45 +73,6 @@ def _create_starting_deck(card_count: int) -> List[Card]:
     return cards
 
 
-def sort_hand() -> None:
-    pass
-
-
-class Deck:
-    def __init__(self) -> None:
-        self.tracker_tag: Optional[Type] = None
-        self.sprite: Optional[Type] = None
-        self.ui_tag: Optional[Type] = None
-        self.deck: List[Card] = _create_starting_deck(20)
-        self.hand: List[int] = []
-        self.discard: List[Card] = []
-
-
-def shuffle_deck() -> None:
-    new = []
-    while len(deck_obj.deck) > 0:
-        new.append(
-            deck_obj.deck.pop(
-                random.randint(0, len(deck_obj.deck) - 1),
-            )
-        )
-    deck_obj.deck = new
-
-
-deck_obj: Deck = Deck()
-shuffle_deck()
-
-
-def play_card(ent: int) -> None:
-    if ent not in deck_obj.hand:
-        return
-    deck_obj.hand.remove(ent)
-    card = esper.component_for_entity(ent, Card)
-    card.effect(card.name, card.marker)
-    deck_obj.discard.append(card)
-    esper.component_for_entity(ent, Health).hp = 0
-
-
 def _check_if_card_can_be_drawn() -> bool:
     if len(deck_obj.hand) == MAX_CARD_COUNT:
         logger.info("hand is full")
@@ -119,38 +89,73 @@ def _check_if_card_can_be_drawn() -> bool:
     return True
 
 
-def _get_new_card_bb() -> BoundingBox:
-    bb_size = ROOT_TWO / 2 * (CARD_HEIGHT + CARD_WIDTH)
+# deck management functions
+def sort_hand() -> None:
+    match deck_obj.order:
+        case OrganizationEnum.MARKER:
 
-    width_offset = (bb_size - CARD_WIDTH) / 2
-    height_offset = (bb_size - CARD_HEIGHT) / 2
+            def sorter(ent: int) -> Any:
+                card = esper.component_for_entity(ent, Card)
+                return card.marker.value
 
-    return BoundingBox(
-        CARD_START_X - width_offset,
-        CARD_START_X + width_offset + CARD_WIDTH,
-        CARD_START_Y - height_offset,
-        CARD_START_Y + height_offset + CARD_HEIGHT,
-    )
+            pass
+        case OrganizationEnum.NAME:
+
+            def sorter(ent: int) -> Any:
+                card = esper.component_for_entity(ent, Card)
+                return card.name
+
+            pass
+        case _:
+            RuntimeError("unexpected organizer")
+
+    deck_obj.hand.sort(key=sorter)
+
+
+def shuffle_deck() -> None:
+    new = []
+    while len(deck_obj.deck) > 0:
+        new.append(
+            deck_obj.deck.pop(
+                random.randint(0, len(deck_obj.deck) - 1),
+            )
+        )
+    deck_obj.deck = new
+
+
+def select_card(ent: int) -> None:
+    if ent not in deck_obj.hand or not esper.entity_exists(ent):
+        return
+    deck_obj.selected = ent
+
+
+def unselect_card() -> None:
+    deck_obj.selected = None
+    sort_hand()
+
+
+def play_card() -> None:
+    ent = deck_obj.selected
+    if ent is None or not esper.entity_exists(ent):
+        return
+    card = esper.component_for_entity(ent, Card)
+    card.effect(ent)
+    deck_obj.selected = None
+    deck_obj.hand.remove(ent)
+    deck_obj.discard.append(card)
+    esper.component_for_entity(ent, Health).hp = 0
 
 
 def draw_card() -> int:
-    if (
-        deck_obj.tracker_tag is None
-        or deck_obj.sprite is None
-        or deck_obj.ui_tag is None
-    ):
+    if deck_obj.spawn_card is None:
         raise RuntimeError("failed to initialise deck_obj")
 
     if not _check_if_card_can_be_drawn():
         return -1
-    bb = _get_new_card_bb()
     card = deck_obj.deck.pop()
-    card.current_angle = 0
-    card.target_angle = None
-    ent = esper.create_entity(
-        card, bb, deck_obj.tracker_tag(), deck_obj.sprite(), deck_obj.ui_tag(), Health()
-    )
+    ent = deck_obj.spawn_card(card)
     deck_obj.hand.append(ent)
+    sort_hand()
     return ent
 
 
@@ -158,3 +163,9 @@ def add_card(card: Card) -> None:
     logger.info(f"adding card {card}")
     deck_obj.deck.append(card)
     shuffle_deck()
+
+
+# module shenanigans
+deck_obj: Deck = Deck()
+shuffle_deck()
+set_play_card(play_card)

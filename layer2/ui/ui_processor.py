@@ -4,7 +4,6 @@ import esper
 import pygame
 
 from common import BoundingBox, PositionTracker
-from layer1.cards import deck_obj, play_card
 from layer2.tags import GameCameraTag, MaskedSprite, UIElementComponent, UIStateEnum
 
 from .log import logger
@@ -57,9 +56,7 @@ class UIProcessor(esper.Processor):
         elif self.clicked != -1 and self.prev_click:
             tag = esper.component_for_entity(self.clicked, UIElementComponent)
             if tag.click_func is not None:
-                tag.click_func(self.clicked, mouse_bb.center)
-            if self.clicked in deck_obj.hand:
-                play_card(self.clicked)
+                tag.click_func(self.clicked)
             self.clicked = -1
 
         # reset the hovering status of all entities from the previous frame
@@ -89,11 +86,11 @@ class UIProcessor(esper.Processor):
             for comp in esper.components_for_entity(ent):
                 if not isinstance(comp, MaskedSprite):
                     continue
-                if not comp.rect.collidepoint(mouse_bb.left, mouse_bb.top):
-                    continue
-                bit = comp.mask.get_at(
-                    (mouse_bb.left - comp.rect.left, mouse_bb.top - comp.rect.top)
-                )
+                bit = 0
+                if comp.rect.collidepoint(mouse_bb.left, mouse_bb.top):
+                    bit = comp.mask.get_at(
+                        (mouse_bb.left - comp.rect.left, mouse_bb.top - comp.rect.top)
+                    )
             if bit == 0:
                 continue
 

@@ -4,7 +4,7 @@ from typing import Dict, List
 
 import pygame
 
-from layer1.cards import MarkerEnum
+from layer1 import MarkerEnum
 
 
 class CardTypeEnum(enum.Enum):

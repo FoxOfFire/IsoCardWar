@@ -1,2 +1,2 @@
 # flake8: noqa
-from .ui_spawners import spawn_iso_elem
+from .spawners import spawn_card, spawn_iso_elem

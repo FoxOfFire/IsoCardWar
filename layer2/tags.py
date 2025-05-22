@@ -1,10 +1,18 @@
 from dataclasses import dataclass
-from typing import Callable, Optional
+from typing import Callable, NamedTuple, Optional
 
 import pygame
 
 from .enums import UIStateEnum
 from .log import logger
+
+
+class TrackUI(NamedTuple):
+    pass
+
+
+class TrackIso(NamedTuple):
+    pass
 
 
 class Plain:
@@ -51,4 +59,4 @@ class UIElementComponent:
     is_active: bool = False
     is_part_of_game_ui: bool = False
     text: Callable[[], str] = _empty_text
-    click_func: Optional[Callable[..., None]] = None
+    click_func: Optional[Callable[[int], None]] = None
