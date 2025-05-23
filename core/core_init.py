@@ -5,7 +5,12 @@ import esper
 import pygame
 
 from common import BoundingBox, EventProcessor, PositionTracker
-from layer1.cards import CardMovementProcessor, deck_obj
+from layer1.cards import (
+    CardMovementProcessor,
+    create_starting_deck,
+    deck_obj,
+    draw_card,
+)
 from layer2 import (
     GameCameraTag,
     IsoCameraTag,
@@ -29,7 +34,7 @@ from layer2.utils import (
 
 from . import global_vars
 from .log import logger
-from .spawners import spawn_card, spawn_iso_elem
+from .spawners import create_card_obj, spawn_card_ent, spawn_iso_elem
 
 GAME_CAM_WIDTH = 256
 GAME_CAM_HEIGHT = 144
@@ -160,7 +165,11 @@ def init_game_world_esper() -> None:
     esper.add_processor(scene_switcher)
 
     # dependency injection
-    deck_obj.spawn_card = spawn_card
+    deck_obj.spawn_card = spawn_card_ent
+    deck_obj.create_card = create_card_obj
+    create_starting_deck(18)
+    for _ in range(7):
+        draw_card()
 
     spawn_iso_elem(
         offset=(ISO_POS_OFFSET_X, ISO_POS_OFFSET_Y),

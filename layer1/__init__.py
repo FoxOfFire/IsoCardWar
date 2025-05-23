@@ -7,4 +7,4 @@ from .game_state import (
     set_select_obj,
     set_state,
 )
-from .game_state_utils import GameStateEnum, MarkerEnum, PriceEnum
+from .game_state_utils import GameStateEnum, MarkerEnum, PriceEnum, SelectableObject

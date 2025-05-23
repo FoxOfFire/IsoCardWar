@@ -1,34 +1,44 @@
 import random
-from dataclasses import dataclass
 from typing import Any, Callable, Dict, List, Optional
 
 import esper
 
 from common import Health
-from layer1 import MarkerEnum, PriceEnum, set_play_card
+from layer1 import MarkerEnum, PriceEnum, SelectableObject, set_play_card
 
-from .card_utils import MAX_CARD_COUNT, OrganizationEnum
+from .card_utils import MAX_CARD_COUNT, CardTypeEnum, OrganizationEnum
 from .log import logger
 
-
 # data
-@dataclass
-class Card:
-    name: str
-    price: Dict[PriceEnum, int]
-    marker: MarkerEnum
-    effect: Callable[[int], None]
-    current_angle: float
-    anim_speed: float
-    target_angle: Optional[float] = None
+
+
+class Card(SelectableObject):
+    def __init__(
+        self,
+        name: str,
+        price: Dict[PriceEnum, int],
+        marker: MarkerEnum,
+        effects: List[Callable[[int, int], None]],
+        current_angle: float,
+        anim_speed: float,
+        target_angle: Optional[float] = None,
+    ):
+        self.name = name
+        self.price = price
+        self.marker = marker
+        self.effects = effects
+        self.current_angle = current_angle
+        self.anim_speed = anim_speed
+        self.target_angle = target_angle
 
 
 class Deck:
     def __init__(self) -> None:
         self.spawn_card: Optional[Callable[[Card], int]] = None
+        self.create_card: Optional[Callable[[CardTypeEnum], Card]] = None
         self.selected: Optional[int] = None
         self.hand: List[int] = []
-        self.deck: List[Card] = _create_starting_deck(20)
+        self.deck: List[Card] = []
         self.discard: List[Card] = []
         self.order: OrganizationEnum = OrganizationEnum.MARKER
 
@@ -53,24 +63,20 @@ def get_card_angle(ent: int) -> float:
 
 
 # helper functions
-def _create_starting_deck(card_count: int) -> List[Card]:
+def create_starting_deck(card_count: int) -> None:
     cards = []
+    if deck_obj.create_card is None:
+        raise RuntimeError("create_card undefined")
 
-    def noop(*args: Any) -> None:
-        logger.info(f"noop: args({args})")
+    for i in range(card_count // 3):
+        cards.append(deck_obj.create_card(CardTypeEnum.DRAW_TWO))
+        if i % 2 == 0:
+            cards.append(deck_obj.create_card(CardTypeEnum.DRAW_TWO))
+        cards.append(deck_obj.create_card(CardTypeEnum.TURN_TO_GRASS))
+        cards.append(deck_obj.create_card(CardTypeEnum.TURN_TO_CONCRETE))
 
-    for i in range(card_count):
-        cards.append(
-            Card(
-                f"Dummy{i}",
-                {PriceEnum.AMMO: 1, PriceEnum.METAL: 1, PriceEnum.FOOD: 1},
-                MarkerEnum(random.randint(1, 4)),
-                noop,
-                0,
-                20,
-            )
-        )
-    return cards
+    deck_obj.deck = cards
+    shuffle_deck()
 
 
 def _check_if_card_can_be_drawn() -> bool:
@@ -134,12 +140,13 @@ def unselect_card() -> None:
     sort_hand()
 
 
-def play_card() -> None:
+def play_card(target: int) -> None:
     ent = deck_obj.selected
     if ent is None or not esper.entity_exists(ent):
         return
     card = esper.component_for_entity(ent, Card)
-    card.effect(ent)
+    for effect in card.effects:
+        effect(ent, target)
     deck_obj.selected = None
     deck_obj.hand.remove(ent)
     deck_obj.discard.append(card)

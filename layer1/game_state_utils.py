@@ -1,5 +1,6 @@
 import enum
 from collections.abc import Callable
+from typing import List
 
 
 class GameStateEnum(enum.Enum):
@@ -21,4 +22,4 @@ class PriceEnum(enum.StrEnum):
 
 
 class SelectableObject:
-    effect: Callable[[int], None]
+    effects: List[Callable[[int, int], None]]

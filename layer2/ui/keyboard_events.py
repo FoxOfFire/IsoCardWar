@@ -3,7 +3,6 @@ from pygame.event import Event
 
 from common import EventProcessor
 from layer1.cards import OrganizationEnum, deck_obj, draw_card, unselect_card
-from layer1.game_state import play_card
 
 
 def quit_via_kb(event: Event) -> None:
@@ -14,8 +13,6 @@ def quit_via_kb(event: Event) -> None:
             draw_card()
         elif event.key == pygame.K_w:
             unselect_card()
-        elif event.key == pygame.K_q:
-            play_card()
         elif event.key == pygame.K_a:
             deck_obj.set_order(OrganizationEnum.MARKER)
         elif event.key == pygame.K_s:

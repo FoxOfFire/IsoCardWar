@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from random import randint
 from typing import Optional, Tuple, Type
 
 import esper
@@ -39,5 +39,5 @@ def make_map() -> None:
                 bb,
                 sprite(),
                 tracker(),
-                Tile(round(bb.left), round(bb.top), TerrainEnum.CONCRETE),
+                Tile(round(bb.left), round(bb.top), TerrainEnum(randint(1, 2)), []),
             )

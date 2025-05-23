@@ -14,7 +14,7 @@ from layer2.utils import (
 )
 
 from .log import logger
-from .rendering_images import TILE_TYPES, TileTypeEnum
+from .rendering_images import TILE_TYPES
 
 
 @dataclass
@@ -49,4 +49,4 @@ class IsoRenderer:
             tile = esper.component_for_entity(ent, Tile)
             x = ISO_POS_OFFSET_X + (tile.x + tile.y) * ISO_TILE_OFFSET_X
             y = ISO_POS_OFFSET_Y + (tile.x - tile.y) * ISO_TILE_OFFSET_Y
-            screen.blit(TILE_TYPES[TileTypeEnum.BASIC], (x, y))
+            screen.blit(TILE_TYPES[tile.terrain], (x, y))

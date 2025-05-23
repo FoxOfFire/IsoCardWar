@@ -6,7 +6,8 @@ import esper
 import pygame
 
 from common import BoundingBox, PositionTracker
-from layer1.iso_map import Tile, map_obj
+from layer1 import play_card
+from layer1.iso_map import map_obj
 from layer2.tags import GameCameraTag
 
 from .log import logger
@@ -25,6 +26,7 @@ class UIEventInfo:
 
 
 ui_event_obj = UIEventInfo()
+logger.info("ui_event_obj created")
 
 
 # /\       T~~T
@@ -44,8 +46,8 @@ def _get_transformed_mouse_pos(bb: BoundingBox) -> Tuple[float, float]:
     x = (mouse_x * cam_bb.width / display_rect.width - bb.left) / bb.width
     y = (mouse_y * cam_bb.height / display_rect.height - bb.top) / bb.height
 
-    calc_x = (x - y + 1 / 2) * map_width
-    calc_y = (y + x - 1 / 2) * map_height
+    calc_y = (x - y + 1 / 2) * map_width
+    calc_x = (y + x - 1 / 2) * map_height
 
     return calc_x, calc_y
 
@@ -67,4 +69,4 @@ def click_on_tile(ent: int) -> None:
             ).points
         ):
             continue
-        logger.info(f"{intersect}:\t{esper.component_for_entity(intersect, Tile)}")
+        play_card(intersect)

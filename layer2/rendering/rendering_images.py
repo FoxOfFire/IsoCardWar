@@ -5,6 +5,7 @@ from typing import Dict, List
 import pygame
 
 from layer1 import MarkerEnum
+from layer1.iso_map import TerrainEnum
 
 
 class CardTypeEnum(enum.Enum):
@@ -13,10 +14,6 @@ class CardTypeEnum(enum.Enum):
 
 class CardImageEnum(enum.Enum):
     BASIC = ("basic_image", 1)
-
-
-class TileTypeEnum(enum.Enum):
-    BASIC = "basic"
 
 
 CARD_TYPE_ASSET_DIR = Path(".") / "layer2" / "rendering" / "assets" / "cards"
@@ -28,7 +25,7 @@ TILE_TYPE_ASSET_DIR = Path(".") / "layer2" / "rendering" / "assets" / "tiles"
 CARD_TYPES: Dict[CardTypeEnum, pygame.Surface] = {}
 CARD_MARKERS: Dict[MarkerEnum, pygame.Surface] = {}
 CARD_IMAGES: Dict[CardImageEnum, List[pygame.Surface]] = {}
-TILE_TYPES: Dict[TileTypeEnum, pygame.Surface] = {}
+TILE_TYPES: Dict[TerrainEnum, pygame.Surface] = {}
 
 
 def load_images() -> None:
@@ -65,11 +62,11 @@ def load_images() -> None:
             }
         )
 
-    for tile, tile_val in [(e, e.value) for e in TileTypeEnum]:
+    for tile, tile_val in [(e, e.value) for e in TerrainEnum]:
         TILE_TYPES.update(
             {
                 tile: pygame.image.load(
-                    TILE_TYPE_ASSET_DIR / f"{tile_val}.png"
+                    TILE_TYPE_ASSET_DIR / f"tiles{tile_val}.png"
                 ).convert_alpha()
             }
         )

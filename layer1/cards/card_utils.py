@@ -17,3 +17,9 @@ ROOT_TWO = sqrt(2.0)
 class OrganizationEnum(enum.Enum):
     NAME = enum.auto()
     MARKER = enum.auto()
+
+
+class CardTypeEnum(enum.Enum):
+    DRAW_TWO = "Supply lines"
+    TURN_TO_CONCRETE = "Poppy"
+    TURN_TO_GRASS = "Gardening"

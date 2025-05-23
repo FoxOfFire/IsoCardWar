@@ -1,6 +1,8 @@
 import enum
-from dataclasses import dataclass
-from typing import Optional
+from collections.abc import Callable
+from typing import List, Optional
+
+from layer1 import SelectableObject
 
 
 class TerrainEnum(enum.Enum):
@@ -12,9 +14,17 @@ class UnitEnum(enum.Enum):
     TANK = enum.auto()
 
 
-@dataclass
-class Tile:
-    x: int
-    y: int
-    terrain: TerrainEnum
-    unit: Optional[UnitEnum] = None
+class Tile(SelectableObject):
+    def __init__(
+        self,
+        x: int,
+        y: int,
+        terrain: TerrainEnum,
+        effects: List[Callable[[int, int], None]],
+        unit: Optional[UnitEnum] = None,
+    ):
+        self.x = x
+        self.y = y
+        self.terrain = terrain
+        self.effects = effects
+        self.unit = unit
