@@ -14,9 +14,7 @@ from .rendering_images import (
     CardImageEnum,
     CardTypeEnum,
 )
-
-RELATIVE_MARKER_POS_X = 2
-RELATIVE_MARKER_POS_Y = 2
+from .rendering_utils import RELATIVE_MARKER_POS_X, RELATIVE_MARKER_POS_Y
 
 
 class CardRenderer:
@@ -31,12 +29,14 @@ class CardRenderer:
     def draw(self, screen: pygame.Surface) -> None:
         def sorter(ent: int) -> int:
             if ent not in deck_obj.hand:
-                return -1
+                return 1000
             return deck_obj.hand.index(ent)
 
         ent_list = sorted(
             self.pos_track.intersect(self.bb), key=lambda ent: sorter(ent)
         )
+        if deck_obj.selected is not None:
+            ent_list.append(deck_obj.selected)
         for ent in ent_list:
             sprite = esper.try_component(ent, CardSprite)
             card = esper.try_component(ent, Card)

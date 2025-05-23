@@ -102,27 +102,16 @@ class BoundingBox:
         self_copy = deepcopy(self)
         return self_copy.update()
 
-    def move_up(self, by: float) -> "BoundingBox":
-        self.delta_top += -by
-        self.delta_bottom += -by
+    def move(self, delta_x: float, delta_y: float) -> "BoundingBox":
+        self.delta_left += delta_x
+        self.delta_right += delta_x
+        self.delta_top += delta_y
+        self.delta_bottom += delta_y
         return self
 
-    def move_down(self, by: float) -> "BoundingBox":
-        self.delta_top += by
-        self.delta_bottom += by
-        return self
-
-    def move_left(self, by: float) -> "BoundingBox":
-        self.delta_left += -by
-        self.delta_right += -by
-        return self
-
-    def move_right(self, by: float) -> "BoundingBox":
-        self.delta_left += by
-        self.delta_right += by
-        return self
-
-    def move_towards(self, point: tuple[float, float], by: float) -> "BoundingBox":
+    def move_towards_point(
+        self, point: tuple[float, float], by: float
+    ) -> "BoundingBox":
         point_vec = pygame.math.Vector2(point)
         left_top_vec = pygame.math.Vector2(self.center)
         direction = point_vec - left_top_vec

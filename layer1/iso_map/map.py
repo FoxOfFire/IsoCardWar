@@ -1,15 +1,11 @@
-from dataclasses import dataclass
+from random import randint
 from typing import Optional, Tuple, Type
 
 import esper
 
 from common import BoundingBox
 
-
-@dataclass
-class Tile:
-    x: int
-    y: int
+from .tile import TerrainEnum, Tile
 
 
 class MapData:
@@ -43,5 +39,5 @@ def make_map() -> None:
                 bb,
                 sprite(),
                 tracker(),
-                Tile(round(bb.left), round(bb.top)),
+                Tile(round(bb.left), round(bb.top), TerrainEnum(randint(1, 2)), []),
             )

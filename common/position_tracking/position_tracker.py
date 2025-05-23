@@ -113,17 +113,17 @@ class PositionTracker(esper.Processor):
                 # Can't remove the code duplication from this without getattr horror
                 overhang_left = self.__plain_bb.left - next_bb.left
                 if overhang_left > 0:
-                    b_box.move_right(overhang_left)
+                    b_box.move(overhang_left, 0)
                 overhang_right = next_bb.right - self.__plain_bb.right
                 if overhang_right > 0:
-                    b_box.move_left(overhang_right)
+                    b_box.move(overhang_right, 0)
 
                 overhang_top = self.__plain_bb.top - next_bb.top
                 if overhang_top > 0:
-                    b_box.move_down(overhang_top)
+                    b_box.move(0, overhang_top)
                 overhang_bottom = next_bb.bottom - self.__plain_bb.bottom
                 if overhang_bottom > 0:
-                    b_box.move_up(overhang_bottom)
+                    b_box.move(0, overhang_bottom)
 
                 self.__index.delete(entity, b_box.points)
                 b_box.update()
