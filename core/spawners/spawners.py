@@ -83,7 +83,7 @@ def spawn_card_ent(card: Card) -> int:
 
 def create_card_obj(card_type: CardTypeEnum) -> Card:
     def noop(ent: int, target: int) -> None:
-        pass
+        logger.info(f"noop({ent}, {target})")
 
     match card_type:
         case CardTypeEnum.DRAW_TWO:
