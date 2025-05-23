@@ -86,13 +86,13 @@ def create_card_obj(card_type: CardTypeEnum) -> Card:
         pass
 
     match card_type:
-        case CardTypeEnum.TURN_TO_CONCRETE:
+        case CardTypeEnum.DRAW_TWO:
             marker = MarkerEnum.ACTION
             effects = draw_cards(3)
-        case CardTypeEnum.TURN_TO_GRASS:
+        case CardTypeEnum.TURN_TO_CONCRETE:
             marker = MarkerEnum.BUILDING
             effects = change_tile(TerrainEnum.CONCRETE)
-        case CardTypeEnum.DRAW_TWO:
+        case CardTypeEnum.TURN_TO_GRASS:
             marker = MarkerEnum.UNIT
             effects = change_tile(TerrainEnum.GRASS)
         case _:

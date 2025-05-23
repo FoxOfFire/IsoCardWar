@@ -167,7 +167,7 @@ def init_game_world_esper() -> None:
     # dependency injection
     deck_obj.spawn_card = spawn_card_ent
     deck_obj.create_card = create_card_obj
-    create_starting_deck(18)
+    create_starting_deck(6)
     for _ in range(7):
         draw_card()
 
