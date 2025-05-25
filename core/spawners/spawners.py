@@ -1,3 +1,4 @@
+from random import randint
 from typing import Type
 
 import esper
@@ -119,7 +120,7 @@ def create_card_obj(card_type: CardTypeEnum) -> Card:
             effects = [noop]
 
     return Card(
-        "Dummy",
+        f"Dummy {randint(1, 1000)}",
         {PriceEnum.AMMO: 1, PriceEnum.METAL: 1, PriceEnum.FOOD: 1},
         marker,
         effects,

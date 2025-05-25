@@ -111,6 +111,11 @@ def sort_hand() -> None:
                 card = esper.component_for_entity(ent, Card)
                 return card.name
 
+        case OrganizationEnum.NONE:
+
+            def sorter(ent: int) -> Any:
+                return 1
+
             pass
         case _:
             RuntimeError("unexpected organizer")

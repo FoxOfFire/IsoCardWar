@@ -1,13 +1,12 @@
 from collections.abc import Callable
 from typing import Dict, Optional
 
-from .game_state_utils import GameStateEnum, PriceEnum
+from .game_state_utils import PriceEnum
 
 
 class GameState:
     def __init__(self) -> None:
         self.selection: int = -1
-        self.state: GameStateEnum = GameStateEnum.SELECT_CARD
         self.resources: Dict[PriceEnum, int]
         self.play_card: Optional[Callable[[int], None]]
         self.get_selected: Optional[Callable[[], int]]
@@ -38,14 +37,3 @@ def get_select_obj() -> int:
 def use_selection_on_tile(ent: int) -> None:
     if game_state_obj.selection is None:
         return
-
-
-# state management
-
-
-def get_state() -> GameStateEnum:
-    return game_state_obj.state
-
-
-def set_state(state: GameStateEnum) -> None:
-    game_state_obj.state = state

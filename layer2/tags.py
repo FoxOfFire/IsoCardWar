@@ -4,7 +4,6 @@ from typing import Callable, NamedTuple, Optional
 import pygame
 
 from .enums import UIStateEnum
-from .log import logger
 
 
 class TrackUI(NamedTuple):
@@ -45,10 +44,6 @@ class MaskedSprite:
 @dataclass
 class CardSprite(MaskedSprite):
     pass
-
-
-def noop(ent: int) -> None:
-    logger.info(f"entity: {ent} clicked")
 
 
 @dataclass
