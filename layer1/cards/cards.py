@@ -21,7 +21,6 @@ class Card(SelectableObject):
         marker: MarkerEnum,
         effects: List[Callable[[int, int], None]],
         current_angle: float,
-        anim_speed: float,
         target_angle: Optional[float] = None,
     ):
         self.name = name
@@ -29,7 +28,6 @@ class Card(SelectableObject):
         self.marker = marker
         self.effects = effects
         self.current_angle = current_angle
-        self.anim_speed = anim_speed
         self.target_angle = target_angle
 
 
@@ -38,6 +36,7 @@ class Deck:
         self.spawn_card: Optional[Callable[[Card], int]] = None
         self.create_card: Optional[Callable[[CardTypeEnum], Card]] = None
         self.selected: Optional[int] = None
+        self.selecting: Optional[int] = None
         self.hand: List[int] = []
         self.deck: List[Card] = []
         self.discard: List[Card] = []
@@ -112,6 +111,11 @@ def sort_hand() -> None:
                 card = esper.component_for_entity(ent, Card)
                 return card.name
 
+        case OrganizationEnum.NONE:
+
+            def sorter(ent: int) -> Any:
+                return 1
+
             pass
         case _:
             RuntimeError("unexpected organizer")
@@ -139,6 +143,16 @@ def select_card(ent: int) -> None:
 def unselect_card() -> None:
     deck_obj.selected = None
     sort_hand()
+
+
+def hover_over_card(ent: int) -> None:
+    if ent not in deck_obj.hand or not esper.entity_exists(ent):
+        return
+    deck_obj.selecting = ent
+
+
+def remove_hover_over_card(_: int) -> None:
+    deck_obj.selecting = None
 
 
 def play_card(target: int) -> None:

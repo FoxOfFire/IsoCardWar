@@ -2,6 +2,7 @@ import enum
 
 
 class OrganizationEnum(enum.Enum):
+    NONE = enum.auto()
     NAME = enum.auto()
     MARKER = enum.auto()
 

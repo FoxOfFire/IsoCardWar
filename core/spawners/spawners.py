@@ -1,3 +1,4 @@
+from random import randint
 from typing import Type
 
 import esper
@@ -17,7 +18,14 @@ from common.constants import (
     ROOT_TWO,
 )
 from layer1 import MarkerEnum, PriceEnum
-from layer1.cards import Card, CardTypeEnum, draw_cards, select_card
+from layer1.cards import (
+    Card,
+    CardTypeEnum,
+    draw_cards,
+    hover_over_card,
+    remove_hover_over_card,
+    select_card,
+)
 from layer1.iso_map import TerrainEnum, change_tile, make_map, map_obj
 from layer2 import CardSprite, TrackUI, UIElementComponent
 from layer2.ui import click_on_tile
@@ -83,7 +91,11 @@ def spawn_card_ent(card: Card) -> int:
         bb,
         TrackUI(),
         CardSprite(),
-        UIElementComponent(click_func=select_card),
+        UIElementComponent(
+            click_func=select_card,
+            hover_func=hover_over_card,
+            unhover_func=remove_hover_over_card,
+        ),
         Health(),
     )
     return ent
@@ -108,7 +120,7 @@ def create_card_obj(card_type: CardTypeEnum) -> Card:
             effects = [noop]
 
     return Card(
-        "Dummy",
+        f"Dummy {randint(1, 1000)}",
         {PriceEnum.AMMO: 1, PriceEnum.METAL: 1, PriceEnum.FOOD: 1},
         marker,
         effects,

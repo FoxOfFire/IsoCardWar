@@ -3,11 +3,6 @@ from collections.abc import Callable
 from typing import List
 
 
-class GameStateEnum(enum.Enum):
-    SELECT_CARD = enum.auto()
-    SELECT_TILE = enum.auto()
-
-
 class MarkerEnum(enum.IntEnum):
     ACTION = enum.auto()
     UNIT = enum.auto()

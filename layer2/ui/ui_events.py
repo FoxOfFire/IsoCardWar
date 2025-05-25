@@ -15,10 +15,6 @@ from .log import logger
 SWITCH_SCENE = pygame.event.custom_type()
 
 
-class SelectionException(Exception):
-    pass
-
-
 @dataclass
 class UIEventInfo:
     iso_pos_track: Optional[PositionTracker] = None
@@ -29,10 +25,10 @@ ui_event_obj = UIEventInfo()
 logger.info("ui_event_obj created")
 
 
-# ./\       T~~T
-# /  \ ---\ |  |
-# \  / ---/ |  |
-# .\/       L__J
+# ./\       T~~~~~T
+# /  \ ---\ |     |
+# \  / ---/ |     |
+# .\/       L_____J
 # https://www.desmos.com/calculator/or2famsblw
 def _get_transformed_mouse_pos(bb: BoundingBox) -> Tuple[float, float]:
     cam_bb = esper.component_for_entity(
@@ -48,7 +44,6 @@ def _get_transformed_mouse_pos(bb: BoundingBox) -> Tuple[float, float]:
     mouse_in_bb_x = (mouse_x - bb.left) / bb.width
     mouse_in_bb_y = (mouse_y - bb.top) / bb.height
 
-    logger.info(f"mouse: {(mouse_in_bb_x, mouse_in_bb_y)}")
     x = (mouse_in_bb_x - mouse_in_bb_y) * (map_height + map_width) + map_width
     y = (mouse_in_bb_x + mouse_in_bb_y) * (map_height + map_width) - map_width
     return y / 2, x / 2
@@ -62,7 +57,6 @@ def click_on_tile(ent: int) -> None:
     )
     if ui_event_obj.iso_pos_track is None:
         raise RuntimeError("ui_event_obj iso_pos_track field missing")
-    logger.info(trans_mouse_pos)
     for intersect in ui_event_obj.iso_pos_track.intersect(mouse_bb):
         if intersect == ui_event_obj.iso_pos_track.plain:
             continue

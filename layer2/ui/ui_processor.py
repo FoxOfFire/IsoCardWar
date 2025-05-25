@@ -20,6 +20,7 @@ class UIProcessor(esper.Processor):
                 break
         self.tracker = ui_tracker
         self.clicked: int = -1
+        self.hover: int = -1
         logger.info("init finished")
         self.prev_click = False
 
@@ -39,6 +40,19 @@ class UIProcessor(esper.Processor):
 
         return click_buffer
 
+    def mask_overlap(self, ent: int, bb: BoundingBox) -> bool:
+        bit = 1
+        comp: Any
+        for comp in esper.components_for_entity(ent):
+            if not isinstance(comp, MaskedSprite):
+                continue
+            bit = 0
+            if comp.rect.collidepoint(bb.left, bb.top):
+                bit = comp.mask.get_at(
+                    (bb.left - comp.rect.left, bb.top - comp.rect.top)
+                )
+        return bit == 1
+
     def process(self) -> None:
         self.mouse_pos = pygame.mouse.get_pos()
         mouse_bb = BoundingBox(
@@ -55,18 +69,24 @@ class UIProcessor(esper.Processor):
         # pressing the button on release
         elif self.clicked != -1 and self.prev_click:
             tag = esper.component_for_entity(self.clicked, UIElementComponent)
-            if tag.click_func is not None:
+            if tag.click_func is not None and self.mask_overlap(self.clicked, mouse_bb):
                 tag.click_func(self.clicked)
             self.clicked = -1
 
         # reset the hovering status of all entities from the previous frame
+        unhovered: bool = False
         for ent, tag in esper.get_component(UIElementComponent):
             if ent == self.clicked:
                 continue
             if ent in self.tracker.intersect(mouse_bb) or tag.is_active:
                 tag.state = UIStateEnum.HOVER
             else:
+                unhovered = unhovered or ent == self.hover
                 tag.state = UIStateEnum.BASE
+        if unhovered:
+            tag = esper.component_for_entity(self.hover, UIElementComponent)
+            if tag.unhover_func is not None:
+                tag.unhover_func(self.hover)
 
         # exiting clicking if continuing to click
         if self.prev_click and left_clicked:
@@ -80,23 +100,15 @@ class UIProcessor(esper.Processor):
                 ui_tag is None or not ui_tag.is_visible or not ui_tag.is_clickable
             ):
                 continue
-
-            comp: Any
-            bit = 1
-            for comp in esper.components_for_entity(ent):
-                if not isinstance(comp, MaskedSprite):
-                    continue
-                bit = 0
-                if comp.rect.collidepoint(mouse_bb.left, mouse_bb.top):
-                    bit = comp.mask.get_at(
-                        (mouse_bb.left - comp.rect.left, mouse_bb.top - comp.rect.top)
-                    )
-            if bit == 0:
+            if not self.mask_overlap(ent, mouse_bb):
                 continue
 
             if left_clicked:
                 ui_tag.state = UIStateEnum.PRESSED
                 self.clicked = ent
             else:
+                if ui_tag.hover_func is not None:
+                    ui_tag.hover_func(ent)
                 ui_tag.state = UIStateEnum.HOVER
+                self.hover = ent
             break
