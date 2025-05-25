@@ -10,6 +10,8 @@ from .cards import (
     draw_card,
     get_card_angle,
     get_card_center_offset,
+    hover_over_card,
+    remove_hover_over_card,
     select_card,
     shuffle_deck,
     sort_hand,

@@ -15,10 +15,6 @@ from .log import logger
 SWITCH_SCENE = pygame.event.custom_type()
 
 
-class SelectionException(Exception):
-    pass
-
-
 @dataclass
 class UIEventInfo:
     iso_pos_track: Optional[PositionTracker] = None

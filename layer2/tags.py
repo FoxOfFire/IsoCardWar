@@ -60,3 +60,5 @@ class UIElementComponent:
     is_part_of_game_ui: bool = False
     text: Callable[[], str] = _empty_text
     click_func: Optional[Callable[[int], None]] = None
+    hover_func: Optional[Callable[[int], None]] = None
+    unhover_func: Optional[Callable[[int], None]] = None
