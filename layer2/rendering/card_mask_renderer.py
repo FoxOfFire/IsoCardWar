@@ -21,7 +21,7 @@ class CardTextRenderer:
     def draw(self, screen: pygame.Surface) -> None:
         def sorter(ent: int) -> int:
             if ent not in deck_obj.hand:
-                return -10000
+                return -1
             return deck_obj.hand.index(ent)
 
         ent_list = sorted(

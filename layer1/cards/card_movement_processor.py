@@ -1,8 +1,8 @@
 import esper
 
 from common import BoundingBox
+from common.constants import CARD_ROTATION_PER_CARD, CARD_SELECTED_Y_POS, CARD_Y_POS
 
-from .card_utils import CARD_ROTATION_PER_CARD, CARD_SELECTED_Y_POS, CARD_Y_POS
 from .cards import Card, deck_obj, get_card_center_offset
 
 
@@ -15,7 +15,6 @@ class CardMovementProcessor(esper.Processor):
             return
 
         for ent, card in esper.get_component(Card):
-
             bb = esper.component_for_entity(ent, BoundingBox)
 
             offset_index = get_card_center_offset(ent)

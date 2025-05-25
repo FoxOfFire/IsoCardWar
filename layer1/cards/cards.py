@@ -4,9 +4,10 @@ from typing import Any, Callable, Dict, List, Optional
 import esper
 
 from common import Health
+from common.constants import MAX_CARD_COUNT
 from layer1 import MarkerEnum, PriceEnum, SelectableObject, set_play_card
 
-from .card_utils import MAX_CARD_COUNT, CardTypeEnum, OrganizationEnum
+from .card_utils import CardTypeEnum, OrganizationEnum
 from .log import logger
 
 # data

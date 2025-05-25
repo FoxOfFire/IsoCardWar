@@ -1,5 +1,4 @@
 from functools import partial
-from random import randint
 from typing import Type
 
 import esper
@@ -34,7 +33,5 @@ class BBRenderer:
                 continue
 
             surf = pygame.Surface((bb.width, bb.height), flags=pygame.SRCALPHA)
-            surf.fill(
-                pygame.Color(randint(0, 255), randint(0, 255), randint(0, 255), 50)
-            )
+            surf.fill(pygame.Color(80, 100, 00, 50))
             screen.blit(surf, bb_to_rect(bb))

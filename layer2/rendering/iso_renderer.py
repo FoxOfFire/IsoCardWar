@@ -5,16 +5,16 @@ import esper
 import pygame
 
 from common import BoundingBox, PositionTracker
-from layer1.iso_map import Tile
-from layer2.utils import (
+from common.constants import (
     ISO_POS_OFFSET_X,
     ISO_POS_OFFSET_Y,
     ISO_TILE_OFFSET_X,
     ISO_TILE_OFFSET_Y,
 )
+from layer1.iso_map import Tile
 
 from .log import logger
-from .rendering_images import TILE_TYPES
+from .rendering_images import TILE_TYPE_SURFS
 
 
 @dataclass
@@ -49,4 +49,4 @@ class IsoRenderer:
             tile = esper.component_for_entity(ent, Tile)
             x = ISO_POS_OFFSET_X + (tile.x + tile.y) * ISO_TILE_OFFSET_X
             y = ISO_POS_OFFSET_Y + (tile.x - tile.y) * ISO_TILE_OFFSET_Y
-            screen.blit(TILE_TYPES[tile.terrain], (x, y))
+            screen.blit(TILE_TYPE_SURFS[tile.terrain], (x, y))

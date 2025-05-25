@@ -5,6 +5,13 @@ import esper
 import pygame
 
 from common import BoundingBox, EventProcessor, PositionTracker
+from common.constants import (
+    GAME_CAM_HEIGHT,
+    GAME_CAM_WIDTH,
+    ISO_MAP_HEIGHT,
+    ISO_MAP_WIDTH,
+    PIXEL_SIZE,
+)
 from layer1.cards import (
     CardMovementProcessor,
     create_starting_deck,
@@ -25,25 +32,10 @@ from layer2.dying import DyingProcessor
 from layer2.event_handlers import bind_events as bind_core_events
 from layer2.rendering import IsoSprite, RenderingProcessor, RenderLayerEnum, load_images
 from layer2.ui import UIProcessor, bind_keyboard_events, init_audio
-from layer2.utils import (
-    ISO_POS_OFFSET_X,
-    ISO_POS_OFFSET_Y,
-    ISO_TILE_OFFSET_X,
-    ISO_TILE_OFFSET_Y,
-)
 
 from . import global_vars
 from .log import logger
 from .spawners import create_card_obj, spawn_card_ent, spawn_iso_elem
-
-GAME_CAM_WIDTH = 256
-GAME_CAM_HEIGHT = 144
-PIXEL_SIZE = 1080 / GAME_CAM_HEIGHT
-
-SEED = None
-
-ISO_MAP_HEIGHT = 8
-ISO_MAP_WIDTH = 8
 
 
 def init_logging() -> None:
@@ -100,9 +92,9 @@ def init_game_world_esper() -> None:
 
     ui_plain = esper.create_entity(
         BoundingBox(
-            -1000,
+            -100,
             1000,
-            -1000,
+            -100,
             1000,
         ),
         Plain(),
@@ -110,9 +102,9 @@ def init_game_world_esper() -> None:
     iso_plain = esper.create_entity(
         BoundingBox(
             0,
-            ISO_MAP_WIDTH,
+            ISO_MAP_HEIGHT,
             0,
-            ISO_MAP_HEIGHT * 100,
+            ISO_MAP_WIDTH,
         ),
         Plain(),
     )
@@ -123,7 +115,7 @@ def init_game_world_esper() -> None:
 
     game_cam_bb = BoundingBox(0, GAME_CAM_WIDTH, 0, GAME_CAM_HEIGHT)
     esper.create_entity(game_cam_bb, GameCameraTag())
-    iso_cam_bb = BoundingBox(0, ISO_MAP_WIDTH, 0, ISO_MAP_HEIGHT)
+    iso_cam_bb = BoundingBox(0, ISO_MAP_HEIGHT, 0, ISO_MAP_WIDTH)
     esper.create_entity(iso_cam_bb, IsoCameraTag())
 
     render_layer_dict = {
@@ -171,14 +163,7 @@ def init_game_world_esper() -> None:
     for _ in range(7):
         draw_card()
 
-    spawn_iso_elem(
-        offset=(ISO_POS_OFFSET_X, ISO_POS_OFFSET_Y),
-        map_size=(ISO_MAP_WIDTH, ISO_MAP_HEIGHT),
-        map_scale=(ISO_TILE_OFFSET_X, ISO_TILE_OFFSET_Y),
-        map_tracker=TrackIso,
-        map_sprite=IsoSprite,
-        ui_tracker=TrackUI,
-    )
+    spawn_iso_elem(map_tracker=TrackIso, map_sprite=IsoSprite, ui_tracker=TrackUI)
 
     ui_event_obj.iso_pos_track = iso_position_tracker
 

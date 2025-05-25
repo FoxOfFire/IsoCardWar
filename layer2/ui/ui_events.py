@@ -29,27 +29,29 @@ ui_event_obj = UIEventInfo()
 logger.info("ui_event_obj created")
 
 
-# /\       T~~T
+# ./\       T~~T
 # /  \ ---\ |  |
 # \  / ---/ |  |
-# \/       L__J
-# https://www.desmos.com/calculator/by4alm9as1
+# .\/       L__J
+# https://www.desmos.com/calculator/or2famsblw
 def _get_transformed_mouse_pos(bb: BoundingBox) -> Tuple[float, float]:
     cam_bb = esper.component_for_entity(
         esper.get_component(GameCameraTag)[0][0], BoundingBox
     )
 
     display_rect = pygame.display.get_surface().get_rect()
-    mouse_x, mouse_y = pygame.mouse.get_pos()
+    mouse = pygame.mouse.get_pos()
+    mouse_x = mouse[0] * cam_bb.width / display_rect.width
+    mouse_y = mouse[1] * cam_bb.height / display_rect.height
     map_width, map_height = map_obj.size
 
-    x = (mouse_x * cam_bb.width / display_rect.width - bb.left) / bb.width
-    y = (mouse_y * cam_bb.height / display_rect.height - bb.top) / bb.height
+    mouse_in_bb_x = (mouse_x - bb.left) / bb.width
+    mouse_in_bb_y = (mouse_y - bb.top) / bb.height
 
-    calc_y = (x - y + 1 / 2) * map_width
-    calc_x = (y + x - 1 / 2) * map_height
-
-    return calc_x, calc_y
+    logger.info(f"mouse: {(mouse_in_bb_x, mouse_in_bb_y)}")
+    x = (mouse_in_bb_x - mouse_in_bb_y) * (map_height + map_width) + map_width
+    y = (mouse_in_bb_x + mouse_in_bb_y) * (map_height + map_width) - map_width
+    return y / 2, x / 2
 
 
 def click_on_tile(ent: int) -> None:
@@ -60,13 +62,8 @@ def click_on_tile(ent: int) -> None:
     )
     if ui_event_obj.iso_pos_track is None:
         raise RuntimeError("ui_event_obj iso_pos_track field missing")
-
+    logger.info(trans_mouse_pos)
     for intersect in ui_event_obj.iso_pos_track.intersect(mouse_bb):
-        if (
-            esper.component_for_entity(intersect, BoundingBox).points
-            == esper.component_for_entity(
-                ui_event_obj.iso_pos_track.plain, BoundingBox
-            ).points
-        ):
+        if intersect == ui_event_obj.iso_pos_track.plain:
             continue
         play_card(intersect)

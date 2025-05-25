@@ -1,20 +1,23 @@
-from typing import Tuple, Type
+from typing import Type
 
 import esper
 
 from common import BoundingBox, Health
-from layer1 import MarkerEnum, PriceEnum
-from layer1.cards import (
+from common.constants import (
     CARD_HEIGHT,
     CARD_START_X,
     CARD_START_Y,
     CARD_WIDTH,
+    ISO_MAP_HEIGHT,
+    ISO_MAP_WIDTH,
+    ISO_POS_OFFSET_X,
+    ISO_POS_OFFSET_Y,
+    ISO_TILE_OFFSET_X,
+    ISO_TILE_OFFSET_Y,
     ROOT_TWO,
-    Card,
-    CardTypeEnum,
-    draw_cards,
-    select_card,
 )
+from layer1 import MarkerEnum, PriceEnum
+from layer1.cards import Card, CardTypeEnum, draw_cards, select_card
 from layer1.iso_map import TerrainEnum, change_tile, make_map, map_obj
 from layer2 import CardSprite, TrackUI, UIElementComponent
 from layer2.ui import click_on_tile
@@ -23,21 +26,26 @@ from .log import logger
 
 
 def spawn_iso_elem(
-    offset: Tuple[float, float],
-    map_size: Tuple[int, int],
-    map_scale: Tuple[int, int],
     map_tracker: Type,
     map_sprite: Type,
     ui_tracker: Type,
 ) -> int:
+    map_size = (ISO_MAP_WIDTH, ISO_MAP_HEIGHT)
+    offset = (ISO_POS_OFFSET_X, ISO_POS_OFFSET_Y)
+    map_scale = (ISO_TILE_OFFSET_X, ISO_TILE_OFFSET_Y)
+
     map_obj.tracker_tag = map_tracker
     map_obj.sprite = map_sprite
     map_obj.size = map_size
 
+    corrected_offset_y = offset[1] - (map_size[0] - 1) * map_scale[1]
+
     left = offset[0]
-    right = offset[0] + map_size[0] * map_scale[0] + map_size[1] * map_scale[0]
-    top = offset[1] - map_size[1] * map_scale[1] / 2 + map_scale[1]
-    bottom = offset[1] + map_size[0] * map_scale[1] * 3 / 2 + map_scale[1]
+    right = offset[0] + (map_size[0] + map_size[1]) * map_scale[0]
+    top = corrected_offset_y
+    bottom = (
+        corrected_offset_y + map_size[0] * map_scale[1] + map_size[1] * map_scale[1]
+    )
     ui_bb = BoundingBox(left, right, top, bottom)
     logger.info(f"map ui elem created:{ui_bb.points}")
 
