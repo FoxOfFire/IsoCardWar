@@ -4,19 +4,22 @@ import esper
 import pygame
 
 from common import BoundingBox, PositionTracker
-from layer1.cards import CARD_HEIGHT, CARD_WIDTH, Card, deck_obj, get_card_angle
+from common.constants import (
+    CARD_HEIGHT,
+    CARD_WIDTH,
+    RELATIVE_MARKER_POS_X,
+    RELATIVE_MARKER_POS_Y,
+)
+from layer1.cards import Card, deck_obj, get_card_angle
 from layer2 import CardSprite
 
 from .rendering_images import (
-    CARD_IMAGES,
-    CARD_MARKERS,
-    CARD_TYPES,
+    CARD_IMAGE_SURFS,
+    CARD_MARKER_SURFS,
+    CARD_TYPE_SURFS,
     CardImageEnum,
     CardTypeEnum,
 )
-
-RELATIVE_MARKER_POS_X = 2
-RELATIVE_MARKER_POS_Y = 2
 
 
 class CardRenderer:
@@ -31,12 +34,14 @@ class CardRenderer:
     def draw(self, screen: pygame.Surface) -> None:
         def sorter(ent: int) -> int:
             if ent not in deck_obj.hand:
-                return -1
+                return 1000
             return deck_obj.hand.index(ent)
 
         ent_list = sorted(
             self.pos_track.intersect(self.bb), key=lambda ent: sorter(ent)
         )
+        if deck_obj.selected is not None:
+            ent_list.append(deck_obj.selected)
         for ent in ent_list:
             sprite = esper.try_component(ent, CardSprite)
             card = esper.try_component(ent, Card)
@@ -45,10 +50,10 @@ class CardRenderer:
 
             bb = esper.component_for_entity(ent, BoundingBox)
             surf = pygame.Surface((CARD_WIDTH, CARD_HEIGHT), flags=pygame.SRCALPHA)
-            marker_surf = CARD_MARKERS[card.marker]
+            marker_surf = CARD_MARKER_SURFS[card.marker]
 
-            surf.blit(CARD_IMAGES[CardImageEnum.BASIC][0], surf.get_rect())
-            surf.blit(CARD_TYPES[CardTypeEnum.BASIC], surf.get_rect())
+            surf.blit(CARD_IMAGE_SURFS[CardImageEnum.BASIC][0], surf.get_rect())
+            surf.blit(CARD_TYPE_SURFS[CardTypeEnum.BASIC], surf.get_rect())
             surf.blit(
                 marker_surf,
                 marker_surf.get_rect(

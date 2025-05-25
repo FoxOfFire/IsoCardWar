@@ -5,39 +5,37 @@ import esper
 import pygame
 
 from common import BoundingBox, EventProcessor, PositionTracker
-from layer1.cards import CardMovementProcessor, deck_obj
-from layer1.iso_map import make_map, map_obj
+from common.constants import (
+    GAME_CAM_HEIGHT,
+    GAME_CAM_WIDTH,
+    ISO_MAP_HEIGHT,
+    ISO_MAP_WIDTH,
+    PIXEL_SIZE,
+)
+from layer1.cards import (
+    CardMovementProcessor,
+    create_starting_deck,
+    deck_obj,
+    draw_card,
+)
 from layer2 import (
     GameCameraTag,
     IsoCameraTag,
     Plain,
     SceneSwitcher,
-    UIElementComponent,
+    TrackIso,
+    TrackUI,
     WorldEnum,
+    ui_event_obj,
 )
 from layer2.dying import DyingProcessor
 from layer2.event_handlers import bind_events as bind_core_events
-from layer2.rendering import (
-    CardSprite,
-    IsoSprite,
-    RenderingProcessor,
-    RenderLayerEnum,
-    load_images,
-)
+from layer2.rendering import IsoSprite, RenderingProcessor, RenderLayerEnum, load_images
 from layer2.ui import UIProcessor, bind_keyboard_events, init_audio
 
 from . import global_vars
 from .log import logger
-from .tracker_tags import TrackIso, TrackUI
-
-GAME_CAM_WIDTH = 256
-GAME_CAM_HEIGHT = 144
-PIXEL_SIZE = 1080 / GAME_CAM_HEIGHT
-
-SEED = None
-
-ISO_MAP_HEIGHT = 8
-ISO_MAP_WIDTH = 8
+from .spawners import create_card_obj, spawn_card_ent, spawn_iso_elem
 
 
 def init_logging() -> None:
@@ -94,9 +92,9 @@ def init_game_world_esper() -> None:
 
     ui_plain = esper.create_entity(
         BoundingBox(
-            -30,
+            -100,
             1000,
-            -30,
+            -100,
             1000,
         ),
         Plain(),
@@ -104,21 +102,12 @@ def init_game_world_esper() -> None:
     iso_plain = esper.create_entity(
         BoundingBox(
             0,
-            ISO_MAP_WIDTH,
+            ISO_MAP_HEIGHT,
             0,
-            ISO_MAP_HEIGHT * 100,
+            ISO_MAP_WIDTH,
         ),
         Plain(),
     )
-
-    # dependency injection
-    deck_obj.tracker_tag = TrackUI
-    deck_obj.sprite = CardSprite
-    deck_obj.ui_tag = UIElementComponent
-
-    map_obj.tracker_tag = TrackIso
-    map_obj.sprite = IsoSprite
-    map_obj.size = (ISO_MAP_WIDTH, ISO_MAP_HEIGHT)
 
     # Create processors
     game_position_tracker = PositionTracker(TrackUI, ui_plain)
@@ -126,7 +115,7 @@ def init_game_world_esper() -> None:
 
     game_cam_bb = BoundingBox(0, GAME_CAM_WIDTH, 0, GAME_CAM_HEIGHT)
     esper.create_entity(game_cam_bb, GameCameraTag())
-    iso_cam_bb = BoundingBox(0, ISO_MAP_WIDTH, 0, ISO_MAP_HEIGHT)
+    iso_cam_bb = BoundingBox(0, ISO_MAP_HEIGHT, 0, ISO_MAP_WIDTH)
     esper.create_entity(iso_cam_bb, IsoCameraTag())
 
     render_layer_dict = {
@@ -167,6 +156,17 @@ def init_game_world_esper() -> None:
     esper.add_processor(renderer)
     esper.add_processor(scene_switcher)
 
+    # dependency injection
+    deck_obj.spawn_card = spawn_card_ent
+    deck_obj.create_card = create_card_obj
+    create_starting_deck(6)
+    for _ in range(7):
+        draw_card()
+
+    spawn_iso_elem(map_tracker=TrackIso, map_sprite=IsoSprite, ui_tracker=TrackUI)
+
+    ui_event_obj.iso_pos_track = iso_position_tracker
+
 
 def init() -> None:
     init_logging()
@@ -181,5 +181,4 @@ def init() -> None:
     esper.process()
     logger.info(f"{esper.current_world} world init finished")
 
-    make_map()
     logger.info("Finished init!!")
