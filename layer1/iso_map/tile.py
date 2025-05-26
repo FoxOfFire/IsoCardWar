@@ -8,10 +8,12 @@ from layer1 import SelectableObject
 class TerrainEnum(enum.Enum):
     CONCRETE = enum.auto()
     GRASS = enum.auto()
+    WATER = enum.auto()
 
 
-class UnitEnum(enum.Enum):
-    TANK = enum.auto()
+class UnitTypeEnum(enum.Enum):
+    GREEN_TANK = enum.auto()
+    BLUE_TANK = enum.auto()
 
 
 class Tile(SelectableObject):
@@ -21,7 +23,7 @@ class Tile(SelectableObject):
         y: int,
         terrain: TerrainEnum,
         effects: List[Callable[[int, int], None]],
-        unit: Optional[UnitEnum] = None,
+        unit: Optional[UnitTypeEnum] = None,
     ):
         self.x = x
         self.y = y

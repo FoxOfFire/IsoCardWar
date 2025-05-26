@@ -26,7 +26,13 @@ from layer1.cards import (
     remove_hover_over_card,
     select_card,
 )
-from layer1.iso_map import TerrainEnum, change_tile, make_map, map_obj
+from layer1.iso_map import (
+    TerrainEnum,
+    make_map,
+    map_obj,
+    rotate_between_tiles,
+    rotate_between_units,
+)
 from layer2 import CardSprite, TrackUI, UIElementComponent
 from layer2.ui import click_on_tile
 
@@ -111,10 +117,10 @@ def create_card_obj(card_type: CardTypeEnum) -> Card:
             effects = draw_cards(3)
         case CardTypeEnum.TURN_TO_CONCRETE:
             marker = MarkerEnum.BUILDING
-            effects = change_tile(TerrainEnum.CONCRETE)
+            effects = rotate_between_tiles()
         case CardTypeEnum.TURN_TO_GRASS:
             marker = MarkerEnum.UNIT
-            effects = change_tile(TerrainEnum.GRASS)
+            effects = rotate_between_units()
         case _:
             marker = MarkerEnum.UNIQUE
             effects = [noop]

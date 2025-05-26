@@ -5,7 +5,7 @@ from typing import Dict, List
 import pygame
 
 from layer1 import MarkerEnum
-from layer1.iso_map import TerrainEnum
+from layer1.iso_map import TerrainEnum, UnitTypeEnum
 
 
 class CardTypeEnum(enum.Enum):
@@ -16,16 +16,19 @@ class CardImageEnum(enum.Enum):
     BASIC = ("basic_image", 1)
 
 
-CARD_TYPE_ASSET_DIR = Path(".") / "layer2" / "rendering" / "assets" / "cards"
-CARD_IMAGE_ASSET_DIR = Path(".") / "layer2" / "rendering" / "assets" / "card_images"
-CARD_MARKER_ASSET_DIR = Path(".") / "layer2" / "rendering" / "assets" / "card_markers"
-TILE_TYPE_ASSET_DIR = Path(".") / "layer2" / "rendering" / "assets" / "tiles"
+BASE_ASSET_DIR = Path(".") / "layer2" / "rendering" / "assets"
+CARD_TYPE_ASSET_DIR = BASE_ASSET_DIR / "cards"
+CARD_IMAGE_ASSET_DIR = BASE_ASSET_DIR / "card_images"
+CARD_MARKER_ASSET_DIR = BASE_ASSET_DIR / "card_markers"
+TILE_TYPE_ASSET_DIR = BASE_ASSET_DIR / "tiles"
+UNIT_TYPE_ASSET_DIR = BASE_ASSET_DIR / "units"
 
 
 CARD_TYPE_SURFS: Dict[CardTypeEnum, pygame.Surface] = {}
 CARD_MARKER_SURFS: Dict[MarkerEnum, pygame.Surface] = {}
 CARD_IMAGE_SURFS: Dict[CardImageEnum, List[pygame.Surface]] = {}
 TILE_TYPE_SURFS: Dict[TerrainEnum, pygame.Surface] = {}
+UNIT_TYPE_SURFS: Dict[UnitTypeEnum, pygame.Surface] = {}
 
 
 def load_images() -> None:
@@ -67,6 +70,14 @@ def load_images() -> None:
             {
                 tile: pygame.image.load(
                     TILE_TYPE_ASSET_DIR / f"tiles{tile_val}.png"
+                ).convert_alpha()
+            }
+        )
+    for unit, unit_val in [(e, e.value) for e in UnitTypeEnum]:
+        UNIT_TYPE_SURFS.update(
+            {
+                unit: pygame.image.load(
+                    UNIT_TYPE_ASSET_DIR / f"units{unit_val}.png"
                 ).convert_alpha()
             }
         )

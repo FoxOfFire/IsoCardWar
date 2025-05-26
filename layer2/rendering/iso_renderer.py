@@ -14,7 +14,7 @@ from common.constants import (
 from layer1.iso_map import Tile
 
 from .log import logger
-from .rendering_images import TILE_TYPE_SURFS
+from .rendering_images import TILE_TYPE_SURFS, UNIT_TYPE_SURFS
 
 
 @dataclass
@@ -50,3 +50,6 @@ class IsoRenderer:
             x = ISO_POS_OFFSET_X + (tile.x + tile.y) * ISO_TILE_OFFSET_X
             y = ISO_POS_OFFSET_Y + (tile.x - tile.y) * ISO_TILE_OFFSET_Y
             screen.blit(TILE_TYPE_SURFS[tile.terrain], (x, y))
+            if tile.unit is None:
+                continue
+            screen.blit(UNIT_TYPE_SURFS[tile.unit], (x, y - ISO_TILE_OFFSET_Y * 2))

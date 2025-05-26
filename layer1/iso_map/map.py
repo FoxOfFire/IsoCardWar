@@ -5,7 +5,7 @@ import esper
 
 from common import BoundingBox
 
-from .tile import TerrainEnum, Tile
+from .tile import TerrainEnum, Tile, UnitTypeEnum
 
 
 class MapData:
@@ -35,9 +35,15 @@ def make_map() -> None:
     for i in range(h):
         for j in range(w):
             bb = BoundingBox(i, i + 1, j, j + 1)
+            unit: Optional[UnitTypeEnum] = None
+            if randint(0, 9) == 0:
+                unit = UnitTypeEnum.GREEN_TANK
+
             esper.create_entity(
                 bb,
                 sprite(),
                 tracker(),
-                Tile(round(bb.left), round(bb.top), TerrainEnum(randint(1, 2)), []),
+                Tile(
+                    round(bb.left), round(bb.top), TerrainEnum(randint(1, 3)), [], unit
+                ),
             )
