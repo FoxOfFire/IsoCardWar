@@ -12,8 +12,9 @@ class TerrainEnum(Enum):
 
 
 class UnitTypeEnum(Enum):
-    SELECTION = auto()
     CAULDRON = auto()
+    BIG_CAULDRON = auto()
+    GUY = auto()
 
 
 class SelectionTypeEnum(Enum):
