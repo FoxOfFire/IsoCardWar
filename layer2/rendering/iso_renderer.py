@@ -1,5 +1,6 @@
 from dataclasses import dataclass
-from typing import Type
+from enum import Enum, auto
+from typing import Dict, Iterable, Tuple, Type
 
 import esper
 import pygame
@@ -10,11 +11,13 @@ from common.constants import (
     ISO_POS_OFFSET_Y,
     ISO_TILE_OFFSET_X,
     ISO_TILE_OFFSET_Y,
+    ISO_TILE_SELECT_OFFSET,
 )
+from layer1.game_state import game_state_obj
 from layer1.iso_map import Tile
 
 from .log import logger
-from .rendering_images import TILE_TYPE_SURFS, UNIT_TYPE_SURFS
+from .rendering_images import SELECTION_SURFS, TILE_TYPE_SURFS, UNIT_TYPE_SURFS
 
 
 @dataclass
@@ -23,7 +26,7 @@ class IsoSprite:
 
 
 class IsoRenderer:
-    def __init__(self, pos_track: PositionTracker, tag: Type) -> None:
+    def __init__(self, pos_track: PositionTracker, tag: Type, /) -> None:
         super().__init__()
         self.pos_track = pos_track
         self.bb = esper.component_for_entity(
@@ -31,6 +34,44 @@ class IsoRenderer:
             BoundingBox,
         )
         logger.info("iso renderer init finished")
+
+    class _DrawType(Enum):
+        TILE = auto()
+        UNIT = auto()
+        SELECTION = auto()
+
+    def _draw_type(
+        self,
+        screen: pygame.Surface,
+        surfs: Dict[Enum, pygame.Surface],
+        ent_list: Iterable[int],
+        draw_type: _DrawType,
+        /,
+        *,
+        offset: Tuple[float, float] = (0, 0),
+    ) -> None:
+        delta_x, delta_y = offset
+        for ent in ent_list:
+            if not esper.has_component(ent, IsoSprite):
+                continue
+            tile = esper.component_for_entity(ent, Tile)
+            x = delta_x + ISO_POS_OFFSET_X + (tile.x + tile.y) * ISO_TILE_OFFSET_X
+            y = delta_y + ISO_POS_OFFSET_Y + (tile.x - tile.y) * ISO_TILE_OFFSET_Y
+            if ent == game_state_obj.selecting:
+                y += ISO_TILE_SELECT_OFFSET
+            match draw_type:
+                case self._DrawType.TILE:
+                    screen.blit(surfs[tile.terrain], (x, y))
+
+                case self._DrawType.UNIT:
+                    if tile.unit is not None:
+                        screen.blit(surfs[tile.unit], (x, y))
+
+                case self._DrawType.SELECTION:
+                    if tile.selection is not None:
+                        screen.blit(surfs[tile.selection], (x, y))
+                case _:
+                    raise RuntimeError("unexpected type while drawing iso_tiles")
 
     def draw(self, screen: pygame.Surface) -> None:
         def sort_by_bottom(ent: int) -> int:
@@ -43,13 +84,18 @@ class IsoRenderer:
             self.pos_track.intersect(self.bb),
             key=lambda ent: sort_by_bottom(ent),
         )
-        for ent in ent_list:
-            if not esper.has_component(ent, IsoSprite):
-                continue
-            tile = esper.component_for_entity(ent, Tile)
-            x = ISO_POS_OFFSET_X + (tile.x + tile.y) * ISO_TILE_OFFSET_X
-            y = ISO_POS_OFFSET_Y + (tile.x - tile.y) * ISO_TILE_OFFSET_Y
-            screen.blit(TILE_TYPE_SURFS[tile.terrain], (x, y))
-            if tile.unit is None:
-                continue
-            screen.blit(UNIT_TYPE_SURFS[tile.unit], (x, y - ISO_TILE_OFFSET_Y * 2))
+        self._draw_type(screen, TILE_TYPE_SURFS, ent_list, self._DrawType.TILE)
+        self._draw_type(
+            screen,
+            SELECTION_SURFS,
+            ent_list,
+            self._DrawType.SELECTION,
+            offset=(0, -ISO_TILE_OFFSET_Y * 2),
+        )
+        self._draw_type(
+            screen,
+            UNIT_TYPE_SURFS,
+            ent_list,
+            self._DrawType.UNIT,
+            offset=(0, -ISO_TILE_OFFSET_Y * 2),
+        )

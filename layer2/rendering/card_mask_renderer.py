@@ -4,6 +4,7 @@ import esper
 import pygame
 
 from common import BoundingBox, PositionTracker
+from layer1 import game_state_obj
 from layer1.cards import deck_obj
 
 from .card_renderer import CardSprite
@@ -35,7 +36,7 @@ class CardTextRenderer:
             if sprite is None:
                 continue
 
-            if ent == deck_obj.selected:
+            if ent == game_state_obj.selected:
                 for hand_ent in range(0, len(deck_obj.hand)):
                     hand_sprite = esper.component_for_entity(
                         deck_obj.hand[hand_ent], CardSprite

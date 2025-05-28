@@ -17,24 +17,11 @@ from common.constants import (
     ISO_TILE_OFFSET_Y,
     ROOT_TWO,
 )
-from layer1 import MarkerEnum, PriceEnum
-from layer1.cards import (
-    Card,
-    CardTypeEnum,
-    draw_cards,
-    hover_over_card,
-    remove_hover_over_card,
-    select_card,
-)
-from layer1.iso_map import (
-    TerrainEnum,
-    make_map,
-    map_obj,
-    rotate_between_tiles,
-    rotate_between_units,
-)
+from layer1 import MarkerEnum, PriceEnum, hover, remove_hover, select
+from layer1.cards import Card, CardTypeEnum, draw_cards
+from layer1.iso_map import change_selection, change_tile, change_unit, make_map, map_obj
 from layer2 import CardSprite, TrackUI, UIElementComponent
-from layer2.ui import click_on_tile
+from layer2.ui import click_on_tile, hover_over_tile
 
 from .log import logger
 
@@ -64,7 +51,13 @@ def spawn_iso_elem(
     logger.info(f"map ui elem created:{ui_bb.points}")
 
     ent = esper.create_entity(
-        ui_bb, ui_tracker(), UIElementComponent(click_func=click_on_tile)
+        ui_bb,
+        ui_tracker(),
+        UIElementComponent(
+            click_func=click_on_tile,
+            hover_func=hover_over_tile,
+            unhover_func=remove_hover,
+        ),
     )
     make_map()
     return ent
@@ -98,9 +91,9 @@ def spawn_card_ent(card: Card) -> int:
         TrackUI(),
         CardSprite(),
         UIElementComponent(
-            click_func=select_card,
-            hover_func=hover_over_card,
-            unhover_func=remove_hover_over_card,
+            click_func=select,
+            hover_func=hover,
+            unhover_func=remove_hover,
         ),
         Health(),
     )
@@ -108,28 +101,21 @@ def spawn_card_ent(card: Card) -> int:
 
 
 def create_card_obj(card_type: CardTypeEnum) -> Card:
-    def noop(ent: int, target: int) -> None:
-        logger.info(f"noop({ent}, {target})")
-
     match card_type:
-        case CardTypeEnum.DRAW_TWO:
+        case CardTypeEnum.DRAW_FOUR:
             marker = MarkerEnum.ACTION
-            effects = draw_cards(3)
-        case CardTypeEnum.TURN_TO_CONCRETE:
+            effects = draw_cards(4)
+        case CardTypeEnum.CHANGE_TERRAIN:
             marker = MarkerEnum.BUILDING
-            effects = rotate_between_tiles()
-        case CardTypeEnum.TURN_TO_GRASS:
+            effects = change_tile()
+        case CardTypeEnum.CHANGE_UNIT:
             marker = MarkerEnum.UNIT
-            effects = rotate_between_units()
-        case _:
+            effects = change_unit()
+        case CardTypeEnum.CHANGE_SELECTION:
             marker = MarkerEnum.UNIQUE
-            effects = [noop]
+            effects = change_selection()
+        case _:
+            raise RuntimeError("unexpected card type")
 
-    return Card(
-        f"Dummy {randint(1, 1000)}",
-        {PriceEnum.AMMO: 1, PriceEnum.METAL: 1, PriceEnum.FOOD: 1},
-        marker,
-        effects,
-        0,
-        20,
-    )
+    prices = {PriceEnum.AMMO: 1, PriceEnum.METAL: 1, PriceEnum.FOOD: 1}
+    return Card(f"Dummy {randint(1, 1000)}", prices, marker, effects, 0, 20)

@@ -1,18 +1,18 @@
-import enum
+from enum import Enum
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Type
 
 import pygame
 
 from layer1 import MarkerEnum
-from layer1.iso_map import TerrainEnum, UnitTypeEnum
+from layer1.iso_map import SelectionTypeEnum, TerrainEnum, UnitTypeEnum
 
 
-class CardTypeEnum(enum.Enum):
+class CardTypeEnum(Enum):
     BASIC = "basic"
 
 
-class CardImageEnum(enum.Enum):
+class CardImageEnum(Enum):
     BASIC = ("basic_image", 1)
 
 
@@ -22,62 +22,49 @@ CARD_IMAGE_ASSET_DIR = BASE_ASSET_DIR / "card_images"
 CARD_MARKER_ASSET_DIR = BASE_ASSET_DIR / "card_markers"
 TILE_TYPE_ASSET_DIR = BASE_ASSET_DIR / "tiles"
 UNIT_TYPE_ASSET_DIR = BASE_ASSET_DIR / "units"
+SELECTION_ASSET_DIR = BASE_ASSET_DIR / "tile_selections"
 
 
-CARD_TYPE_SURFS: Dict[CardTypeEnum, pygame.Surface] = {}
-CARD_MARKER_SURFS: Dict[MarkerEnum, pygame.Surface] = {}
-CARD_IMAGE_SURFS: Dict[CardImageEnum, List[pygame.Surface]] = {}
-TILE_TYPE_SURFS: Dict[TerrainEnum, pygame.Surface] = {}
-UNIT_TYPE_SURFS: Dict[UnitTypeEnum, pygame.Surface] = {}
+CARD_TYPE_SURFS: Dict[Enum, pygame.Surface] = {}
+CARD_MARKER_SURFS: Dict[Enum, pygame.Surface] = {}
+CARD_IMAGE_SURFS: Dict[Enum, List[pygame.Surface]] = {}
+TILE_TYPE_SURFS: Dict[Enum, pygame.Surface] = {}
+UNIT_TYPE_SURFS: Dict[Enum, pygame.Surface] = {}
+SELECTION_SURFS: Dict[Enum, pygame.Surface] = {}
 
 
-def load_images() -> None:
-    for card_type, card_type_val in [(e, e.value) for e in CardTypeEnum]:
-        CARD_TYPE_SURFS.update(
-            {
-                card_type: pygame.image.load(
-                    CARD_TYPE_ASSET_DIR / f"{card_type_val}.png"
-                ).convert_alpha()
-            }
+def _load_image_type(
+    enum: Type[Enum], surfs: Dict[Enum, pygame.Surface], path: Path, name: str
+) -> None:
+    for type, val in [(e, e.value) for e in enum]:
+        surfs.update(
+            {type: pygame.image.load(path / f"{name}{val}.png").convert_alpha()}
         )
 
-    for card_marker, card_marker_val in [(e, e.value) for e in MarkerEnum]:
-        CARD_MARKER_SURFS.update(
+
+def _load_animation_type(
+    enum: Type[Enum], surfs: Dict[Enum, List[pygame.Surface]], path: Path
+) -> None:
+    for images, (img_name, frame_cnt) in [(e, e.value) for e in enum]:
+        surfs.update(
             {
-                card_marker: pygame.image.load(
-                    CARD_MARKER_ASSET_DIR / f"marker{card_marker_val}.png"
-                ).convert_alpha()
-            }
-        )
-    for card_image, (card_image_name, card_image_frame_cnt) in [
-        (e, e.value) for e in CardImageEnum
-    ]:
-        CARD_IMAGE_SURFS.update(
-            {
-                card_image: [
+                images: [
                     pygame.image.load(
-                        CARD_IMAGE_ASSET_DIR
-                        / f"{card_image_name}"
-                        / f"card_{card_image_name}{i+1}.png"
+                        path / f"{img_name}" / f"card_{img_name}{i+1}.png"
                     ).convert_alpha()
-                    for i in range(card_image_frame_cnt)
+                    for i in range(frame_cnt)
                 ]
             }
         )
 
-    for tile, tile_val in [(e, e.value) for e in TerrainEnum]:
-        TILE_TYPE_SURFS.update(
-            {
-                tile: pygame.image.load(
-                    TILE_TYPE_ASSET_DIR / f"tiles{tile_val}.png"
-                ).convert_alpha()
-            }
-        )
-    for unit, unit_val in [(e, e.value) for e in UnitTypeEnum]:
-        UNIT_TYPE_SURFS.update(
-            {
-                unit: pygame.image.load(
-                    UNIT_TYPE_ASSET_DIR / f"units{unit_val}.png"
-                ).convert_alpha()
-            }
-        )
+
+def load_images() -> None:
+    _load_image_type(CardTypeEnum, CARD_TYPE_SURFS, CARD_TYPE_ASSET_DIR, "")
+    _load_image_type(MarkerEnum, CARD_MARKER_SURFS, CARD_MARKER_ASSET_DIR, "marker")
+    _load_image_type(TerrainEnum, TILE_TYPE_SURFS, TILE_TYPE_ASSET_DIR, "tiles")
+    _load_image_type(UnitTypeEnum, UNIT_TYPE_SURFS, UNIT_TYPE_ASSET_DIR, "units")
+    _load_image_type(
+        SelectionTypeEnum, SELECTION_SURFS, SELECTION_ASSET_DIR, "tile_selections"
+    )
+
+    _load_animation_type(CardImageEnum, CARD_IMAGE_SURFS, CARD_IMAGE_ASSET_DIR)

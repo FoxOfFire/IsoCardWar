@@ -4,10 +4,10 @@ from typing import List
 import esper
 
 from .log import logger
-from .tile import TerrainEnum, Tile, UnitTypeEnum
+from .tile import SelectionTypeEnum, TerrainEnum, Tile, UnitTypeEnum
 
 
-def change_tile(terrain: TerrainEnum) -> List[Callable[[int, int], None]]:
+def change_tile_to(terrain: TerrainEnum) -> List[Callable[[int, int], None]]:
     effects: List[Callable[[int, int], None]] = []
 
     def change(ent: int, target: int) -> None:
@@ -18,7 +18,7 @@ def change_tile(terrain: TerrainEnum) -> List[Callable[[int, int], None]]:
     return effects
 
 
-def rotate_between_tiles() -> List[Callable[[int, int], None]]:
+def change_tile() -> List[Callable[[int, int], None]]:
     effects: List[Callable[[int, int], None]] = []
 
     def rotate(ent: int, target: int) -> None:
@@ -31,7 +31,7 @@ def rotate_between_tiles() -> List[Callable[[int, int], None]]:
     return effects
 
 
-def rotate_between_units() -> List[Callable[[int, int], None]]:
+def change_unit() -> List[Callable[[int, int], None]]:
     effects: List[Callable[[int, int], None]] = []
 
     def rotate(ent: int, target: int) -> None:
@@ -41,6 +41,22 @@ def rotate_between_units() -> List[Callable[[int, int], None]]:
         n = (n + 1) % (len(list(UnitTypeEnum)) + 1)
         unit = None if n == 0 else UnitTypeEnum(n)
         tile.unit = unit
+
+    effects.append(rotate)
+
+    return effects
+
+
+def change_selection() -> List[Callable[[int, int], None]]:
+    effects: List[Callable[[int, int], None]] = []
+
+    def rotate(ent: int, target: int) -> None:
+        tile = esper.component_for_entity(target, Tile)
+        logger.info(tile.terrain)
+        n = tile.selection.value if tile.selection is not None else 0
+        n = (n + 1) % (len(list(SelectionTypeEnum)) + 1)
+        selection = None if n == 0 else SelectionTypeEnum(n)
+        tile.selection = selection
 
     effects.append(rotate)
 

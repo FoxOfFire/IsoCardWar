@@ -10,6 +10,7 @@ from common.constants import (
     RELATIVE_MARKER_POS_X,
     RELATIVE_MARKER_POS_Y,
 )
+from layer1 import game_state_obj
 from layer1.cards import Card, deck_obj, get_card_angle
 from layer2 import CardSprite
 
@@ -40,8 +41,8 @@ class CardRenderer:
         ent_list = sorted(
             self.pos_track.intersect(self.bb), key=lambda ent: sorter(ent)
         )
-        if deck_obj.selected is not None:
-            ent_list.append(deck_obj.selected)
+        if game_state_obj.selected is not None:
+            ent_list.append(game_state_obj.selected)
         for ent in ent_list:
             sprite = esper.try_component(ent, CardSprite)
             card = esper.try_component(ent, Card)

@@ -5,7 +5,13 @@ import esper
 
 from common import Health
 from common.constants import MAX_CARD_COUNT
-from layer1 import MarkerEnum, PriceEnum, SelectableObject, set_play_card
+from layer1 import (
+    MarkerEnum,
+    PriceEnum,
+    SelectableObject,
+    game_state_obj,
+    set_play_card,
+)
 
 from .card_utils import CardTypeEnum, OrganizationEnum
 from .log import logger
@@ -35,8 +41,6 @@ class Deck:
     def __init__(self) -> None:
         self.spawn_card: Optional[Callable[[Card], int]] = None
         self.create_card: Optional[Callable[[CardTypeEnum], Card]] = None
-        self.selected: Optional[int] = None
-        self.selecting: Optional[int] = None
         self.hand: List[int] = []
         self.deck: List[Card] = []
         self.discard: List[Card] = []
@@ -68,12 +72,11 @@ def create_starting_deck(card_count: int) -> None:
     if deck_obj.create_card is None:
         raise RuntimeError("create_card undefined")
 
-    for i in range(card_count // 3):
-        cards.append(deck_obj.create_card(CardTypeEnum.DRAW_TWO))
-        if i % 2 == 0:
-            cards.append(deck_obj.create_card(CardTypeEnum.DRAW_TWO))
-        cards.append(deck_obj.create_card(CardTypeEnum.TURN_TO_GRASS))
-        cards.append(deck_obj.create_card(CardTypeEnum.TURN_TO_CONCRETE))
+    for _ in range(card_count // 3):
+        cards.append(deck_obj.create_card(CardTypeEnum.DRAW_FOUR))
+        cards.append(deck_obj.create_card(CardTypeEnum.CHANGE_UNIT))
+        cards.append(deck_obj.create_card(CardTypeEnum.CHANGE_TERRAIN))
+        cards.append(deck_obj.create_card(CardTypeEnum.CHANGE_SELECTION))
 
     deck_obj.deck = cards
     shuffle_deck()
@@ -134,35 +137,17 @@ def shuffle_deck() -> None:
     deck_obj.deck = new
 
 
-def select_card(ent: int) -> None:
-    if ent not in deck_obj.hand or not esper.entity_exists(ent):
-        return
-    deck_obj.selected = ent
-
-
-def unselect_card() -> None:
-    deck_obj.selected = None
-    sort_hand()
-
-
-def hover_over_card(ent: int) -> None:
-    if ent not in deck_obj.hand or not esper.entity_exists(ent):
-        return
-    deck_obj.selecting = ent
-
-
-def remove_hover_over_card(_: int) -> None:
-    deck_obj.selecting = None
-
-
 def play_card(target: int) -> None:
-    ent = deck_obj.selected
+    ent = game_state_obj.selected
+
     if ent is None or not esper.entity_exists(ent):
         return
-    card = esper.component_for_entity(ent, Card)
+    card = esper.try_component(ent, Card)
+    if card is None:
+        return
     for effect in card.effects:
         effect(ent, target)
-    deck_obj.selected = None
+    game_state_obj.selected = None
     deck_obj.hand.remove(ent)
     deck_obj.discard.append(card)
     esper.component_for_entity(ent, Health).hp = 0
