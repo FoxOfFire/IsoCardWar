@@ -16,11 +16,14 @@ from common.constants import (
     ISO_TILE_OFFSET_X,
     ISO_TILE_OFFSET_Y,
     ROOT_TWO,
+    TEXT_RELATIVE_POS_X,
+    TEXT_RELATIVE_POS_Y,
 )
 from layer1 import MarkerEnum, PriceEnum, hover, remove_hover, select
 from layer1.cards import Card, CardTypeEnum, draw_cards
-from layer1.iso_map import change_selection, change_tile, change_unit, make_map, map_obj
-from layer2 import CardSprite, TrackUI, UIElementComponent
+from layer1.iso_map import change_tile, change_unit, make_map, map_obj
+from layer2 import TextData, TrackUI, UIElementComponent
+from layer2.rendering import CardSprite
 from layer2.ui import click_on_tile, hover_over_tile
 
 from .log import logger
@@ -81,41 +84,31 @@ def spawn_card_ent(card: Card) -> int:
         CARD_START_Y - height_offset,
         CARD_START_Y + height_offset + CARD_HEIGHT,
     )
-
-    # creating card
-    card.current_angle = 0
-    card.target_angle = None
-    ent = esper.create_entity(
-        card,
-        bb,
-        TrackUI(),
-        CardSprite(),
-        UIElementComponent(
-            click_func=select,
-            hover_func=hover,
-            unhover_func=remove_hover,
-        ),
-        Health(),
+    text = TextData(
+        lambda: card.name,
+        (TEXT_RELATIVE_POS_X, TEXT_RELATIVE_POS_Y),
     )
+    ui_elem = UIElementComponent(
+        click_func=select, hover_func=hover, unhover_func=remove_hover, text=[text]
+    )
+    # creating card
+    ent = esper.create_entity(card, bb, TrackUI(), CardSprite(), ui_elem, Health())
     return ent
 
 
 def create_card_obj(card_type: CardTypeEnum) -> Card:
     match card_type:
-        case CardTypeEnum.DRAW_FOUR:
+        case CardTypeEnum.DRAW_ONE:
             marker = MarkerEnum.ACTION
-            effects = draw_cards(4)
-        case CardTypeEnum.CHANGE_TERRAIN:
+            effects = draw_cards(randint(0, 2))
+        case CardTypeEnum.CHANGE_TERRAIN_AND_DRAW:
             marker = MarkerEnum.BUILDING
-            effects = change_tile()
-        case CardTypeEnum.CHANGE_UNIT:
+            effects = change_tile() + draw_cards(1)
+        case CardTypeEnum.CHANGE_UNIT_AND_DRAW:
             marker = MarkerEnum.UNIT
-            effects = change_unit()
-        case CardTypeEnum.CHANGE_SELECTION:
-            marker = MarkerEnum.UNIQUE
-            effects = change_selection()
+            effects = change_unit() + draw_cards(1)
         case _:
             raise RuntimeError("unexpected card type")
 
     prices = {PriceEnum.AMMO: 1, PriceEnum.METAL: 1, PriceEnum.FOOD: 1}
-    return Card(f"Dummy {randint(1, 1000)}", prices, marker, effects, 0, 20)
+    return Card(f"{card_type.value}{randint(0, 9)}", prices, marker, effects)

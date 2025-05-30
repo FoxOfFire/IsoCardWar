@@ -4,11 +4,11 @@ from .enums import UIStateEnum, WorldEnum
 from .event_handlers import bind_events
 from .scene_switcher import SceneSwitcher
 from .tags import (
-    CardSprite,
     GameCameraTag,
     IsoCameraTag,
     MaskedSprite,
     Plain,
+    TextData,
     TrackIso,
     TrackUI,
     UIElementComponent,

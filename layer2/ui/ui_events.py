@@ -1,4 +1,3 @@
-from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Optional, Tuple
 
@@ -18,7 +17,6 @@ SWITCH_SCENE = pygame.event.custom_type()
 @dataclass
 class UIEventInfo:
     iso_pos_track: Optional[PositionTracker] = None
-    iso_click_event: Optional[Callable[..., None]] = None
 
 
 ui_event_obj = UIEventInfo()

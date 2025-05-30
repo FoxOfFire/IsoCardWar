@@ -13,11 +13,12 @@ from common.constants import (
     ISO_TILE_OFFSET_Y,
     ISO_TILE_SELECT_OFFSET,
 )
-from layer1.game_state import game_state_obj
-from layer1.iso_map import Tile
+from layer1 import MarkerEnum, game_state_obj
+from layer1.cards import Card
+from layer1.iso_map import SelectionTypeEnum, Tile
 
 from .log import logger
-from .rendering_images import SELECTION_SURFS, TILE_TYPE_SURFS, UNIT_TYPE_SURFS
+from .rendering_asset_loader import SELECTION_SURFS, TILE_TYPE_SURFS, UNIT_TYPE_SURFS
 
 
 @dataclass
@@ -68,8 +69,25 @@ class IsoRenderer:
                         screen.blit(surfs[tile.unit], (x, y))
 
                 case self._DrawType.SELECTION:
-                    if tile.selection is not None:
-                        screen.blit(surfs[tile.selection], (x, y))
+                    if ent != game_state_obj.selecting:
+                        continue
+                    if game_state_obj.selected is None:
+                        continue
+                    card = esper.try_component(game_state_obj.selected, Card)
+                    if card is None:
+                        continue
+                    match card.marker:
+                        case MarkerEnum.BUILDING:
+                            screen.blit(surfs[SelectionTypeEnum.BLUE], (x, y))
+                        case MarkerEnum.ACTION:
+                            screen.blit(surfs[SelectionTypeEnum.RED], (x, y))
+                        case MarkerEnum.UNIT:
+                            screen.blit(surfs[SelectionTypeEnum.GREEN], (x, y))
+                        case MarkerEnum.UNIQUE:
+                            pass
+                        case _:
+                            raise RuntimeError("unexpected card marker in selection")
+
                 case _:
                     raise RuntimeError("unexpected type while drawing iso_tiles")
 

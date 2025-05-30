@@ -1,5 +1,6 @@
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Callable, NamedTuple, Optional
+from typing import List, NamedTuple, Optional, Tuple
 
 import pygame
 
@@ -32,28 +33,34 @@ class TextCameraTag:
     pass
 
 
-def _empty_text() -> str:
-    return " "
-
-
 class MaskedSprite:
     mask: pygame.Mask = pygame.Mask((1, 1), fill=True)
     rect: pygame.Rect = pygame.Rect(0, 0, 1, 1)
 
 
 @dataclass
-class CardSprite(MaskedSprite):
-    pass
+class TextData:
+    text: Callable[[], str]
+    offset: Tuple[float, float]
 
 
-@dataclass
 class UIElementComponent:
-    state: UIStateEnum = UIStateEnum.BASE
-    is_visible: bool = True
-    is_clickable: bool = True
-    is_active: bool = False
-    is_part_of_game_ui: bool = False
-    text: Callable[[], str] = _empty_text
-    click_func: Optional[Callable[[int], None]] = None
-    hover_func: Optional[Callable[[int], None]] = None
-    unhover_func: Optional[Callable[[int], None]] = None
+    def __init__(
+        self,
+        state: UIStateEnum = UIStateEnum.BASE,
+        is_visible: bool = True,
+        is_clickable: bool = True,
+        is_active: bool = False,
+        text: Optional[List[TextData]] = None,
+        click_func: Optional[Callable[[int], None]] = None,
+        hover_func: Optional[Callable[[int], None]] = None,
+        unhover_func: Optional[Callable[[int], None]] = None,
+    ):
+        self.state: UIStateEnum = state
+        self.is_visible: bool = is_visible
+        self.is_clickable: bool = is_clickable
+        self.is_active: bool = is_active
+        self.text: List[TextData] = [] if text is None else text
+        self.click_func: Optional[Callable[[int], None]] = click_func
+        self.hover_func: Optional[Callable[[int], None]] = hover_func
+        self.unhover_func: Optional[Callable[[int], None]] = unhover_func

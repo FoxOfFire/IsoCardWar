@@ -1,9 +1,11 @@
+from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import Dict, List, Type
+from typing import Dict, List, Optional, Type
 
 import pygame
 
+from common.constants import FONT_SIZE
 from layer1 import MarkerEnum
 from layer1.iso_map import SelectionTypeEnum, TerrainEnum, UnitTypeEnum
 
@@ -23,6 +25,7 @@ CARD_MARKER_ASSET_DIR = BASE_ASSET_DIR / "card_markers"
 TILE_TYPE_ASSET_DIR = BASE_ASSET_DIR / "tiles"
 UNIT_TYPE_ASSET_DIR = BASE_ASSET_DIR / "units"
 SELECTION_ASSET_DIR = BASE_ASSET_DIR / "tile_selections"
+FONT_ASSET_DIR = BASE_ASSET_DIR / "fonts"
 
 
 CARD_TYPE_SURFS: Dict[Enum, pygame.Surface] = {}
@@ -31,6 +34,20 @@ CARD_IMAGE_SURFS: Dict[Enum, List[pygame.Surface]] = {}
 TILE_TYPE_SURFS: Dict[Enum, pygame.Surface] = {}
 UNIT_TYPE_SURFS: Dict[Enum, pygame.Surface] = {}
 SELECTION_SURFS: Dict[Enum, pygame.Surface] = {}
+
+
+@dataclass
+class FontContainer:
+    font: Optional[pygame.font.Font] = None
+
+
+font_container = FontContainer()
+
+
+def get_font() -> pygame.font.Font:
+    if font_container.font is None:
+        font_container.font = pygame.font.Font(FONT_ASSET_DIR / "tiny.ttf", FONT_SIZE)
+    return font_container.font
 
 
 def _load_image_type(

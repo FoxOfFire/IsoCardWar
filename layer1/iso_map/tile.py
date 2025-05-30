@@ -32,7 +32,6 @@ class Tile(SelectableObject):
         *,
         effects: Optional[List[Callable[[int, int], None]]] = None,
         unit: Optional[UnitTypeEnum] = None,
-        selection: Optional[SelectionTypeEnum] = None,
     ):
         if effects is None:
             effects = []
@@ -42,4 +41,3 @@ class Tile(SelectableObject):
         self.terrain = terrain
         self.effects = effects
         self.unit = unit
-        self.selection = selection

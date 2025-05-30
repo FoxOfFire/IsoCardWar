@@ -7,10 +7,10 @@ from common import BoundingBox, PositionTracker
 from layer1 import game_state_obj
 from layer1.cards import deck_obj
 
-from .card_renderer import CardSprite
+from .renderer_card import CardSprite
 
 
-class CardTextRenderer:
+class CardMaskRenderer:
     def __init__(self, pos_track: PositionTracker, tag: Type) -> None:
         super().__init__()
         self.pos_track = pos_track

@@ -17,10 +17,12 @@ class PriceEnum(Enum):
 
 
 class GamePhaseEnum(Enum):
+    BEGIN_GAME = auto()
     DRAW = auto()
     PLAYER_ACTION = auto()
     END_OF_TURN = auto()
     ENEMY_ACTION = auto()
+    END_GAME = auto()
 
 
 class SelectableObject:

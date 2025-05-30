@@ -26,15 +26,11 @@ class Card(SelectableObject):
         price: Dict[PriceEnum, int],
         marker: MarkerEnum,
         effects: List[Callable[[int, int], None]],
-        current_angle: float,
-        target_angle: Optional[float] = None,
     ):
         self.name = name
         self.price = price
         self.marker = marker
         self.effects = effects
-        self.current_angle = current_angle
-        self.target_angle = target_angle
 
 
 class Deck:
@@ -61,11 +57,6 @@ def get_card_center_offset(ent: int) -> float:
     return (hand_size - 1) / 2 - index
 
 
-def get_card_angle(ent: int) -> float:
-    card = esper.component_for_entity(ent, Card)
-    return card.current_angle
-
-
 # helper functions
 def create_starting_deck(card_count: int) -> None:
     cards = []
@@ -73,10 +64,9 @@ def create_starting_deck(card_count: int) -> None:
         raise RuntimeError("create_card undefined")
 
     for _ in range(card_count // 3):
-        cards.append(deck_obj.create_card(CardTypeEnum.DRAW_FOUR))
-        cards.append(deck_obj.create_card(CardTypeEnum.CHANGE_UNIT))
-        cards.append(deck_obj.create_card(CardTypeEnum.CHANGE_TERRAIN))
-        cards.append(deck_obj.create_card(CardTypeEnum.CHANGE_SELECTION))
+        cards.append(deck_obj.create_card(CardTypeEnum.DRAW_ONE))
+        cards.append(deck_obj.create_card(CardTypeEnum.CHANGE_UNIT_AND_DRAW))
+        cards.append(deck_obj.create_card(CardTypeEnum.CHANGE_TERRAIN_AND_DRAW))
 
     deck_obj.deck = cards
     shuffle_deck()

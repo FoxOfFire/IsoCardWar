@@ -3,7 +3,7 @@ from typing import Dict, Optional
 
 import esper
 
-from .game_state_utils import PriceEnum
+from .game_state_utils import GamePhaseEnum, PriceEnum
 
 
 class GameState:
@@ -13,6 +13,7 @@ class GameState:
         self.get_selected: Optional[Callable[[], int]]
         self.selected: Optional[int] = None
         self.selecting: Optional[int] = None
+        self.game_phase: GamePhaseEnum = GamePhaseEnum.BEGIN_GAME
 
 
 game_state_obj = GameState()

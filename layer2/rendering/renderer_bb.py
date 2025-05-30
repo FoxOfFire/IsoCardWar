@@ -7,7 +7,7 @@ import pygame
 from common import BoundingBox, PositionTracker
 
 from .log import logger
-from .rendering_utils import bb_to_rect, sort_by_bb
+from .utils import bb_to_rect, sort_by_bb
 
 
 class BBRenderer:

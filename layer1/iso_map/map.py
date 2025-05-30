@@ -6,7 +6,7 @@ import esper
 
 from common import BoundingBox
 
-from .tile import SelectionTypeEnum, TerrainEnum, Tile, UnitTypeEnum
+from .tile import TerrainEnum, Tile, UnitTypeEnum
 
 
 class MapData:
@@ -39,15 +39,11 @@ def make_map() -> None:
             pos = (round(bb.left), round(bb.top))
             terrain = TerrainEnum(randint(1, len(list(TerrainEnum))))
             unit: Optional[UnitTypeEnum] = None
-            selection: Optional[SelectionTypeEnum] = None
             effects: List[Callable[[int, int], None]] = []
 
             if randint(0, 3) == 0 and terrain != TerrainEnum.WATER:
                 unit = UnitTypeEnum(randint(1, len(list(UnitTypeEnum))))
 
-            if randint(0, 6) == 0:
-                selection = SelectionTypeEnum(randint(1, len(list(SelectionTypeEnum))))
-
-            tile = Tile(pos, terrain, effects=effects, unit=unit, selection=selection)
+            tile = Tile(pos, terrain, effects=effects, unit=unit)
 
             esper.create_entity(bb, sprite(), tracker(), tile)
