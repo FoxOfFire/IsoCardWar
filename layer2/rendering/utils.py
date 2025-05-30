@@ -1,4 +1,4 @@
-import enum
+from enum import Enum, auto
 
 import esper
 import pygame
@@ -10,9 +10,9 @@ from layer2 import UIElementComponent
 from .rendering_asset_loader import get_font
 
 
-class RenderLayerEnum(enum.Enum):
-    CARD = enum.auto()
-    ISO = enum.auto()
+class RenderLayerEnum(Enum):
+    CARD = auto()
+    ISO = auto()
 
 
 def bb_to_rect(bb: BoundingBox) -> pygame.Rect:

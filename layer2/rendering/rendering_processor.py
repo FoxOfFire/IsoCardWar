@@ -7,6 +7,7 @@ from common import BoundingBox, PositionTracker
 from layer2 import GameCameraTag, IsoCameraTag
 
 from .renderer_bb import BBRenderer
+from .renderer_button import ButtonRenderer
 from .renderer_card import CardRenderer
 from .renderer_card_mask import CardMaskRenderer
 from .renderer_iso import IsoRenderer
@@ -40,6 +41,7 @@ class RenderingProcessor(esper.Processor):
         self.card_renderer = CardRenderer(card_pos_track, GameCameraTag)
         self.iso_renderer = IsoRenderer(iso_pos_track, IsoCameraTag)
         self.mask_renderer = CardMaskRenderer(card_pos_track, GameCameraTag)
+        self.button_renderer = ButtonRenderer(card_pos_track, GameCameraTag)
 
         # debug purposes
         self.bb_renderer = BBRenderer(card_pos_track, GameCameraTag)
@@ -51,6 +53,7 @@ class RenderingProcessor(esper.Processor):
         self.iso_renderer.draw(self.screen)
         self.card_renderer.draw(self.screen)
         self.mask_renderer.draw(self.screen)
+        self.button_renderer.draw(self.screen)
         # self.bb_renderer.draw(self.screen)
 
         scaled_screen = pygame.transform.scale(

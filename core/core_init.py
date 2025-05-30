@@ -35,7 +35,7 @@ from layer2.ui import UIProcessor, bind_keyboard_events, init_audio
 
 from . import global_vars
 from .log import logger
-from .spawners import create_card_obj, spawn_card_ent, spawn_iso_elem
+from .spawners import create_card_obj, spawn_button, spawn_card_ent, spawn_iso_elem
 
 
 def init_logging() -> None:
@@ -175,10 +175,11 @@ def init() -> None:
     init_audio()
 
     # game world
-    esper.switch_world(WorldEnum.GAME)
+    esper.switch_world(WorldEnum.GAME.value)
     init_game_world_esper()
     load_images()
     esper.process()
     logger.info(f"{esper.current_world} world init finished")
+    spawn_button(BoundingBox(0, 40, 0, 20), "fasz", None)
 
     logger.info("Finished init!!")
