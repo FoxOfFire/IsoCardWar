@@ -4,6 +4,7 @@ import esper
 import pygame
 
 from common import BoundingBox, PositionTracker
+from common.constants import GAME_CAM_HEIGHT, GAME_CAM_WIDTH
 from layer2.tags import GameCameraTag, MaskedSprite, UIElementComponent, UIStateEnum
 
 from .log import logger
@@ -56,10 +57,10 @@ class UIProcessor(esper.Processor):
     def process(self) -> None:
         self.mouse_pos = pygame.mouse.get_pos()
         mouse_bb = BoundingBox(
-            self.mouse_pos[0] * (self.cam_bb.width / self.display_size[0]),
-            self.mouse_pos[0] * (self.cam_bb.width / self.display_size[0]),
-            self.mouse_pos[1] * (self.cam_bb.height / self.display_size[1]),
-            self.mouse_pos[1] * (self.cam_bb.height / self.display_size[1]),
+            self.mouse_pos[0] * (GAME_CAM_WIDTH / self.display_size[0]),
+            self.mouse_pos[0] * (GAME_CAM_WIDTH / self.display_size[0]),
+            self.mouse_pos[1] * (GAME_CAM_HEIGHT / self.display_size[1]),
+            self.mouse_pos[1] * (GAME_CAM_HEIGHT / self.display_size[1]),
         )
         (left_clicked, _, _) = pygame.mouse.get_pressed()
 

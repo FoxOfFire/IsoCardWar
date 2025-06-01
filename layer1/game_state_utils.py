@@ -1,19 +1,28 @@
-import enum
 from collections.abc import Callable
+from enum import Enum, auto
 from typing import List
 
 
-class MarkerEnum(enum.IntEnum):
-    ACTION = enum.auto()
-    UNIT = enum.auto()
-    BUILDING = enum.auto()
-    UNIQUE = enum.auto()
+class MarkerEnum(Enum):
+    ACTION = auto()
+    UNIT = auto()
+    BUILDING = auto()
+    UNIQUE = auto()
 
 
-class PriceEnum(enum.StrEnum):
+class PriceEnum(Enum):
     AMMO = "Ammo"
     METAL = "Metal"
     FOOD = "Food"
+
+
+class GamePhaseEnum(Enum):
+    BEGIN_GAME = auto()
+    DRAW = auto()
+    PLAYER_ACTION = auto()
+    END_OF_TURN = auto()
+    ENEMY_ACTION = auto()
+    END_GAME = auto()
 
 
 class SelectableObject:

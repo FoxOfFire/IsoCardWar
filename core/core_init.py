@@ -10,7 +10,6 @@ from common.constants import (
     GAME_CAM_WIDTH,
     ISO_MAP_HEIGHT,
     ISO_MAP_WIDTH,
-    PIXEL_SIZE,
 )
 from layer1.cards import (
     CardMovementProcessor,
@@ -30,12 +29,18 @@ from layer2 import (
 )
 from layer2.dying import DyingProcessor
 from layer2.event_handlers import bind_events as bind_core_events
-from layer2.rendering import IsoSprite, RenderingProcessor, RenderLayerEnum, load_images
+from layer2.rendering import (
+    IsoSprite,
+    RenderingProcessor,
+    RenderLayerEnum,
+    UIElemType,
+    load_images,
+)
 from layer2.ui import UIProcessor, bind_keyboard_events, init_audio
 
 from . import global_vars
 from .log import logger
-from .spawners import create_card_obj, spawn_card_ent, spawn_iso_elem
+from .spawners import create_card_obj, spawn_button, spawn_card_ent, spawn_iso_elem
 
 
 def init_logging() -> None:
@@ -121,14 +126,14 @@ def init_game_world_esper() -> None:
     render_layer_dict = {
         RenderLayerEnum.CARD: (
             game_position_tracker,
-            BoundingBox(00, GAME_CAM_WIDTH, 00, GAME_CAM_HEIGHT),
+            BoundingBox(0, GAME_CAM_WIDTH, 0, GAME_CAM_HEIGHT),
         ),
         RenderLayerEnum.ISO: (
             iso_position_tracker,
             BoundingBox(0, GAME_CAM_WIDTH, 0, GAME_CAM_HEIGHT),
         ),
     }
-    renderer = RenderingProcessor(display, render_layer_dict, PIXEL_SIZE)
+    renderer = RenderingProcessor(display, render_layer_dict)
 
     card_movement_processor = CardMovementProcessor(game_cam_bb)
     event_processor = EventProcessor()
@@ -159,11 +164,11 @@ def init_game_world_esper() -> None:
     # dependency injection
     deck_obj.spawn_card = spawn_card_ent
     deck_obj.create_card = create_card_obj
-    create_starting_deck(6)
+    create_starting_deck(20)
     for _ in range(7):
         draw_card()
 
-    spawn_iso_elem(map_tracker=TrackIso, map_sprite=IsoSprite, ui_tracker=TrackUI)
+    spawn_iso_elem(TrackIso, TrackUI, IsoSprite)
 
     ui_event_obj.iso_pos_track = iso_position_tracker
 
@@ -175,10 +180,12 @@ def init() -> None:
     init_audio()
 
     # game world
-    esper.switch_world(WorldEnum.GAME)
+    esper.switch_world(WorldEnum.GAME.value)
     init_game_world_esper()
     load_images()
     esper.process()
     logger.info(f"{esper.current_world} world init finished")
+    spawn_button((20, 40), "Penis!!", UIElemType.TEXTBOX)
+    spawn_button((20, 52), "Cocking", UIElemType.BUTTON)
 
     logger.info("Finished init!!")

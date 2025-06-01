@@ -1,11 +1,12 @@
+from collections.abc import Callable
 from random import randint
-from typing import Optional, Tuple, Type
+from typing import List, Optional, Tuple, Type
 
 import esper
 
 from common import BoundingBox
 
-from .tile import TerrainEnum, Tile
+from .tile import TerrainEnum, Tile, UnitTypeEnum
 
 
 class MapData:
@@ -35,9 +36,14 @@ def make_map() -> None:
     for i in range(h):
         for j in range(w):
             bb = BoundingBox(i, i + 1, j, j + 1)
-            esper.create_entity(
-                bb,
-                sprite(),
-                tracker(),
-                Tile(round(bb.left), round(bb.top), TerrainEnum(randint(1, 2)), []),
-            )
+            pos = (round(bb.left), round(bb.top))
+            terrain = TerrainEnum(randint(1, len(list(TerrainEnum))))
+            unit: Optional[UnitTypeEnum] = None
+            effects: List[Callable[[int, int], None]] = []
+
+            if randint(0, 3) == 0 and terrain != TerrainEnum.WATER:
+                unit = UnitTypeEnum(randint(1, len(list(UnitTypeEnum))))
+
+            tile = Tile(pos, terrain, effects=effects, unit=unit)
+
+            esper.create_entity(bb, sprite(), tracker(), tile)

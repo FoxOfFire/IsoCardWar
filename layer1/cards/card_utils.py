@@ -8,6 +8,6 @@ class OrganizationEnum(enum.Enum):
 
 
 class CardTypeEnum(enum.Enum):
-    DRAW_TWO = "Supply lines"
-    TURN_TO_CONCRETE = "Poppy"
-    TURN_TO_GRASS = "Gardening"
+    DRAW_ONE = "Supply lines"
+    CHANGE_TERRAIN_AND_DRAW = "Terrain"
+    CHANGE_UNIT_AND_DRAW = "Unit"

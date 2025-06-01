@@ -1,28 +1,41 @@
-import enum
 from collections.abc import Callable
-from typing import List, Optional
+from enum import Enum, auto
+from typing import List, Optional, Tuple
 
 from layer1 import SelectableObject
 
 
-class TerrainEnum(enum.Enum):
-    CONCRETE = enum.auto()
-    GRASS = enum.auto()
+class TerrainEnum(Enum):
+    CONCRETE = auto()
+    GRASS = auto()
+    WATER = auto()
 
 
-class UnitEnum(enum.Enum):
-    TANK = enum.auto()
+class UnitTypeEnum(Enum):
+    CAULDRON = auto()
+    BIG_CAULDRON = auto()
+    GUY = auto()
+
+
+class SelectionTypeEnum(Enum):
+    RED = auto()
+    GREEN = auto()
+    BLUE = auto()
 
 
 class Tile(SelectableObject):
     def __init__(
         self,
-        x: int,
-        y: int,
+        pos: Tuple[int, int],
         terrain: TerrainEnum,
-        effects: List[Callable[[int, int], None]],
-        unit: Optional[UnitEnum] = None,
+        /,
+        *,
+        effects: Optional[List[Callable[[int, int], None]]] = None,
+        unit: Optional[UnitTypeEnum] = None,
     ):
+        if effects is None:
+            effects = []
+        x, y = pos
         self.x = x
         self.y = y
         self.terrain = terrain

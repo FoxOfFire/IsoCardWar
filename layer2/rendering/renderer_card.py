@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from typing import Type
 
 import esper
@@ -10,16 +11,23 @@ from common.constants import (
     RELATIVE_MARKER_POS_X,
     RELATIVE_MARKER_POS_Y,
 )
-from layer1.cards import Card, deck_obj, get_card_angle
-from layer2 import CardSprite
+from layer1 import game_state_obj
+from layer1.cards import Card, deck_obj
+from layer2 import MaskedSprite
 
-from .rendering_images import (
+from .rendering_asset_loader import (
     CARD_IMAGE_SURFS,
     CARD_MARKER_SURFS,
     CARD_TYPE_SURFS,
     CardImageEnum,
     CardTypeEnum,
 )
+from .utils import draw_text_on_surf
+
+
+@dataclass
+class CardSprite(MaskedSprite):
+    pass
 
 
 class CardRenderer:
@@ -34,14 +42,16 @@ class CardRenderer:
     def draw(self, screen: pygame.Surface) -> None:
         def sorter(ent: int) -> int:
             if ent not in deck_obj.hand:
-                return 1000
+                return -1
+            if ent == game_state_obj.selected:
+                return 10000
+            if ent == game_state_obj.selecting:
+                return 10001
             return deck_obj.hand.index(ent)
 
         ent_list = sorted(
             self.pos_track.intersect(self.bb), key=lambda ent: sorter(ent)
         )
-        if deck_obj.selected is not None:
-            ent_list.append(deck_obj.selected)
         for ent in ent_list:
             sprite = esper.try_component(ent, CardSprite)
             card = esper.try_component(ent, Card)
@@ -60,9 +70,9 @@ class CardRenderer:
                     topleft=(RELATIVE_MARKER_POS_X, RELATIVE_MARKER_POS_Y)
                 ),
             )
+            draw_text_on_surf(surf, ent)
 
-            rotated_surf = pygame.transform.rotate(surf, get_card_angle(ent))
-            sprite.mask = pygame.mask.from_surface(rotated_surf)
+            sprite.mask = pygame.mask.from_surface(surf)
 
-            sprite.rect = rotated_surf.get_rect(center=bb.center)
-            screen.blit(rotated_surf, sprite.rect)
+            sprite.rect = surf.get_rect(center=bb.center)
+            screen.blit(surf, sprite.rect)

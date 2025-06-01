@@ -1,11 +1,11 @@
-import enum
+from enum import Enum, auto
 
 
-class WorldEnum(enum.StrEnum):
+class WorldEnum(Enum):
     GAME = "Game"
 
 
-class UIStateEnum(enum.IntEnum):
-    BASE = enum.auto()
-    HOVER = enum.auto()
-    PRESSED = enum.auto()
+class UIStateEnum(Enum):
+    BASE = auto()
+    HOVER = auto()
+    PRESSED = auto()

@@ -5,9 +5,10 @@ import esper
 import pygame
 
 from common import BoundingBox, PositionTracker
+from common.constants import RENDER_BBS
 
 from .log import logger
-from .rendering_utils import bb_to_rect, sort_by_bb
+from .utils import bb_to_rect, sort_by_bb
 
 
 class BBRenderer:
@@ -21,6 +22,8 @@ class BBRenderer:
         logger.info("bb render init finished")
 
     def draw(self, screen: pygame.Surface) -> None:
+        if not RENDER_BBS:
+            return
 
         ent_list = sorted(
             self.pos_track.intersect(self.bb), key=partial(sort_by_bb, side=3)

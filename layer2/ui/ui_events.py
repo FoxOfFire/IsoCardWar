@@ -1,4 +1,3 @@
-from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Optional, Tuple
 
@@ -6,7 +5,7 @@ import esper
 import pygame
 
 from common import BoundingBox, PositionTracker
-from layer1 import play_card
+from layer1 import hover, play_card, remove_hover
 from layer1.iso_map import map_obj
 from layer2.tags import GameCameraTag
 
@@ -18,7 +17,6 @@ SWITCH_SCENE = pygame.event.custom_type()
 @dataclass
 class UIEventInfo:
     iso_pos_track: Optional[PositionTracker] = None
-    iso_click_event: Optional[Callable[..., None]] = None
 
 
 ui_event_obj = UIEventInfo()
@@ -61,3 +59,19 @@ def click_on_tile(ent: int) -> None:
         if intersect == ui_event_obj.iso_pos_track.plain:
             continue
         play_card(intersect)
+
+
+def hover_over_tile(ent: int) -> None:
+    bb = esper.component_for_entity(ent, BoundingBox)
+    trans_mouse_pos = _get_transformed_mouse_pos(bb)
+    mouse_bb = BoundingBox(
+        trans_mouse_pos[0], trans_mouse_pos[0], trans_mouse_pos[1], trans_mouse_pos[1]
+    )
+    if ui_event_obj.iso_pos_track is None:
+        raise RuntimeError("ui_event_obj iso_pos_track field missing")
+    for intersect in ui_event_obj.iso_pos_track.intersect(mouse_bb):
+        if intersect == ui_event_obj.iso_pos_track.plain:
+            continue
+        hover(intersect)
+        return
+    remove_hover(-1)
