@@ -10,7 +10,9 @@ from common.constants import (
     GAME_CAM_WIDTH,
     ISO_MAP_HEIGHT,
     ISO_MAP_WIDTH,
+    STARTER_DECK_COUNT,
 )
+from common.globals import RUN_DATA_REF
 from layer1.cards import (
     CardMovementProcessor,
     create_starting_deck,
@@ -29,18 +31,11 @@ from layer2 import (
 )
 from layer2.dying import DyingProcessor
 from layer2.event_handlers import bind_events as bind_core_events
-from layer2.rendering import (
-    IsoSprite,
-    RenderingProcessor,
-    RenderLayerEnum,
-    UIElemType,
-    load_images,
-)
+from layer2.rendering import IsoSprite, RenderingProcessor, RenderLayerEnum, load_images
 from layer2.ui import UIProcessor, bind_keyboard_events, init_audio
 
-from . import global_vars
 from .log import logger
-from .spawners import create_card_obj, spawn_button, spawn_card_ent, spawn_iso_elem
+from .spawners import build_ui, create_card_obj, spawn_card_ent, spawn_iso_elem
 
 
 def init_logging() -> None:
@@ -57,11 +52,6 @@ def init_logging() -> None:
         format=format,
         filemode="w",
     )
-
-
-def init_globals() -> None:
-    global_vars.game_clock = pygame.time.Clock()
-    global_vars.game_running = True
 
 
 def init_window() -> None:
@@ -85,7 +75,7 @@ def bind_game_events(
     bind_keyboard_events(event_processor)
 
     def handle_quit(event: pygame.event.Event) -> None:
-        global_vars.game_running = False
+        RUN_DATA_REF.game_running = False
 
     event_processor.bind(pygame.QUIT, handle_quit)
 
@@ -164,7 +154,7 @@ def init_game_world_esper() -> None:
     # dependency injection
     deck_obj.spawn_card = spawn_card_ent
     deck_obj.create_card = create_card_obj
-    create_starting_deck(20)
+    create_starting_deck(STARTER_DECK_COUNT)
     for _ in range(7):
         draw_card()
 
@@ -175,7 +165,6 @@ def init_game_world_esper() -> None:
 
 def init() -> None:
     init_logging()
-    init_globals()
     init_window()
     init_audio()
 
@@ -184,8 +173,7 @@ def init() -> None:
     init_game_world_esper()
     load_images()
     esper.process()
+    build_ui()
     logger.info(f"{esper.current_world} world init finished")
-    spawn_button((20, 40), "Penis!!", UIElemType.TEXTBOX)
-    spawn_button((20, 52), "Cocking", UIElemType.BUTTON)
 
     logger.info("Finished init!!")

@@ -4,6 +4,7 @@ import esper
 import pygame
 
 from common import BoundingBox, PositionTracker
+from common.constants import RENDER_MASKS
 from layer1 import game_state_obj
 from layer1.cards import deck_obj
 
@@ -130,4 +131,5 @@ class MaskRenderer:
         self._draw_selection_to_hand(ent_list, selection_list)
         self._invert_hand(ent_list)
         self._draw_selection_to_selected()
-        # self._draw_mask_on_screen(screen, ent_list + selection_list)
+        if RENDER_MASKS:
+            self._draw_mask_on_screen(screen, ent_list + selection_list)

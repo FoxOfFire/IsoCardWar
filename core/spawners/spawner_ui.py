@@ -4,9 +4,9 @@ from typing import Optional, Tuple
 import esper
 
 from common import BoundingBox
-from common.constants import BUTTON_HEIGHT, BUTTON_WIDTH, FONT_COLOR
+from common.constants import BUTTON_HEIGHT, BUTTON_WIDTH
 from layer2 import TextData, TrackUI, UIElementComponent
-from layer2.rendering import UIElemSprite, UIElemType, get_font
+from layer2.rendering import UIElemSprite, UIElemType
 
 from .log import logger
 
@@ -31,11 +31,12 @@ def spawn_button(
             return text
 
         mod_text = text_func
+    else:
+        mod_text = text
 
     bb = BoundingBox(x, x + BUTTON_WIDTH, y, y + BUTTON_HEIGHT)
-    text_rect = get_font().render(mod_text(), False, FONT_COLOR).get_rect()
-    offset_x = (bb.width - text_rect.width) / 2
-    offset_y = (bb.height - text_rect.height) / 2 - 1
+    offset_x = bb.width / 2
+    offset_y = bb.height / 2 - 1
     text_data = TextData(mod_text, (offset_x, offset_y))
 
     ui_elem = UIElementComponent(
