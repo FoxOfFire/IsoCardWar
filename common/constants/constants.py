@@ -1,13 +1,11 @@
-from math import sqrt
-
 import pygame
 
-ROOT_TWO = sqrt(2.0)
+# debug
+RENDER_BBS = False
 
 # camera
 GAME_CAM_HEIGHT = 240
 GAME_CAM_WIDTH = GAME_CAM_HEIGHT // 9 * 16
-PIXEL_SIZE = 1080 / GAME_CAM_HEIGHT
 
 
 # cards
@@ -51,5 +49,5 @@ ISO_TILE_SELECT_OFFSET = -2
 FONT_COLOR = pygame.Color(53, 43, 66, 255)
 FONT_SIZE = 6
 
-BUTTON_TEXT_OFFSET_X = 2
-BUTTON_TEXT_OFFSET_Y = 1
+BUTTON_WIDTH = 64
+BUTTON_HEIGHT = 13

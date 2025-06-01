@@ -1,13 +1,10 @@
-from collections.abc import Callable
 from random import randint
-from typing import Optional, Type
+from typing import Type
 
 import esper
 
 from common import BoundingBox, Health
 from common.constants import (
-    BUTTON_TEXT_OFFSET_X,
-    BUTTON_TEXT_OFFSET_Y,
     CARD_HEIGHT,
     CARD_START_X,
     CARD_START_Y,
@@ -20,13 +17,12 @@ from common.constants import (
     ISO_POS_OFFSET_Y,
     ISO_TILE_OFFSET_X,
     ISO_TILE_OFFSET_Y,
-    ROOT_TWO,
 )
 from layer1 import MarkerEnum, PriceEnum, hover, remove_hover, select
 from layer1.cards import Card, CardTypeEnum, draw_cards
 from layer1.iso_map import change_tile, change_unit, make_map, map_obj
 from layer2 import TextData, TrackUI, UIElementComponent
-from layer2.rendering import CardSprite, UIElemSprite, UIElemType
+from layer2.rendering import CardSprite
 from layer2.ui import click_on_tile, hover_over_tile
 
 from .log import logger
@@ -34,8 +30,9 @@ from .log import logger
 
 def spawn_iso_elem(
     map_tracker: Type,
-    map_sprite: Type,
     ui_tracker: Type,
+    map_sprite: Type,
+    /,
 ) -> int:
     map_size = (ISO_MAP_WIDTH, ISO_MAP_HEIGHT)
     offset = (ISO_POS_OFFSET_X, ISO_POS_OFFSET_Y)
@@ -69,23 +66,18 @@ def spawn_iso_elem(
     return ent
 
 
-def spawn_card_ent(card: Card) -> int:
+def spawn_card_ent(card: Card, /) -> int:
     """
     #creates card entity
 
     does not add to deck
     """
-    # calculating bb size
-    bb_size = ROOT_TWO / 2 * (CARD_HEIGHT + CARD_WIDTH)
-
-    width_offset = (bb_size - CARD_WIDTH) / 2
-    height_offset = (bb_size - CARD_HEIGHT) / 2
 
     bb = BoundingBox(
-        CARD_START_X - width_offset,
-        CARD_START_X + width_offset + CARD_WIDTH,
-        CARD_START_Y - height_offset,
-        CARD_START_Y + height_offset + CARD_HEIGHT,
+        CARD_START_X,
+        CARD_START_X + CARD_WIDTH,
+        CARD_START_Y,
+        CARD_START_Y + CARD_HEIGHT,
     )
     text = TextData(
         lambda: card.name,
@@ -115,31 +107,3 @@ def create_card_obj(card_type: CardTypeEnum) -> Card:
 
     prices = {PriceEnum.AMMO: 1, PriceEnum.METAL: 1, PriceEnum.FOOD: 1}
     return Card(f"{card_type.value}{randint(0, 9)}", prices, marker, effects)
-
-
-def spawn_button(
-    bb: BoundingBox,
-    text: str | Callable[[], str],
-    click_func: Optional[Callable[[int], None]],
-    /,
-    *,
-    hover_func: Optional[Callable[[int], None]] = None,
-    remove_hover_func: Optional[Callable[[int], None]] = None,
-) -> int:
-    if not callable(text):
-
-        def text_func() -> str:
-            if callable(text):
-                raise RuntimeError("text somehow callable and uncallable")
-            return text
-
-        mod_text = text_func
-    text_data = TextData(mod_text, (BUTTON_TEXT_OFFSET_X, BUTTON_TEXT_OFFSET_Y))
-    ui_elem = UIElementComponent(
-        text=[text_data],
-        click_func=click_func,
-        hover_func=hover_func,
-        unhover_func=remove_hover_func,
-    )
-    ent = esper.create_entity(bb, ui_elem, TrackUI(), UIElemSprite(UIElemType.BUTTON))
-    return ent

@@ -9,6 +9,8 @@ from common.constants import FONT_SIZE
 from layer1 import MarkerEnum
 from layer1.iso_map import SelectionTypeEnum, TerrainEnum, UnitTypeEnum
 
+from .log import logger
+
 
 class CardTypeEnum(Enum):
     BASIC = "basic"
@@ -53,6 +55,7 @@ _font_container = _FontContainer()
 
 def get_font() -> pygame.font.Font:
     if _font_container.font is None:
+        logger.info("loaded font")
         _font_container.font = pygame.font.Font(FONT_ASSET_DIR / "tiny.ttf", FONT_SIZE)
     return _font_container.font
 
@@ -60,6 +63,7 @@ def get_font() -> pygame.font.Font:
 def _load_image_type(
     enum: Type[Enum], surfs: Dict[Enum, pygame.Surface], path: Path, name: str
 ) -> None:
+    logger.info(f"loaded image assets of type:{enum}")
     for type, val in [(e, e.value) for e in enum]:
         surfs.update(
             {type: pygame.image.load(path / f"{name}{val}.png").convert_alpha()}
@@ -69,6 +73,7 @@ def _load_image_type(
 def _load_animation_type(
     enum: Type[Enum], surfs: Dict[Enum, List[pygame.Surface]], path: Path, name: str
 ) -> None:
+    logger.info(f"loaded animation assets of type: {enum}")
     for images, (img_name, frame_cnt) in [(e, e.value) for e in enum]:
         surfs.update(
             {
