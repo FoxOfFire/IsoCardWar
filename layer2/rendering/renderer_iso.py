@@ -41,6 +41,33 @@ class IsoRenderer:
         UNIT = auto()
         SELECTION = auto()
 
+    def _draw_selection(
+        self,
+        screen: pygame.Surface,
+        surfs: Dict[Enum, pygame.Surface],
+        ent: int,
+        x: float,
+        y: float,
+    ) -> None:
+        if game_state_obj.selected is None:
+            return
+        card = esper.try_component(game_state_obj.selected, Card)
+
+        if ent != game_state_obj.selecting or card is None:
+            return
+
+        match card.marker:
+            case MarkerEnum.BUILDING:
+                screen.blit(surfs[SelectionTypeEnum.BLUE], (x, y))
+            case MarkerEnum.ACTION:
+                screen.blit(surfs[SelectionTypeEnum.RED], (x, y))
+            case MarkerEnum.UNIT:
+                screen.blit(surfs[SelectionTypeEnum.GREEN], (x, y))
+            case MarkerEnum.UNIQUE:
+                pass
+            case _:
+                raise RuntimeError("unexpected card marker in selection")
+
     def _draw_type(
         self,
         screen: pygame.Surface,
@@ -69,24 +96,7 @@ class IsoRenderer:
                         screen.blit(surfs[tile.unit], (x, y))
 
                 case self._DrawType.SELECTION:
-                    if ent != game_state_obj.selecting:
-                        continue
-                    if game_state_obj.selected is None:
-                        continue
-                    card = esper.try_component(game_state_obj.selected, Card)
-                    if card is None:
-                        continue
-                    match card.marker:
-                        case MarkerEnum.BUILDING:
-                            screen.blit(surfs[SelectionTypeEnum.BLUE], (x, y))
-                        case MarkerEnum.ACTION:
-                            screen.blit(surfs[SelectionTypeEnum.RED], (x, y))
-                        case MarkerEnum.UNIT:
-                            screen.blit(surfs[SelectionTypeEnum.GREEN], (x, y))
-                        case MarkerEnum.UNIQUE:
-                            pass
-                        case _:
-                            raise RuntimeError("unexpected card marker in selection")
+                    self._draw_selection(screen, surfs, ent, x, y)
 
                 case _:
                     raise RuntimeError("unexpected type while drawing iso_tiles")
