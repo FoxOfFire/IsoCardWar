@@ -11,8 +11,8 @@ from common.constants import (
     RELATIVE_MARKER_POS_X,
     RELATIVE_MARKER_POS_Y,
 )
-from layer1 import game_state_obj
-from layer1.cards import Card, deck_obj
+from layer1 import GAME_STATE_REF
+from layer1.cards import DECK_REF, Card
 from layer2 import MaskedSprite
 
 from .rendering_asset_loader import (
@@ -41,13 +41,13 @@ class CardRenderer:
 
     def draw(self, screen: pygame.Surface) -> None:
         def sorter(ent: int) -> int:
-            if ent not in deck_obj.hand:
+            if ent not in DECK_REF.hand:
                 return -1
-            if ent == game_state_obj.selected:
+            if ent == GAME_STATE_REF.selected:
                 return 10000
-            if ent == game_state_obj.selecting:
+            if ent == GAME_STATE_REF.selecting:
                 return 10001
-            return deck_obj.hand.index(ent)
+            return DECK_REF.hand.index(ent)
 
         ent_list = sorted(
             self.pos_track.intersect(self.bb), key=lambda ent: sorter(ent)

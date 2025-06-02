@@ -9,9 +9,9 @@ from common.constants import (
     CARD_Y_POS_SELECTING,
 )
 from common.globals import RUN_DATA_REF
-from layer1 import game_state_obj
+from layer1 import GAME_STATE_REF
 
-from .cards import Card, deck_obj, get_card_center_offset
+from .cards import DECK_REF, Card, get_card_center_offset
 
 
 class CardMovementProcessor(esper.Processor):
@@ -19,7 +19,7 @@ class CardMovementProcessor(esper.Processor):
         self.cam_bb = cam_bb
 
     def process(self) -> None:
-        if len(deck_obj.hand) == 0:
+        if len(DECK_REF.hand) == 0:
             return
         delta_time = RUN_DATA_REF.delta_time
 
@@ -27,14 +27,14 @@ class CardMovementProcessor(esper.Processor):
             bb = esper.component_for_entity(ent, BoundingBox)
 
             offset_index = get_card_center_offset(ent)
-            offset = offset_index * self.cam_bb.width / len(deck_obj.hand) * 0.8
-            if len(deck_obj.hand) < 7:
+            offset = offset_index * self.cam_bb.width / len(DECK_REF.hand) * 0.8
+            if len(DECK_REF.hand) < 7:
                 offset = offset_index * CARD_X_FIX_DISTANCE
 
             y = CARD_Y_POS_BASE
-            if ent == game_state_obj.selected:
+            if ent == GAME_STATE_REF.selected:
                 y += CARD_Y_POS_SELECTED
-            elif ent == game_state_obj.selecting:
+            elif ent == GAME_STATE_REF.selecting:
                 y += CARD_Y_POS_SELECTING
 
             delta_y = (y - bb.center[1]) / CARD_ANIMATION_SPEED * delta_time

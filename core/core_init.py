@@ -14,11 +14,12 @@ from common.constants import (
 )
 from common.globals import RUN_DATA_REF
 from layer1.cards import (
+    DECK_REF,
     CardMovementProcessor,
     create_starting_deck,
-    deck_obj,
     draw_card,
 )
+from layer1.game_phase import GamePhaseProcessor
 from layer2 import (
     GameCameraTag,
     IsoCameraTag,
@@ -126,6 +127,7 @@ def init_game_world_esper() -> None:
     renderer = RenderingProcessor(display, render_layer_dict)
 
     card_movement_processor = CardMovementProcessor(game_cam_bb)
+    game_phase_processor = GamePhaseProcessor()
     event_processor = EventProcessor()
     ui_processor = UIProcessor(game_position_tracker, display.get_size())
 
@@ -143,6 +145,7 @@ def init_game_world_esper() -> None:
     esper.add_processor(event_processor)
     esper.add_processor(dying_proc)
     esper.add_processor(card_movement_processor)
+    esper.add_processor(game_phase_processor)
 
     esper.add_processor(iso_position_tracker)
     esper.add_processor(game_position_tracker)
@@ -152,8 +155,8 @@ def init_game_world_esper() -> None:
     esper.add_processor(scene_switcher)
 
     # dependency injection
-    deck_obj.spawn_card = spawn_card_ent
-    deck_obj.create_card = create_card_obj
+    DECK_REF.spawn_card = spawn_card_ent
+    DECK_REF.create_card = create_card_obj
     create_starting_deck(STARTER_DECK_COUNT)
     for _ in range(7):
         draw_card()
