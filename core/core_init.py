@@ -36,7 +36,13 @@ from layer2.rendering import IsoSprite, RenderingProcessor, RenderLayerEnum, loa
 from layer2.ui import UIProcessor, bind_keyboard_events, init_audio
 
 from .log import logger
-from .spawners import build_ui, create_card_obj, spawn_card_ent, spawn_iso_elem
+from .spawners import (
+    build_ui,
+    create_card_obj,
+    get_base_game_phase_dict,
+    spawn_card_ent,
+    spawn_iso_elem,
+)
 
 
 def init_logging() -> None:
@@ -127,7 +133,7 @@ def init_game_world_esper() -> None:
     renderer = RenderingProcessor(display, render_layer_dict)
 
     card_movement_processor = CardMovementProcessor(game_cam_bb)
-    game_phase_processor = GamePhaseProcessor()
+    game_phase_processor = GamePhaseProcessor(get_base_game_phase_dict())
     event_processor = EventProcessor()
     ui_processor = UIProcessor(game_position_tracker, display.get_size())
 
