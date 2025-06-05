@@ -13,7 +13,11 @@ from common.constants import (
     ISO_TILE_OFFSET_Y,
     ISO_TILE_SELECT_OFFSET,
 )
+<<<<<<< HEAD
 from layer1 import GAME_STATE_REF, MarkerEnum
+=======
+from layer1 import MarkerEnum, game_state_obj
+>>>>>>> master
 from layer1.cards import Card
 from layer1.iso_map import SelectionTypeEnum, Tile
 
@@ -49,11 +53,19 @@ class IsoRenderer:
         x: float,
         y: float,
     ) -> None:
+<<<<<<< HEAD
         if GAME_STATE_REF.selected is None:
             return
         card = esper.try_component(GAME_STATE_REF.selected, Card)
 
         if ent != GAME_STATE_REF.selecting or card is None:
+=======
+        if game_state_obj.selected is None:
+            return
+        card = esper.try_component(game_state_obj.selected, Card)
+
+        if ent != game_state_obj.selecting or card is None:
+>>>>>>> master
             return
 
         match card.marker:
@@ -85,7 +97,11 @@ class IsoRenderer:
             tile = esper.component_for_entity(ent, Tile)
             x = delta_x + ISO_POS_OFFSET_X + (tile.x + tile.y) * ISO_TILE_OFFSET_X
             y = delta_y + ISO_POS_OFFSET_Y + (tile.x - tile.y) * ISO_TILE_OFFSET_Y
+<<<<<<< HEAD
             if ent == GAME_STATE_REF.selecting:
+=======
+            if ent == game_state_obj.selecting:
+>>>>>>> master
                 y += ISO_TILE_SELECT_OFFSET
             match draw_type:
                 case self._DrawType.TILE:

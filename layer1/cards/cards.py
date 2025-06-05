@@ -6,10 +6,17 @@ import esper
 from common import Health
 from common.constants import MAX_CARD_COUNT
 from layer1 import (
+<<<<<<< HEAD
     GAME_STATE_REF,
     MarkerEnum,
     PriceEnum,
     SelectableObject,
+=======
+    MarkerEnum,
+    PriceEnum,
+    SelectableObject,
+    game_state_obj,
+>>>>>>> master
     set_play_card,
 )
 
@@ -64,9 +71,15 @@ def create_starting_deck(card_count: int) -> None:
         raise RuntimeError("create_card undefined")
 
     for _ in range(card_count // 3):
+<<<<<<< HEAD
         cards.append(DECK_REF.create_card(CardTypeEnum.DRAW_ONE))
         cards.append(DECK_REF.create_card(CardTypeEnum.CHANGE_UNIT_AND_DRAW))
         cards.append(DECK_REF.create_card(CardTypeEnum.CHANGE_TERRAIN_AND_DRAW))
+=======
+        cards.append(deck_obj.create_card(CardTypeEnum.DRAW_ONE))
+        cards.append(deck_obj.create_card(CardTypeEnum.CHANGE_UNIT_AND_DRAW))
+        cards.append(deck_obj.create_card(CardTypeEnum.CHANGE_TERRAIN_AND_DRAW))
+>>>>>>> master
 
     DECK_REF.deck = cards
     shuffle_deck()
@@ -124,11 +137,19 @@ def shuffle_deck() -> None:
                 random.randint(0, len(DECK_REF.deck) - 1),
             )
         )
+<<<<<<< HEAD
     DECK_REF.deck = new
 
 
 def play_card(target: int) -> None:
     ent = GAME_STATE_REF.selected
+=======
+    deck_obj.deck = new
+
+
+def play_card(target: int) -> None:
+    ent = game_state_obj.selected
+>>>>>>> master
 
     if ent is None or not esper.entity_exists(ent):
         return
@@ -137,9 +158,15 @@ def play_card(target: int) -> None:
         return
     for effect in card.effects:
         effect(ent, target)
+<<<<<<< HEAD
     GAME_STATE_REF.selected = None
     DECK_REF.hand.remove(ent)
     DECK_REF.discard.append(card)
+=======
+    game_state_obj.selected = None
+    deck_obj.hand.remove(ent)
+    deck_obj.discard.append(card)
+>>>>>>> master
     esper.component_for_entity(ent, Health).hp = 0
 
 
