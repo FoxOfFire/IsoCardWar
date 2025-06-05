@@ -36,7 +36,7 @@ def spawn_button(
 
     bb = BoundingBox(x, x + BUTTON_WIDTH, y, y + BUTTON_HEIGHT)
     offset_x = bb.width / 2
-    offset_y = bb.height / 2 - 1
+    offset_y = bb.height / 2
     text_data = TextData(mod_text, (offset_x, offset_y))
 
     ui_elem = UIElementComponent(
