@@ -92,18 +92,11 @@ def spawn_card_ent(card: Card, /) -> int:
 
 
 def create_card_obj(card_type: CardTypeEnum) -> Card:
-<<<<<<< HEAD
     rand = randint(0, 3)
     match card_type:
         case CardTypeEnum.DRAW_ONE:
             marker = MarkerEnum.ACTION
             effects = draw_cards(rand)
-=======
-    match card_type:
-        case CardTypeEnum.DRAW_ONE:
-            marker = MarkerEnum.ACTION
-            effects = draw_cards(randint(0, 2))
->>>>>>> master
         case CardTypeEnum.CHANGE_TERRAIN_AND_DRAW:
             marker = MarkerEnum.BUILDING
             effects = change_tile() + draw_cards(1)
@@ -114,8 +107,4 @@ def create_card_obj(card_type: CardTypeEnum) -> Card:
             raise RuntimeError("unexpected card type")
 
     prices = {PriceEnum.AMMO: 1, PriceEnum.METAL: 1, PriceEnum.FOOD: 1}
-<<<<<<< HEAD
     return Card(f"{card_type.value}{rand}", prices, marker, effects)
-=======
-    return Card(f"{card_type.value}{randint(0, 9)}", prices, marker, effects)
->>>>>>> master

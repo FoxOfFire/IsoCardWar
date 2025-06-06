@@ -36,7 +36,6 @@ from layer2.rendering import (
     IsoSprite,
     RenderingProcessor,
     RenderLayerEnum,
-    UIElemType,
     load_images,
 )
 from layer2.ui import UIProcessor, bind_keyboard_events, init_audio
@@ -190,7 +189,5 @@ def init() -> None:
     esper.process()
     build_ui()
     logger.info(f"{esper.current_world} world init finished")
-    spawn_button((20, 40), "Penis!!", UIElemType.TEXTBOX)
-    spawn_button((20, 52), "Cocking", UIElemType.BUTTON)
 
     logger.info("Finished init!!")

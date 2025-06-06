@@ -4,14 +4,9 @@ import esper
 import pygame
 
 from common import BoundingBox, PositionTracker
-<<<<<<< HEAD
 from common.constants import RENDER_MASKS
 from layer1 import GAME_STATE_REF
 from layer1.cards import DECK_REF
-=======
-from layer1 import game_state_obj
-from layer1.cards import deck_obj
->>>>>>> master
 
 from .renderer_card import CardSprite
 
@@ -27,15 +22,9 @@ class MaskRenderer:
 
     def _get_sorted_hand_and_selection(self) -> Tuple[List[int], List[int]]:
         def sorter(ent: int) -> int:
-<<<<<<< HEAD
             if ent not in DECK_REF.hand:
                 return -1
             return DECK_REF.hand.index(ent)
-=======
-            if ent not in deck_obj.hand:
-                return -1
-            return deck_obj.hand.index(ent)
->>>>>>> master
 
         ent_list = sorted(
             self.pos_track.intersect(self.bb),
@@ -43,13 +32,8 @@ class MaskRenderer:
             reverse=False,
         )
         selection_list = []
-<<<<<<< HEAD
         selected = GAME_STATE_REF.selected
         selecting = GAME_STATE_REF.selecting
-=======
-        selected = game_state_obj.selected
-        selecting = game_state_obj.selecting
->>>>>>> master
         if selected is not None and selected in ent_list:
             ent_list.remove(selected)
             selection_list.append(selected)
@@ -65,7 +49,6 @@ class MaskRenderer:
             if sprite is None:
                 continue
 
-<<<<<<< HEAD
             elif ent in DECK_REF.hand:
                 sprite.mask.invert()
                 this = DECK_REF.hand.index(ent)
@@ -73,15 +56,6 @@ class MaskRenderer:
 
                     next_card_sprite = esper.component_for_entity(
                         DECK_REF.hand[next], CardSprite
-=======
-            elif ent in deck_obj.hand:
-                sprite.mask.invert()
-                this = deck_obj.hand.index(ent)
-                for next in range(this + 1, len(deck_obj.hand)):
-
-                    next_card_sprite = esper.component_for_entity(
-                        deck_obj.hand[next], CardSprite
->>>>>>> master
                     )
 
                     sprite.mask.draw(
@@ -120,17 +94,10 @@ class MaskRenderer:
             sprite.mask.invert()
 
     def _draw_selection_to_selected(self) -> None:
-<<<<<<< HEAD
         if GAME_STATE_REF.selecting is None or GAME_STATE_REF.selected is None:
             return
         selecting_sprite = esper.try_component(GAME_STATE_REF.selecting, CardSprite)
         selected_sprite = esper.try_component(GAME_STATE_REF.selected, CardSprite)
-=======
-        if game_state_obj.selecting is None or game_state_obj.selected is None:
-            return
-        selecting_sprite = esper.try_component(game_state_obj.selecting, CardSprite)
-        selected_sprite = esper.try_component(game_state_obj.selected, CardSprite)
->>>>>>> master
         if selecting_sprite is None or selected_sprite is None:
             return
 
@@ -164,9 +131,5 @@ class MaskRenderer:
         self._draw_selection_to_hand(ent_list, selection_list)
         self._invert_hand(ent_list)
         self._draw_selection_to_selected()
-<<<<<<< HEAD
         if RENDER_MASKS:
             self._draw_mask_on_screen(screen, ent_list + selection_list)
-=======
-        # self._draw_mask_on_screen(screen, ent_list + selection_list)
->>>>>>> master
