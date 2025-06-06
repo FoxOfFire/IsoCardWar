@@ -4,7 +4,7 @@ import esper
 
 from common import BoundingBox
 from common.constants import BUTTON_HEIGHT, BUTTON_WIDTH
-from common.types import EntityFunc, TextFunc
+from common.types import ButtonFunc, TextFunc
 from layer2 import TextData, TrackUI, UIElementComponent
 from layer2.rendering import UIElemSprite, UIElemType
 
@@ -17,9 +17,9 @@ def spawn_button(
     ui_elem_type: UIElemType,
     /,
     *,
-    click_func: Optional[EntityFunc] = None,
-    hover_func: Optional[EntityFunc] = None,
-    remove_hover_func: Optional[EntityFunc] = None,
+    click_func: Optional[ButtonFunc] = None,
+    hover_func: Optional[ButtonFunc] = None,
+    remove_hover_func: Optional[ButtonFunc] = None,
 ) -> int:
     logger.info("spawning button")
     x, y = topleft

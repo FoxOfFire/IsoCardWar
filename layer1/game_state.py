@@ -3,7 +3,7 @@ from typing import Dict, Optional
 
 import esper
 
-from common.types import EntityFunc
+from common.types import ButtonFunc
 
 from .game_state_utils import GamePhaseEnum, PriceEnum
 
@@ -11,7 +11,7 @@ from .game_state_utils import GamePhaseEnum, PriceEnum
 class GameState:
     def __init__(self) -> None:
         self.resources: Dict[PriceEnum, int] = {}
-        self.play_card: Optional[EntityFunc] = None
+        self.play_card: Optional[ButtonFunc] = None
         self.get_selected: Optional[Callable[[], int]] = None
         self.selected: Optional[int] = None
         self.selecting: Optional[int] = None
@@ -23,7 +23,7 @@ GAME_STATE_REF = GameState()
 
 
 # cards
-def set_play_card(func: EntityFunc) -> None:
+def set_play_card(func: ButtonFunc) -> None:
     GAME_STATE_REF.play_card = func
 
 

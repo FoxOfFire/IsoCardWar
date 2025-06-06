@@ -6,7 +6,7 @@ import esper
 
 from common import Health
 from common.constants import MAX_CARD_COUNT
-from common.types import ButtonFunc
+from common.types import EntityFunc
 from layer1 import (
     GAME_STATE_REF,
     MarkerEnum,
@@ -27,7 +27,7 @@ class Card(SelectableObject):
         name: str,
         price: Dict[PriceEnum, int],
         marker: MarkerEnum,
-        effects: List[ButtonFunc],
+        effects: List[EntityFunc],
     ):
         self.name = name
         self.price = price

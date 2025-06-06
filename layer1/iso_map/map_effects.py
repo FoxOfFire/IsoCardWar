@@ -2,14 +2,14 @@ from typing import List
 
 import esper
 
-from common.types import ButtonFunc
+from common.types import EntityFunc
 
 from .log import logger
 from .tile import TerrainEnum, Tile, UnitTypeEnum
 
 
-def change_tile_to(terrain: TerrainEnum) -> List[ButtonFunc]:
-    effects: List[ButtonFunc] = []
+def change_tile_to(terrain: TerrainEnum) -> List[EntityFunc]:
+    effects: List[EntityFunc] = []
 
     def change(ent: int, target: int) -> None:
         tile = esper.component_for_entity(target, Tile)
@@ -19,8 +19,8 @@ def change_tile_to(terrain: TerrainEnum) -> List[ButtonFunc]:
     return effects
 
 
-def change_tile() -> List[ButtonFunc]:
-    effects: List[ButtonFunc] = []
+def change_tile() -> List[EntityFunc]:
+    effects: List[EntityFunc] = []
 
     def rotate(ent: int, target: int) -> None:
         tile = esper.component_for_entity(target, Tile)
@@ -32,8 +32,8 @@ def change_tile() -> List[ButtonFunc]:
     return effects
 
 
-def change_unit() -> List[ButtonFunc]:
-    effects: List[ButtonFunc] = []
+def change_unit() -> List[EntityFunc]:
+    effects: List[EntityFunc] = []
 
     def rotate(ent: int, target: int) -> None:
         tile = esper.component_for_entity(target, Tile)

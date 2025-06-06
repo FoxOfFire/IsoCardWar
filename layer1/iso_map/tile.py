@@ -1,7 +1,7 @@
 from enum import Enum, auto
 from typing import List, Optional, Tuple
 
-from common.types import ButtonFunc
+from common.types import EntityFunc
 from layer1 import SelectableObject
 
 
@@ -30,7 +30,7 @@ class Tile(SelectableObject):
         terrain: TerrainEnum,
         /,
         *,
-        effects: Optional[List[ButtonFunc]] = None,
+        effects: Optional[List[EntityFunc]] = None,
         unit: Optional[UnitTypeEnum] = None,
     ):
         if effects is None:
