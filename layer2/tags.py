@@ -1,8 +1,9 @@
-from collections.abc import Callable
 from dataclasses import dataclass
 from typing import List, NamedTuple, Optional, Tuple
 
 import pygame
+
+from common.types import EntityFunc, TextFunc
 
 from .enums import UIStateEnum
 
@@ -40,7 +41,7 @@ class MaskedSprite:
 
 @dataclass
 class TextData:
-    text: Callable[[], str]
+    text: TextFunc
     offset: Tuple[float, float]
 
 
@@ -52,15 +53,15 @@ class UIElementComponent:
         is_clickable: bool = True,
         is_active: bool = False,
         text: Optional[List[TextData]] = None,
-        click_func: Optional[Callable[[int], None]] = None,
-        hover_func: Optional[Callable[[int], None]] = None,
-        unhover_func: Optional[Callable[[int], None]] = None,
+        click_func: Optional[EntityFunc] = None,
+        hover_func: Optional[EntityFunc] = None,
+        unhover_func: Optional[EntityFunc] = None,
     ):
         self.state: UIStateEnum = state
         self.is_visible: bool = is_visible
         self.is_clickable: bool = is_clickable
         self.is_active: bool = is_active
         self.text: List[TextData] = [] if text is None else text
-        self.click_func: Optional[Callable[[int], None]] = click_func
-        self.hover_func: Optional[Callable[[int], None]] = hover_func
-        self.unhover_func: Optional[Callable[[int], None]] = unhover_func
+        self.click_func: Optional[EntityFunc] = click_func
+        self.hover_func: Optional[EntityFunc] = hover_func
+        self.unhover_func: Optional[EntityFunc] = unhover_func

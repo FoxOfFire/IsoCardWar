@@ -1,10 +1,12 @@
 import random
-from typing import Any, Callable, Dict, List, Optional
+from collections.abc import Callable
+from typing import Any, Dict, List, Optional
 
 import esper
 
 from common import Health
 from common.constants import MAX_CARD_COUNT
+from common.types import ButtonFunc
 from layer1 import (
     GAME_STATE_REF,
     MarkerEnum,
@@ -25,7 +27,7 @@ class Card(SelectableObject):
         name: str,
         price: Dict[PriceEnum, int],
         marker: MarkerEnum,
-        effects: List[Callable[[int, int], None]],
+        effects: List[ButtonFunc],
     ):
         self.name = name
         self.price = price

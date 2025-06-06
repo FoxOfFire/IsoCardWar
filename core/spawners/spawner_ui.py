@@ -1,10 +1,10 @@
-from collections.abc import Callable
 from typing import Optional, Tuple
 
 import esper
 
 from common import BoundingBox
 from common.constants import BUTTON_HEIGHT, BUTTON_WIDTH
+from common.types import EntityFunc, TextFunc
 from layer2 import TextData, TrackUI, UIElementComponent
 from layer2.rendering import UIElemSprite, UIElemType
 
@@ -13,13 +13,13 @@ from .log import logger
 
 def spawn_button(
     topleft: Tuple[float, float],
-    text: str | Callable[[], str],
+    text: str | TextFunc,
     ui_elem_type: UIElemType,
     /,
     *,
-    click_func: Optional[Callable[[int], None]] = None,
-    hover_func: Optional[Callable[[int], None]] = None,
-    remove_hover_func: Optional[Callable[[int], None]] = None,
+    click_func: Optional[EntityFunc] = None,
+    hover_func: Optional[EntityFunc] = None,
+    remove_hover_func: Optional[EntityFunc] = None,
 ) -> int:
     logger.info("spawning button")
     x, y = topleft

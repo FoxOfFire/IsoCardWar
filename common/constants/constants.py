@@ -50,6 +50,9 @@ ISO_POS_OFFSET_Y = (
 
 ISO_TILE_SELECT_OFFSET = -2
 
+# game phases
+GAME_PHASE_PAUSE = 300
+
 # UI
 FONT_COLOR = pygame.Color(53, 43, 66, 255)
 FONT_SIZE = 6
