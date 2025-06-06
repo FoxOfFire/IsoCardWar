@@ -10,13 +10,16 @@ from common.constants import (
     GAME_CAM_WIDTH,
     ISO_MAP_HEIGHT,
     ISO_MAP_WIDTH,
+    STARTER_DECK_COUNT,
 )
+from common.globals import RUN_DATA_REF
 from layer1.cards import (
+    DECK_REF,
     CardMovementProcessor,
     create_starting_deck,
-    deck_obj,
     draw_card,
 )
+from layer1.game_phase import GamePhaseProcessor
 from layer2 import (
     GameCameraTag,
     IsoCameraTag,
@@ -33,14 +36,18 @@ from layer2.rendering import (
     IsoSprite,
     RenderingProcessor,
     RenderLayerEnum,
-    UIElemType,
     load_images,
 )
 from layer2.ui import UIProcessor, bind_keyboard_events, init_audio
 
-from . import global_vars
 from .log import logger
-from .spawners import create_card_obj, spawn_button, spawn_card_ent, spawn_iso_elem
+from .spawners import (
+    build_ui,
+    create_card_obj,
+    get_base_game_phase_dict,
+    spawn_card_ent,
+    spawn_iso_elem,
+)
 
 
 def init_logging() -> None:
@@ -57,11 +64,6 @@ def init_logging() -> None:
         format=format,
         filemode="w",
     )
-
-
-def init_globals() -> None:
-    global_vars.game_clock = pygame.time.Clock()
-    global_vars.game_running = True
 
 
 def init_window() -> None:
@@ -85,7 +87,7 @@ def bind_game_events(
     bind_keyboard_events(event_processor)
 
     def handle_quit(event: pygame.event.Event) -> None:
-        global_vars.game_running = False
+        RUN_DATA_REF.game_running = False
 
     event_processor.bind(pygame.QUIT, handle_quit)
 
@@ -136,6 +138,7 @@ def init_game_world_esper() -> None:
     renderer = RenderingProcessor(display, render_layer_dict)
 
     card_movement_processor = CardMovementProcessor(game_cam_bb)
+    game_phase_processor = GamePhaseProcessor(get_base_game_phase_dict())
     event_processor = EventProcessor()
     ui_processor = UIProcessor(game_position_tracker, display.get_size())
 
@@ -153,6 +156,7 @@ def init_game_world_esper() -> None:
     esper.add_processor(event_processor)
     esper.add_processor(dying_proc)
     esper.add_processor(card_movement_processor)
+    esper.add_processor(game_phase_processor)
 
     esper.add_processor(iso_position_tracker)
     esper.add_processor(game_position_tracker)
@@ -162,9 +166,9 @@ def init_game_world_esper() -> None:
     esper.add_processor(scene_switcher)
 
     # dependency injection
-    deck_obj.spawn_card = spawn_card_ent
-    deck_obj.create_card = create_card_obj
-    create_starting_deck(20)
+    DECK_REF.spawn_card = spawn_card_ent
+    DECK_REF.create_card = create_card_obj
+    create_starting_deck(STARTER_DECK_COUNT)
     for _ in range(7):
         draw_card()
 
@@ -175,7 +179,6 @@ def init_game_world_esper() -> None:
 
 def init() -> None:
     init_logging()
-    init_globals()
     init_window()
     init_audio()
 
@@ -184,8 +187,7 @@ def init() -> None:
     init_game_world_esper()
     load_images()
     esper.process()
+    build_ui()
     logger.info(f"{esper.current_world} world init finished")
-    spawn_button((20, 40), "Penis!!", UIElemType.TEXTBOX)
-    spawn_button((20, 52), "Cocking", UIElemType.BUTTON)
 
     logger.info("Finished init!!")

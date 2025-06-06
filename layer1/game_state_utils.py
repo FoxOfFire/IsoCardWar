@@ -1,6 +1,7 @@
-from collections.abc import Callable
 from enum import Enum, auto
 from typing import List
+
+from common.types import EntityFunc
 
 
 class MarkerEnum(Enum):
@@ -26,4 +27,4 @@ class GamePhaseEnum(Enum):
 
 
 class SelectableObject:
-    effects: List[Callable[[int, int], None]]
+    effects: List[EntityFunc]

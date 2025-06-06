@@ -1,10 +1,10 @@
-from collections.abc import Callable
 from random import randint
 from typing import List, Optional, Tuple, Type
 
 import esper
 
 from common import BoundingBox
+from common.types import EntityFunc
 
 from .tile import TerrainEnum, Tile, UnitTypeEnum
 
@@ -39,7 +39,7 @@ def make_map() -> None:
             pos = (round(bb.left), round(bb.top))
             terrain = TerrainEnum(randint(1, len(list(TerrainEnum))))
             unit: Optional[UnitTypeEnum] = None
-            effects: List[Callable[[int, int], None]] = []
+            effects: List[EntityFunc] = []
 
             if randint(0, 3) == 0 and terrain != TerrainEnum.WATER:
                 unit = UnitTypeEnum(randint(1, len(list(UnitTypeEnum))))

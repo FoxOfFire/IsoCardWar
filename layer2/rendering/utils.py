@@ -33,4 +33,4 @@ def draw_text_on_surf(screen: pygame.Surface, ent: int) -> None:
 
     for text in ui_elem.text:
         text_surf = get_font().render(text.text(), False, FONT_COLOR)
-        screen.blit(text_surf, text_surf.get_rect(topleft=text.offset))
+        screen.blit(text_surf, text_surf.get_rect(center=text.offset))

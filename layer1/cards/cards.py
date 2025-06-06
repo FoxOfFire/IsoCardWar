@@ -1,15 +1,17 @@
 import random
-from typing import Any, Callable, Dict, List, Optional
+from collections.abc import Callable
+from typing import Any, Dict, List, Optional
 
 import esper
 
 from common import Health
 from common.constants import MAX_CARD_COUNT
+from common.types import EntityFunc
 from layer1 import (
+    GAME_STATE_REF,
     MarkerEnum,
     PriceEnum,
     SelectableObject,
-    game_state_obj,
     set_play_card,
 )
 
@@ -25,7 +27,7 @@ class Card(SelectableObject):
         name: str,
         price: Dict[PriceEnum, int],
         marker: MarkerEnum,
-        effects: List[Callable[[int, int], None]],
+        effects: List[EntityFunc],
     ):
         self.name = name
         self.price = price
@@ -49,10 +51,10 @@ class Deck:
 
 # card positioning functions
 def get_card_center_offset(ent: int) -> float:
-    if ent not in deck_obj.hand:
+    if ent not in DECK_REF.hand:
         return -1
-    hand_size = len(deck_obj.hand)
-    index = deck_obj.hand.index(ent)
+    hand_size = len(DECK_REF.hand)
+    index = DECK_REF.hand.index(ent)
 
     return (hand_size - 1) / 2 - index
 
@@ -60,28 +62,28 @@ def get_card_center_offset(ent: int) -> float:
 # helper functions
 def create_starting_deck(card_count: int) -> None:
     cards = []
-    if deck_obj.create_card is None:
+    if DECK_REF.create_card is None:
         raise RuntimeError("create_card undefined")
 
     for _ in range(card_count // 3):
-        cards.append(deck_obj.create_card(CardTypeEnum.DRAW_ONE))
-        cards.append(deck_obj.create_card(CardTypeEnum.CHANGE_UNIT_AND_DRAW))
-        cards.append(deck_obj.create_card(CardTypeEnum.CHANGE_TERRAIN_AND_DRAW))
+        cards.append(DECK_REF.create_card(CardTypeEnum.DRAW_ONE))
+        cards.append(DECK_REF.create_card(CardTypeEnum.CHANGE_UNIT_AND_DRAW))
+        cards.append(DECK_REF.create_card(CardTypeEnum.CHANGE_TERRAIN_AND_DRAW))
 
-    deck_obj.deck = cards
+    DECK_REF.deck = cards
     shuffle_deck()
 
 
 def _check_if_card_can_be_drawn() -> bool:
-    if len(deck_obj.hand) == MAX_CARD_COUNT:
+    if len(DECK_REF.hand) == MAX_CARD_COUNT:
         logger.info("hand is full")
         return False
-    if len(deck_obj.deck) == 0:
-        deck_obj.deck = deck_obj.discard
-        deck_obj.discard = []
+    if len(DECK_REF.deck) == 0:
+        DECK_REF.deck = DECK_REF.discard
+        DECK_REF.discard = []
         shuffle_deck()
 
-    if len(deck_obj.deck) == 0:
+    if len(DECK_REF.deck) == 0:
         logger.info("out of cards!")
         return False
 
@@ -90,7 +92,7 @@ def _check_if_card_can_be_drawn() -> bool:
 
 # deck management functions
 def sort_hand() -> None:
-    match deck_obj.order:
+    match DECK_REF.order:
         case OrganizationEnum.MARKER:
 
             def sorter(ent: int) -> Any:
@@ -113,22 +115,22 @@ def sort_hand() -> None:
         case _:
             RuntimeError("unexpected organizer")
 
-    deck_obj.hand.sort(key=sorter)
+    DECK_REF.hand.sort(key=sorter)
 
 
 def shuffle_deck() -> None:
     new = []
-    while len(deck_obj.deck) > 0:
+    while len(DECK_REF.deck) > 0:
         new.append(
-            deck_obj.deck.pop(
-                random.randint(0, len(deck_obj.deck) - 1),
+            DECK_REF.deck.pop(
+                random.randint(0, len(DECK_REF.deck) - 1),
             )
         )
-    deck_obj.deck = new
+    DECK_REF.deck = new
 
 
 def play_card(target: int) -> None:
-    ent = game_state_obj.selected
+    ent = GAME_STATE_REF.selected
 
     if ent is None or not esper.entity_exists(ent):
         return
@@ -137,32 +139,32 @@ def play_card(target: int) -> None:
         return
     for effect in card.effects:
         effect(ent, target)
-    game_state_obj.selected = None
-    deck_obj.hand.remove(ent)
-    deck_obj.discard.append(card)
+    GAME_STATE_REF.selected = None
+    DECK_REF.hand.remove(ent)
+    DECK_REF.discard.append(card)
     esper.component_for_entity(ent, Health).hp = 0
 
 
 def draw_card() -> int:
-    if deck_obj.spawn_card is None:
+    if DECK_REF.spawn_card is None:
         raise RuntimeError("failed to initialise deck_obj")
 
     if not _check_if_card_can_be_drawn():
         return -1
-    card = deck_obj.deck.pop()
-    ent = deck_obj.spawn_card(card)
-    deck_obj.hand.append(ent)
+    card = DECK_REF.deck.pop()
+    ent = DECK_REF.spawn_card(card)
+    DECK_REF.hand.append(ent)
     sort_hand()
     return ent
 
 
 def add_card(card: Card) -> None:
     logger.info(f"adding card {card}")
-    deck_obj.deck.append(card)
+    DECK_REF.deck.append(card)
     shuffle_deck()
 
 
 # module shenanigans
-deck_obj: Deck = Deck()
+DECK_REF: Deck = Deck()
 shuffle_deck()
 set_play_card(play_card)

@@ -1,14 +1,15 @@
-from collections.abc import Callable
 from typing import List
 
 import esper
+
+from common.types import EntityFunc
 
 from .log import logger
 from .tile import TerrainEnum, Tile, UnitTypeEnum
 
 
-def change_tile_to(terrain: TerrainEnum) -> List[Callable[[int, int], None]]:
-    effects: List[Callable[[int, int], None]] = []
+def change_tile_to(terrain: TerrainEnum) -> List[EntityFunc]:
+    effects: List[EntityFunc] = []
 
     def change(ent: int, target: int) -> None:
         tile = esper.component_for_entity(target, Tile)
@@ -18,8 +19,8 @@ def change_tile_to(terrain: TerrainEnum) -> List[Callable[[int, int], None]]:
     return effects
 
 
-def change_tile() -> List[Callable[[int, int], None]]:
-    effects: List[Callable[[int, int], None]] = []
+def change_tile() -> List[EntityFunc]:
+    effects: List[EntityFunc] = []
 
     def rotate(ent: int, target: int) -> None:
         tile = esper.component_for_entity(target, Tile)
@@ -31,8 +32,8 @@ def change_tile() -> List[Callable[[int, int], None]]:
     return effects
 
 
-def change_unit() -> List[Callable[[int, int], None]]:
-    effects: List[Callable[[int, int], None]] = []
+def change_unit() -> List[EntityFunc]:
+    effects: List[EntityFunc] = []
 
     def rotate(ent: int, target: int) -> None:
         tile = esper.component_for_entity(target, Tile)

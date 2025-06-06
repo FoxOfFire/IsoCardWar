@@ -1,6 +1,6 @@
 # flake8: noqa
 from .game_state import (
-    game_state_obj,
+    GAME_STATE_REF,
     hover,
     play_card,
     remove_hover,
@@ -8,4 +8,4 @@ from .game_state import (
     set_play_card,
     unselect,
 )
-from .game_state_utils import MarkerEnum, PriceEnum, SelectableObject
+from .game_state_utils import GamePhaseEnum, MarkerEnum, PriceEnum, SelectableObject

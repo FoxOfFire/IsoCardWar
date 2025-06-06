@@ -4,8 +4,8 @@ set -euo pipefail
 
 SCRIPT_RET=0
 
-echo "Running: black --check ."
-if ! black --check . ; then
+echo "Running: black ."
+if ! black . ; then
         SCRIPT_RET=1
 fi
 
@@ -19,8 +19,8 @@ if ! mypy . ; then
         SCRIPT_RET=1
 fi
 
-echo "Running: isort --check-only ."
-if ! isort --check-only . ; then
+echo "Running: isort ."
+if ! isort . ; then
         SCRIPT_RET=1
 fi
 

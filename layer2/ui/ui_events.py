@@ -32,8 +32,10 @@ def _get_transformed_mouse_pos(bb: BoundingBox) -> Tuple[float, float]:
     cam_bb = esper.component_for_entity(
         esper.get_component(GameCameraTag)[0][0], BoundingBox
     )
-
-    display_rect = pygame.display.get_surface().get_rect()
+    display = pygame.display.get_surface()
+    if display is None:
+        raise RuntimeError("no display fond")
+    display_rect = display.get_rect()
     mouse = pygame.mouse.get_pos()
     mouse_x = mouse[0] * cam_bb.width / display_rect.width
     mouse_y = mouse[1] * cam_bb.height / display_rect.height
@@ -51,7 +53,10 @@ def click_on_tile(ent: int) -> None:
     bb = esper.component_for_entity(ent, BoundingBox)
     trans_mouse_pos = _get_transformed_mouse_pos(bb)
     mouse_bb = BoundingBox(
-        trans_mouse_pos[0], trans_mouse_pos[0], trans_mouse_pos[1], trans_mouse_pos[1]
+        trans_mouse_pos[0],
+        trans_mouse_pos[0],
+        trans_mouse_pos[1],
+        trans_mouse_pos[1],
     )
     if ui_event_obj.iso_pos_track is None:
         raise RuntimeError("ui_event_obj iso_pos_track field missing")
@@ -65,7 +70,10 @@ def hover_over_tile(ent: int) -> None:
     bb = esper.component_for_entity(ent, BoundingBox)
     trans_mouse_pos = _get_transformed_mouse_pos(bb)
     mouse_bb = BoundingBox(
-        trans_mouse_pos[0], trans_mouse_pos[0], trans_mouse_pos[1], trans_mouse_pos[1]
+        trans_mouse_pos[0],
+        trans_mouse_pos[0],
+        trans_mouse_pos[1],
+        trans_mouse_pos[1],
     )
     if ui_event_obj.iso_pos_track is None:
         raise RuntimeError("ui_event_obj iso_pos_track field missing")
