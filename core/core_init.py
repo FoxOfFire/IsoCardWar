@@ -10,10 +10,7 @@ from common.constants import (
     GAME_CAM_WIDTH,
     ISO_MAP_HEIGHT,
     ISO_MAP_WIDTH,
-<<<<<<< HEAD
     STARTER_DECK_COUNT,
-=======
->>>>>>> master
 )
 from common.globals import RUN_DATA_REF
 from layer1.cards import (
@@ -45,7 +42,6 @@ from layer2.rendering import (
 from layer2.ui import UIProcessor, bind_keyboard_events, init_audio
 
 from .log import logger
-<<<<<<< HEAD
 from .spawners import (
     build_ui,
     create_card_obj,
@@ -53,9 +49,6 @@ from .spawners import (
     spawn_card_ent,
     spawn_iso_elem,
 )
-=======
-from .spawners import create_card_obj, spawn_button, spawn_card_ent, spawn_iso_elem
->>>>>>> master
 
 
 def init_logging() -> None:
@@ -174,15 +167,9 @@ def init_game_world_esper() -> None:
     esper.add_processor(scene_switcher)
 
     # dependency injection
-<<<<<<< HEAD
     DECK_REF.spawn_card = spawn_card_ent
     DECK_REF.create_card = create_card_obj
     create_starting_deck(STARTER_DECK_COUNT)
-=======
-    deck_obj.spawn_card = spawn_card_ent
-    deck_obj.create_card = create_card_obj
-    create_starting_deck(20)
->>>>>>> master
     for _ in range(7):
         draw_card()
 
