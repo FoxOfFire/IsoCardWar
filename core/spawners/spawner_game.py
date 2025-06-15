@@ -1,17 +1,17 @@
 from functools import partial
 from random import randint
-from typing import Type, List
+from typing import List, Type
 
 import esper
 
 from common import BoundingBox, Health
 from common.constants import (
     CARD_HEIGHT,
-    CARD_START_X,
-    CARD_START_Y,
-    CARD_PARAGRAPH_TEXT_RELATIVE_Y_ONE,
     CARD_PARAGRAPH_LETTER_COUNT,
     CARD_PARAGRAPH_TEXT_RELATIVE_Y_OFFSET,
+    CARD_PARAGRAPH_TEXT_RELATIVE_Y_ONE,
+    CARD_START_X,
+    CARD_START_Y,
     CARD_TEXT_RELATIVE_POS_X,
     CARD_TITLE_TEXT_RELATIVE_POS_Y,
     CARD_WIDTH,
@@ -139,7 +139,7 @@ def create_card_obj(card_type: CardTypeEnum) -> Card:
         case CardTypeEnum.CHANGE_TERRAIN_AND_DRAW:
             marker = MarkerEnum.BUILDING
             effects = change_tile()
-            description = "Cycles tile clicked between available"
+            description = "Cycles tile clicked between available options"
         case CardTypeEnum.CHANGE_UNIT_AND_DRAW:
             marker = MarkerEnum.UNIT
             effects = change_unit()
