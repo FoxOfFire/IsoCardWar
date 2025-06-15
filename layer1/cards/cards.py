@@ -25,11 +25,13 @@ class Card(SelectableObject):
     def __init__(
         self,
         name: str,
+        description: str,
         price: Dict[PriceEnum, int],
         marker: MarkerEnum,
         effects: List[EntityFunc],
     ):
         self.name = name
+        self.description = description
         self.price = price
         self.marker = marker
         self.effects = effects

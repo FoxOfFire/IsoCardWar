@@ -1,5 +1,6 @@
+from functools import partial
 from random import randint
-from typing import Type
+from typing import Type, List
 
 import esper
 
@@ -8,7 +9,10 @@ from common.constants import (
     CARD_HEIGHT,
     CARD_START_X,
     CARD_START_Y,
-    CARD_TITLE_TEXT_RELATIVE_POS_X,
+    CARD_PARAGRAPH_TEXT_RELATIVE_Y_ONE,
+    CARD_PARAGRAPH_LETTER_COUNT,
+    CARD_PARAGRAPH_TEXT_RELATIVE_Y_OFFSET,
+    CARD_TEXT_RELATIVE_POS_X,
     CARD_TITLE_TEXT_RELATIVE_POS_Y,
     CARD_WIDTH,
     ISO_MAP_HEIGHT,
@@ -81,10 +85,44 @@ def spawn_card_ent(card: Card, /) -> int:
     )
     text = TextData(
         lambda: card.name,
-        (CARD_TITLE_TEXT_RELATIVE_POS_X, CARD_TITLE_TEXT_RELATIVE_POS_Y),
+        (CARD_TEXT_RELATIVE_POS_X, CARD_TITLE_TEXT_RELATIVE_POS_Y),
     )
+
+    description: List[TextData] = []
+    desc_words = card.description.split()
+    assert len(desc_words) > 0, "No card description given"
+    current_word: str = desc_words.pop(0)
+    for i in range(0, 4):
+        if len(desc_words) == 0:
+            break
+        res_str = ""
+        while True:
+            if len(res_str + " " + current_word) > CARD_PARAGRAPH_LETTER_COUNT:
+                break
+            res_str += " " + current_word
+            if len(desc_words) == 0:
+                break
+            current_word = desc_words.pop(0)
+
+        def decr_text_func(res_str: str) -> str:
+            return res_str
+
+        description.append(
+            TextData(
+                partial(decr_text_func, res_str),
+                (
+                    CARD_TEXT_RELATIVE_POS_X - 1,
+                    CARD_PARAGRAPH_TEXT_RELATIVE_Y_ONE
+                    + i * CARD_PARAGRAPH_TEXT_RELATIVE_Y_OFFSET,
+                ),
+            )
+        )
+
     ui_elem = UIElementComponent(
-        click_func=select, hover_func=hover, unhover_func=remove_hover, text=[text]
+        click_func=select,
+        hover_func=hover,
+        unhover_func=remove_hover,
+        text=[text, *description],
     )
     # creating card
     ent = esper.create_entity(card, bb, TrackUI(), CardSprite(), ui_elem, Health())
@@ -92,19 +130,22 @@ def spawn_card_ent(card: Card, /) -> int:
 
 
 def create_card_obj(card_type: CardTypeEnum) -> Card:
-    rand = randint(0, 3)
+    rand = randint(2, 4)
     match card_type:
         case CardTypeEnum.DRAW_ONE:
             marker = MarkerEnum.ACTION
             effects = draw_cards(rand)
+            description = f"Draw {rand} card" + ("s" if rand > 1 else "")
         case CardTypeEnum.CHANGE_TERRAIN_AND_DRAW:
             marker = MarkerEnum.BUILDING
-            effects = change_tile() + draw_cards(1)
+            effects = change_tile()
+            description = "Cycles tile clicked between available tiles"
         case CardTypeEnum.CHANGE_UNIT_AND_DRAW:
             marker = MarkerEnum.UNIT
-            effects = change_unit() + draw_cards(1)
+            effects = change_unit()
+            description = "Cycles units"
         case _:
             raise RuntimeError("unexpected card type")
 
     prices = {PriceEnum.AMMO: 1, PriceEnum.METAL: 1, PriceEnum.FOOD: 1}
-    return Card(f"{card_type.value}{rand}", prices, marker, effects)
+    return Card(f"{card_type.value}", description, prices, marker, effects)
