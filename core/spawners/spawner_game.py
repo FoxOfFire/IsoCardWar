@@ -139,7 +139,7 @@ def create_card_obj(card_type: CardTypeEnum) -> Card:
         case CardTypeEnum.CHANGE_TERRAIN_AND_DRAW:
             marker = MarkerEnum.BUILDING
             effects = change_tile()
-            description = "Cycles tile clicked between available options"
+            description = "Cycles tile clicked between available"
         case CardTypeEnum.CHANGE_UNIT_AND_DRAW:
             marker = MarkerEnum.UNIT
             effects = change_unit()
