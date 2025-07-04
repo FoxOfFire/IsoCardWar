@@ -41,7 +41,11 @@ def make_map() -> None:
             unit: Optional[UnitTypeEnum] = None
             effects: List[EntityFunc] = []
 
-            if randint(0, 3) == 0 and terrain != TerrainEnum.WATER:
+            if (
+                randint(0, 2) == 0
+                and terrain != TerrainEnum.WATER
+                and terrain != TerrainEnum.EMPTY
+            ):
                 unit = UnitTypeEnum(randint(1, len(list(UnitTypeEnum))))
 
             tile = Tile(pos, terrain, effects=effects, unit=unit)

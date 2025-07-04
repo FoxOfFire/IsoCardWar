@@ -6,6 +6,7 @@ from layer1 import SelectableObject
 
 
 class TerrainEnum(Enum):
+    EMPTY = auto()
     CONCRETE = auto()
     GRASS = auto()
     WATER = auto()
@@ -14,7 +15,8 @@ class TerrainEnum(Enum):
 class UnitTypeEnum(Enum):
     CAULDRON = auto()
     BIG_CAULDRON = auto()
-    GUY = auto()
+    KNIGHT = auto()
+    FARMER = auto()
 
 
 class SelectionTypeEnum(Enum):
