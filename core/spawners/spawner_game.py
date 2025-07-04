@@ -8,6 +8,7 @@ from common import BoundingBox, Health
 from common.constants import (
     CARD_HEIGHT,
     CARD_PARAGRAPH_LETTER_COUNT,
+    CARD_PARAGRAPH_LINE_COUNT,
     CARD_PARAGRAPH_TEXT_RELATIVE_Y_OFFSET,
     CARD_PARAGRAPH_TEXT_RELATIVE_Y_ONE,
     CARD_START_X,
@@ -92,7 +93,7 @@ def spawn_card_ent(card: Card, /) -> int:
     desc_words = card.description.split()
     assert len(desc_words) > 0, "No card description given"
     current_word: str = desc_words.pop(0)
-    for i in range(0, 4):
+    for i in range(0, CARD_PARAGRAPH_LINE_COUNT):
         if len(desc_words) == 0:
             break
         res_str = ""
