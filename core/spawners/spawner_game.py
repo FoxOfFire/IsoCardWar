@@ -65,6 +65,7 @@ def spawn_iso_elem(
             click_func=click_on_tile,
             hover_func=hover_over_tile,
             unhover_func=remove_hover,
+            is_gameplay_elem=True,
         ),
     )
     make_map()
@@ -124,6 +125,7 @@ def spawn_card_ent(card: Card, /) -> int:
         hover_func=hover,
         unhover_func=remove_hover,
         text=[text, *description],
+        is_gameplay_elem=True,
     )
     # creating card
     ent = esper.create_entity(card, bb, TrackUI(), CardSprite(), ui_elem, Health())

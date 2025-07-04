@@ -52,6 +52,7 @@ class UIElementComponent:
         is_visible: bool = True,
         is_clickable: bool = True,
         is_active: bool = False,
+        is_gameplay_elem: bool = False,
         text: Optional[List[TextData]] = None,
         click_func: Optional[ButtonFunc] = None,
         hover_func: Optional[ButtonFunc] = None,
@@ -61,6 +62,7 @@ class UIElementComponent:
         self.is_visible: bool = is_visible
         self.is_clickable: bool = is_clickable
         self.is_active: bool = is_active
+        self.is_gameplay_elem = is_gameplay_elem
         self.text: List[TextData] = [] if text is None else text
         self.click_func: Optional[ButtonFunc] = click_func
         self.hover_func: Optional[ButtonFunc] = hover_func

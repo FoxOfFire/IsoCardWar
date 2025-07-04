@@ -5,6 +5,7 @@ import pygame
 
 from common import BoundingBox, PositionTracker
 from common.constants import GAME_CAM_HEIGHT, GAME_CAM_WIDTH
+from layer1 import GAME_STATE_REF, GamePhaseEnum
 from layer2.tags import GameCameraTag, MaskedSprite, UIElementComponent, UIStateEnum
 
 from .log import logger
@@ -70,7 +71,14 @@ class UIProcessor(esper.Processor):
         # pressing the button on release
         elif self.clicked != -1 and self.prev_click:
             tag = esper.component_for_entity(self.clicked, UIElementComponent)
-            if tag.click_func is not None and self.mask_overlap(self.clicked, mouse_bb):
+            if (
+                tag.click_func is not None
+                and self.mask_overlap(self.clicked, mouse_bb)
+                and (
+                    GAME_STATE_REF.game_phase == GamePhaseEnum.PLAYER_ACTION
+                    or not tag.is_gameplay_elem
+                )
+            ):
                 tag.click_func(self.clicked)
             self.clicked = -1
 
