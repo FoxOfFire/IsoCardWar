@@ -96,10 +96,8 @@ class MaskRenderer:
     def _draw_selection_to_selected(self) -> None:
         if GAME_STATE_REF.selecting is None or GAME_STATE_REF.selected is None:
             return
-        selecting_sprite = esper.try_component(
-            GAME_STATE_REF.selecting, CardSprite)
-        selected_sprite = esper.try_component(
-            GAME_STATE_REF.selected, CardSprite)
+        selecting_sprite = esper.try_component(GAME_STATE_REF.selecting, CardSprite)
+        selected_sprite = esper.try_component(GAME_STATE_REF.selected, CardSprite)
         if selecting_sprite is None or selected_sprite is None:
             return
 

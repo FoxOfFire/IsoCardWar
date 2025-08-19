@@ -21,9 +21,6 @@ class BBRenderer:
         )
         logger.info("bb render init finished")
 
-    def skibidi(self) -> None:
-        print("skibidi")
-
     def draw(self, screen: pygame.Surface) -> None:
         if not RENDER_BBS:
             return
@@ -31,8 +28,7 @@ class BBRenderer:
         ent_list = sorted(
             self.pos_track.intersect(self.bb), key=partial(sort_by_bb, side=3)
         )
-        plain_bb = esper.component_for_entity(
-            self.pos_track.plain, BoundingBox)
+        plain_bb = esper.component_for_entity(self.pos_track.plain, BoundingBox)
 
         for ent in ent_list:
             bb = esper.component_for_entity(ent, BoundingBox)

@@ -38,8 +38,7 @@ class UIProcessor(esper.Processor):
         if ent in self.tracker.intersect(mouse_bb):
             click_buffer = ent
         else:
-            esper.component_for_entity(
-                ent, UIElementComponent).state = UIStateEnum.BASE
+            esper.component_for_entity(ent, UIElementComponent).state = UIStateEnum.BASE
 
         return click_buffer
 
