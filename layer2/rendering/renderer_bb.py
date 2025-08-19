@@ -21,6 +21,10 @@ class BBRenderer:
         )
         logger.info("bb render init finished")
 
+    def skibidi(self) -> None:
+        print("skibidi")
+
+
     def draw(self, screen: pygame.Surface) -> None:
         if not RENDER_BBS:
             return
