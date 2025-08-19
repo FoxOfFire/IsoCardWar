@@ -145,10 +145,10 @@ class PositionTracker(esper.Processor):
     ) -> BoundingBox:
         (x, y), r = circle
         return BoundingBox(
-            left=x - r,
-            right=x + r,
-            top=y - r,
-            bottom=y + r,
+            x - r,
+            x + r,
+            y - r,
+            y + r,
         )
 
     @staticmethod

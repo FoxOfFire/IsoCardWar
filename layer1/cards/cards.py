@@ -101,7 +101,6 @@ def sort_hand() -> None:
                 card = esper.component_for_entity(ent, Card)
                 return card.marker.value
 
-            pass
         case OrganizationEnum.NAME:
 
             def sorter(ent: int) -> Any:
@@ -113,8 +112,11 @@ def sort_hand() -> None:
             def sorter(ent: int) -> Any:
                 return 1
 
-            pass
         case _:
+
+            def sorter(ent: int) -> Any:
+                return 1
+
             RuntimeError("unexpected organizer")
 
     DECK_REF.hand.sort(key=sorter)
