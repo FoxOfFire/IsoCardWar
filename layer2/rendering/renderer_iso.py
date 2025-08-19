@@ -83,8 +83,10 @@ class IsoRenderer:
             if not esper.has_component(ent, IsoSprite):
                 continue
             tile = esper.component_for_entity(ent, Tile)
-            x = delta_x + ISO_POS_OFFSET_X + (tile.x + tile.y) * ISO_TILE_OFFSET_X
-            y = delta_y + ISO_POS_OFFSET_Y + (tile.x - tile.y) * ISO_TILE_OFFSET_Y
+            x = delta_x + ISO_POS_OFFSET_X + \
+                (tile.x + tile.y) * ISO_TILE_OFFSET_X
+            y = delta_y + ISO_POS_OFFSET_Y + \
+                (tile.x - tile.y) * ISO_TILE_OFFSET_Y
             if ent == GAME_STATE_REF.selecting:
                 y += ISO_TILE_SELECT_OFFSET
             match draw_type:
@@ -99,7 +101,8 @@ class IsoRenderer:
                     self._draw_selection(screen, surfs, ent, x, y)
 
                 case _:
-                    raise RuntimeError("unexpected type while drawing iso_tiles")
+                    raise RuntimeError(
+                        "unexpected type while drawing iso_tiles")
 
     def draw(self, screen: pygame.Surface) -> None:
         def sort_by_bottom(ent: int) -> int:

@@ -56,7 +56,8 @@ _font_container = _FontContainer()
 def get_font() -> pygame.font.Font:
     if _font_container.font is None:
         logger.info("loaded font")
-        _font_container.font = pygame.font.Font(FONT_ASSET_DIR / "tiny.ttf", FONT_SIZE)
+        _font_container.font = pygame.font.Font(
+            FONT_ASSET_DIR / "tiny.ttf", FONT_SIZE)
     return _font_container.font
 
 
@@ -66,7 +67,8 @@ def _load_image_type(
     logger.info(f"loaded image assets of type:{enum}")
     for type, val in [(e, e.value) for e in enum]:
         surfs.update(
-            {type: pygame.image.load(path / f"{name}{val}.png").convert_alpha()}
+            {type: pygame.image.load(
+                path / f"{name}{val}.png").convert_alpha()}
         )
 
 
@@ -89,12 +91,16 @@ def _load_animation_type(
 
 def load_images() -> None:
     _load_image_type(CardTypeEnum, CARD_TYPE_SURFS, CARD_TYPE_ASSET_DIR, "")
-    _load_image_type(MarkerEnum, CARD_MARKER_SURFS, CARD_MARKER_ASSET_DIR, "marker")
-    _load_image_type(TerrainEnum, TILE_TYPE_SURFS, TILE_TYPE_ASSET_DIR, "tiles")
-    _load_image_type(UnitTypeEnum, UNIT_TYPE_SURFS, UNIT_TYPE_ASSET_DIR, "units")
+    _load_image_type(MarkerEnum, CARD_MARKER_SURFS,
+                     CARD_MARKER_ASSET_DIR, "marker")
+    _load_image_type(TerrainEnum, TILE_TYPE_SURFS,
+                     TILE_TYPE_ASSET_DIR, "tiles")
+    _load_image_type(UnitTypeEnum, UNIT_TYPE_SURFS,
+                     UNIT_TYPE_ASSET_DIR, "units")
     _load_image_type(
         SelectionTypeEnum, SELECTION_SURFS, SELECTION_ASSET_DIR, "tile_selections"
     )
 
-    _load_animation_type(CardImageEnum, CARD_IMAGE_SURFS, CARD_IMAGE_ASSET_DIR, "card_")
+    _load_animation_type(CardImageEnum, CARD_IMAGE_SURFS,
+                         CARD_IMAGE_ASSET_DIR, "card_")
     _load_animation_type(UIElemType, BUTTON_SURFS, BUTTON_ASSET_DIR, "")

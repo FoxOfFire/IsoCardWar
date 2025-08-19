@@ -27,7 +27,8 @@ class CardMovementProcessor(esper.Processor):
             bb = esper.component_for_entity(ent, BoundingBox)
 
             offset_index = get_card_center_offset(ent)
-            offset = offset_index * self.cam_bb.width / len(DECK_REF.hand) * 0.8
+            offset = offset_index * self.cam_bb.width / \
+                len(DECK_REF.hand) * 0.8
             if len(DECK_REF.hand) < 7:
                 offset = offset_index * CARD_X_FIX_DISTANCE
 

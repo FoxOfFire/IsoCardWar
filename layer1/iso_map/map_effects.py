@@ -25,7 +25,8 @@ def change_tile() -> List[EntityFunc]:
     def rotate(ent: int, target: int) -> None:
         tile = esper.component_for_entity(target, Tile)
         logger.info(tile.terrain)
-        tile.terrain = TerrainEnum(tile.terrain.value % len(list(TerrainEnum)) + 1)
+        tile.terrain = TerrainEnum(tile.terrain.value %
+                                   len(list(TerrainEnum)) + 1)
 
     effects.append(rotate)
 

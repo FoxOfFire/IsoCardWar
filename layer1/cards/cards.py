@@ -70,7 +70,8 @@ def create_starting_deck(card_count: int) -> None:
     for _ in range(card_count // 3):
         cards.append(DECK_REF.create_card(CardTypeEnum.DRAW_ONE))
         cards.append(DECK_REF.create_card(CardTypeEnum.CHANGE_UNIT_AND_DRAW))
-        cards.append(DECK_REF.create_card(CardTypeEnum.CHANGE_TERRAIN_AND_DRAW))
+        cards.append(DECK_REF.create_card(
+            CardTypeEnum.CHANGE_TERRAIN_AND_DRAW))
 
     DECK_REF.deck = cards
     shuffle_deck()

@@ -95,10 +95,12 @@ class PositionTracker(esper.Processor):
 
             if entity not in self.__tracked_entities:
                 if entity in _tracked_by_any_tracker[esper.current_world]:
-                    raise TrackingError(f"{entity} is already tracked by a tracker")
+                    raise TrackingError(
+                        f"{entity} is already tracked by a tracker")
 
                 if not self.is_inbounds(b_box):
-                    raise OutOfBoundsError(f"Tried to track {entity} out of bounds.")
+                    raise OutOfBoundsError(
+                        f"Tried to track {entity} out of bounds.")
 
                 _tracked_by_any_tracker[esper.current_world].add(entity)
                 self.__tracked_entities.add(entity)
@@ -106,7 +108,8 @@ class PositionTracker(esper.Processor):
 
             if b_box.has_nonzero_delta:
                 if entity == self.__plain:
-                    raise PlainError(f"Tried to move the plain: {self.__plain}.")
+                    raise PlainError(
+                        f"Tried to move the plain: {self.__plain}.")
 
                 next_bb = b_box.after_update()
 
@@ -196,7 +199,8 @@ class PositionTracker(esper.Processor):
     def bulk_intersect_circles(
         self, middle: tuple[float, float], radiuses: Iterable[float]
     ) -> tuple[list[int], list[int]]:
-        fast_pass_cull_bb = self.__circle_intersect_cull_bb((middle, max(radiuses)))
+        fast_pass_cull_bb = self.__circle_intersect_cull_bb(
+            (middle, max(radiuses)))
         culled_entities = self.intersect(fast_pass_cull_bb)
 
         hits = dict[int, int]()

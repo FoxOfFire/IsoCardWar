@@ -58,4 +58,5 @@ class RenderingProcessor(esper.Processor):
             self.screen, (self.display.get_width(), self.display.get_height())
         )
 
-        self.display.blit(scaled_screen, scaled_screen.get_rect(topleft=(0, 0)))
+        self.display.blit(
+            scaled_screen, scaled_screen.get_rect(topleft=(0, 0)))

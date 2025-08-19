@@ -9,6 +9,11 @@ if ! black . ; then
         SCRIPT_RET=1
 fi
 
+echo "Running: autopep8 . -r --in-place"
+if ! pyenv exec autopep8 . -r --in-place ; then
+	SCRIPT_RET=1
+fi
+
 echo "Running: flake8 ."
 if ! pyenv exec flake8 . ; then
         SCRIPT_RET=1

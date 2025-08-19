@@ -59,10 +59,12 @@ class CardRenderer:
                 continue
 
             bb = esper.component_for_entity(ent, BoundingBox)
-            surf = pygame.Surface((CARD_WIDTH, CARD_HEIGHT), flags=pygame.SRCALPHA)
+            surf = pygame.Surface(
+                (CARD_WIDTH, CARD_HEIGHT), flags=pygame.SRCALPHA)
             marker_surf = CARD_MARKER_SURFS[card.marker]
 
-            surf.blit(CARD_IMAGE_SURFS[CardImageEnum.BASIC][0], surf.get_rect())
+            surf.blit(
+                CARD_IMAGE_SURFS[CardImageEnum.BASIC][0], surf.get_rect())
             surf.blit(CARD_TYPE_SURFS[CardTypeEnum.BASIC], surf.get_rect())
             surf.blit(
                 marker_surf,
