@@ -10,12 +10,12 @@ if ! black . ; then
 fi
 
 echo "Running: flake8 ."
-if ! flake8 . ; then
+if ! pyenv exec flake8 . ; then
         SCRIPT_RET=1
 fi
 
 echo "Running: mypy ."
-if ! mypy . ; then
+if ! pyenv exec mypy . ; then
         SCRIPT_RET=1
 fi
 
