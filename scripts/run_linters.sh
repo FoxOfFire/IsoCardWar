@@ -34,6 +34,11 @@ if ! isort . ; then
         SCRIPT_RET=1
 fi
 
+echo "Running: mdformat ."
+if ! mdformat .; then
+	SCRIPT_RET=1
+fi
+
 echo "Running: mado check ."
 if ! mado check .; then
 	SCRIPT_RET=1
