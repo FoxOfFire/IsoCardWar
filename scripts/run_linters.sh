@@ -34,4 +34,9 @@ if ! isort . ; then
         SCRIPT_RET=1
 fi
 
+echo "Running: mado check ."
+if ! mado check .; then
+	SCRIPT_RET=1
+fi
+
 exit $SCRIPT_RET
