@@ -3,12 +3,14 @@ extend-exclude = "(examples|.venv)"
 force-exclude = "examples"
 
 [tool.flake8]
+python = .venv/bin/python
 exclude = [".venv", "examples"]
 max-line-length = 80
 extend-select = ["B950"]
 extend-ignore = ["E203", "E501", "E701"]
 
 [tool.mypy]
+python = .venv/bin/python
 exclude = "examples"
 disallow_untyped_defs = true
 
