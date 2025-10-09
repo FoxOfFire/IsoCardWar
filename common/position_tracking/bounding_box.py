@@ -1,62 +1,49 @@
-from copy import deepcopy
+from typing import Tuple
 
-import pygame
-from attrs import define, field
 
-@define
 class BoundingBox:
-    @property
-    def left(self) -> float:
-        return 0.0
+    left: float = 0
+    right: float = 0
+    top: float = 0
+    bottom: float = 0
 
+    _delta_x: float = 0
+    _delta_y:float = 0
 
-    @property
-    def right(self) -> float:
-        return 0.0
-
-    @property
-    def top(self) -> float:
-        return 0.0
-
-    @property
-    def bottom(self) -> float:
-        return 0.0
-
+    def __init__(self,left:float,right:float,top:float,bottom:float) -> None:
+        self.left = left
+        self.right = right
+        self.top = top
+        self.bottom = bottom
+   
     @property
     def center(self) -> tuple[float, float]:
-        pass
-
         return ((self.left + self.right) / 2, (self.top + self.bottom) / 2)
 
     @property
     def width(self) -> float:
-        return 0.0
-
+        return self.right - self.left
 
     @property
     def height(self) -> float:
-        return 0.0
-
+        return self.bottom-self.top 
 
     @property
     def points(self) -> tuple[float, float, float, float]:
-        return (0.0,0.0,0.0,0.0)
-
+        return(self.left,self.right,self.top,self.bottom)
 
     @property
     def has_nonzero_delta(self) -> bool:
+        return self._delta_x+self._delta_y == self._delta_x-self._delta_y
 
-        return False
-    def update(self) -> "BoundingBox":
-        return self
-
-
-    def move(self, delta_x: float, delta_y: float) -> "BoundingBox":
-        return self
+    def move_by(self, delta_x: float, delta_y: float) -> None:
+        self._delta_x += delta_x
+        self._delta_y += delta_y
 
     def move_towards_point(
         self, point: tuple[float, float], by: float
-    ) -> "BoundingBox":
-        return self
-    
-
+    ) -> None:
+        def lerp(a:float,b:float,t:float)->float:
+            return t*a+(1-t)*b
+        self._delta_x += lerp(self.center[0],point[0],by)
+        self._delta_y += lerp(self.center[1],point[1],by)

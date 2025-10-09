@@ -166,17 +166,6 @@ class PositionTracker(esper.Processor):
         """
         return list(self.__index.intersection(bounding_box.points))
 
-    def intersect_circle(self, circle: tuple[tuple[float, float], float]) -> list[int]:
-        """
-        Returns the entity ONLY if the middle of it's bounding box is in the circle
-
-        The circle is represented with a tuple, like: ((x, y), r),
-        where (x, y) is the middle or the circle and r is the radius.
-        """
-        fast_pass_cull_bb = self.__circle_intersect_cull_bb(circle)
-        in_circle = partial(self.__entity_in_circle, circle=circle)
-        return list(filter(in_circle, self.intersect(fast_pass_cull_bb)))
-
     def bulk_intersect(
         self, bounding_boxes: Iterable[BoundingBox]
     ) -> Tuple[list[int], list[int]]:
@@ -189,20 +178,6 @@ class PositionTracker(esper.Processor):
         for bb in bounding_boxes:
             current_hits = self.intersect(bb)
             for ent in current_hits:
-                hits[ent] = hits.get(ent, 0) + 1
-
-        return list(hits.keys()), list(hits.values())
-
-    def bulk_intersect_circles(
-        self, middle: tuple[float, float], radiuses: Iterable[float]
-    ) -> tuple[list[int], list[int]]:
-        fast_pass_cull_bb = self.__circle_intersect_cull_bb((middle, max(radiuses)))
-        culled_entities = self.intersect(fast_pass_cull_bb)
-
-        hits = dict[int, int]()
-        for r in radiuses:
-            in_circle = partial(self.__entity_in_circle, circle=(middle, r))
-            for ent in filter(in_circle, culled_entities):
                 hits[ent] = hits.get(ent, 0) + 1
 
         return list(hits.keys()), list(hits.values())
