@@ -1,6 +1,6 @@
 esper==3.3
 pygame-ce==2.5.3
-rtree==1.4.0
+rtree==1.4.1
 numpy==2.2.3
 perlin-noise==1.13
 attrs==25.3.0

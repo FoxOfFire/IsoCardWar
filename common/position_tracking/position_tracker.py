@@ -104,7 +104,7 @@ class PositionTracker(esper.Processor):
                 self.__tracked_entities.add(entity)
                 self.__index.add(entity, b_box.points)
 
-            if b_box.has_nonzero_delta:
+            if b_box.has_nonzero_velocity:
                 if entity == self.__plain:
                     raise PlainError(f"Tried to move the plain: {self.__plain}.")
 
