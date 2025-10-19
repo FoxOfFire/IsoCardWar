@@ -1,18 +1,19 @@
 from dataclasses import dataclass
-from typing import List, NamedTuple, Optional, Tuple
+from typing import List, Optional, Tuple
 
 import pygame
 
+from common.position_tracking.tags import TrackBase
 from common.types import ButtonFunc, TextFunc
 
 from .enums import UIStateEnum
 
 
-class TrackUI(NamedTuple):
+class TrackUI(TrackBase):
     pass
 
 
-class TrackIso(NamedTuple):
+class TrackIso(TrackBase):
     pass
 
 

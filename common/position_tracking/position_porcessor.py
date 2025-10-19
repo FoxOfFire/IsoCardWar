@@ -1,30 +1,40 @@
-from typing import Dict, List, Tuple, Type
+from typing import Dict, List, Optional, Type
+
 import esper
 
 from common.position_tracking.bb_rtree import BBRTree
 from common.position_tracking.bounding_box import BoundingBox
-from common.position_tracking.tags import Moved, Untracked
+from common.position_tracking.tags import Moved, Removed, TrackBase, Untracked
 
 
 class PositionProcessor(esper.Processor):
-    __tracked_types: Dict[Type,Tuple[BBRTree,List[int]]] = {}
-    def __init__(self,tracked_types: List[Type]) -> None:
+    __tracked_types: Dict[Type, BBRTree] = {}
+
+    def __init__(self, tracked_types: List[Type]) -> None:
         super().__init__()
         for t in tracked_types:
-            self.__tracked_types.update({t:(BBRTree(t),[])})
+            self.__tracked_types.update({t: BBRTree(t)})
 
-    
     def process(self) -> None:
-        for tree,ents in self.__tracked_types.values():
-            for ent in ents:
-                if esper.has_component(ent,Moved):
-                    tree.update(ent)
-                    esper.remove_component(ent,Moved)
-        for ent ,(bb, _) in esper.get_components(BoundingBox,Untracked):
-            for t in self.__tracked_types.keys():
-                if esper.has_component(ent,t):
-                    tree, ents = self.__tracked_types[t]
-                    tree.insert(ent,bb)
-                    esper.remove_component(ent,Untracked)
+        for ent, _ in esper.get_component(Moved):
+            esper.remove_component(ent, Moved)
+            for tag in esper.components_for_entity(ent):
+                if isinstance(tag, TrackBase):
+                    self.__tracked_types[type(tag)].update(ent)
+
+        for ent, _ in esper.get_component(Untracked):
+            esper.remove_component(ent, Untracked)
+            for tag in esper.components_for_entity(ent):
+                if isinstance(tag, TrackBase):
+                    self.__tracked_types[type(tag)].insert(ent)
                     break
-            assert not esper.has_component(ent,Untracked)
+
+        for ent, _ in esper.get_component(Removed):
+            esper.remove_component(ent, Removed)
+            for tag in esper.components_for_entity(ent):
+                if isinstance(tag, TrackBase):
+                    self.__tracked_types[type(tag)].delete_current(ent)
+                    break
+
+    def intersect(self, bb: BoundingBox, tag: Type) -> List[int]:
+        return self.__tracked_types[tag].intersect(bb)

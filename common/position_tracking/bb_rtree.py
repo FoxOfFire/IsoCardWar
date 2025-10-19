@@ -1,8 +1,10 @@
 from typing import List, Optional, Type
+
 import esper
 import rtree
 
 from common.position_tracking.bounding_box import BoundingBox
+
 
 class BBRTree:
     __rt_index: rtree.index.Index
@@ -15,21 +17,26 @@ class BBRTree:
         )
         self.__rt_index = rtree.index.Index(properties=rt_props, interleaved=False)
         self.tracked_tag = tag
- 
-    def insert(self,ent: int,bb:Optional[BoundingBox] = None)-> None:
+
+    def insert(self, ent: int, bb: Optional[BoundingBox] = None) -> None:
         if bb is None:
-            bb = esper.component_for_entity(ent,BoundingBox)
-        self.__rt_index.insert(ent,bb.points)
+            bb = esper.component_for_entity(ent, BoundingBox)
+        self.__rt_index.insert(ent, bb.points)
 
-    def delete(self,ent:int,bb:Optional[BoundingBox] = None)->None:
+    def delete_current(self, ent: int, bb: Optional[BoundingBox] = None) -> None:
         if bb is None:
-            bb = esper.component_for_entity(ent,BoundingBox)
-        self.__rt_index.delete(ent,bb.prev_points)
+            bb = esper.component_for_entity(ent, BoundingBox)
+        self.__rt_index.delete(ent, bb.points)
 
-    def update(self,ent:int)->None:
-        bb = esper.component_for_entity(ent,BoundingBox)
-        self.delete(ent,bb)
-        self.insert(ent,bb)
+    def delete_prev(self, ent: int, bb: Optional[BoundingBox] = None) -> None:
+        if bb is None:
+            bb = esper.component_for_entity(ent, BoundingBox)
+        self.__rt_index.delete(ent, bb.prev_points)
 
-    def intersect(self,bb:BoundingBox)->List[int]:
+    def update(self, ent: int) -> None:
+        bb = esper.component_for_entity(ent, BoundingBox)
+        self.delete_prev(ent, bb)
+        self.insert(ent, bb)
+
+    def intersect(self, bb: BoundingBox) -> List[int]:
         return list(self.__rt_index.intersection(bb.points))

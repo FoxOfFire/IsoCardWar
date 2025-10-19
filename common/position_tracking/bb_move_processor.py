@@ -3,6 +3,7 @@ import esper
 from common.position_tracking.bounding_box import BoundingBox
 from common.position_tracking.tags import Moved
 
+
 class BBMoveProcessor(esper.Processor):
     def process(self) -> None:
         for ent, bb in esper.get_component(BoundingBox):
@@ -11,4 +12,4 @@ class BBMoveProcessor(esper.Processor):
                 bb.left += bb._vel_x
                 bb.top += bb._vel_y
                 bb.bottom += bb._vel_y
-                esper.add_component(ent,Moved)
+                esper.add_component(ent, Moved)

@@ -4,7 +4,7 @@ import logging
 import esper
 import pygame
 
-from common import BoundingBox, EventProcessor, PositionTracker
+from common import BoundingBox, EventProcessor
 from common.constants import (
     GAME_CAM_HEIGHT,
     GAME_CAM_WIDTH,
@@ -13,6 +13,7 @@ from common.constants import (
     STARTER_DECK_COUNT,
 )
 from common.globals import RUN_DATA_REF
+from common.position_tracking import BBMoveProcessor, PositionProcessor
 from layer1.cards import (
     DECK_REF,
     CardMovementProcessor,
@@ -32,12 +33,7 @@ from layer2 import (
 )
 from layer2.dying import DyingProcessor
 from layer2.event_handlers import bind_events as bind_core_events
-from layer2.rendering import (
-    IsoSprite,
-    RenderingProcessor,
-    RenderLayerEnum,
-    load_images,
-)
+from layer2.rendering import IsoSprite, RenderingProcessor, RenderLayerEnum, load_images
 from layer2.ui import UIProcessor, bind_keyboard_events, init_audio
 
 from .log import logger
@@ -86,7 +82,7 @@ def bind_game_events(
     bind_core_events(event_processor, scene_switcher)
     bind_keyboard_events(event_processor)
 
-    def handle_quit(event: pygame.event.Event) -> None:
+    def handle_quit(_: pygame.event.Event) -> None:
         RUN_DATA_REF.game_running = False
 
     event_processor.bind(pygame.QUIT, handle_quit)
@@ -117,8 +113,7 @@ def init_game_world_esper() -> None:
     )
 
     # Create processors
-    game_position_tracker = PositionTracker(TrackUI, ui_plain)
-    iso_position_tracker = PositionTracker(TrackIso, iso_plain)
+    pos_processor: PositionProcessor = PositionProcessor([TrackUI, TrackIso])
 
     game_cam_bb = BoundingBox(0, GAME_CAM_WIDTH, 0, GAME_CAM_HEIGHT)
     esper.create_entity(game_cam_bb, GameCameraTag())

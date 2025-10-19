@@ -3,9 +3,10 @@ extend-exclude = "(examples|.venv)"
 force-exclude = "examples"
 
 [tool.mypy]
-python = .venv/bin/python
+python = ".venv/bin/python"
 exclude = "examples"
 disallow_untyped_defs = true
+ignore_missing_imports = true
 
 [tool.isort]
 profile = "black"
