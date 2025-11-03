@@ -1,5 +1,3 @@
-#!/bin/bash
-
 pyenv install 3.12.9
 pyenv local 3.12.9
 echo "Version set to: $(pyenv exec python --version)"
