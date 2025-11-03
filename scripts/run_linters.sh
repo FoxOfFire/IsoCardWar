@@ -30,7 +30,7 @@ if ! pyenv exec mypy . ; then
 fi
 
 echo "Running: isort ."
-if ! isort . ; then
+if ! pyenv exec isort . ; then
         SCRIPT_RET=1
 fi
 
