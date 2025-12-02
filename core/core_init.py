@@ -24,7 +24,6 @@ from layer1.game_phase import GamePhaseProcessor
 from layer2 import (
     GameCameraTag,
     IsoCameraTag,
-    Plain,
     SceneSwitcher,
     TrackIso,
     TrackUI,
@@ -33,7 +32,12 @@ from layer2 import (
 )
 from layer2.dying import DyingProcessor
 from layer2.event_handlers import bind_events as bind_core_events
-from layer2.rendering import IsoSprite, RenderingProcessor, RenderLayerEnum, load_images
+from layer2.rendering import (
+    IsoSprite,
+    RenderingProcessor,
+    RenderLayerEnum,
+    load_images,
+)
 from layer2.ui import UIProcessor, bind_keyboard_events, init_audio
 
 from .log import logger
@@ -93,25 +97,6 @@ def init_game_world_esper() -> None:
     if display is None:
         raise RuntimeError("No screen found")
 
-    ui_plain = esper.create_entity(
-        BoundingBox(
-            -100,
-            1000,
-            -100,
-            1000,
-        ),
-        Plain(),
-    )
-    iso_plain = esper.create_entity(
-        BoundingBox(
-            0,
-            ISO_MAP_HEIGHT,
-            0,
-            ISO_MAP_WIDTH,
-        ),
-        Plain(),
-    )
-
     # Create processors
     pos_processor: PositionProcessor = PositionProcessor([TrackUI, TrackIso])
 
@@ -122,11 +107,11 @@ def init_game_world_esper() -> None:
 
     render_layer_dict = {
         RenderLayerEnum.CARD: (
-            game_position_tracker,
+            pos_processor,
             BoundingBox(0, GAME_CAM_WIDTH, 0, GAME_CAM_HEIGHT),
         ),
         RenderLayerEnum.ISO: (
-            iso_position_tracker,
+            pos_processor,
             BoundingBox(0, GAME_CAM_WIDTH, 0, GAME_CAM_HEIGHT),
         ),
     }
@@ -135,9 +120,9 @@ def init_game_world_esper() -> None:
     card_movement_processor = CardMovementProcessor(game_cam_bb)
     game_phase_processor = GamePhaseProcessor(get_base_game_phase_dict())
     event_processor = EventProcessor()
-    ui_processor = UIProcessor(game_position_tracker, display.get_size())
+    ui_processor = UIProcessor(pos_processor, display.get_size())
 
-    dying_proc = DyingProcessor(game_position_tracker)
+    dying_proc = DyingProcessor(pos_processor)
     scene_switcher = SceneSwitcher()
 
     bind_game_events(
@@ -145,7 +130,7 @@ def init_game_world_esper() -> None:
         scene_switcher=scene_switcher,
     )
 
-    game_position_tracker.process()
+    pos_processor.process()
 
     # adding processors
     esper.add_processor(event_processor)
@@ -153,8 +138,7 @@ def init_game_world_esper() -> None:
     esper.add_processor(card_movement_processor)
     esper.add_processor(game_phase_processor)
 
-    esper.add_processor(iso_position_tracker)
-    esper.add_processor(game_position_tracker)
+    esper.add_processor(pos_processor)
 
     esper.add_processor(ui_processor)
     esper.add_processor(renderer)
@@ -169,7 +153,7 @@ def init_game_world_esper() -> None:
 
     spawn_iso_elem(TrackIso, TrackUI, IsoSprite)
 
-    ui_event_obj.iso_pos_track = iso_position_tracker
+    ui_event_obj.iso_pos_track = pos_processor
 
 
 def init() -> None:

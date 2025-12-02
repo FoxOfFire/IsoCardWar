@@ -17,12 +17,6 @@ class TrackIso(TrackBase):
     pass
 
 
-class Plain:
-    """
-    Designates plain type bounding boxes
-    """
-
-
 class GameCameraTag:
     pass
 

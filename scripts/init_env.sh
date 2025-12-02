@@ -10,6 +10,10 @@ source ./.venv/bin/activate
 
 echo "Installing requirements:"
 pyenv exec pip install --upgrade pip
+if [ ! -f ./requirements.txt ]; then
+	echo "./requirements.txt not found, creating a new one"
+	touch ./requirements.txt
+fi
 pyenv exec pip install -r ./requirements.txt
 
 source .venv/bin/activate
