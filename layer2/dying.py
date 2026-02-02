@@ -1,12 +1,12 @@
 import esper
 
-from common import Health, PositionTracker
+from common import Health, PositionProcessor
 
 
 class DyingProcessor(esper.Processor):
-    __game_tracker: PositionTracker
+    __game_tracker: PositionProcessor
 
-    def __init__(self, game_tracker: PositionTracker) -> None:
+    def __init__(self, game_tracker: PositionProcessor) -> None:
         self.__game_tracker = game_tracker
 
     def process(self) -> None:

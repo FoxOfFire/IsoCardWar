@@ -43,4 +43,4 @@ class CardMovementProcessor(esper.Processor):
                 / CARD_ANIMATION_SPEED
                 * delta_time
             )
-            bb.move(delta_x, delta_y)
+            bb.set_velocity(delta_x, delta_y)

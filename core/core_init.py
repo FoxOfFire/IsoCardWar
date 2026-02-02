@@ -106,16 +106,10 @@ def init_game_world_esper() -> None:
     esper.create_entity(iso_cam_bb, IsoCameraTag())
 
     render_layer_dict = {
-        RenderLayerEnum.CARD: (
-            pos_processor,
-            BoundingBox(0, GAME_CAM_WIDTH, 0, GAME_CAM_HEIGHT),
-        ),
-        RenderLayerEnum.ISO: (
-            pos_processor,
-            BoundingBox(0, GAME_CAM_WIDTH, 0, GAME_CAM_HEIGHT),
-        ),
+        RenderLayerEnum.CARD: (BoundingBox(0, GAME_CAM_WIDTH, 0, GAME_CAM_HEIGHT)),
+        RenderLayerEnum.ISO: (BoundingBox(0, GAME_CAM_WIDTH, 0, GAME_CAM_HEIGHT)),
     }
-    renderer = RenderingProcessor(display, render_layer_dict)
+    renderer = RenderingProcessor(display, render_layer_dict, pos_processor)
 
     card_movement_processor = CardMovementProcessor(game_cam_bb)
     game_phase_processor = GamePhaseProcessor(get_base_game_phase_dict())

@@ -4,7 +4,7 @@ from typing import Type
 import esper
 import pygame
 
-from common import BoundingBox, PositionTracker
+from common import BoundingBox, PositionProcessor
 from common.constants import (
     CARD_HEIGHT,
     CARD_WIDTH,
@@ -31,11 +31,14 @@ class CardSprite(MaskedSprite):
 
 
 class CardRenderer:
-    def __init__(self, pos_track: PositionTracker, tag: Type) -> None:
+    def __init__(
+        self, pos_track: PositionProcessor, cam_tag: Type, track_tag: Type
+    ) -> None:
         super().__init__()
         self.pos_track = pos_track
+        self.track_tag = track_tag
         self.bb = esper.component_for_entity(
-            esper.get_component(tag)[0][0],
+            esper.get_component(cam_tag)[0][0],
             BoundingBox,
         )
 
@@ -50,7 +53,8 @@ class CardRenderer:
             return DECK_REF.hand.index(ent)
 
         ent_list = sorted(
-            self.pos_track.intersect(self.bb), key=lambda ent: sorter(ent)
+            self.pos_track.intersect(self.bb, self.track_tag),
+            key=lambda ent: sorter(ent),
         )
         for ent in ent_list:
             sprite = esper.try_component(ent, CardSprite)

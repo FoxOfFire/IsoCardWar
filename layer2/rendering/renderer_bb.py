@@ -4,7 +4,7 @@ from typing import Type
 import esper
 import pygame
 
-from common import BoundingBox, PositionTracker
+from common import BoundingBox, PositionProcessor
 from common.constants import RENDER_BBS
 
 from .log import logger
@@ -12,11 +12,14 @@ from .utils import bb_to_rect, sort_by_bb
 
 
 class BBRenderer:
-    def __init__(self, pos_track: PositionTracker, tag: Type) -> None:
+    def __init__(
+        self, pos_track: PositionProcessor, cam_tag: Type, track_tag: Type
+    ) -> None:
         super().__init__()
         self.pos_track = pos_track
+        self.track_tag = track_tag
         self.bb = esper.component_for_entity(
-            esper.get_component(tag)[0][0],
+            esper.get_component(cam_tag)[0][0],
             BoundingBox,
         )
         logger.info("bb render init finished")
@@ -26,7 +29,8 @@ class BBRenderer:
             return
 
         ent_list = sorted(
-            self.pos_track.intersect(self.bb), key=partial(sort_by_bb, side=3)
+            self.pos_track.intersect(self.bb, self.track_tag),
+            key=partial(sort_by_bb, side=3),
         )
         plain_bb = esper.component_for_entity(self.pos_track.plain, BoundingBox)
 

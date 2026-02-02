@@ -1,9 +1,9 @@
-from typing import Any, Tuple
+from typing import Any, Tuple, Type
 
 import esper
 import pygame
 
-from common import BoundingBox, PositionTracker
+from common import BoundingBox, PositionProcessor, TrackBase
 from common.constants import GAME_CAM_HEIGHT, GAME_CAM_WIDTH
 from layer1 import GAME_STATE_REF, GamePhaseEnum
 from layer2.tags import GameCameraTag, MaskedSprite, UIElementComponent, UIStateEnum
@@ -14,7 +14,7 @@ from .log import logger
 class UIProcessor(esper.Processor):
 
     def __init__(
-        self, ui_tracker: PositionTracker, display_size: Tuple[int, int]
+        self, ui_tracker: PositionProcessor, display_size: Tuple[int, int]
     ) -> None:
         for ent, bb in esper.get_component(BoundingBox):
             if esper.has_component(ent, GameCameraTag):
@@ -34,8 +34,7 @@ class UIProcessor(esper.Processor):
             return click_buffer
 
         ent = self.clicked
-
-        if ent in self.tracker.intersect(mouse_bb):
+        if ent in self.tracker.intersect_ent_type(mouse_bb, ent):
             click_buffer = ent
         else:
             esper.component_for_entity(ent, UIElementComponent).state = UIStateEnum.BASE
@@ -87,7 +86,7 @@ class UIProcessor(esper.Processor):
         for ent, tag in esper.get_component(UIElementComponent):
             if ent == self.clicked:
                 continue
-            if ent in self.tracker.intersect(mouse_bb) or tag.is_active:
+            if ent in self.tracker.intersect_ent_type(mouse_bb, ent) or tag.is_active:
                 tag.state = UIStateEnum.HOVER
             else:
                 unhovered = unhovered or ent == self.hover
@@ -103,7 +102,7 @@ class UIProcessor(esper.Processor):
         self.prev_click = left_clicked
 
         # pressing first intersection of mouse
-        for ent in self.tracker.intersect(mouse_bb):
+        for ent in self.tracker.intersect_ent_type(mouse_bb, ent):
             ui_tag = esper.try_component(ent, UIElementComponent)
             if ent == self.clicked or (
                 ui_tag is None or not ui_tag.is_visible or not ui_tag.is_clickable

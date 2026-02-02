@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Type
+from typing import Dict, List, Type
 
 import esper
 
@@ -38,3 +38,20 @@ class PositionProcessor(esper.Processor):
 
     def intersect(self, bb: BoundingBox, tag: Type) -> List[int]:
         return self.__tracked_types[tag].intersect(bb)
+
+    def intersect_ent_type(self, bb: BoundingBox, ent: int) -> List[int]:
+        tag: Type
+        for comp in esper.components_for_entity(ent):
+            if isinstance(comp, TrackBase):
+                tag = type(comp)
+        return self.intersect(bb, tag)
+
+    def intersect_ent(self, ent: int) -> List[int]:
+        bb: BoundingBox
+        tag: Type
+        for comp in esper.components_for_entity(ent):
+            if isinstance(comp, TrackBase):
+                tag = type(comp)
+            if isinstance(comp, BoundingBox):
+                bb = comp
+        return self.intersect(bb, tag)

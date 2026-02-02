@@ -5,7 +5,7 @@ from typing import Dict, Iterable, Tuple, Type
 import esper
 import pygame
 
-from common import BoundingBox, PositionTracker
+from common import BoundingBox, PositionProcessor
 from common.constants import (
     ISO_POS_OFFSET_X,
     ISO_POS_OFFSET_Y,
@@ -27,11 +27,14 @@ class IsoSprite:
 
 
 class IsoRenderer:
-    def __init__(self, pos_track: PositionTracker, tag: Type, /) -> None:
+    def __init__(
+        self, pos_track: PositionProcessor, cam_tag: Type, track_tag: Type, /
+    ) -> None:
         super().__init__()
         self.pos_track = pos_track
+        self.track_tag = track_tag
         self.bb = esper.component_for_entity(
-            esper.get_component(tag)[0][0],
+            esper.get_component(cam_tag)[0][0],
             BoundingBox,
         )
         logger.info("iso renderer init finished")
@@ -109,7 +112,7 @@ class IsoRenderer:
             return tile.x - tile.y
 
         ent_list = sorted(
-            self.pos_track.intersect(self.bb),
+            self.pos_track.intersect(self.bb, self.track_tag),
             key=lambda ent: sort_by_bottom(ent),
         )
         self._draw_type(screen, TILE_TYPE_SURFS, ent_list, self._DrawType.TILE)

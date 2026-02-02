@@ -7,7 +7,6 @@ from .tags import (
     GameCameraTag,
     IsoCameraTag,
     MaskedSprite,
-    Plain,
     TextData,
     TrackIso,
     TrackUI,
