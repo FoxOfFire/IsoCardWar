@@ -4,7 +4,7 @@ from typing import List, Type
 
 import esper
 
-from common import BoundingBox, Health
+from common import BoundingBox, Health, Untracked
 from common.constants import (
     CARD_HEIGHT,
     CARD_PARAGRAPH_LETTER_COUNT,
@@ -67,6 +67,7 @@ def spawn_iso_elem(
             unhover_func=remove_hover,
             is_gameplay_elem=True,
         ),
+        Untracked(),
     )
     make_map()
     return ent
@@ -128,7 +129,9 @@ def spawn_card_ent(card: Card, /) -> int:
         is_gameplay_elem=True,
     )
     # creating card
-    ent = esper.create_entity(card, bb, TrackUI(), CardSprite(), ui_elem, Health())
+    ent = esper.create_entity(
+        card, bb, TrackUI(), CardSprite(), ui_elem, Health(), Untracked()
+    )
     return ent
 
 

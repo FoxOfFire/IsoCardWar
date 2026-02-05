@@ -9,6 +9,7 @@ from common.position_tracking.bounding_box import BoundingBox
 class BBRTree:
     __rt_index: rtree.index.Index
     tracked_tag: Type
+    __tracked_boxes: int = 0
 
     def __init__(self, tag: Type) -> None:
         rt_props = rtree.index.Property(
@@ -22,6 +23,7 @@ class BBRTree:
         if bb is None:
             bb = esper.component_for_entity(ent, BoundingBox)
         self.__rt_index.insert(ent, bb.points)
+        self.__tracked_boxes += 1
 
     def delete_current(self, ent: int, bb: Optional[BoundingBox] = None) -> None:
         if bb is None:
@@ -32,6 +34,7 @@ class BBRTree:
         if bb is None:
             bb = esper.component_for_entity(ent, BoundingBox)
         self.__rt_index.delete(ent, bb.prev_points)
+        self.__tracked_boxes -= 1
 
     def update(self, ent: int) -> None:
         bb = esper.component_for_entity(ent, BoundingBox)
@@ -40,3 +43,6 @@ class BBRTree:
 
     def intersect(self, bb: BoundingBox) -> List[int]:
         return list(self.__rt_index.intersection(bb.points))
+
+    def rtree_size(self) -> int:
+        return self.__tracked_boxes

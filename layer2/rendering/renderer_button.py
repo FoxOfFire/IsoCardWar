@@ -4,7 +4,7 @@ from typing import Type
 import esper
 import pygame
 
-from common import BoundingBox, PositionProcessor
+from common import POS_PROC_REF, BoundingBox
 from layer2 import UIElementComponent
 
 from .log import logger
@@ -18,11 +18,8 @@ class UIElemSprite:
 
 
 class ButtonRenderer:
-    def __init__(
-        self, pos_track: PositionProcessor, cam_tag: Type, track_tag: Type
-    ) -> None:
+    def __init__(self, cam_tag: Type, track_tag: Type) -> None:
         super().__init__()
-        self.pos_track = pos_track
         self.track_tag = track_tag
         self.bb = esper.component_for_entity(
             esper.get_component(cam_tag)[0][0],
@@ -31,7 +28,10 @@ class ButtonRenderer:
         logger.info("button render init finished")
 
     def draw(self, screen: pygame.Surface) -> None:
-        for ent in self.pos_track.intersect(self.bb, self.track_tag):
+        for ent in POS_PROC_REF.intersect(self.bb, self.track_tag):
+            if not esper.entity_exists(ent):
+                continue
+
             bb = esper.component_for_entity(ent, BoundingBox)
             ui_sprite = esper.try_component(ent, UIElemSprite)
             ui_elem = esper.try_component(ent, UIElementComponent)

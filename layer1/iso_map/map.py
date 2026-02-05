@@ -3,7 +3,7 @@ from typing import List, Optional, Tuple, Type
 
 import esper
 
-from common import BoundingBox
+from common import BoundingBox, Untracked
 from common.types import EntityFunc
 
 from .tile import TerrainEnum, Tile, UnitTypeEnum
@@ -50,4 +50,4 @@ def make_map() -> None:
 
             tile = Tile(pos, terrain, effects=effects, unit=unit)
 
-            esper.create_entity(bb, sprite(), tracker(), tile)
+            esper.create_entity(bb, sprite(), tracker(), tile, Untracked())

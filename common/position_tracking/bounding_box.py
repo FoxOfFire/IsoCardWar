@@ -7,6 +7,11 @@ class BoundingBox:
     top: float = 0
     bottom: float = 0
 
+    prev_left: float = 0
+    prev_right: float = 0
+    prev_top: float = 0
+    prev_bottom: float = 0
+
     _vel_x: float = 0
     _vel_y: float = 0
 
@@ -35,15 +40,15 @@ class BoundingBox:
     @property
     def prev_points(self) -> Tuple[float, float, float, float]:
         return (
-            self.left - self._vel_x,
-            self.right - self._vel_x,
-            self.top - self._vel_y,
-            self.bottom - self._vel_y,
+            self.prev_left,
+            self.prev_right,
+            self.prev_top,
+            self.prev_bottom,
         )
 
     @property
     def has_nonzero_velocity(self) -> bool:
-        return self._vel_x + self._vel_y == -self._vel_x - self._vel_y
+        return self._vel_x != 0 or self._vel_y != 0
 
     def set_velocity(self, vel_x: float, vel_y: float) -> None:
         self._vel_x = vel_x

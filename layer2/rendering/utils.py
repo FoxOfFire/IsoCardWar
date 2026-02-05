@@ -20,6 +20,9 @@ def bb_to_rect(bb: BoundingBox) -> pygame.Rect:
 
 
 def sort_by_bb(ent: int, side: int) -> float:
+    if not esper.entity_exists(ent):
+        return -1
+
     """
     0-left 1-right 2-top 3-bottom
     """
@@ -27,6 +30,9 @@ def sort_by_bb(ent: int, side: int) -> float:
 
 
 def draw_text_on_surf(screen: pygame.Surface, ent: int) -> None:
+    if not esper.entity_exists(ent):
+        return
+
     ui_elem = esper.try_component(ent, UIElementComponent)
     if ui_elem is None:
         return

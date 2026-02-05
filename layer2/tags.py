@@ -10,11 +10,13 @@ from .enums import UIStateEnum
 
 
 class TrackUI(TrackBase):
-    pass
+    def __str__(self) -> str:
+        return "TrackUI"
 
 
 class TrackIso(TrackBase):
-    pass
+    def __str__(self) -> str:
+        return "TrackISO"
 
 
 class GameCameraTag:

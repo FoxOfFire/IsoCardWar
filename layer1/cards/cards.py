@@ -149,6 +149,23 @@ def play_card(target: int) -> None:
     esper.component_for_entity(ent, Health).hp = 0
 
 
+def discard_card(card_num: int) -> None:
+    if card_num < 0 or card_num >= len(DECK_REF.hand):
+        return
+    ent = DECK_REF.hand[card_num]
+
+    if not esper.entity_exists(ent):
+        return
+    card = esper.try_component(ent, Card)
+    if card is None:
+        return
+    if GAME_STATE_REF.selected == ent:
+        GAME_STATE_REF.selected = None
+    DECK_REF.hand.remove(ent)
+    DECK_REF.discard.append(card)
+    esper.component_for_entity(ent, Health).hp = 0
+
+
 def draw_card() -> int:
     if DECK_REF.spawn_card is None:
         raise RuntimeError("failed to initialise deck_obj")

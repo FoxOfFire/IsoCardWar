@@ -9,9 +9,5 @@ class Untracked:
     pass
 
 
-class Removed:
-    pass
-
-
 class TrackBase(NamedTuple):
     pass

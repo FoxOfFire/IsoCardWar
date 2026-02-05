@@ -1,9 +1,9 @@
-from typing import Any, Tuple, Type
+from typing import Tuple
 
 import esper
 import pygame
 
-from common import BoundingBox, PositionProcessor, TrackBase
+from common import POS_PROC_REF, BoundingBox
 from common.constants import GAME_CAM_HEIGHT, GAME_CAM_WIDTH
 from layer1 import GAME_STATE_REF, GamePhaseEnum
 from layer2.tags import GameCameraTag, MaskedSprite, UIElementComponent, UIStateEnum
@@ -13,14 +13,11 @@ from .log import logger
 
 class UIProcessor(esper.Processor):
 
-    def __init__(
-        self, ui_tracker: PositionProcessor, display_size: Tuple[int, int]
-    ) -> None:
+    def __init__(self, display_size: Tuple[int, int]) -> None:
         for ent, bb in esper.get_component(BoundingBox):
             if esper.has_component(ent, GameCameraTag):
                 self.cam_bb = bb
                 break
-        self.tracker = ui_tracker
         self.clicked: int = -1
         self.hover: int = -1
         logger.info("init finished")
@@ -34,7 +31,7 @@ class UIProcessor(esper.Processor):
             return click_buffer
 
         ent = self.clicked
-        if ent in self.tracker.intersect_ent_type(mouse_bb, ent):
+        if ent in POS_PROC_REF.intersect_ent_type(mouse_bb, ent):
             click_buffer = ent
         else:
             esper.component_for_entity(ent, UIElementComponent).state = UIStateEnum.BASE
@@ -43,15 +40,16 @@ class UIProcessor(esper.Processor):
 
     def mask_overlap(self, ent: int, bb: BoundingBox) -> bool:
         bit = 1
-        comp: Any
-        for comp in esper.components_for_entity(ent):
-            if not isinstance(comp, MaskedSprite):
-                continue
-            bit = 0
-            if comp.rect.collidepoint(bb.left, bb.top):
-                bit = comp.mask.get_at(
-                    (bb.left - comp.rect.left, bb.top - comp.rect.top)
-                )
+        if esper.entity_exists(ent):
+            for comp in esper.components_for_entity(ent):
+                if not isinstance(comp, MaskedSprite):
+                    continue
+                bit = 0
+                if comp.rect.collidepoint(bb.left, bb.top):
+                    bit = comp.mask.get_at(
+                        (bb.left - comp.rect.left, bb.top - comp.rect.top)
+                    )
+                break
         return bit == 1
 
     def process(self) -> None:
@@ -84,9 +82,11 @@ class UIProcessor(esper.Processor):
         # reset the hovering status of all entities from the previous frame
         unhovered: bool = False
         for ent, tag in esper.get_component(UIElementComponent):
+            if not esper.entity_exists(ent):
+                continue
             if ent == self.clicked:
                 continue
-            if ent in self.tracker.intersect_ent_type(mouse_bb, ent) or tag.is_active:
+            if ent in POS_PROC_REF.intersect_ent_type(mouse_bb, ent) or tag.is_active:
                 tag.state = UIStateEnum.HOVER
             else:
                 unhovered = unhovered or ent == self.hover
@@ -102,7 +102,9 @@ class UIProcessor(esper.Processor):
         self.prev_click = left_clicked
 
         # pressing first intersection of mouse
-        for ent in self.tracker.intersect_ent_type(mouse_bb, ent):
+        for ent in POS_PROC_REF.intersect_ent_type(mouse_bb, ent):
+            if not esper.entity_exists(ent):
+                continue
             ui_tag = esper.try_component(ent, UIElementComponent)
             if ent == self.clicked or (
                 ui_tag is None or not ui_tag.is_visible or not ui_tag.is_clickable

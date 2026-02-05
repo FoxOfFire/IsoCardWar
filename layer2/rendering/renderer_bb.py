@@ -4,7 +4,7 @@ from typing import Type
 import esper
 import pygame
 
-from common import BoundingBox, PositionProcessor
+from common import POS_PROC_REF, BoundingBox
 from common.constants import RENDER_BBS
 
 from .log import logger
@@ -12,11 +12,8 @@ from .utils import bb_to_rect, sort_by_bb
 
 
 class BBRenderer:
-    def __init__(
-        self, pos_track: PositionProcessor, cam_tag: Type, track_tag: Type
-    ) -> None:
+    def __init__(self, cam_tag: Type, track_tag: Type) -> None:
         super().__init__()
-        self.pos_track = pos_track
         self.track_tag = track_tag
         self.bb = esper.component_for_entity(
             esper.get_component(cam_tag)[0][0],
@@ -29,16 +26,17 @@ class BBRenderer:
             return
 
         ent_list = sorted(
-            self.pos_track.intersect(self.bb, self.track_tag),
+            POS_PROC_REF.intersect(self.bb, self.track_tag),
             key=partial(sort_by_bb, side=3),
         )
-        plain_bb = esper.component_for_entity(self.pos_track.plain, BoundingBox)
 
         for ent in ent_list:
-            bb = esper.component_for_entity(ent, BoundingBox)
-            if bb.points == plain_bb.points:
+            if not esper.entity_exists(ent):
                 continue
 
+            bb = esper.component_for_entity(ent, BoundingBox)
+
             surf = pygame.Surface((bb.width, bb.height), flags=pygame.SRCALPHA)
-            surf.fill(pygame.Color(80, 100, 00, 50))
+            surf.fill(pygame.Color(40, 60, 20, 50))
+
             screen.blit(surf, bb_to_rect(bb))

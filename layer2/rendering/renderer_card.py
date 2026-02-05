@@ -4,7 +4,7 @@ from typing import Type
 import esper
 import pygame
 
-from common import BoundingBox, PositionProcessor
+from common import POS_PROC_REF, BoundingBox
 from common.constants import (
     CARD_HEIGHT,
     CARD_WIDTH,
@@ -15,6 +15,7 @@ from layer1 import GAME_STATE_REF
 from layer1.cards import DECK_REF, Card
 from layer2 import MaskedSprite
 
+from .log import logger
 from .rendering_asset_loader import (
     CARD_IMAGE_SURFS,
     CARD_MARKER_SURFS,
@@ -31,11 +32,8 @@ class CardSprite(MaskedSprite):
 
 
 class CardRenderer:
-    def __init__(
-        self, pos_track: PositionProcessor, cam_tag: Type, track_tag: Type
-    ) -> None:
+    def __init__(self, cam_tag: Type, track_tag: Type) -> None:
         super().__init__()
-        self.pos_track = pos_track
         self.track_tag = track_tag
         self.bb = esper.component_for_entity(
             esper.get_component(cam_tag)[0][0],
@@ -53,10 +51,13 @@ class CardRenderer:
             return DECK_REF.hand.index(ent)
 
         ent_list = sorted(
-            self.pos_track.intersect(self.bb, self.track_tag),
+            POS_PROC_REF.intersect(self.bb, self.track_tag),
             key=lambda ent: sorter(ent),
         )
+
         for ent in ent_list:
+            if not esper.entity_exists(ent):
+                continue
             sprite = esper.try_component(ent, CardSprite)
             card = esper.try_component(ent, Card)
             if sprite is None or card is None:

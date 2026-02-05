@@ -3,7 +3,7 @@ from pygame.event import Event
 
 from common import EventProcessor
 from layer1 import unselect
-from layer1.cards import DECK_REF, OrganizationEnum, draw_card
+from layer1.cards import DECK_REF, OrganizationEnum, discard_card, draw_card
 
 
 def key_bind_handler(event: Event) -> None:
@@ -12,6 +12,8 @@ def key_bind_handler(event: Event) -> None:
             quit_game(-1)
         elif event.key == pygame.K_q:
             draw_card()
+        elif event.key == pygame.K_w:
+            discard_card(0)
         elif event.key == pygame.K_a:
             DECK_REF.set_order(OrganizationEnum.MARKER)
         elif event.key == pygame.K_s:

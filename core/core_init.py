@@ -13,7 +13,7 @@ from common.constants import (
     STARTER_DECK_COUNT,
 )
 from common.globals import RUN_DATA_REF
-from common.position_tracking import BBMoveProcessor, PositionProcessor
+from common.position_tracking import POS_PROC_REF, BBMoveProcessor
 from layer1.cards import (
     DECK_REF,
     CardMovementProcessor,
@@ -35,7 +35,6 @@ from layer2.event_handlers import bind_events as bind_core_events
 from layer2.rendering import (
     IsoSprite,
     RenderingProcessor,
-    RenderLayerEnum,
     load_images,
 )
 from layer2.ui import UIProcessor, bind_keyboard_events, init_audio
@@ -52,7 +51,7 @@ from .spawners import (
 
 def init_logging() -> None:
     parser = argparse.ArgumentParser(
-        prog="Safari", formatter_class=argparse.ArgumentDefaultsHelpFormatter
+        prog="IsoCardWar", formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
     parser.add_argument("-ll", "--log-level", default=logging.INFO)
     parser.add_argument("-lf", "--log-file", default=None)
@@ -69,9 +68,7 @@ def init_logging() -> None:
 def init_window() -> None:
     pygame.init()
 
-    window_dimension = (1920, 1080)
-    if window_dimension not in pygame.display.list_modes():
-        raise RuntimeError("Screen is not supported")
+    window_dimension = (1980, 1080)
 
     pygame.display.set_mode(
         size=window_dimension,
@@ -98,25 +95,23 @@ def init_game_world_esper() -> None:
         raise RuntimeError("No screen found")
 
     # Create processors
-    pos_processor: PositionProcessor = PositionProcessor([TrackUI, TrackIso])
+    POS_PROC_REF.start_tracking_type(TrackIso)
+    POS_PROC_REF.start_tracking_type(TrackUI)
+    mov_processor: BBMoveProcessor = BBMoveProcessor()
 
     game_cam_bb = BoundingBox(0, GAME_CAM_WIDTH, 0, GAME_CAM_HEIGHT)
     esper.create_entity(game_cam_bb, GameCameraTag())
     iso_cam_bb = BoundingBox(0, ISO_MAP_HEIGHT, 0, ISO_MAP_WIDTH)
     esper.create_entity(iso_cam_bb, IsoCameraTag())
 
-    render_layer_dict = {
-        RenderLayerEnum.CARD: (BoundingBox(0, GAME_CAM_WIDTH, 0, GAME_CAM_HEIGHT)),
-        RenderLayerEnum.ISO: (BoundingBox(0, GAME_CAM_WIDTH, 0, GAME_CAM_HEIGHT)),
-    }
-    renderer = RenderingProcessor(display, render_layer_dict, pos_processor)
+    renderer = RenderingProcessor(display)
 
     card_movement_processor = CardMovementProcessor(game_cam_bb)
     game_phase_processor = GamePhaseProcessor(get_base_game_phase_dict())
     event_processor = EventProcessor()
-    ui_processor = UIProcessor(pos_processor, display.get_size())
+    ui_processor = UIProcessor(display.get_size())
 
-    dying_proc = DyingProcessor(pos_processor)
+    dying_proc = DyingProcessor()
     scene_switcher = SceneSwitcher()
 
     bind_game_events(
@@ -124,18 +119,19 @@ def init_game_world_esper() -> None:
         scene_switcher=scene_switcher,
     )
 
-    pos_processor.process()
+    POS_PROC_REF.process()
 
     # adding processors
     esper.add_processor(event_processor)
-    esper.add_processor(dying_proc)
     esper.add_processor(card_movement_processor)
     esper.add_processor(game_phase_processor)
 
-    esper.add_processor(pos_processor)
+    esper.add_processor(mov_processor)
+    esper.add_processor(POS_PROC_REF)
 
     esper.add_processor(ui_processor)
     esper.add_processor(renderer)
+    esper.add_processor(dying_proc)
     esper.add_processor(scene_switcher)
 
     # dependency injection
@@ -147,7 +143,7 @@ def init_game_world_esper() -> None:
 
     spawn_iso_elem(TrackIso, TrackUI, IsoSprite)
 
-    ui_event_obj.iso_pos_track = pos_processor
+    ui_event_obj.iso_tag = TrackIso
 
 
 def init() -> None:
@@ -163,4 +159,6 @@ def init() -> None:
     build_ui()
     logger.info(f"{esper.current_world} world init finished")
 
-    logger.info("Finished init!!")
+    logger.info(
+        "\n\n-------------------------< Finished Init >-------------------------\n"
+    )

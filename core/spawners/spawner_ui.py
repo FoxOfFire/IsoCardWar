@@ -2,7 +2,7 @@ from typing import Optional, Tuple
 
 import esper
 
-from common import BoundingBox
+from common import BoundingBox, Untracked
 from common.constants import BUTTON_HEIGHT, BUTTON_WIDTH
 from common.types import ButtonFunc, TextFunc
 from layer2 import TextData, TrackUI, UIElementComponent
@@ -48,4 +48,4 @@ def spawn_button(
     tracker = TrackUI()
     ui_elem_sprite = UIElemSprite(ui_elem_type)
 
-    return esper.create_entity(bb, ui_elem, tracker, ui_elem_sprite)
+    return esper.create_entity(bb, ui_elem, tracker, ui_elem_sprite, Untracked())
