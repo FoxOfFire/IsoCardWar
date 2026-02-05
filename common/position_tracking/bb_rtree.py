@@ -16,7 +16,9 @@ class BBRTree:
             dimension=2,
             storage=rtree.index.RT_Memory,
         )
-        self.__rt_index = rtree.index.Index(properties=rt_props, interleaved=False)
+        self.__rt_index = rtree.index.Index(
+            properties=rt_props, interleaved=False
+        )
         self.tracked_tag = tag
 
     def insert(self, ent: int, bb: Optional[BoundingBox] = None) -> None:
@@ -25,7 +27,9 @@ class BBRTree:
         self.__rt_index.insert(ent, bb.points)
         self.__tracked_boxes += 1
 
-    def delete_current(self, ent: int, bb: Optional[BoundingBox] = None) -> None:
+    def delete_current(
+        self, ent: int, bb: Optional[BoundingBox] = None
+    ) -> None:
         if bb is None:
             bb = esper.component_for_entity(ent, BoundingBox)
         self.__rt_index.delete(ent, bb.points)

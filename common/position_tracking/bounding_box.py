@@ -15,7 +15,9 @@ class BoundingBox:
     _vel_x: float = 0
     _vel_y: float = 0
 
-    def __init__(self, left: float, right: float, top: float, bottom: float) -> None:
+    def __init__(
+        self, left: float, right: float, top: float, bottom: float
+    ) -> None:
         self.left = left
         self.right = right
         self.top = top

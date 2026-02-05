@@ -8,4 +8,9 @@ from .game_state import (
     set_play_card,
     unselect,
 )
-from .game_state_utils import GamePhaseEnum, MarkerEnum, PriceEnum, SelectableObject
+from .game_state_utils import (
+    GamePhaseEnum,
+    MarkerEnum,
+    PriceEnum,
+    SelectableObject,
+)

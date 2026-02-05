@@ -48,4 +48,6 @@ def spawn_button(
     tracker = TrackUI()
     ui_elem_sprite = UIElemSprite(ui_elem_type)
 
-    return esper.create_entity(bb, ui_elem, tracker, ui_elem_sprite, Untracked())
+    return esper.create_entity(
+        bb, ui_elem, tracker, ui_elem_sprite, Untracked()
+    )

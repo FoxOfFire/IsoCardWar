@@ -12,7 +12,9 @@ from .log import logger
 
 
 class GamePhaseProcessor(esper.Processor):
-    def __init__(self, phase_func_dict: Dict[GamePhaseEnum, List[PhaseFunc]]) -> None:
+    def __init__(
+        self, phase_func_dict: Dict[GamePhaseEnum, List[PhaseFunc]]
+    ) -> None:
         logger.info("GamePhaseProcessor init finished")
         self.phase_func_dict = phase_func_dict
         self.wait = GAME_PHASE_PAUSE

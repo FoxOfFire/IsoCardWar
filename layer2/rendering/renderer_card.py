@@ -15,7 +15,6 @@ from layer1 import GAME_STATE_REF
 from layer1.cards import DECK_REF, Card
 from layer2 import MaskedSprite
 
-from .log import logger
 from .rendering_asset_loader import (
     CARD_IMAGE_SURFS,
     CARD_MARKER_SURFS,
@@ -64,7 +63,9 @@ class CardRenderer:
                 continue
 
             bb = esper.component_for_entity(ent, BoundingBox)
-            surf = pygame.Surface((CARD_WIDTH, CARD_HEIGHT), flags=pygame.SRCALPHA)
+            surf = pygame.Surface(
+                (CARD_WIDTH, CARD_HEIGHT), flags=pygame.SRCALPHA
+            )
             marker_surf = CARD_MARKER_SURFS[card.marker]
 
             surf.blit(CARD_IMAGE_SURFS[CardImageEnum.BASIC][0], surf.get_rect())

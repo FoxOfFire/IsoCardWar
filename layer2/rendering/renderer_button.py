@@ -37,7 +37,9 @@ class ButtonRenderer:
             ui_elem = esper.try_component(ent, UIElementComponent)
             if ui_sprite is None or ui_elem is None:
                 continue
-            surf = BUTTON_SURFS[ui_sprite.elem_type][ui_elem.state.value - 1].copy()
+            surf = BUTTON_SURFS[ui_sprite.elem_type][
+                ui_elem.state.value - 1
+            ].copy()
             draw_text_on_surf(surf, ent)
 
             screen.blit(surf, surf.get_rect(center=bb.center))

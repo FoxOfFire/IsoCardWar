@@ -1,6 +1,20 @@
 [tool.black]
 extend-exclude = "(examples|.venv)"
 force-exclude = "examples"
+line-length = 80
+
+[tool.flake8]
+python = ".venv/bin/python"
+max-line-length = 80
+exclude = [
+    ".git",
+    "__pycache__",
+    ".venv"
+]
+extend-ignore = [
+    "E203",
+    "B020"
+]
 
 [tool.mypy]
 exclude = "examples"

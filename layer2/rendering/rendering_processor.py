@@ -1,9 +1,6 @@
-from typing import Dict, Tuple, Type
-
 import esper
 import pygame
 
-from common import BoundingBox
 from common.constants import GAME_CAM_HEIGHT, GAME_CAM_WIDTH, RENDER_BBS
 from layer2 import GameCameraTag, IsoCameraTag, TrackIso, TrackUI
 
@@ -12,7 +9,6 @@ from .renderer_button import ButtonRenderer
 from .renderer_card import CardRenderer
 from .renderer_iso import IsoRenderer
 from .renderer_mask import MaskRenderer
-from .utils import RenderLayerEnum
 
 
 class ScreenNotFoundException(Exception):

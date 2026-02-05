@@ -1,12 +1,10 @@
-from typing import Dict, List, Type
+from typing import Any, Dict, List, Type
 
 import esper
 
 from common.position_tracking.bb_rtree import BBRTree
 from common.position_tracking.bounding_box import BoundingBox
 from common.position_tracking.tags import Moved, TrackBase, Untracked
-
-from .log import logger
 
 
 class PositionProcessor(esper.Processor):
@@ -17,6 +15,7 @@ class PositionProcessor(esper.Processor):
         super().__init__()
 
     def process(self) -> None:
+        tag: Any
         for ent, _ in esper.get_component(Moved):
             esper.remove_component(ent, Moved)
             ty = None
@@ -38,8 +37,7 @@ class PositionProcessor(esper.Processor):
                     break
 
     def untrack(self, ent: int) -> None:
-        bb: BoundingBox
-        tag: Type
+        comp: Any
         for comp in esper.components_for_entity(ent):
             if isinstance(comp, TrackBase):
                 tag = type(comp)
@@ -52,15 +50,14 @@ class PositionProcessor(esper.Processor):
         return self.__tracker_dict[tag].intersect(bb)
 
     def intersect_ent_type(self, bb: BoundingBox, ent: int) -> List[int]:
-        tag: Type
+        comp: Any
         for comp in esper.components_for_entity(ent):
             if isinstance(comp, TrackBase):
                 tag = type(comp)
         return self.intersect(bb, tag)
 
     def intersect_ent(self, ent: int) -> List[int]:
-        bb: BoundingBox
-        tag: Type
+        comp: Any
         for comp in esper.components_for_entity(ent):
             if isinstance(comp, TrackBase):
                 tag = type(comp)

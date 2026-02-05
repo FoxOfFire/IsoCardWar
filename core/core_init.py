@@ -32,11 +32,7 @@ from layer2 import (
 )
 from layer2.dying import DyingProcessor
 from layer2.event_handlers import bind_events as bind_core_events
-from layer2.rendering import (
-    IsoSprite,
-    RenderingProcessor,
-    load_images,
-)
+from layer2.rendering import IsoSprite, RenderingProcessor, load_images
 from layer2.ui import UIProcessor, bind_keyboard_events, init_audio
 
 from .log import logger
@@ -51,7 +47,8 @@ from .spawners import (
 
 def init_logging() -> None:
     parser = argparse.ArgumentParser(
-        prog="IsoCardWar", formatter_class=argparse.ArgumentDefaultsHelpFormatter
+        prog="IsoCardWar",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument("-ll", "--log-level", default=logging.INFO)
     parser.add_argument("-lf", "--log-file", default=None)
@@ -160,5 +157,5 @@ def init() -> None:
     logger.info(f"{esper.current_world} world init finished")
 
     logger.info(
-        "\n\n-------------------------< Finished Init >-------------------------\n"
+        "\n\n----------------------< Finished Init >----------------------\n"
     )

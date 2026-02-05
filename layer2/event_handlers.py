@@ -21,7 +21,9 @@ def handle_world_switch(
     """
 
 
-def bind_events(event_processor: EventProcessor, scene_switcher: SceneSwitcher) -> None:
+def bind_events(
+    event_processor: EventProcessor, scene_switcher: SceneSwitcher
+) -> None:
     event_processor.bind(
         SWITCH_SCENE,
         functools.partial(handle_world_switch, scene_switcher=scene_switcher),
