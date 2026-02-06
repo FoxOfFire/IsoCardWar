@@ -20,7 +20,3 @@ def get_fps_str() -> str:
 
 def get_game_phase_str() -> str:
     return f"{GAME_STATE_REF.game_phase.name}"
-
-
-def get_card() -> str:
-    return "xdd"

@@ -7,6 +7,7 @@ import pygame
 from common import (
     GAME_CAM_HEIGHT,
     GAME_CAM_WIDTH,
+    GAME_FULLSCREEN,
     ISO_MAP_HEIGHT,
     ISO_MAP_WIDTH,
     POS_PROC_REF,
@@ -71,12 +72,15 @@ def init_logging() -> None:
 def init_window() -> None:
     pygame.init()
 
-    window_dimension = (1980, 1080)
-
-    pygame.display.set_mode(
-        size=window_dimension,
-        flags=pygame.DOUBLEBUF | pygame.FULLSCREEN,
-    )
+    if GAME_FULLSCREEN:
+        window_dimension = (1980, 1080)
+        pygame.display.set_mode(
+            size=window_dimension,
+            flags=pygame.DOUBLEBUF | pygame.FULLSCREEN,
+        )
+    else:
+        window_dimension = (1280, 720)
+        pygame.display.set_mode(size=window_dimension, flags=pygame.DOUBLEBUF)
 
 
 def bind_game_events(

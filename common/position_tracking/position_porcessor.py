@@ -11,9 +11,6 @@ class PositionProcessor(esper.Processor):
     __tracker_dict: Dict[Type, BBRTree] = {}
     __tracked_tags: List[Type] = []
 
-    def __init__(self) -> None:
-        super().__init__()
-
     def process(self) -> None:
         tag: Any
         for ent, _ in esper.get_component(Moved):
@@ -41,8 +38,6 @@ class PositionProcessor(esper.Processor):
         for comp in esper.components_for_entity(ent):
             if isinstance(comp, TrackBase):
                 tag = type(comp)
-            if isinstance(comp, BoundingBox):
-                bb = comp
         self.__tracker_dict[tag].delete_prev(ent)
         self.__tracker_dict[tag].delete_current(ent)
 

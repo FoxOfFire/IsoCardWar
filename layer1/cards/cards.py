@@ -106,11 +106,7 @@ def sort_hand() -> None:
                 return 1
 
         case _:
-
-            def sorter(ent: int) -> Any:
-                return 1
-
-            RuntimeError("unexpected organizer")
+            raise RuntimeError("unexpected organizer")
 
     DECK_REF.hand.sort(key=sorter)
 

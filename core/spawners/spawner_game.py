@@ -70,11 +70,8 @@ def spawn_iso_elem(
     left = offset[0]
     right = offset[0] + (map_size[0] + map_size[1]) * map_scale[0]
     top = corrected_offset_y
-    bottom = (
-        corrected_offset_y
-        + map_size[0] * map_scale[1]
-        + map_size[1] * map_scale[1]
-    )
+    bottom = corrected_offset_y + (map_size[0] + map_size[1]) * map_scale[1]
+
     ui_bb = BoundingBox(left, right, top, bottom)
     logger.info(f"map ui elem created:{ui_bb.points}")
 

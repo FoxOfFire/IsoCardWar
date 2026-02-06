@@ -64,5 +64,7 @@ class BoundingBox:
         def lerp(a: float, b: float, t: float) -> float:
             return t * a + (1 - t) * b
 
-        self._vel_x += lerp(self.center[0], point[0], by)
-        self._vel_y += lerp(self.center[1], point[1], by)
+        self.add_velocity(
+            lerp(self.center[0], point[0], by),
+            lerp(self.center[1], point[1], by),
+        )

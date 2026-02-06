@@ -86,16 +86,8 @@ class IsoRenderer:
             if not esper.has_component(ent, IsoSprite):
                 continue
             tile = esper.component_for_entity(ent, Tile)
-            x = (
-                delta_x
-                + ISO_POS_OFFSET_X
-                + (tile.x + tile.y) * ISO_TILE_OFFSET_X
-            )
-            y = (
-                delta_y
-                + ISO_POS_OFFSET_Y
-                + (tile.x - tile.y) * ISO_TILE_OFFSET_Y
-            )
+            x = delta_x + (1 + tile.x + tile.y) * ISO_TILE_OFFSET_X
+            y = delta_y + (1 + tile.x - tile.y) * ISO_TILE_OFFSET_Y
             if ent == GAME_STATE_REF.selecting:
                 y += ISO_TILE_SELECT_OFFSET
             match draw_type:
