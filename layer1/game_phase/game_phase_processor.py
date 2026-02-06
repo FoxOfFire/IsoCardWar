@@ -2,10 +2,8 @@ from typing import Dict, List
 
 import esper
 
-from common.constants import GAME_PHASE_PAUSE
-from common.globals import RUN_DATA_REF
-from common.types import PhaseFunc
-from layer1 import GAME_STATE_REF, GamePhaseEnum
+from common import GAME_PHASE_PAUSE, RUN_DATA_REF, PhaseFunc
+from layer1.game_state import GAME_STATE_REF, GamePhaseEnum
 
 from .game_phase_utils import end_phase
 from .log import logger

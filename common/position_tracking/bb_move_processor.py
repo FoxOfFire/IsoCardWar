@@ -1,7 +1,7 @@
 import esper
 
-from common.position_tracking.bounding_box import BoundingBox
-from common.position_tracking.tags import Moved
+from .bounding_box import BoundingBox
+from .tags import Moved
 
 
 class BBMoveProcessor(esper.Processor):

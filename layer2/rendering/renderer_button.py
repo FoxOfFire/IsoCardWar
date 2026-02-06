@@ -5,7 +5,7 @@ import esper
 import pygame
 
 from common import POS_PROC_REF, BoundingBox
-from layer2 import UIElementComponent
+from layer2.tags import UIElementComponent
 
 from .log import logger
 from .rendering_asset_loader import BUTTON_SURFS, UIElemType
@@ -29,14 +29,14 @@ class ButtonRenderer:
 
     def draw(self, screen: pygame.Surface) -> None:
         for ent in POS_PROC_REF.intersect(self.bb, self.track_tag):
-            if not esper.entity_exists(ent):
-                continue
+            assert esper.entity_exists(ent)
 
             bb = esper.component_for_entity(ent, BoundingBox)
             ui_sprite = esper.try_component(ent, UIElemSprite)
             ui_elem = esper.try_component(ent, UIElementComponent)
             if ui_sprite is None or ui_elem is None:
                 continue
+
             surf = BUTTON_SURFS[ui_sprite.elem_type][
                 ui_elem.state.value - 1
             ].copy()

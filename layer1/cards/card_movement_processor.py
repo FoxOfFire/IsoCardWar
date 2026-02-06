@@ -1,15 +1,15 @@
 import esper
 
-from common import BoundingBox
-from common.constants import (
+from common import (
     CARD_ANIMATION_SPEED,
     CARD_X_FIX_DISTANCE,
     CARD_Y_POS_BASE,
     CARD_Y_POS_SELECTED,
     CARD_Y_POS_SELECTING,
+    RUN_DATA_REF,
+    BoundingBox,
 )
-from common.globals import RUN_DATA_REF
-from layer1 import GAME_STATE_REF
+from layer1.game_state import GAME_STATE_REF
 
 from .cards import DECK_REF, Card, get_card_center_offset
 

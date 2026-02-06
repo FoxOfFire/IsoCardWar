@@ -4,16 +4,16 @@ from typing import Type
 import esper
 import pygame
 
-from common import POS_PROC_REF, BoundingBox
-from common.constants import (
+from common import (
     CARD_HEIGHT,
     CARD_WIDTH,
+    POS_PROC_REF,
     RELATIVE_MARKER_POS_X,
     RELATIVE_MARKER_POS_Y,
+    BoundingBox,
 )
-from layer1 import GAME_STATE_REF
-from layer1.cards import DECK_REF, Card
-from layer2 import MaskedSprite
+from layer1 import DECK_REF, GAME_STATE_REF, Card
+from layer2.tags import MaskedSprite
 
 from .rendering_asset_loader import (
     CARD_IMAGE_SURFS,
@@ -55,8 +55,8 @@ class CardRenderer:
         )
 
         for ent in ent_list:
-            if not esper.entity_exists(ent):
-                continue
+            assert esper.entity_exists(ent)
+
             sprite = esper.try_component(ent, CardSprite)
             card = esper.try_component(ent, Card)
             if sprite is None or card is None:

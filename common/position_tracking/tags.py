@@ -1,11 +1,11 @@
 from typing import NamedTuple
 
 
-class Moved:
+class Moved(NamedTuple):
     pass
 
 
-class Untracked:
+class Untracked(NamedTuple):
     pass
 
 

@@ -3,7 +3,7 @@ from typing import Dict, Optional
 
 import esper
 
-from common.types import ButtonFunc
+from common import ButtonFunc
 
 from .game_state_utils import GamePhaseEnum, PriceEnum
 
@@ -27,10 +27,10 @@ def set_play_card(func: ButtonFunc) -> None:
     GAME_STATE_REF.play_card = func
 
 
-def play_card(target: int) -> None:
+def play_card(target: Optional[int], card_num: Optional[int]) -> None:
     if GAME_STATE_REF.play_card is None:
         return
-    GAME_STATE_REF.play_card(target)
+    GAME_STATE_REF.play_card(target, card_num)
 
 
 def remove_hover(_: int) -> None:
@@ -42,12 +42,10 @@ def unselect() -> None:
 
 
 def select(ent: int) -> None:
-    if not esper.entity_exists(ent):
-        return
+    assert esper.entity_exists(ent)
     GAME_STATE_REF.selected = ent
 
 
 def hover(ent: int) -> None:
-    if not esper.entity_exists(ent):
-        return
+    assert esper.entity_exists(ent)
     GAME_STATE_REF.selecting = ent

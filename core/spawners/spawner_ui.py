@@ -2,11 +2,21 @@ from typing import Optional, Tuple
 
 import esper
 
-from common import BoundingBox, Untracked
-from common.constants import BUTTON_HEIGHT, BUTTON_WIDTH
-from common.types import ButtonFunc, TextFunc
-from layer2 import TextData, TrackUI, UIElementComponent
-from layer2.rendering import UIElemSprite, UIElemType
+from common import (
+    BUTTON_HEIGHT,
+    BUTTON_WIDTH,
+    BoundingBox,
+    ButtonFunc,
+    TextFunc,
+    Untracked,
+)
+from layer2 import (
+    TextData,
+    TrackUI,
+    UIElementComponent,
+    UIElemSprite,
+    UIElemType,
+)
 
 from .log import logger
 
@@ -26,8 +36,7 @@ def spawn_button(
     if not callable(text):
 
         def text_func() -> str:
-            if callable(text):
-                raise RuntimeError("text somehow callable and not callable")
+            assert not callable(text)
             return text
 
         mod_text = text_func

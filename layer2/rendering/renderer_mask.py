@@ -3,10 +3,8 @@ from typing import List, Tuple, Type
 import esper
 import pygame
 
-from common import BoundingBox
-from common.constants import RENDER_MASKS
-from layer1 import GAME_STATE_REF
-from layer1.cards import DECK_REF
+from common import RENDER_MASKS, BoundingBox
+from layer1 import DECK_REF, GAME_STATE_REF
 
 from .renderer_card import CardSprite
 
@@ -37,12 +35,11 @@ class MaskRenderer:
 
     def _draw_hand_masks(self, ent_list: List[int]) -> None:
         for ent in ent_list:
-            if (
-                not esper.entity_exists(ent)
-                or ent not in DECK_REF.hand
-                or not esper.has_component(ent, CardSprite)
-            ):
-                continue
+            assert (
+                esper.entity_exists(ent)
+                and ent in DECK_REF.hand
+                and esper.has_component(ent, CardSprite)
+            )
 
             sprite = esper.component_for_entity(ent, CardSprite)
             sprite.mask.invert()
@@ -66,19 +63,15 @@ class MaskRenderer:
         self, ent_list: List[int], selection_list: List[int]
     ) -> None:
         for ent in selection_list:
-            if not esper.entity_exists(ent):
-                continue
+            assert esper.entity_exists(ent)
 
             sprite = esper.try_component(ent, CardSprite)
-            if sprite is None:
-                continue
+            assert sprite is not None
             for hand_ent in ent_list:
-                if not esper.entity_exists(hand_ent):
-                    continue
+                assert esper.entity_exists(hand_ent)
 
                 hand_sprite = esper.try_component(hand_ent, CardSprite)
-                if hand_sprite is None:
-                    continue
+                assert hand_sprite is not None
 
                 hand_sprite.mask.draw(
                     sprite.mask,
@@ -90,21 +83,21 @@ class MaskRenderer:
 
     def _invert_hand(self, ent_list: List[int]) -> None:
         for ent in ent_list:
-            if not esper.entity_exists(ent):
-                continue
+            assert esper.entity_exists(ent)
 
             sprite = esper.try_component(ent, CardSprite)
-            if sprite is None:
-                continue
+            assert sprite is not None
+
             sprite.mask.invert()
 
     def _draw_selection_to_selected(self) -> None:
         if GAME_STATE_REF.selecting is None or GAME_STATE_REF.selected is None:
             return
-        if not esper.entity_exists(
+
+        assert esper.entity_exists(
             GAME_STATE_REF.selected
-        ) or not esper.entity_exists(GAME_STATE_REF.selecting):
-            return
+        ) and esper.entity_exists(GAME_STATE_REF.selecting)
+
         selecting_sprite = esper.try_component(
             GAME_STATE_REF.selecting, CardSprite
         )
@@ -128,12 +121,10 @@ class MaskRenderer:
         self, screen: pygame.Surface, ent_list: List[int]
     ) -> None:
         for ent in ent_list:
-            if not esper.entity_exists(ent):
-                continue
+            assert esper.entity_exists(ent)
 
             sprite = esper.try_component(ent, CardSprite)
-            if sprite is None:
-                continue
+            assert sprite is not None
             screen.blit(
                 sprite.mask.to_surface(
                     setcolor=pygame.Color(255, 255, 255, 50),

@@ -4,8 +4,7 @@ from typing import Type
 import esper
 import pygame
 
-from common import POS_PROC_REF, BoundingBox
-from common.constants import RENDER_BBS
+from common import POS_PROC_REF, RENDER_BBS, BoundingBox
 
 from .log import logger
 from .utils import bb_to_rect, sort_by_bb
@@ -31,8 +30,7 @@ class BBRenderer:
         )
 
         for ent in ent_list:
-            if not esper.entity_exists(ent):
-                continue
+            assert esper.entity_exists(ent)
 
             bb = esper.component_for_entity(ent, BoundingBox)
 

@@ -7,7 +7,6 @@ from .cards import (
     Card,
     add_card,
     create_starting_deck,
-    discard_card,
     draw_card,
     get_card_center_offset,
     shuffle_deck,

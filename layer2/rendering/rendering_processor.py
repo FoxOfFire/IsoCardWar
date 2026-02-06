@@ -1,8 +1,8 @@
 import esper
 import pygame
 
-from common.constants import GAME_CAM_HEIGHT, GAME_CAM_WIDTH, RENDER_BBS
-from layer2 import GameCameraTag, IsoCameraTag, TrackIso, TrackUI
+from common import GAME_CAM_HEIGHT, GAME_CAM_WIDTH, RENDER_BBS
+from layer2.tags import GameCameraTag, IsoCameraTag, TrackIso, TrackUI
 
 from .renderer_bb import BBRenderer
 from .renderer_button import ButtonRenderer

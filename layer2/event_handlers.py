@@ -3,9 +3,9 @@ import functools
 import pygame
 
 from common import EventProcessor
-from layer2.ui import SWITCH_SCENE
 
 from .scene_switcher import SceneSwitcher
+from .ui import SWITCH_SCENE
 
 
 def handle_world_switch(

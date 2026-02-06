@@ -4,36 +4,42 @@ import logging
 import esper
 import pygame
 
-from common import BoundingBox, EventProcessor
-from common.constants import (
+from common import (
     GAME_CAM_HEIGHT,
     GAME_CAM_WIDTH,
     ISO_MAP_HEIGHT,
     ISO_MAP_WIDTH,
+    POS_PROC_REF,
+    RUN_DATA_REF,
     STARTER_DECK_COUNT,
+    BBMoveProcessor,
+    BoundingBox,
+    EventProcessor,
 )
-from common.globals import RUN_DATA_REF
-from common.position_tracking import POS_PROC_REF, BBMoveProcessor
-from layer1.cards import (
+from layer1 import (
     DECK_REF,
     CardMovementProcessor,
+    GamePhaseProcessor,
     create_starting_deck,
     draw_card,
 )
-from layer1.game_phase import GamePhaseProcessor
 from layer2 import (
+    DyingProcessor,
     GameCameraTag,
     IsoCameraTag,
+    IsoSprite,
+    RenderingProcessor,
     SceneSwitcher,
     TrackIso,
     TrackUI,
+    UIProcessor,
     WorldEnum,
+    bind_events,
+    bind_keyboard_events,
+    init_audio,
+    load_images,
     ui_event_obj,
 )
-from layer2.dying import DyingProcessor
-from layer2.event_handlers import bind_events as bind_core_events
-from layer2.rendering import IsoSprite, RenderingProcessor, load_images
-from layer2.ui import UIProcessor, bind_keyboard_events, init_audio
 
 from .log import logger
 from .spawners import (
@@ -77,7 +83,7 @@ def bind_game_events(
     event_processor: EventProcessor,
     scene_switcher: SceneSwitcher,
 ) -> None:
-    bind_core_events(event_processor, scene_switcher)
+    bind_events(event_processor, scene_switcher)
     bind_keyboard_events(event_processor)
 
     def handle_quit(_: pygame.event.Event) -> None:
@@ -88,8 +94,7 @@ def bind_game_events(
 
 def init_game_world_esper() -> None:
     display = pygame.display.get_surface()
-    if display is None:
-        raise RuntimeError("No screen found")
+    assert display is not None
 
     # Create processors
     POS_PROC_REF.start_tracking_type(TrackIso)

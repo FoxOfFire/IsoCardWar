@@ -1,18 +1,23 @@
 import esper
 
-from common import BoundingBox
-from common.constants import (
+from common import (
     RENDER_FPS_UI,
     RENDER_GAME_CAM_INTERSECT_UI,
     RENDER_GAME_PHASE_UI,
     RENDER_ISO_CAM_INTERSECT_UI,
     RENDER_TRACKED_ISO_UI,
     RENDER_TRACKED_UI_UI,
+    BoundingBox,
 )
-from layer1.game_phase import end_player_phase
-from layer2 import GameCameraTag, IsoCameraTag, TrackIso, TrackUI
-from layer2.rendering import UIElemType
-from layer2.ui import quit_game
+from layer1 import end_player_phase
+from layer2 import (
+    GameCameraTag,
+    IsoCameraTag,
+    TrackIso,
+    TrackUI,
+    UIElemType,
+    quit_game,
+)
 
 from .spawner_ui import spawn_button
 from .text_functions import (

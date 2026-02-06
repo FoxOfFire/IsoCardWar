@@ -1,6 +1,6 @@
 from typing import List
 
-from common.types import EntityFunc
+from common import EntityFunc
 
 from .cards import draw_card
 

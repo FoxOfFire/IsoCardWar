@@ -2,9 +2,9 @@ from typing import Any, Dict, List, Type
 
 import esper
 
-from common.position_tracking.bb_rtree import BBRTree
-from common.position_tracking.bounding_box import BoundingBox
-from common.position_tracking.tags import Moved, TrackBase, Untracked
+from .bb_rtree import BBRTree
+from .bounding_box import BoundingBox
+from .tags import Moved, TrackBase, Untracked
 
 
 class PositionProcessor(esper.Processor):
@@ -43,8 +43,8 @@ class PositionProcessor(esper.Processor):
                 tag = type(comp)
             if isinstance(comp, BoundingBox):
                 bb = comp
-        self.__tracker_dict[tag].delete_prev(ent, bb)
-        self.__tracker_dict[tag].delete_current(ent, bb)
+        self.__tracker_dict[tag].delete_prev(ent)
+        self.__tracker_dict[tag].delete_current(ent)
 
     def intersect(self, bb: BoundingBox, tag: Type) -> List[int]:
         return self.__tracker_dict[tag].intersect(bb)

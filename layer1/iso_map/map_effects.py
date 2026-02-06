@@ -2,7 +2,7 @@ from typing import List
 
 import esper
 
-from common.types import EntityFunc
+from common import EntityFunc
 
 from .log import logger
 from .tile import TerrainEnum, Tile, UnitTypeEnum

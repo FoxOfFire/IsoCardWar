@@ -3,8 +3,7 @@ from typing import Any, Tuple
 import esper
 import pygame
 
-from common import POS_PROC_REF, BoundingBox
-from common.constants import GAME_CAM_HEIGHT, GAME_CAM_WIDTH
+from common import GAME_CAM_HEIGHT, GAME_CAM_WIDTH, POS_PROC_REF, BoundingBox
 from layer1 import GAME_STATE_REF, GamePhaseEnum
 from layer2.tags import (
     GameCameraTag,
@@ -47,17 +46,17 @@ class UIProcessor(esper.Processor):
 
     def mask_overlap(self, ent: int, bb: BoundingBox) -> bool:
         bit = 1
-        if esper.entity_exists(ent):
-            comp: Any
-            for comp in esper.components_for_entity(ent):
-                if not isinstance(comp, MaskedSprite):
-                    continue
-                bit = 0
-                if comp.rect.collidepoint(bb.left, bb.top):
-                    bit = comp.mask.get_at(
-                        (bb.left - comp.rect.left, bb.top - comp.rect.top)
-                    )
-                break
+        assert esper.entity_exists(ent)
+        comp: Any
+        for comp in esper.components_for_entity(ent):
+            if not isinstance(comp, MaskedSprite):
+                continue
+            bit = 0
+            if comp.rect.collidepoint(bb.left, bb.top):
+                bit = comp.mask.get_at(
+                    (bb.left - comp.rect.left, bb.top - comp.rect.top)
+                )
+            break
         return bit == 1
 
     def process(self) -> None:
@@ -90,7 +89,8 @@ class UIProcessor(esper.Processor):
         # reset the hovering status of all entities from the previous frame
         unhovered: bool = False
         for ent, tag in esper.get_component(UIElementComponent):
-            if not esper.entity_exists(ent) or ent == self.clicked:
+            assert esper.entity_exists(ent)
+            if ent == self.clicked:
                 continue
             if (
                 ent in POS_PROC_REF.intersect_ent_type(mouse_bb, ent)
@@ -112,11 +112,11 @@ class UIProcessor(esper.Processor):
 
         # pressing first intersection of mouse
         for ent in POS_PROC_REF.intersect_ent_type(mouse_bb, ent):
-            if not esper.entity_exists(ent):
-                continue
+            assert esper.entity_exists(ent)
             ui_tag = esper.try_component(ent, UIElementComponent)
-            if ent == self.clicked or (
-                ui_tag is None
+            assert ui_tag is not None
+            if (
+                ent == self.clicked
                 or not ui_tag.is_visible
                 or not ui_tag.is_clickable
                 or not self.mask_overlap(ent, mouse_bb)

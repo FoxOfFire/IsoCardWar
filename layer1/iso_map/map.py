@@ -3,8 +3,7 @@ from typing import List, Optional, Tuple, Type
 
 import esper
 
-from common import BoundingBox, Untracked
-from common.types import EntityFunc
+from common import BoundingBox, EntityFunc, Untracked
 
 from .tile import TerrainEnum, Tile, UnitTypeEnum
 

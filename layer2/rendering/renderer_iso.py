@@ -5,17 +5,16 @@ from typing import Dict, Iterable, Tuple, Type
 import esper
 import pygame
 
-from common import POS_PROC_REF, BoundingBox
-from common.constants import (
+from common import (
     ISO_POS_OFFSET_X,
     ISO_POS_OFFSET_Y,
     ISO_TILE_OFFSET_X,
     ISO_TILE_OFFSET_Y,
     ISO_TILE_SELECT_OFFSET,
+    POS_PROC_REF,
+    BoundingBox,
 )
-from layer1 import GAME_STATE_REF, MarkerEnum
-from layer1.cards import Card
-from layer1.iso_map import SelectionTypeEnum, Tile
+from layer1 import GAME_STATE_REF, Card, MarkerEnum, SelectionTypeEnum, Tile
 
 from .log import logger
 from .rendering_asset_loader import (

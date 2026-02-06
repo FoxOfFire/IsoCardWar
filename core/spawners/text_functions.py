@@ -1,7 +1,6 @@
 from typing import Callable, Type
 
-from common.globals import RUN_DATA_REF
-from common.position_tracking import POS_PROC_REF, BoundingBox
+from common import POS_PROC_REF, RUN_DATA_REF, BoundingBox
 from layer1 import GAME_STATE_REF
 
 

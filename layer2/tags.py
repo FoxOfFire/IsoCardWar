@@ -3,8 +3,7 @@ from typing import List, Optional, Tuple
 
 import pygame
 
-from common.position_tracking.tags import TrackBase
-from common.types import ButtonFunc, TextFunc
+from common import ButtonFunc, TextFunc, TrackBase
 
 from .enums import UIStateEnum
 
