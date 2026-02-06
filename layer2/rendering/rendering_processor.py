@@ -1,18 +1,14 @@
-from typing import Dict, Tuple
-
 import esper
 import pygame
 
-from common import BoundingBox, PositionTracker
-from common.constants import GAME_CAM_HEIGHT, GAME_CAM_WIDTH
-from layer2 import GameCameraTag, IsoCameraTag
+from common import GAME_CAM_HEIGHT, GAME_CAM_WIDTH, RENDER_BBS
+from layer2.tags import GameCameraTag, IsoCameraTag, TrackIso, TrackUI
 
 from .renderer_bb import BBRenderer
 from .renderer_button import ButtonRenderer
 from .renderer_card import CardRenderer
 from .renderer_iso import IsoRenderer
 from .renderer_mask import MaskRenderer
-from .utils import RenderLayerEnum
 
 
 class ScreenNotFoundException(Exception):
@@ -24,25 +20,19 @@ class RenderingProcessor(esper.Processor):
     def __init__(
         self,
         display: pygame.Surface,
-        layer_info: Dict[RenderLayerEnum, Tuple[PositionTracker, BoundingBox]],
     ) -> None:
         self.display = display
 
         self.screen = pygame.Surface((GAME_CAM_WIDTH, GAME_CAM_HEIGHT))
 
-        (card_pos_track, card_bb) = layer_info[RenderLayerEnum.CARD]
-        (iso_pos_track, iso_bb) = layer_info[RenderLayerEnum.ISO]
-
-        self.card_bb = card_bb
-        self.iso_bb = iso_bb
-
-        self.card_renderer = CardRenderer(card_pos_track, GameCameraTag)
-        self.iso_renderer = IsoRenderer(iso_pos_track, IsoCameraTag)
-        self.mask_renderer = MaskRenderer(card_pos_track, GameCameraTag)
-        self.button_renderer = ButtonRenderer(card_pos_track, GameCameraTag)
+        self.iso_renderer = IsoRenderer(IsoCameraTag, TrackIso)
+        self.card_renderer = CardRenderer(GameCameraTag, TrackUI)
+        self.mask_renderer = MaskRenderer(GameCameraTag, TrackUI)
+        self.button_renderer = ButtonRenderer(GameCameraTag, TrackUI)
 
         # debug purposes
-        self.bb_renderer = BBRenderer(card_pos_track, GameCameraTag)
+        if RENDER_BBS:
+            self.bb_renderer = BBRenderer(GameCameraTag, TrackUI)
 
     def process(self) -> None:
 
@@ -52,7 +42,10 @@ class RenderingProcessor(esper.Processor):
         self.card_renderer.draw(self.screen)
         self.mask_renderer.draw(self.screen)
         self.button_renderer.draw(self.screen)
-        self.bb_renderer.draw(self.screen)
+
+        # debug purposes
+        if RENDER_BBS:
+            self.bb_renderer.draw(self.screen)
 
         scaled_screen = pygame.transform.scale(
             self.screen, (self.display.get_width(), self.display.get_height())

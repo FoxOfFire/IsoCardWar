@@ -5,20 +5,23 @@ from typing import Dict, Iterable, Tuple, Type
 import esper
 import pygame
 
-from common import BoundingBox, PositionTracker
-from common.constants import (
+from common import (
     ISO_POS_OFFSET_X,
     ISO_POS_OFFSET_Y,
     ISO_TILE_OFFSET_X,
     ISO_TILE_OFFSET_Y,
     ISO_TILE_SELECT_OFFSET,
+    POS_PROC_REF,
+    BoundingBox,
 )
-from layer1 import GAME_STATE_REF, MarkerEnum
-from layer1.cards import Card
-from layer1.iso_map import SelectionTypeEnum, Tile
+from layer1 import GAME_STATE_REF, Card, MarkerEnum, SelectionTypeEnum, Tile
 
 from .log import logger
-from .rendering_asset_loader import SELECTION_SURFS, TILE_TYPE_SURFS, UNIT_TYPE_SURFS
+from .rendering_asset_loader import (
+    SELECTION_SURFS,
+    TILE_TYPE_SURFS,
+    UNIT_TYPE_SURFS,
+)
 
 
 @dataclass
@@ -27,11 +30,11 @@ class IsoSprite:
 
 
 class IsoRenderer:
-    def __init__(self, pos_track: PositionTracker, tag: Type, /) -> None:
+    def __init__(self, cam_tag: Type, track_tag: Type, /) -> None:
         super().__init__()
-        self.pos_track = pos_track
+        self.track_tag = track_tag
         self.bb = esper.component_for_entity(
-            esper.get_component(tag)[0][0],
+            esper.get_component(cam_tag)[0][0],
             BoundingBox,
         )
         logger.info("iso renderer init finished")
@@ -83,8 +86,8 @@ class IsoRenderer:
             if not esper.has_component(ent, IsoSprite):
                 continue
             tile = esper.component_for_entity(ent, Tile)
-            x = delta_x + ISO_POS_OFFSET_X + (tile.x + tile.y) * ISO_TILE_OFFSET_X
-            y = delta_y + ISO_POS_OFFSET_Y + (tile.x - tile.y) * ISO_TILE_OFFSET_Y
+            x = delta_x + (1 + tile.x + tile.y) * ISO_TILE_OFFSET_X
+            y = delta_y + (1 + tile.x - tile.y) * ISO_TILE_OFFSET_Y
             if ent == GAME_STATE_REF.selecting:
                 y += ISO_TILE_SELECT_OFFSET
             match draw_type:
@@ -99,7 +102,9 @@ class IsoRenderer:
                     self._draw_selection(screen, surfs, ent, x, y)
 
                 case _:
-                    raise RuntimeError("unexpected type while drawing iso_tiles")
+                    raise RuntimeError(
+                        "unexpected type while drawing iso_tiles"
+                    )
 
     def draw(self, screen: pygame.Surface) -> None:
         def sort_by_bottom(ent: int) -> int:
@@ -109,7 +114,7 @@ class IsoRenderer:
             return tile.x - tile.y
 
         ent_list = sorted(
-            self.pos_track.intersect(self.bb),
+            POS_PROC_REF.intersect(self.bb, self.track_tag),
             key=lambda ent: sort_by_bottom(ent),
         )
         self._draw_type(screen, TILE_TYPE_SURFS, ent_list, self._DrawType.TILE)

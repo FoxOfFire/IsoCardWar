@@ -1,25 +1,21 @@
 from dataclasses import dataclass
-from typing import List, NamedTuple, Optional, Tuple
+from typing import List, Optional, Tuple
 
 import pygame
 
-from common.types import ButtonFunc, TextFunc
+from common import ButtonFunc, TextFunc, TrackBase
 
 from .enums import UIStateEnum
 
 
-class TrackUI(NamedTuple):
-    pass
+class TrackUI(TrackBase):
+    def __str__(self) -> str:
+        return "TrackUI"
 
 
-class TrackIso(NamedTuple):
-    pass
-
-
-class Plain:
-    """
-    Designates plain type bounding boxes
-    """
+class TrackIso(TrackBase):
+    def __str__(self) -> str:
+        return "TrackISO"
 
 
 class GameCameraTag:

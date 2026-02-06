@@ -1,7 +1,7 @@
 from enum import Enum, auto
 from typing import List
 
-from common.types import EntityFunc
+from common import EntityFunc
 
 
 class MarkerEnum(Enum):

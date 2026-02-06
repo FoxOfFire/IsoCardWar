@@ -4,16 +4,16 @@ from typing import Type
 import esper
 import pygame
 
-from common import BoundingBox, PositionTracker
-from common.constants import (
+from common import (
     CARD_HEIGHT,
     CARD_WIDTH,
+    POS_PROC_REF,
     RELATIVE_MARKER_POS_X,
     RELATIVE_MARKER_POS_Y,
+    BoundingBox,
 )
-from layer1 import GAME_STATE_REF
-from layer1.cards import DECK_REF, Card
-from layer2 import MaskedSprite
+from layer1 import DECK_REF, GAME_STATE_REF, Card
+from layer2.tags import MaskedSprite
 
 from .rendering_asset_loader import (
     CARD_IMAGE_SURFS,
@@ -31,11 +31,11 @@ class CardSprite(MaskedSprite):
 
 
 class CardRenderer:
-    def __init__(self, pos_track: PositionTracker, tag: Type) -> None:
+    def __init__(self, cam_tag: Type, track_tag: Type) -> None:
         super().__init__()
-        self.pos_track = pos_track
+        self.track_tag = track_tag
         self.bb = esper.component_for_entity(
-            esper.get_component(tag)[0][0],
+            esper.get_component(cam_tag)[0][0],
             BoundingBox,
         )
 
@@ -50,16 +50,22 @@ class CardRenderer:
             return DECK_REF.hand.index(ent)
 
         ent_list = sorted(
-            self.pos_track.intersect(self.bb), key=lambda ent: sorter(ent)
+            POS_PROC_REF.intersect(self.bb, self.track_tag),
+            key=lambda ent: sorter(ent),
         )
+
         for ent in ent_list:
+            assert esper.entity_exists(ent)
+
             sprite = esper.try_component(ent, CardSprite)
             card = esper.try_component(ent, Card)
             if sprite is None or card is None:
                 continue
 
             bb = esper.component_for_entity(ent, BoundingBox)
-            surf = pygame.Surface((CARD_WIDTH, CARD_HEIGHT), flags=pygame.SRCALPHA)
+            surf = pygame.Surface(
+                (CARD_WIDTH, CARD_HEIGHT), flags=pygame.SRCALPHA
+            )
             marker_surf = CARD_MARKER_SURFS[card.marker]
 
             surf.blit(CARD_IMAGE_SURFS[CardImageEnum.BASIC][0], surf.get_rect())

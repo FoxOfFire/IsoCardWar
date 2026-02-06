@@ -1,7 +1,7 @@
 from enum import Enum, auto
 from typing import List, Optional, Tuple
 
-from common.types import EntityFunc
+from common import EntityFunc
 from layer1 import SelectableObject
 
 

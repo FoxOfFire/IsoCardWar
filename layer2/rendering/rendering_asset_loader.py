@@ -5,9 +5,8 @@ from typing import Dict, List, Optional, Type
 
 import pygame
 
-from common.constants import FONT_SIZE
-from layer1 import MarkerEnum
-from layer1.iso_map import SelectionTypeEnum, TerrainEnum, UnitTypeEnum
+from common import FONT_SIZE
+from layer1 import MarkerEnum, SelectionTypeEnum, TerrainEnum, UnitTypeEnum
 
 from .log import logger
 
@@ -56,7 +55,9 @@ _font_container = _FontContainer()
 def get_font() -> pygame.font.Font:
     if _font_container.font is None:
         logger.info("loaded font")
-        _font_container.font = pygame.font.Font(FONT_ASSET_DIR / "tiny.ttf", FONT_SIZE)
+        _font_container.font = pygame.font.Font(
+            FONT_ASSET_DIR / "tiny.ttf", FONT_SIZE
+        )
     return _font_container.font
 
 
@@ -71,7 +72,10 @@ def _load_image_type(
 
 
 def _load_animation_type(
-    enum: Type[Enum], surfs: Dict[Enum, List[pygame.Surface]], path: Path, name: str
+    enum: Type[Enum],
+    surfs: Dict[Enum, List[pygame.Surface]],
+    path: Path,
+    name: str,
 ) -> None:
     logger.info(f"loaded animation assets of type: {enum}")
     for images, (img_name, frame_cnt) in [(e, e.value) for e in enum]:
@@ -89,12 +93,21 @@ def _load_animation_type(
 
 def load_images() -> None:
     _load_image_type(CardTypeEnum, CARD_TYPE_SURFS, CARD_TYPE_ASSET_DIR, "")
-    _load_image_type(MarkerEnum, CARD_MARKER_SURFS, CARD_MARKER_ASSET_DIR, "marker")
-    _load_image_type(TerrainEnum, TILE_TYPE_SURFS, TILE_TYPE_ASSET_DIR, "tiles")
-    _load_image_type(UnitTypeEnum, UNIT_TYPE_SURFS, UNIT_TYPE_ASSET_DIR, "units")
     _load_image_type(
-        SelectionTypeEnum, SELECTION_SURFS, SELECTION_ASSET_DIR, "tile_selections"
+        MarkerEnum, CARD_MARKER_SURFS, CARD_MARKER_ASSET_DIR, "marker"
+    )
+    _load_image_type(TerrainEnum, TILE_TYPE_SURFS, TILE_TYPE_ASSET_DIR, "tiles")
+    _load_image_type(
+        UnitTypeEnum, UNIT_TYPE_SURFS, UNIT_TYPE_ASSET_DIR, "units"
+    )
+    _load_image_type(
+        SelectionTypeEnum,
+        SELECTION_SURFS,
+        SELECTION_ASSET_DIR,
+        "tile_selections",
     )
 
-    _load_animation_type(CardImageEnum, CARD_IMAGE_SURFS, CARD_IMAGE_ASSET_DIR, "card_")
+    _load_animation_type(
+        CardImageEnum, CARD_IMAGE_SURFS, CARD_IMAGE_ASSET_DIR, "card_"
+    )
     _load_animation_type(UIElemType, BUTTON_SURFS, BUTTON_ASSET_DIR, "")

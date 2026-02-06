@@ -4,16 +4,9 @@ from typing import Any, Dict, List, Optional
 
 import esper
 
-from common import Health
-from common.constants import MAX_CARD_COUNT
-from common.types import EntityFunc
-from layer1 import (
-    GAME_STATE_REF,
-    MarkerEnum,
-    PriceEnum,
-    SelectableObject,
-    set_play_card,
-)
+from common import MAX_CARD_COUNT, EntityFunc, Health
+from layer1.game_state import GAME_STATE_REF, set_play_card
+from layer1.game_state_utils import MarkerEnum, PriceEnum, SelectableObject
 
 from .card_utils import CardTypeEnum, OrganizationEnum
 from .log import logger
@@ -101,7 +94,6 @@ def sort_hand() -> None:
                 card = esper.component_for_entity(ent, Card)
                 return card.marker.value
 
-            pass
         case OrganizationEnum.NAME:
 
             def sorter(ent: int) -> Any:
@@ -113,9 +105,8 @@ def sort_hand() -> None:
             def sorter(ent: int) -> Any:
                 return 1
 
-            pass
         case _:
-            RuntimeError("unexpected organizer")
+            raise RuntimeError("unexpected organizer")
 
     DECK_REF.hand.sort(key=sorter)
 
@@ -131,17 +122,43 @@ def shuffle_deck() -> None:
     DECK_REF.deck = new
 
 
-def play_card(target: int) -> None:
-    ent = GAME_STATE_REF.selected
+def play_card(target: Optional[int], card_num: Optional[int]) -> None:
+    if card_num is None:
+        ent = GAME_STATE_REF.selected
+    else:
+        assert card_num >= 0 or card_num < len(DECK_REF.hand)
+        ent = DECK_REF.hand[card_num]
 
-    if ent is None or not esper.entity_exists(ent):
+    if ent is None:
         return
+
+    assert esper.entity_exists(ent)
+
     card = esper.try_component(ent, Card)
     if card is None:
         return
-    for effect in card.effects:
-        effect(ent, target)
-    GAME_STATE_REF.selected = None
+    if target is not None:
+        for effect in card.effects:
+            effect(ent, target)
+
+    if GAME_STATE_REF.selected == ent:
+        GAME_STATE_REF.selected = None
+    DECK_REF.hand.remove(ent)
+    DECK_REF.discard.append(card)
+    esper.component_for_entity(ent, Health).hp = 0
+
+
+def discard_card(card_num: int) -> None:
+    if card_num < 0 or card_num >= len(DECK_REF.hand):
+        return
+    ent = DECK_REF.hand[card_num]
+
+    assert esper.entity_exists(ent)
+    card = esper.try_component(ent, Card)
+    if card is None:
+        return
+    if GAME_STATE_REF.selected == ent:
+        GAME_STATE_REF.selected = None
     DECK_REF.hand.remove(ent)
     DECK_REF.discard.append(card)
     esper.component_for_entity(ent, Health).hp = 0

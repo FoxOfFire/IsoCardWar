@@ -1,7 +1,5 @@
 # Contribution guide
 
-
-
 ## Getting started
 
 ### Install dependencies
@@ -40,7 +38,6 @@ pyenv versions
 ```
 
 You should see `3.12.9` in the list of available versions.
-
 
 ### Clone the repository
 
@@ -175,6 +172,7 @@ The only way to change the state of the `master` branch is through pull requests
 Development happens on so-called "feature branches".
 
 The strategy for feature branching is:
+
 - Start at the most recent revision of `master` (`git fetch` or `git pull`)
 - The branch should contain a feature, working iteration of a feature, or a bugfix
 - Long-running feature branches should be avoided, to avoid conflicts as much as possible
@@ -185,6 +183,7 @@ If a change turns out to break `master` it will be reverted through a pull reque
 ## Making a pull request
 
 A pull request will only be accepted, if it conforms to the following rules:
+
 - The PR title is prefixed by the ticket number(s) it belongs to (if it has one)
 - The code is formatted correctly according to the CI
 - The code is well tested
@@ -202,12 +201,14 @@ pip3 install -r requirements.txt
 ```
 
 You can integrate the linters and formatters into vscode by installing the following extensions:
+
 - Black Formatter (ms-python)
 - Flake8 (ms-python)
 - Mypy Type Checker (ms-python)
 - isort (ms-python)
 
 You should also turn off:
+
 - Pylance
 
 Next, to turn on format on save, in the settings, under "Default Formatter" choose "Black Formatter" from the dropdown.

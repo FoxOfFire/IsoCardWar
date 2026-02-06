@@ -5,23 +5,38 @@ set -euo pipefail
 SCRIPT_RET=0
 
 echo "Running: black ."
-if ! black . ; then
+if ! pyenv exec black . ; then
         SCRIPT_RET=1
 fi
 
+#echo "Running: autopep8 . -r --in-place"
+#if ! pyenv exec autopep8 . -r --in-place ; then
+#	SCRIPT_RET=1
+#fi
+
 echo "Running: flake8 ."
-if ! flake8 . ; then
+if ! pyenv exec flake8 . ; then
         SCRIPT_RET=1
 fi
 
 echo "Running: mypy ."
-if ! mypy . ; then
+if ! pyenv exec mypy . ; then
         SCRIPT_RET=1
 fi
 
 echo "Running: isort ."
-if ! isort . ; then
+if ! pyenv exec isort . ; then
         SCRIPT_RET=1
+fi
+
+echo "Running: mdformat ."
+if ! mdformat .; then
+	SCRIPT_RET=1
+fi
+
+echo "Running: mado check ."
+if ! mado check .; then
+	SCRIPT_RET=1
 fi
 
 exit $SCRIPT_RET

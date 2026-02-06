@@ -1,12 +1,11 @@
 from dataclasses import dataclass
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Type
 
 import esper
 import pygame
 
-from common import BoundingBox, PositionTracker
-from layer1 import hover, play_card, remove_hover
-from layer1.iso_map import map_obj
+from common import POS_PROC_REF, BoundingBox
+from layer1 import hover, map_obj, play_card, remove_hover
 from layer2.tags import GameCameraTag
 
 from .log import logger
@@ -16,7 +15,7 @@ SWITCH_SCENE = pygame.event.custom_type()
 
 @dataclass
 class UIEventInfo:
-    iso_pos_track: Optional[PositionTracker] = None
+    iso_tag: Optional[Type] = None
 
 
 ui_event_obj = UIEventInfo()
@@ -33,8 +32,8 @@ def _get_transformed_mouse_pos(bb: BoundingBox) -> Tuple[float, float]:
         esper.get_component(GameCameraTag)[0][0], BoundingBox
     )
     display = pygame.display.get_surface()
-    if display is None:
-        raise RuntimeError("no display fond")
+    assert display is not None
+
     display_rect = display.get_rect()
     mouse = pygame.mouse.get_pos()
     mouse_x = mouse[0] * cam_bb.width / display_rect.width
@@ -58,12 +57,10 @@ def click_on_tile(ent: int) -> None:
         trans_mouse_pos[1],
         trans_mouse_pos[1],
     )
-    if ui_event_obj.iso_pos_track is None:
-        raise RuntimeError("ui_event_obj iso_pos_track field missing")
-    for intersect in ui_event_obj.iso_pos_track.intersect(mouse_bb):
-        if intersect == ui_event_obj.iso_pos_track.plain:
-            continue
-        play_card(intersect)
+    assert ui_event_obj.iso_tag is not None
+
+    for intersect in POS_PROC_REF.intersect(mouse_bb, ui_event_obj.iso_tag):
+        play_card(intersect, None)
 
 
 def hover_over_tile(ent: int) -> None:
@@ -75,11 +72,9 @@ def hover_over_tile(ent: int) -> None:
         trans_mouse_pos[1],
         trans_mouse_pos[1],
     )
-    if ui_event_obj.iso_pos_track is None:
-        raise RuntimeError("ui_event_obj iso_pos_track field missing")
-    for intersect in ui_event_obj.iso_pos_track.intersect(mouse_bb):
-        if intersect == ui_event_obj.iso_pos_track.plain:
-            continue
+    assert ui_event_obj.iso_tag is not None
+
+    for intersect in POS_PROC_REF.intersect(mouse_bb, ui_event_obj.iso_tag):
         hover(intersect)
         return
     remove_hover(-1)

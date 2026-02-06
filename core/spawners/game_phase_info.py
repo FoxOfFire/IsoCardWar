@@ -1,9 +1,8 @@
 from functools import partial
 from typing import Dict, List
 
-from common.types import PhaseFunc
-from layer1 import GamePhaseEnum
-from layer1.cards import draw_cards
+from common import PhaseFunc
+from layer1 import GamePhaseEnum, draw_cards
 
 
 def _begin_game() -> List[PhaseFunc]:
@@ -35,13 +34,7 @@ def _end_game() -> List[PhaseFunc]:
 
 def _player_action() -> List[PhaseFunc]:
     effects: List[PhaseFunc] = []
-
-    err = "player actions should be decided by the player why was this called?"
-
-    def error() -> None:
-        raise RuntimeError(err)
-
-    effects.append(error)
+    # TODO
     return effects
 
 

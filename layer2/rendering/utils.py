@@ -3,9 +3,8 @@ from enum import Enum, auto
 import esper
 import pygame
 
-from common import BoundingBox
-from common.constants import FONT_COLOR
-from layer2 import UIElementComponent
+from common import FONT_COLOR, BoundingBox
+from layer2.tags import UIElementComponent
 
 from .rendering_asset_loader import get_font
 
@@ -20,6 +19,8 @@ def bb_to_rect(bb: BoundingBox) -> pygame.Rect:
 
 
 def sort_by_bb(ent: int, side: int) -> float:
+    assert esper.entity_exists(ent)
+
     """
     0-left 1-right 2-top 3-bottom
     """
@@ -27,9 +28,10 @@ def sort_by_bb(ent: int, side: int) -> float:
 
 
 def draw_text_on_surf(screen: pygame.Surface, ent: int) -> None:
+    assert esper.entity_exists(ent)
+
     ui_elem = esper.try_component(ent, UIElementComponent)
-    if ui_elem is None:
-        return
+    assert ui_elem is not None
 
     for text in ui_elem.text:
         text_surf = get_font().render(text.text(), False, FONT_COLOR)
