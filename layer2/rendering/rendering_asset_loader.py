@@ -67,7 +67,11 @@ def _load_image_type(
     logger.info(f"loaded image assets of type:{enum}")
     for type, val in [(e, e.value) for e in enum]:
         surfs.update(
-            {type: pygame.image.load(path / f"{name}{val}.png").convert_alpha()}
+            {
+                type: pygame.image.load(
+                    path / f"{name}{val}.png"
+                ).convert_alpha()
+            }
         )
 
 
@@ -96,7 +100,9 @@ def load_images() -> None:
     _load_image_type(
         MarkerEnum, CARD_MARKER_SURFS, CARD_MARKER_ASSET_DIR, "marker"
     )
-    _load_image_type(TerrainEnum, TILE_TYPE_SURFS, TILE_TYPE_ASSET_DIR, "tiles")
+    _load_image_type(
+        TerrainEnum, TILE_TYPE_SURFS, TILE_TYPE_ASSET_DIR, "tiles"
+    )
     _load_image_type(
         UnitTypeEnum, UNIT_TYPE_SURFS, UNIT_TYPE_ASSET_DIR, "units"
     )

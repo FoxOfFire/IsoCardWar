@@ -10,3 +10,6 @@ class DyingProcessor(esper.Processor):
             if hp.hp <= 0:
                 POS_PROC_REF.untrack(ent)
                 esper.delete_entity(ent)
+
+
+DYING_PROC_REF = DyingProcessor()

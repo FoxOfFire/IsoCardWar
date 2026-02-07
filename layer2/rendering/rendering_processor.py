@@ -1,3 +1,5 @@
+from typing import Optional
+
 import esper
 import pygame
 
@@ -17,11 +19,12 @@ class ScreenNotFoundException(Exception):
 
 class RenderingProcessor(esper.Processor):
 
+    display: Optional[pygame.Surface]
+
     def __init__(
         self,
-        display: pygame.Surface,
     ) -> None:
-        self.display = display
+        self.display = None
 
         self.screen = pygame.Surface((GAME_CAM_WIDTH, GAME_CAM_HEIGHT))
 
@@ -34,7 +37,11 @@ class RenderingProcessor(esper.Processor):
         if RENDER_BBS:
             self.bb_renderer = BBRenderer(GameCameraTag, TrackUI)
 
+    def set_display(self, display: pygame.Surface) -> None:
+        self.display = display
+
     def process(self) -> None:
+        assert self.display is not None
 
         self.screen.fill((100, 100, 100))
 
@@ -51,4 +58,9 @@ class RenderingProcessor(esper.Processor):
             self.screen, (self.display.get_width(), self.display.get_height())
         )
 
-        self.display.blit(scaled_screen, scaled_screen.get_rect(topleft=(0, 0)))
+        self.display.blit(
+            scaled_screen, scaled_screen.get_rect(topleft=(0, 0))
+        )
+
+
+RENDER_PROC_REF = RenderingProcessor()

@@ -1,3 +1,5 @@
+from functools import partial
+
 import esper
 
 from common import (
@@ -9,7 +11,7 @@ from common import (
     RENDER_TRACKED_UI_UI,
     BoundingBox,
 )
-from layer1 import GAME_PHASE_PROC_REF
+from layer1 import GAME_STATE_REF
 from layer2 import (
     GameCameraTag,
     IsoCameraTag,
@@ -40,14 +42,14 @@ def build_ui() -> None:
     if RENDER_TRACKED_ISO_UI:
         spawn_button(
             (top_offset, 5),
-            get_tracked_bb_of_type_str(TrackIso, "TrackIso"),
+            partial(get_tracked_bb_of_type_str, TrackIso, "TrackIso"),
             UIElemType.TEXTBOX,
         )
         top_offset += 70
     if RENDER_TRACKED_UI_UI:
         spawn_button(
             (top_offset, 5),
-            get_tracked_bb_of_type_str(TrackUI, "TrackUI"),
+            partial(get_tracked_bb_of_type_str, TrackUI, "TrackUI"),
             UIElemType.TEXTBOX,
         )
         top_offset += 70
@@ -56,7 +58,7 @@ def build_ui() -> None:
         _, (cam_bb, _) = (esper.get_components(BoundingBox, GameCameraTag))[0]
         spawn_button(
             (top_offset, 5),
-            get_intersection_count("TrackUI", cam_bb, TrackUI),
+            partial(get_intersection_count, "TrackUI", cam_bb, TrackUI),
             UIElemType.TEXTBOX,
         )
         top_offset += 70
@@ -65,7 +67,7 @@ def build_ui() -> None:
         _, (cam_bb, _) = (esper.get_components(BoundingBox, IsoCameraTag))[0]
         spawn_button(
             (top_offset, 5),
-            get_intersection_count("TrackIso", cam_bb, TrackIso),
+            partial(get_intersection_count, "TrackIso", cam_bb, TrackIso),
             UIElemType.TEXTBOX,
         )
         top_offset += 70
@@ -75,5 +77,5 @@ def build_ui() -> None:
         (5, 50),
         "End Turn",
         UIElemType.BUTTON,
-        click_func=GAME_PHASE_PROC_REF.end_player_phase,
+        click_func=lambda y, x: GAME_STATE_REF.end_player_phase_action(),
     )

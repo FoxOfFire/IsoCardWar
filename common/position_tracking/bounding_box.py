@@ -60,7 +60,9 @@ class BoundingBox:
         self._vel_x += vel_x
         self._vel_y += vel_y
 
-    def move_towards_point(self, point: tuple[float, float], by: float) -> None:
+    def move_towards_point(
+        self, point: tuple[float, float], by: float
+    ) -> None:
         def lerp(a: float, b: float, t: float) -> float:
             return t * a + (1 - t) * b
 

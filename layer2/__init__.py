@@ -1,16 +1,16 @@
 # flake8: noqa
-from .dying import DyingProcessor
+from .dying import DYING_PROC_REF
 from .enums import UIStateEnum, WorldEnum
 from .event_handlers import bind_events
 from .rendering import (
+    RENDER_PROC_REF,
     CardSprite,
     IsoSprite,
-    RenderingProcessor,
     UIElemSprite,
     UIElemType,
     load_images,
 )
-from .scene_switcher import SceneSwitcher
+from .scene_switcher import SCENE_SWITCH_PROC_REF
 from .tags import (
     GameCameraTag,
     IsoCameraTag,
@@ -21,7 +21,7 @@ from .tags import (
     UIElementComponent,
 )
 from .ui import (
-    UIProcessor,
+    UI_PROC_REF,
     bind_keyboard_events,
     click_on_tile,
     hover_over_tile,

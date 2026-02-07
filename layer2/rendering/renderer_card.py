@@ -68,7 +68,9 @@ class CardRenderer:
             )
             marker_surf = CARD_MARKER_SURFS[card.marker]
 
-            surf.blit(CARD_IMAGE_SURFS[CardImageEnum.BASIC][0], surf.get_rect())
+            surf.blit(
+                CARD_IMAGE_SURFS[CardImageEnum.BASIC][0], surf.get_rect()
+            )
             surf.blit(CARD_TYPE_SURFS[CardTypeEnum.BASIC], surf.get_rect())
             surf.blit(
                 marker_surf,

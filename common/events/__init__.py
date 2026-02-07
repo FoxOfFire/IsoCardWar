@@ -1,2 +1,2 @@
 # flake8: noqa
-from .events import EventHandler, EventProcessor
+from .events import EVENT_PROC_REF, EventHandler

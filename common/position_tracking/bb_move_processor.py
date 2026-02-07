@@ -18,3 +18,6 @@ class BBMoveProcessor(esper.Processor):
                 bb.top += bb._vel_y
                 bb.bottom += bb._vel_y
                 esper.add_component(ent, Moved())
+
+
+BB_MOVE_PROC_REF = BBMoveProcessor()

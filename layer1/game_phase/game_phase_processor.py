@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 import esper
 
@@ -11,6 +11,7 @@ from .log import logger
 class GamePhaseProcessor(esper.Processor):
     def __init__(self) -> None:
         self.wait = GAME_PHASE_PAUSE
+        self.phase_funk_queue: Dict[GamePhaseEnum, List[Action]] = {}
         logger.info("GamePhaseProcessor init finished")
 
     def _non_player_phase(self) -> None:
@@ -21,7 +22,7 @@ class GamePhaseProcessor(esper.Processor):
 
         phase: GamePhaseEnum = GAME_STATE_REF.game_phase
 
-        for func in GAME_STATE_REF.phase_funk_queue[phase]:
+        for func in self.phase_funk_queue[phase]:
             func()
         if phase == GamePhaseEnum.END_GAME:
             return
@@ -54,15 +55,12 @@ class GamePhaseProcessor(esper.Processor):
             else GamePhaseEnum.DRAW
         )
 
-    def end_player_phase(self, _: int, __: int) -> None:
-        GAME_STATE_REF.end_player_phase = True
-
     def add_game_phase(
         self, phase: GamePhaseEnum, /, *, func_list: Optional[List[Action]]
     ) -> None:
         if func_list is None:
             func_list = []
-        GAME_STATE_REF.phase_funk_queue.update({phase: func_list})
+        self.phase_funk_queue.update({phase: func_list})
 
 
 GAME_PHASE_PROC_REF = GamePhaseProcessor()

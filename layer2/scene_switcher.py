@@ -1,7 +1,7 @@
 import esper
 
 
-class SceneSwitcher(esper.Processor):
+class SceneSwitcherProcessor(esper.Processor):
     next_tick_world: str | None
 
     def __init__(self) -> None:
@@ -14,3 +14,6 @@ class SceneSwitcher(esper.Processor):
         ):
             esper.switch_world(self.next_tick_world)
             self.next_tick_world = None
+
+
+SCENE_SWITCH_PROC_REF = SceneSwitcherProcessor()

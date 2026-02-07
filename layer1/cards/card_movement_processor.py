@@ -1,3 +1,5 @@
+from typing import Optional
+
 import esper
 
 from common import (
@@ -15,10 +17,13 @@ from .cards import DECK_REF, Card, get_card_center_offset
 
 
 class CardMovementProcessor(esper.Processor):
-    def __init__(self, cam_bb: BoundingBox) -> None:
-        self.cam_bb = cam_bb
+    cam_bb: Optional[BoundingBox] = None
+
+    def set_cam_bb(self, bb: BoundingBox) -> None:
+        self.cam_bb = bb
 
     def process(self) -> None:
+        assert self.cam_bb is not None
         if len(DECK_REF.hand) == 0:
             return
         delta_time = RUN_DATA_REF.delta_time
@@ -27,7 +32,9 @@ class CardMovementProcessor(esper.Processor):
             bb = esper.component_for_entity(ent, BoundingBox)
 
             offset_index = get_card_center_offset(ent)
-            offset = offset_index * self.cam_bb.width / len(DECK_REF.hand) * 0.8
+            offset = (
+                offset_index * self.cam_bb.width / len(DECK_REF.hand) * 0.8
+            )
             if len(DECK_REF.hand) < 7:
                 offset = offset_index * CARD_X_FIX_DISTANCE
 
@@ -44,3 +51,6 @@ class CardMovementProcessor(esper.Processor):
                 * delta_time
             )
             bb.set_velocity(delta_x, delta_y)
+
+
+CARD_MOV_PROC_REF = CardMovementProcessor()

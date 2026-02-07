@@ -5,7 +5,7 @@ from typing import Any, Dict, List, Optional
 import esper
 
 from common import MAX_CARD_COUNT, EntityFunc, Health
-from layer1.game_state import GAME_STATE_REF, set_play_card
+from layer1.game_state import GAME_STATE_REF
 from layer1.game_state_utils import MarkerEnum, PriceEnum, SelectableObject
 
 from .card_utils import CardTypeEnum, OrganizationEnum
@@ -63,7 +63,9 @@ def create_starting_deck(card_count: int) -> None:
     for _ in range(card_count // 3):
         cards.append(DECK_REF.create_card(CardTypeEnum.DRAW_ONE))
         cards.append(DECK_REF.create_card(CardTypeEnum.CHANGE_UNIT_AND_DRAW))
-        cards.append(DECK_REF.create_card(CardTypeEnum.CHANGE_TERRAIN_AND_DRAW))
+        cards.append(
+            DECK_REF.create_card(CardTypeEnum.CHANGE_TERRAIN_AND_DRAW)
+        )
 
     DECK_REF.deck = cards
     shuffle_deck()
@@ -186,4 +188,4 @@ def add_card(card: Card) -> None:
 # module shenanigans
 DECK_REF: Deck = Deck()
 shuffle_deck()
-set_play_card(play_card)
+GAME_STATE_REF.play_card_func = play_card

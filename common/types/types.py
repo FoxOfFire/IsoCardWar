@@ -1,5 +1,5 @@
-from typing import Callable
+from typing import Callable, Optional
 
-EntityFunc = Callable[[int, int], None]
+EntityFunc = Callable[[Optional[int], Optional[int]], None]
 Action = Callable[[], None]
 TextFunc = Callable[[], str]

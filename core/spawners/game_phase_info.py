@@ -13,7 +13,7 @@ def _begin_game() -> List[Action]:
 def _draw() -> List[Action]:
     effects: List[Action] = []
     for func in draw_cards(1):
-        effects.append(partial(func, -1, -1))
+        effects.append(partial(func, None, None))
     return effects
 
 

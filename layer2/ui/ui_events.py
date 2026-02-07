@@ -5,7 +5,7 @@ import esper
 import pygame
 
 from common import POS_PROC_REF, BoundingBox
-from layer1 import hover, map_obj, play_card, remove_hover
+from layer1 import GAME_STATE_REF, map_obj
 from layer2.tags import GameCameraTag
 
 from .log import logger
@@ -33,6 +33,7 @@ def _get_transformed_mouse_pos(bb: BoundingBox) -> Tuple[float, float]:
     )
     display = pygame.display.get_surface()
     assert display is not None
+    assert map_obj.size is not None
 
     display_rect = display.get_rect()
     mouse = pygame.mouse.get_pos()
@@ -48,7 +49,8 @@ def _get_transformed_mouse_pos(bb: BoundingBox) -> Tuple[float, float]:
     return y / 2, x / 2
 
 
-def click_on_tile(ent: int, _: int) -> None:
+def click_on_tile(ent: Optional[int], _: Optional[int]) -> None:
+    assert ent is not None
     bb = esper.component_for_entity(ent, BoundingBox)
     trans_mouse_pos = _get_transformed_mouse_pos(bb)
     mouse_bb = BoundingBox(
@@ -60,10 +62,11 @@ def click_on_tile(ent: int, _: int) -> None:
     assert ui_event_obj.iso_tag is not None
 
     for intersect in POS_PROC_REF.intersect(mouse_bb, ui_event_obj.iso_tag):
-        play_card(intersect, -1)
+        GAME_STATE_REF.play_card(intersect, None)
 
 
-def hover_over_tile(ent: int, _: int) -> None:
+def hover_over_tile(ent: Optional[int], _: Optional[int]) -> None:
+    assert ent is not None
     bb = esper.component_for_entity(ent, BoundingBox)
     trans_mouse_pos = _get_transformed_mouse_pos(bb)
     mouse_bb = BoundingBox(
@@ -75,6 +78,6 @@ def hover_over_tile(ent: int, _: int) -> None:
     assert ui_event_obj.iso_tag is not None
 
     for intersect in POS_PROC_REF.intersect(mouse_bb, ui_event_obj.iso_tag):
-        hover(intersect, -1)
+        GAME_STATE_REF.hover(intersect, None)
         return
-    remove_hover(-1, -1)
+    GAME_STATE_REF.remove_hover()

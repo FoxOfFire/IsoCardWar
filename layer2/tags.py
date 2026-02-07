@@ -3,7 +3,7 @@ from typing import List, Optional, Tuple
 
 import pygame
 
-from common import EntityFunc, TextFunc, TrackBase
+from common import Action, EntityFunc, TextFunc, TrackBase
 
 from .enums import UIStateEnum
 
@@ -52,7 +52,7 @@ class UIElementComponent:
         text: Optional[List[TextData]] = None,
         click_func: Optional[EntityFunc] = None,
         hover_func: Optional[EntityFunc] = None,
-        unhover_func: Optional[EntityFunc] = None,
+        unhover_func: Optional[Action] = None,
     ):
         self.state: UIStateEnum = state
         self.is_visible: bool = is_visible
@@ -62,4 +62,4 @@ class UIElementComponent:
         self.text: List[TextData] = [] if text is None else text
         self.click_func: Optional[EntityFunc] = click_func
         self.hover_func: Optional[EntityFunc] = hover_func
-        self.unhover_func: Optional[EntityFunc] = unhover_func
+        self.unhover_func: Optional[Action] = unhover_func

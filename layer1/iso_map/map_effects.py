@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 import esper
 
@@ -11,7 +11,8 @@ from .tile import TerrainEnum, Tile, UnitTypeEnum
 def change_tile_to(terrain: TerrainEnum) -> List[EntityFunc]:
     effects: List[EntityFunc] = []
 
-    def change(ent: int, target: int) -> None:
+    def change(ent: Optional[int], target: Optional[int]) -> None:
+        assert target is not None
         tile = esper.component_for_entity(target, Tile)
         tile.terrain = terrain
 
@@ -22,7 +23,8 @@ def change_tile_to(terrain: TerrainEnum) -> List[EntityFunc]:
 def change_tile() -> List[EntityFunc]:
     effects: List[EntityFunc] = []
 
-    def rotate(ent: int, target: int) -> None:
+    def rotate(ent: Optional[int], target: Optional[int]) -> None:
+        assert target is not None
         tile = esper.component_for_entity(target, Tile)
         logger.info(tile.terrain)
         tile.terrain = TerrainEnum(
@@ -37,7 +39,8 @@ def change_tile() -> List[EntityFunc]:
 def change_unit() -> List[EntityFunc]:
     effects: List[EntityFunc] = []
 
-    def rotate(ent: int, target: int) -> None:
+    def rotate(ent: Optional[int], target: Optional[int]) -> None:
+        assert target is not None
         tile = esper.component_for_entity(target, Tile)
         logger.info(tile.terrain)
         n = tile.unit.value if tile.unit is not None else 0
