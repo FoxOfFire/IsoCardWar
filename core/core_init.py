@@ -19,8 +19,8 @@ from common import (
 )
 from layer1 import (
     DECK_REF,
+    GAME_PHASE_PROC_REF,
     CardMovementProcessor,
-    GamePhaseProcessor,
     create_starting_deck,
     draw_card,
 )
@@ -113,7 +113,8 @@ def init_game_world_esper() -> None:
     renderer = RenderingProcessor(display)
 
     card_movement_processor = CardMovementProcessor(game_cam_bb)
-    game_phase_processor = GamePhaseProcessor(get_base_game_phase_dict())
+    for phase, func_list in get_base_game_phase_dict().items():
+        GAME_PHASE_PROC_REF.add_game_phase(phase, func_list=func_list)
     event_processor = EventProcessor()
     ui_processor = UIProcessor(display.get_size())
 
@@ -130,7 +131,7 @@ def init_game_world_esper() -> None:
     # adding processors
     esper.add_processor(event_processor)
     esper.add_processor(card_movement_processor)
-    esper.add_processor(game_phase_processor)
+    esper.add_processor(GAME_PHASE_PROC_REF)
 
     esper.add_processor(mov_processor)
     esper.add_processor(POS_PROC_REF)

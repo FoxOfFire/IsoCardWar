@@ -14,11 +14,11 @@ from layer1 import (
 def key_bind_handler(event: Event) -> None:
     if event.key is not None:
         if event.key == pygame.K_F4 and event.mod & pygame.KMOD_ALT:
-            quit_game(-1)
+            quit_game(-1, -1)
         elif event.key == pygame.K_q:
             draw_card()
         elif event.key == pygame.K_w:
-            play_card(None, 0)
+            play_card(-1, 0)
         elif event.key == pygame.K_a:
             DECK_REF.set_order(OrganizationEnum.MARKER)
         elif event.key == pygame.K_s:
@@ -32,7 +32,7 @@ def mouse_handler(event: Event) -> None:
         unselect()
 
 
-def quit_game(ent: int) -> None:
+def quit_game(_: int, __: int) -> None:
     pygame.event.post(pygame.event.Event(pygame.QUIT))
 
 

@@ -1,44 +1,44 @@
 from functools import partial
 from typing import Dict, List
 
-from common import PhaseFunc
+from common import Action
 from layer1 import GamePhaseEnum, draw_cards
 
 
-def _begin_game() -> List[PhaseFunc]:
-    effects: List[PhaseFunc] = []
+def _begin_game() -> List[Action]:
+    effects: List[Action] = []
     return effects
 
 
-def _draw() -> List[PhaseFunc]:
-    effects: List[PhaseFunc] = []
+def _draw() -> List[Action]:
+    effects: List[Action] = []
     for func in draw_cards(1):
         effects.append(partial(func, -1, -1))
     return effects
 
 
-def _end_of_turn() -> List[PhaseFunc]:
-    effects: List[PhaseFunc] = []
+def _end_of_turn() -> List[Action]:
+    effects: List[Action] = []
     return effects
 
 
-def _enemy_action() -> List[PhaseFunc]:
-    effects: List[PhaseFunc] = []
+def _enemy_action() -> List[Action]:
+    effects: List[Action] = []
     return effects
 
 
-def _end_game() -> List[PhaseFunc]:
-    effects: List[PhaseFunc] = []
+def _end_game() -> List[Action]:
+    effects: List[Action] = []
     return effects
 
 
-def _player_action() -> List[PhaseFunc]:
-    effects: List[PhaseFunc] = []
+def _player_action() -> List[Action]:
+    effects: List[Action] = []
     # TODO
     return effects
 
 
-def get_base_game_phase_dict() -> Dict[GamePhaseEnum, List[PhaseFunc]]:
+def get_base_game_phase_dict() -> Dict[GamePhaseEnum, List[Action]]:
     return {
         GamePhaseEnum.BEGIN_GAME: _begin_game(),
         GamePhaseEnum.DRAW: _draw(),

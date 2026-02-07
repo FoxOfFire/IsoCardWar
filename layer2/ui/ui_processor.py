@@ -83,7 +83,7 @@ class UIProcessor(esper.Processor):
                     or not tag.is_gameplay_elem
                 )
             ):
-                tag.click_func(self.clicked)
+                tag.click_func(self.clicked, -1)
             self.clicked = -1
 
         # reset the hovering status of all entities from the previous frame
@@ -103,7 +103,7 @@ class UIProcessor(esper.Processor):
         if unhovered:
             tag = esper.component_for_entity(self.hover, UIElementComponent)
             if tag.unhover_func is not None:
-                tag.unhover_func(self.hover)
+                tag.unhover_func(self.hover, -1)
 
         # exiting clicking if continuing to click
         if self.prev_click and left_clicked:
@@ -127,7 +127,7 @@ class UIProcessor(esper.Processor):
                 ui_tag.state = UIStateEnum.PRESSED
                 self.clicked = ent
             elif ui_tag.hover_func is not None:
-                ui_tag.hover_func(ent)
+                ui_tag.hover_func(ent, -1)
                 ui_tag.state = UIStateEnum.HOVER
                 self.hover = ent
             break

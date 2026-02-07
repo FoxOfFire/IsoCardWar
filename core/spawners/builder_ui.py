@@ -9,7 +9,7 @@ from common import (
     RENDER_TRACKED_UI_UI,
     BoundingBox,
 )
-from layer1 import end_player_phase
+from layer1 import GAME_PHASE_PROC_REF
 from layer2 import (
     GameCameraTag,
     IsoCameraTag,
@@ -75,5 +75,5 @@ def build_ui() -> None:
         (5, 50),
         "End Turn",
         UIElemType.BUTTON,
-        click_func=end_player_phase,
+        click_func=GAME_PHASE_PROC_REF.end_player_phase,
     )

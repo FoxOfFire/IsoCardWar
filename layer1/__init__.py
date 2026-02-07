@@ -9,7 +9,7 @@ from .cards import (
     draw_card,
     draw_cards,
 )
-from .game_phase import GamePhaseProcessor, end_player_phase
+from .game_phase import GAME_PHASE_PROC_REF
 from .game_state import (
     GAME_STATE_REF,
     hover,

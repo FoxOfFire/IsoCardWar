@@ -1,16 +1,14 @@
-from typing import Callable, Type
+from typing import Type
 
-from common import POS_PROC_REF, RUN_DATA_REF, BoundingBox
+from common import POS_PROC_REF, RUN_DATA_REF, BoundingBox, TextFunc
 from layer1 import GAME_STATE_REF
 
 
-def get_tracked_bb_of_type_str(ty: Type, name: str) -> Callable[[], str]:
+def get_tracked_bb_of_type_str(ty: Type, name: str) -> TextFunc:
     return lambda: f"{name}: {str(POS_PROC_REF.tracked_count_of_type(ty))}"
 
 
-def get_intersection_count(
-    name: str, bb: BoundingBox, ty: Type
-) -> Callable[[], str]:
+def get_intersection_count(name: str, bb: BoundingBox, ty: Type) -> TextFunc:
     return lambda: f"{name}x{len(POS_PROC_REF.intersect(bb, ty))}"
 
 

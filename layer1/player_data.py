@@ -6,4 +6,4 @@ class PlayerData:
     start_of_game_draw_count: int = 5
 
 
-PLAYER_DATA_REF = PlayerData
+PLAYER_DATA_REF = PlayerData()

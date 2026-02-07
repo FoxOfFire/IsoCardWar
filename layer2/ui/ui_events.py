@@ -48,7 +48,7 @@ def _get_transformed_mouse_pos(bb: BoundingBox) -> Tuple[float, float]:
     return y / 2, x / 2
 
 
-def click_on_tile(ent: int) -> None:
+def click_on_tile(ent: int, _: int) -> None:
     bb = esper.component_for_entity(ent, BoundingBox)
     trans_mouse_pos = _get_transformed_mouse_pos(bb)
     mouse_bb = BoundingBox(
@@ -60,10 +60,10 @@ def click_on_tile(ent: int) -> None:
     assert ui_event_obj.iso_tag is not None
 
     for intersect in POS_PROC_REF.intersect(mouse_bb, ui_event_obj.iso_tag):
-        play_card(intersect, None)
+        play_card(intersect, -1)
 
 
-def hover_over_tile(ent: int) -> None:
+def hover_over_tile(ent: int, _: int) -> None:
     bb = esper.component_for_entity(ent, BoundingBox)
     trans_mouse_pos = _get_transformed_mouse_pos(bb)
     mouse_bb = BoundingBox(
@@ -75,6 +75,6 @@ def hover_over_tile(ent: int) -> None:
     assert ui_event_obj.iso_tag is not None
 
     for intersect in POS_PROC_REF.intersect(mouse_bb, ui_event_obj.iso_tag):
-        hover(intersect)
+        hover(intersect, -1)
         return
-    remove_hover(-1)
+    remove_hover(-1, -1)
