@@ -3,10 +3,9 @@ from typing import Optional
 import pygame
 from pygame.event import Event
 
-from common import EVENT_PROC_REF
+from common import EVENT_PROC_REF, GAME_STATE_REF
 from layer1 import (
     DECK_REF,
-    GAME_STATE_REF,
     OrganizationEnum,
     draw_card,
 )

@@ -1,7 +1,9 @@
 from enum import Enum, auto
-from typing import List
+from typing import Callable, List, Optional
 
-from common import EntityFunc
+EntityFunc = Callable[[Optional[int], Optional[int]], None]
+Action = Callable[[], None]
+TextFunc = Callable[[], str]
 
 
 class MarkerEnum(Enum):

@@ -1,7 +1,6 @@
 from typing import Type
 
-from common import POS_PROC_REF, RUN_DATA_REF, BoundingBox
-from layer1 import GAME_STATE_REF
+from common import GAME_STATE_REF, POS_PROC_REF, RUN_DATA_REF, BoundingBox
 
 
 def get_tracked_bb_of_type_str(ty: Type, name: str) -> str:

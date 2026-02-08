@@ -8,10 +8,10 @@ from common import (
     CARD_Y_POS_BASE,
     CARD_Y_POS_SELECTED,
     CARD_Y_POS_SELECTING,
+    GAME_STATE_REF,
     RUN_DATA_REF,
     BoundingBox,
 )
-from layer1.game_state import GAME_STATE_REF
 
 from .cards import DECK_REF, Card, get_card_center_offset
 

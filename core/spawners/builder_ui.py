@@ -3,6 +3,7 @@ from functools import partial
 import esper
 
 from common import (
+    GAME_STATE_REF,
     RENDER_FPS_UI,
     RENDER_GAME_CAM_INTERSECT_UI,
     RENDER_GAME_PHASE_UI,
@@ -11,7 +12,6 @@ from common import (
     RENDER_TRACKED_UI_UI,
     BoundingBox,
 )
-from layer1 import GAME_STATE_REF
 from layer2 import (
     GameCameraTag,
     IsoCameraTag,

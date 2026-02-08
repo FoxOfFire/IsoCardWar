@@ -2,8 +2,13 @@ from typing import Dict, List, Optional
 
 import esper
 
-from common import GAME_PHASE_PAUSE, RUN_DATA_REF, Action
-from layer1.game_state import GAME_STATE_REF, GamePhaseEnum
+from common import (
+    GAME_PHASE_PAUSE,
+    GAME_STATE_REF,
+    RUN_DATA_REF,
+    Action,
+    GamePhaseEnum,
+)
 
 from .log import logger
 

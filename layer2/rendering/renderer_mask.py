@@ -3,8 +3,8 @@ from typing import List, Optional, Tuple, Type
 import esper
 import pygame
 
-from common import POS_PROC_REF, RENDER_MASKS, BoundingBox
-from layer1 import DECK_REF, GAME_STATE_REF
+from common import GAME_STATE_REF, POS_PROC_REF, RENDER_MASKS, BoundingBox
+from layer1 import DECK_REF
 
 from .renderer_card import CardSprite
 

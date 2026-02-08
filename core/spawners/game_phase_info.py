@@ -1,8 +1,8 @@
 from functools import partial
 from typing import Dict, List
 
-from common import Action
-from layer1 import GamePhaseEnum, draw_cards
+from common import Action, GamePhaseEnum
+from layer1 import draw_cards
 
 
 def _begin_game() -> List[Action]:

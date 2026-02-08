@@ -4,8 +4,8 @@ from typing import Optional, Tuple, Type
 import esper
 import pygame
 
-from common import POS_PROC_REF, BoundingBox
-from layer1 import GAME_STATE_REF, map_obj
+from common import GAME_STATE_REF, POS_PROC_REF, BoundingBox
+from layer1 import map_obj
 from layer2.tags import GameCameraTag
 
 from .log import logger

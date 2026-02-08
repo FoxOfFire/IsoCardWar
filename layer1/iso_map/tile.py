@@ -1,8 +1,7 @@
 from enum import Enum, auto
 from typing import List, Optional, Tuple
 
-from common import EntityFunc
-from layer1 import SelectableObject
+from common import EntityFunc, SelectableObject
 
 
 class TerrainEnum(Enum):

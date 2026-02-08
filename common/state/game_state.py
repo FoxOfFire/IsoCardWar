@@ -2,9 +2,8 @@ from typing import Dict, List, Optional
 
 import esper
 
-from common import Action, EntityFunc
-
 from .game_state_utils import GamePhaseEnum, PriceEnum
+from .types import Action, EntityFunc
 
 
 class GameState:
