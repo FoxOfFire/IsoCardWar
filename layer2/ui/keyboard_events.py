@@ -1,14 +1,10 @@
-from typing import Optional
-
 import pygame
 from pygame.event import Event
 
-from common import EVENT_PROC_REF, GAME_STATE_REF
-from layer1 import (
-    DECK_REF,
-    OrganizationEnum,
-    draw_card,
-)
+from common import EVENT_PROC_REF, play_card, unselect
+from layer1 import DECK_REF, OrganizationEnum, draw_card, sort_hand
+
+from .ui_tactics import quit_game
 
 
 def key_bind_handler(event: Event) -> None:
@@ -16,24 +12,23 @@ def key_bind_handler(event: Event) -> None:
         if event.key == pygame.K_F4 and event.mod & pygame.KMOD_ALT:
             quit_game(None, None)
         elif event.key == pygame.K_q:
-            draw_card()
+            draw_card(None, None)
         elif event.key == pygame.K_w:
-            GAME_STATE_REF.play_card(None, 0)
+            play_card(None, 0)
         elif event.key == pygame.K_a:
             DECK_REF.set_order(OrganizationEnum.MARKER)
+            sort_hand(None, None)
         elif event.key == pygame.K_s:
             DECK_REF.set_order(OrganizationEnum.NAME)
+            sort_hand(None, None)
         elif event.key == pygame.K_d:
             DECK_REF.set_order(OrganizationEnum.NONE)
+            sort_hand(None, None)
 
 
 def mouse_handler(event: Event) -> None:
     if event.dict["button"] == 3:
-        GAME_STATE_REF.unselect()
-
-
-def quit_game(_: Optional[int], __: Optional[int]) -> None:
-    pygame.event.post(pygame.event.Event(pygame.QUIT))
+        unselect(None, None)
 
 
 def bind_events() -> None:

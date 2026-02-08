@@ -21,8 +21,8 @@ from layer1 import (
     CARD_MOV_PROC_REF,
     DECK_REF,
     GAME_PHASE_PROC_REF,
-    create_starting_deck,
     draw_card,
+    end_phase,
 )
 from layer2 import (
     DYING_PROC_REF,
@@ -128,17 +128,18 @@ def init_game_world_esper() -> None:  # adding processors
     CARD_MOV_PROC_REF.set_cam_bb(game_cam_bb)
     DECK_REF.spawn_card = spawn_card_ent
     DECK_REF.create_card = create_card_obj
-    create_starting_deck(STARTER_DECK_COUNT)
+    DECK_REF.create_starting_deck(STARTER_DECK_COUNT)
+
+    for phase, func_list in get_base_game_phase_dict().items():
+        GAME_PHASE_PROC_REF.add_game_phase(phase, func_list=func_list)
+    GAME_PHASE_PROC_REF.set_end_phase(end_phase)
+
+    UI_PROC_REF.set_display_size(display.get_size())
 
     # draw starter cards
     for _ in range(7):
-        draw_card()
+        draw_card(None, None)
     ui_event_obj.iso_tag = TrackIso
-
-    # Create processors    CARD_MOV_PROC_REF.set_cam_bb(game_cam_bb)
-    for phase, func_list in get_base_game_phase_dict().items():
-        GAME_PHASE_PROC_REF.add_game_phase(phase, func_list=func_list)
-    UI_PROC_REF.set_display_size(display.get_size())
 
     bind_game_events()
 

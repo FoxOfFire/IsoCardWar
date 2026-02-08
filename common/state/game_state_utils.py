@@ -1,9 +1,16 @@
 from enum import Enum, auto
 from typing import Callable, List, Optional
 
-EntityFunc = Callable[[Optional[int], Optional[int]], None]
-Action = Callable[[], None]
+Action = Callable[[Optional[int], Optional[int]], None]
 TextFunc = Callable[[], str]
+
+
+def ActionDecor(func: Action) -> Action:
+    return func
+
+
+def TextFuncDecor(func: TextFunc) -> TextFunc:
+    return func
 
 
 class MarkerEnum(Enum):
@@ -29,4 +36,4 @@ class GamePhaseEnum(Enum):
 
 
 class SelectableObject:
-    effects: List[EntityFunc]
+    effects: List[Action]

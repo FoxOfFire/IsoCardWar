@@ -4,7 +4,7 @@ from typing import Optional, Tuple, Type
 import esper
 import pygame
 
-from common import GAME_STATE_REF, POS_PROC_REF, BoundingBox
+from common import BoundingBox
 from layer1 import map_obj
 from layer2.tags import GameCameraTag
 
@@ -27,7 +27,7 @@ logger.info("ui_event_obj created")
 # \  / ---/ |     |
 # .\/       L_____J
 # https://www.desmos.com/calculator/or2famsblw
-def _get_transformed_mouse_pos(bb: BoundingBox) -> Tuple[float, float]:
+def get_transformed_mouse_pos(bb: BoundingBox) -> Tuple[float, float]:
     cam_bb = esper.component_for_entity(
         esper.get_component(GameCameraTag)[0][0], BoundingBox
     )
@@ -47,37 +47,3 @@ def _get_transformed_mouse_pos(bb: BoundingBox) -> Tuple[float, float]:
     x = (mouse_in_bb_x - mouse_in_bb_y) * (map_height + map_width) + map_width
     y = (mouse_in_bb_x + mouse_in_bb_y) * (map_height + map_width) - map_width
     return y / 2, x / 2
-
-
-def click_on_tile(ent: Optional[int], _: Optional[int]) -> None:
-    assert ent is not None
-    bb = esper.component_for_entity(ent, BoundingBox)
-    trans_mouse_pos = _get_transformed_mouse_pos(bb)
-    mouse_bb = BoundingBox(
-        trans_mouse_pos[0],
-        trans_mouse_pos[0],
-        trans_mouse_pos[1],
-        trans_mouse_pos[1],
-    )
-    assert ui_event_obj.iso_tag is not None
-
-    for intersect in POS_PROC_REF.intersect(mouse_bb, ui_event_obj.iso_tag):
-        GAME_STATE_REF.play_card(intersect, None)
-
-
-def hover_over_tile(ent: Optional[int], _: Optional[int]) -> None:
-    assert ent is not None
-    bb = esper.component_for_entity(ent, BoundingBox)
-    trans_mouse_pos = _get_transformed_mouse_pos(bb)
-    mouse_bb = BoundingBox(
-        trans_mouse_pos[0],
-        trans_mouse_pos[0],
-        trans_mouse_pos[1],
-        trans_mouse_pos[1],
-    )
-    assert ui_event_obj.iso_tag is not None
-
-    for intersect in POS_PROC_REF.intersect(mouse_bb, ui_event_obj.iso_tag):
-        GAME_STATE_REF.hover(intersect, None)
-        return
-    GAME_STATE_REF.remove_hover()

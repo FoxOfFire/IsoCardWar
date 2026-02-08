@@ -3,7 +3,7 @@ from typing import List, Optional, Tuple, Type
 
 import esper
 
-from common import BoundingBox, EntityFunc, Untracked
+from common import Action, BoundingBox, Untracked
 
 from .tile import TerrainEnum, Tile, UnitTypeEnum
 
@@ -38,7 +38,7 @@ def make_map() -> None:
             pos = (round(bb.left), round(bb.top))
             terrain = TerrainEnum(randint(1, len(list(TerrainEnum))))
             unit: Optional[UnitTypeEnum] = None
-            effects: List[EntityFunc] = []
+            effects: List[Action] = []
 
             if (
                 randint(0, 2) == 0

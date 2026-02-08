@@ -111,7 +111,7 @@ class UIProcessor(esper.Processor):
                     self.hover, UIElementComponent
                 )
                 if tag.unhover_func is not None:
-                    tag.unhover_func()
+                    tag.unhover_func(ent, None)
         return ent
 
     def process(self) -> None:

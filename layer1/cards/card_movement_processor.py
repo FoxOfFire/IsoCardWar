@@ -13,7 +13,7 @@ from common import (
     BoundingBox,
 )
 
-from .cards import DECK_REF, Card, get_card_center_offset
+from .cards import DECK_REF, Card
 
 
 class CardMovementProcessor(esper.Processor):
@@ -31,7 +31,7 @@ class CardMovementProcessor(esper.Processor):
         for ent, _ in esper.get_component(Card):
             bb = esper.component_for_entity(ent, BoundingBox)
 
-            offset_index = get_card_center_offset(ent)
+            offset_index = DECK_REF.get_card_center_offset(ent)
             offset = (
                 offset_index * self.cam_bb.width / len(DECK_REF.hand) * 0.8
             )

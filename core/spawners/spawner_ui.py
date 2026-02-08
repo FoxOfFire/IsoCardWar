@@ -7,8 +7,8 @@ from common import (
     BUTTON_WIDTH,
     Action,
     BoundingBox,
-    EntityFunc,
     TextFunc,
+    TextFuncDecor,
     Untracked,
 )
 from layer2 import (
@@ -28,14 +28,15 @@ def spawn_button(
     ui_elem_type: UIElemType,
     /,
     *,
-    click_func: Optional[EntityFunc] = None,
-    hover_func: Optional[EntityFunc] = None,
+    click_func: Optional[Action] = None,
+    hover_func: Optional[Action] = None,
     remove_hover_func: Optional[Action] = None,
 ) -> int:
     logger.info("spawning button")
     x, y = topleft
     if not callable(text):
 
+        @TextFuncDecor
         def text_func() -> str:
             assert not callable(text)
             return text

@@ -3,7 +3,6 @@ from functools import partial
 import esper
 
 from common import (
-    GAME_STATE_REF,
     RENDER_FPS_UI,
     RENDER_GAME_CAM_INTERSECT_UI,
     RENDER_GAME_PHASE_UI,
@@ -11,6 +10,7 @@ from common import (
     RENDER_TRACKED_ISO_UI,
     RENDER_TRACKED_UI_UI,
     BoundingBox,
+    end_player_phase_action,
 )
 from layer2 import (
     GameCameraTag,
@@ -77,5 +77,5 @@ def build_ui() -> None:
         (5, 50),
         "End Turn",
         UIElemType.BUTTON,
-        click_func=lambda y, x: GAME_STATE_REF.end_player_phase_action(),
+        click_func=end_player_phase_action,
     )
