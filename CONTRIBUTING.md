@@ -1,6 +1,6 @@
 # Contribution guide
 
-## Getting started
+## Linux Setup
 
 ### Install dependencies
 
@@ -10,7 +10,7 @@ Install `git` with your choice of package manager.
 
 With `pacman` this can be done by running:
 
-```
+```bash
 pacman -Syy git
 ```
 
@@ -20,20 +20,20 @@ Install `pyenv` with your choice of package manager.
 
 With `pacman` this can be done by running:
 
-```
+```bash
 pacman -Syy pyenv
 ```
 
 We use Python `3.12.9` as that is the latest well-supported version.
 Install Python `3.12.9` with pyenv with the following command:
 
-```
+```bash
 pyenv install 3.12.9
 ```
 
 To verify that Python has been successfully installed, run:
 
-```
+```bash
 pyenv versions
 ```
 
@@ -94,21 +94,25 @@ To deactivate it run:
 deactivate
 ```
 
-To verify that the environment has been setup correctly, run the following commands with in an active virtual environment:
+To verify that the environment has been setup correctly,
+run the following commands with in an active virtual environment:
 
 ```bash
 python --version
 which python
 ```
 
-In the output of the first command you should see that the current python version is `3.12.9`.
-In the output of the second command you should see that the current python command is the one from the virtual environment.
+In the output of the first command
+you should see that the current python version is `3.12.9`.
+In the output of the second command
+you should see that the current python command is the one from the virtual environment.
 
 ### Install requirements
 
 We use `pip` to manage python packages. `pip` comes installed with Python.
 
-Requirements can be installed automatically with the requirements.txt file founds in the repo root.
+Requirements can be installed automatically
+with the requirements.txt file founds in the repo root.
 
 Install the requirements into your virtual environment with the following command:
 
@@ -122,12 +126,14 @@ You should see `pip` installing the required python packages.
 
 ### General style
 
-We conform mostly to pep8 guidelines: https://peps.python.org/pep-0008/
+We conform mostly to pep8 guidelines: [pep8](https://peps.python.org/pep-0008/)
 We use the black formatter to ensure this.
 
 ### Type hints
 
-We enforce type hinting in function signatures with `mypy`. Type hinting inside of function bodies is usually unnecessary. If you need/want to duck-type, use `Any`.
+We enforce type hinting in function signatures with `mypy`.
+Type hinting inside of function bodies is usually unnecessary.
+If you need/want to duck-type, use `Any`.
 
 ### Other naming conventions
 
@@ -167,7 +173,8 @@ mypy .
 
 ## Branching strategy
 
-We use a single protected branch called `master`. This branch is always kept in a working state as a best effort.
+We use a single protected branch called `master`.
+This branch is always kept in a working state as a best effort.
 The only way to change the state of the `master` branch is through pull requests.
 Development happens on so-called "feature branches".
 
@@ -175,10 +182,12 @@ The strategy for feature branching is:
 
 - Start at the most recent revision of `master` (`git fetch` or `git pull`)
 - The branch should contain a feature, working iteration of a feature, or a bugfix
-- Long-running feature branches should be avoided, to avoid conflicts as much as possible
+- Long-running feature branches should be avoided, to avoid conflicts if possible
 
-Feature branches are merged back into `master` via a pull request, we use squash merging to keep the history of `master` clean
-If a change turns out to break `master` it will be reverted through a pull request via `git revert`
+Feature branches are merged back into `master` via a pull request,
+we use squash merging to keep the history of `master` clean
+If a change turns out to break `master` it will be
+reverted through a pull request via `git revert`
 
 ## Making a pull request
 
@@ -192,7 +201,8 @@ A pull request will only be accepted, if it conforms to the following rules:
 
 ## Setup linters and formatters (vscode)
 
-The linters and formatters are installed by `pip`, if you haven't already, from the repo root run:
+The linters and formatters are installed by `pip`,
+if you haven't already, from the repo root run:
 
 ```bash
 python -m venv .venv
@@ -200,7 +210,7 @@ source .venv/bin/activate
 pip3 install -r requirements.txt
 ```
 
-You can integrate the linters and formatters into vscode by installing the following extensions:
+You can integrate the linters and formatters into vscode by installing the following:
 
 - Black Formatter (ms-python)
 - Flake8 (ms-python)
@@ -211,9 +221,11 @@ You should also turn off:
 
 - Pylance
 
-Next, to turn on format on save, in the settings, under "Default Formatter" choose "Black Formatter" from the dropdown.
+Next, to turn on format on save, in the settings,
+under "Default Formatter" choose "Black Formatter" from the dropdown.
 After choosing `black` as your default formatter you should enable "Format on Save"
-To also run isort, go to "Code Actions On Save", click on "Edit in settings.json", and paste the following line:
+To also run isort, go to "Code Actions On Save",
+click on "Edit in settings.json", and paste the following line:
 
 ```json
 "source.organizeImports": "always"
@@ -223,7 +235,8 @@ To also run isort, go to "Code Actions On Save", click on "Edit in settings.json
 
 ### Getting started
 
-After cloning the repository, and setting it as your working directory, navigate to the `master` branch with:
+After cloning the repository, and setting it as your working directory,
+navigate to the `master` branch with:
 
 ```bash
 git switch master
@@ -241,7 +254,8 @@ or running:
 git fetch
 ```
 
-Now you are ready to open your feature branch, make sure your branch name is descriptive. You can open a new branch by running:
+Now you are ready to open your feature branch, make sure your branch name is descriptive.
+You can open a new branch by running:
 
 ```bash
 git branch my-branch-name
@@ -255,7 +269,9 @@ git switch my-branch-name
 
 ### Git workflow
 
-After making a few related changes, you should create a commit. To make a commit you need to stage your changes. You can see which files changed with:
+After making a few related changes, you should create a commit.
+To make a commit you need to stage your changes.
+You can see which files changed with:
 
 ```bash
 git status
@@ -273,7 +289,8 @@ Or if you removed a file:
 git rm my-file
 ```
 
-After you have staged your changes, you can check what will be included in the commit by running:
+After you have staged your changes,
+you can check what will be included in the commit by running:
 
 ```bash
 git status
@@ -298,9 +315,14 @@ git log
 This will show commit hashes
 
 To revert a commit use: `git revert commit-hash`
-To discard all changes and go back to a previous commit state use: `git reset --hard commit-hash`
+To discard all changes and go back to a previous commit state use:
 
-After you have made the changes to the code-base that you wanted, or you want to save your changes remotely, upload your branch with:
+```bash
+git reset --hard commit-hash`
+```
+
+After you have made the changes to the code-base that you wanted,
+or you want to save your changes remotely, upload your branch with:
 
 ```bash
 git push --set-upstream origin my-branch-name
@@ -312,11 +334,13 @@ This will create a remote branch, you can always update this branch by doing:
 git push
 ```
 
-You can create a merge-request for your branch via the gitlab UI. If there is a merge conflict, you need to resolve the conflict and `git push` again.
+You can create a merge-request for your branch via the gitlab UI.
+If there is a merge conflict, you need to resolve the conflict and `git push` again.
 
 ### Resolving a merge conflict
 
-There are 2 ways to resolve a merge-conflict. Both of the start by getting the fresh `master` locally. You can do this by running:
+There are 2 ways to resolve a merge-conflict.
+Both of the start by getting the fresh `master` locally. You can do this by running:
 
 ```bash
 git fetch
@@ -326,13 +350,14 @@ git fetch
 
 The first and preferred way to resolve a merge conflict is via `git merge`.
 
-Start resolving the conflict by merging your base branch (in most cases `master`) back into your branch:
+Start resolving the conflict by merging your base branch back into your branch:
 
 ```bash
 git merge master
 ```
 
-Because merging is a commutative operation, you should get the same conflict, as when gitlab tried to merge the two branches.
+Because merging is a commutative operation, you should get the same conflict,
+as when gitlab tried to merge the two branches.
 
 Check which files conflict via:
 
@@ -352,7 +377,8 @@ After all conflicts have been resolved continue the merge with:
 git merge --continue
 ```
 
-When the merge is done, it will open an editor to edit the message of the merge commit, just close the editor with: `:q`
+When the merge is done, it'll open an editor to edit the message of the merge commit,
+just close the editor with: `:q`
 
 After resolving the conflict, you can update your remote branch via `git push`
 
@@ -364,7 +390,8 @@ The second way is to use `git rebase`. You can rebase by running:
 git rebase master
 ```
 
-This will start putting your commits onto the current revision of `master`, when it encounters the conflict, it will stop and ask you to intervene.
+This will start putting your commits onto the current revision of `master`,
+when it encounters the conflict, it will stop and ask you to intervene.
 
 Check which files have the conflict via:
 
@@ -372,7 +399,9 @@ Check which files have the conflict via:
 git status
 ```
 
-You need to go to that file, and resolve the conflict via an editor, vscode has a builtin merge conflict editor. After you have resolved the conflict stage your change with:
+You need to go to that file, and resolve the conflict via an editor,
+vscode has a builtin merge conflict editor.
+After you have resolved the conflict stage your change with:
 
 ```bash
 git add my-file
@@ -384,7 +413,8 @@ After you staged your change, you can continue the rebase, by running:
 git rebase --continue
 ```
 
-This will continue to the next conflict if there is one. After there are no more conflicts, you can update your branch on the remote with:
+This will continue to the next conflict if there is one.
+After there are no more conflicts,you can update your branch on the remote with:
 
 ```bash
 git push

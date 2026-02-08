@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum, auto
-from typing import Dict, Iterable, Tuple, Type
+from typing import Dict, Iterable, Optional, Tuple, Type
 
 import esper
 import pygame
@@ -30,13 +30,18 @@ class IsoSprite:
 
 
 class IsoRenderer:
-    def __init__(self, cam_tag: Type, track_tag: Type, /) -> None:
-        super().__init__()
-        self.track_tag = track_tag
+    bb: Optional[BoundingBox]
+
+    def set_camera_type(self, cam_tag: Type) -> None:
         self.bb = esper.component_for_entity(
             esper.get_component(cam_tag)[0][0],
             BoundingBox,
         )
+
+    def __init__(self, track_tag: Type, /) -> None:
+        super().__init__()
+        self.track_tag = track_tag
+        self.bb = None
         logger.info("iso renderer init finished")
 
     class _DrawType(Enum):
@@ -115,6 +120,8 @@ class IsoRenderer:
                     )
 
     def draw(self, screen: pygame.Surface) -> None:
+        assert self.bb is not None
+
         def sort_by_bottom(ent: int) -> int:
             tile = esper.try_component(ent, Tile)
             if tile is None:

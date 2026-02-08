@@ -1,25 +1,41 @@
-from typing import List, Tuple, Type
+from typing import List, Optional, Tuple, Type
 
 import esper
 import pygame
 
-from common import RENDER_MASKS, BoundingBox
+from common import POS_PROC_REF, RENDER_MASKS, BoundingBox
 from layer1 import DECK_REF, GAME_STATE_REF
 
 from .renderer_card import CardSprite
 
 
 class MaskRenderer:
-    def __init__(self, cam_tag: Type, track_tag: Type) -> None:
-        super().__init__()
-        self.track_tag = track_tag
+    bb: Optional[BoundingBox]
+
+    def set_camera_type(self, cam_tag: Type) -> None:
         self.bb = esper.component_for_entity(
             esper.get_component(cam_tag)[0][0],
             BoundingBox,
         )
 
+    def __init__(self, track_tag: Type) -> None:
+        super().__init__()
+        self.track_tag = track_tag
+        self.bb = None
+
     def _get_sorted_hand_and_selection(self) -> Tuple[List[int], List[int]]:
-        ent_list = DECK_REF.hand.copy()
+        assert self.bb is not None
+
+        def sorter(ent: int) -> int:
+            if ent not in DECK_REF.hand:
+                return -1
+            return DECK_REF.hand.index(ent)
+
+        ent_list = sorted(
+            POS_PROC_REF.intersect(self.bb, self.track_tag),
+            key=lambda ent: sorter(ent),
+            reverse=False,
+        )
 
         selection_list = []
         selected = GAME_STATE_REF.selected
@@ -35,21 +51,23 @@ class MaskRenderer:
 
     def _draw_hand_masks(self, ent_list: List[int]) -> None:
         for ent in ent_list:
-            assert (
-                esper.entity_exists(ent)
-                and ent in DECK_REF.hand
-                and esper.has_component(ent, CardSprite)
-            )
+            if (
+                not esper.entity_exists(ent)
+                or ent not in DECK_REF.hand
+                or not esper.has_component(ent, CardSprite)
+            ):
+                continue
 
             sprite = esper.component_for_entity(ent, CardSprite)
             sprite.mask.invert()
             this = DECK_REF.hand.index(ent)
 
             for next in range(this + 1, len(DECK_REF.hand)):
+                ent = DECK_REF.hand[next]
+                if not esper.entity_exists(ent):
+                    continue
 
-                next_card_sprite = esper.component_for_entity(
-                    DECK_REF.hand[next], CardSprite
-                )
+                next_card_sprite = esper.component_for_entity(ent, CardSprite)
 
                 sprite.mask.draw(
                     next_card_sprite.mask,
@@ -71,7 +89,8 @@ class MaskRenderer:
                 assert esper.entity_exists(hand_ent)
 
                 hand_sprite = esper.try_component(hand_ent, CardSprite)
-                assert hand_sprite is not None
+                if hand_sprite is None:
+                    continue
 
                 hand_sprite.mask.draw(
                     sprite.mask,
@@ -83,10 +102,12 @@ class MaskRenderer:
 
     def _invert_hand(self, ent_list: List[int]) -> None:
         for ent in ent_list:
-            assert esper.entity_exists(ent)
+            if not esper.entity_exists(ent):
+                continue
 
             sprite = esper.try_component(ent, CardSprite)
-            assert sprite is not None
+            if sprite is None:
+                continue
 
             sprite.mask.invert()
 

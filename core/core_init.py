@@ -93,10 +93,7 @@ def bind_game_events() -> None:
     EVENT_PROC_REF.bind(pygame.QUIT, handle_quit)
 
 
-def init_game_world_esper() -> None:
-    display = pygame.display.get_surface()
-    assert display is not None
-    # adding processors
+def init_game_world_esper() -> None:  # adding processors
 
     esper.add_processor(CARD_MOV_PROC_REF)
     esper.add_processor(BB_MOVE_PROC_REF)
@@ -112,35 +109,38 @@ def init_game_world_esper() -> None:
     esper.add_processor(SCENE_SWITCH_PROC_REF)
 
     # dependency injection
-    DECK_REF.spawn_card = spawn_card_ent
-    DECK_REF.create_card = create_card_obj
-    create_starting_deck(STARTER_DECK_COUNT)
-    for _ in range(7):
-        draw_card()
 
-    spawn_iso_elem(TrackIso, TrackUI, IsoSprite)
-
-    ui_event_obj.iso_tag = TrackIso
-
-    # Create processors
-    POS_PROC_REF.start_tracking_type(TrackIso)
-    POS_PROC_REF.start_tracking_type(TrackUI)
+    display = pygame.display.get_surface()
+    assert display is not None
 
     game_cam_bb = BoundingBox(0, GAME_CAM_WIDTH, 0, GAME_CAM_HEIGHT)
     esper.create_entity(game_cam_bb, GameCameraTag())
     iso_cam_bb = BoundingBox(0, ISO_MAP_HEIGHT, 0, ISO_MAP_WIDTH)
     esper.create_entity(iso_cam_bb, IsoCameraTag())
 
-    RENDER_PROC_REF.set_display(display)
+    spawn_iso_elem(TrackIso, TrackUI, IsoSprite)
+
+    RENDER_PROC_REF.init(display)
+
+    POS_PROC_REF.start_tracking_type(TrackIso)
+    POS_PROC_REF.start_tracking_type(TrackUI)
 
     CARD_MOV_PROC_REF.set_cam_bb(game_cam_bb)
+    DECK_REF.spawn_card = spawn_card_ent
+    DECK_REF.create_card = create_card_obj
+    create_starting_deck(STARTER_DECK_COUNT)
+
+    # draw starter cards
+    for _ in range(7):
+        draw_card()
+    ui_event_obj.iso_tag = TrackIso
+
+    # Create processors    CARD_MOV_PROC_REF.set_cam_bb(game_cam_bb)
     for phase, func_list in get_base_game_phase_dict().items():
         GAME_PHASE_PROC_REF.add_game_phase(phase, func_list=func_list)
     UI_PROC_REF.set_display_size(display.get_size())
 
     bind_game_events()
-
-    POS_PROC_REF.process()
 
 
 def init() -> None:

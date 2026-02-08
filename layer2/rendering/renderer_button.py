@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Type
+from typing import Optional, Type
 
 import esper
 import pygame
@@ -18,16 +18,22 @@ class UIElemSprite:
 
 
 class ButtonRenderer:
-    def __init__(self, cam_tag: Type, track_tag: Type) -> None:
-        super().__init__()
-        self.track_tag = track_tag
+    bb: Optional[BoundingBox]
+
+    def set_camera_type(self, cam_tag: Type) -> None:
         self.bb = esper.component_for_entity(
             esper.get_component(cam_tag)[0][0],
             BoundingBox,
         )
+
+    def __init__(self, track_tag: Type) -> None:
+        super().__init__()
+        self.track_tag = track_tag
+        self.bb = None
         logger.info("button render init finished")
 
     def draw(self, screen: pygame.Surface) -> None:
+        assert self.bb is not None
         for ent in POS_PROC_REF.intersect(self.bb, self.track_tag):
             assert esper.entity_exists(ent)
 

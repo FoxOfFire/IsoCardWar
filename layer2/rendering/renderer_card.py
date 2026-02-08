@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Type
+from typing import Optional, Type
 
 import esper
 import pygame
@@ -31,15 +31,22 @@ class CardSprite(MaskedSprite):
 
 
 class CardRenderer:
-    def __init__(self, cam_tag: Type, track_tag: Type) -> None:
-        super().__init__()
-        self.track_tag = track_tag
+    bb: Optional[BoundingBox]
+
+    def set_camera_type(self, cam_tag: Type) -> None:
         self.bb = esper.component_for_entity(
             esper.get_component(cam_tag)[0][0],
             BoundingBox,
         )
 
+    def __init__(self, track_tag: Type) -> None:
+        super().__init__()
+        self.track_tag = track_tag
+        self.bb = None
+
     def draw(self, screen: pygame.Surface) -> None:
+        assert self.bb is not None
+
         def sorter(ent: int) -> int:
             if ent not in DECK_REF.hand:
                 return -1

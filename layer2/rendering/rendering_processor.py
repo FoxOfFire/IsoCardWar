@@ -6,6 +6,7 @@ import pygame
 from common import GAME_CAM_HEIGHT, GAME_CAM_WIDTH, RENDER_BBS
 from layer2.tags import GameCameraTag, IsoCameraTag, TrackIso, TrackUI
 
+from .log import logger
 from .renderer_bb import BBRenderer
 from .renderer_button import ButtonRenderer
 from .renderer_card import CardRenderer
@@ -28,17 +29,29 @@ class RenderingProcessor(esper.Processor):
 
         self.screen = pygame.Surface((GAME_CAM_WIDTH, GAME_CAM_HEIGHT))
 
-        self.iso_renderer = IsoRenderer(IsoCameraTag, TrackIso)
-        self.card_renderer = CardRenderer(GameCameraTag, TrackUI)
-        self.mask_renderer = MaskRenderer(GameCameraTag, TrackUI)
-        self.button_renderer = ButtonRenderer(GameCameraTag, TrackUI)
+        self.iso_renderer = IsoRenderer(TrackIso)
+        self.card_renderer = CardRenderer(TrackUI)
+        self.mask_renderer = MaskRenderer(TrackUI)
+        self.button_renderer = ButtonRenderer(TrackUI)
 
         # debug purposes
         if RENDER_BBS:
             self.bb_renderer = BBRenderer(GameCameraTag, TrackUI)
 
-    def set_display(self, display: pygame.Surface) -> None:
+    def init(self, display: pygame.Surface) -> None:
+        self.__set_display(display)
+        self.__set_camera_types()
+
+    def __set_display(self, display: pygame.Surface) -> None:
         self.display = display
+        logger.info("display set")
+
+    def __set_camera_types(self) -> None:
+        self.iso_renderer.set_camera_type(IsoCameraTag)
+        self.mask_renderer.set_camera_type(GameCameraTag)
+        self.card_renderer.set_camera_type(GameCameraTag)
+        self.button_renderer.set_camera_type(GameCameraTag)
+        logger.info("cameras set")
 
     def process(self) -> None:
         assert self.display is not None
