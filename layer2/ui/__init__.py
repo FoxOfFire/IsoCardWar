@@ -8,4 +8,4 @@ from .ui_events import (
     hover_over_tile,
     ui_event_obj,
 )
-from .ui_processor import UIProcessor
+from .ui_processor import UI_PROC_REF

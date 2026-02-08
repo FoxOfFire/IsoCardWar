@@ -1,6 +1,5 @@
 from typing import Callable, Optional
 
-EntityFunc = Callable[[int, int], None]
-ButtonFunc = Callable[[Optional[int], Optional[int]], None]
-PhaseFunc = Callable[[], None]
+EntityFunc = Callable[[Optional[int], Optional[int]], None]
+Action = Callable[[], None]
 TextFunc = Callable[[], str]

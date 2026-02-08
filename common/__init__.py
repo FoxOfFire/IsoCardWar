@@ -1,11 +1,11 @@
 # flake8: noqa
 from .constants import *
 from .dying import Health
-from .events import EventProcessor
+from .events import EVENT_PROC_REF
 from .globals import RUN_DATA_REF
 from .position_tracking import (
+    BB_MOVE_PROC_REF,
     POS_PROC_REF,
-    BBMoveProcessor,
     BBRTree,
     BoundingBox,
     TrackBase,

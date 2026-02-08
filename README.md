@@ -14,33 +14,33 @@ You are a witch chased by the inquisition, and your objective is to escape them.
 
 ### Phase one: Townsfolk
 
-> Your neighbours have noticed your machinations and evil schemes.
-> **Types:**
->
-> - Farmer
-> - Housewife
-> - Tough guy
-> - Priest
+Your neighbours have noticed your machinations and evil schemes.
+**Types:**
+
+- Farmer
+- Housewife
+- Tough guy
+- Priest
 
 ### Phase two: Barony
 
-> The local Lord noticed that you have commited several crimes, and sends his men.
-> **Types:**
->
-> - Guards
-> - Bishops
-> - Bowman
-> - Knight
+The local Lord noticed that you have commited several crimes, and sends his men.
+**Types:**
+
+- Guards
+- Bishops
+- Bowman
+- Knight
 
 ### Phase three: Country
 
-> The King now aware of your evil influence, he strikes you with the force of a nation.
-> **Types:**
->
-> - Assassins
-> - Arch-Bishops
-> - Elite Huntsman
-> - Elite Knights
+The King now aware of your evil influence, he strikes you with the force of a nation.
+**Types:**
+
+- Assassins
+- Arch-Bishops
+- Elite Huntsman
+- Elite Knights
 
 ## Turn to turn gameplay
 

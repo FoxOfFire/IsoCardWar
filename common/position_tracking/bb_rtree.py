@@ -1,4 +1,4 @@
-from typing import List, Optional, Type
+from typing import List, Type
 
 import esper
 import rtree
@@ -36,7 +36,6 @@ class BBRTree:
         self.__tracked_boxes -= 1
 
     def update(self, ent: int) -> None:
-        bb = esper.component_for_entity(ent, BoundingBox)
         self.delete_prev(ent)
         self.insert(ent)
 

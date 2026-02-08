@@ -22,3 +22,6 @@ class EventProcessor(esper.Processor):
         for event in pygame.event.get():
             for handler in self.__bound_events.get(event.type, []):
                 handler(event)
+
+
+EVENT_PROC_REF = EventProcessor()

@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum, auto
-from typing import Dict, Iterable, Tuple, Type
+from typing import Dict, Iterable, Optional, Tuple, Type
 
 import esper
 import pygame
@@ -30,13 +30,18 @@ class IsoSprite:
 
 
 class IsoRenderer:
-    def __init__(self, cam_tag: Type, track_tag: Type, /) -> None:
-        super().__init__()
-        self.track_tag = track_tag
+    bb: Optional[BoundingBox]
+
+    def set_camera_type(self, cam_tag: Type) -> None:
         self.bb = esper.component_for_entity(
             esper.get_component(cam_tag)[0][0],
             BoundingBox,
         )
+
+    def __init__(self, track_tag: Type, /) -> None:
+        super().__init__()
+        self.track_tag = track_tag
+        self.bb = None
         logger.info("iso renderer init finished")
 
     class _DrawType(Enum):
@@ -86,8 +91,16 @@ class IsoRenderer:
             if not esper.has_component(ent, IsoSprite):
                 continue
             tile = esper.component_for_entity(ent, Tile)
-            x = delta_x + (1 + tile.x + tile.y) * ISO_TILE_OFFSET_X
-            y = delta_y + (1 + tile.x - tile.y) * ISO_TILE_OFFSET_Y
+            x = (
+                delta_x
+                + ISO_POS_OFFSET_X
+                + (tile.x + tile.y) * ISO_TILE_OFFSET_X
+            )
+            y = (
+                delta_y
+                + ISO_POS_OFFSET_Y
+                + (tile.x - tile.y) * ISO_TILE_OFFSET_Y
+            )
             if ent == GAME_STATE_REF.selecting:
                 y += ISO_TILE_SELECT_OFFSET
             match draw_type:
@@ -107,6 +120,8 @@ class IsoRenderer:
                     )
 
     def draw(self, screen: pygame.Surface) -> None:
+        assert self.bb is not None
+
         def sort_by_bottom(ent: int) -> int:
             tile = esper.try_component(ent, Tile)
             if tile is None:

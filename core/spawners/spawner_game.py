@@ -26,6 +26,7 @@ from common import (
     Untracked,
 )
 from layer1 import (
+    GAME_STATE_REF,
     Card,
     CardTypeEnum,
     MarkerEnum,
@@ -33,11 +34,8 @@ from layer1 import (
     change_tile,
     change_unit,
     draw_cards,
-    hover,
     make_map,
     map_obj,
-    remove_hover,
-    select,
 )
 from layer2 import (
     CardSprite,
@@ -81,7 +79,7 @@ def spawn_iso_elem(
         UIElementComponent(
             click_func=click_on_tile,
             hover_func=hover_over_tile,
-            unhover_func=remove_hover,
+            unhover_func=GAME_STATE_REF.remove_hover,
             is_gameplay_elem=True,
         ),
         Untracked(),
@@ -139,9 +137,9 @@ def spawn_card_ent(card: Card, /) -> int:
         )
 
     ui_elem = UIElementComponent(
-        click_func=select,
-        hover_func=hover,
-        unhover_func=remove_hover,
+        click_func=GAME_STATE_REF.select,
+        hover_func=GAME_STATE_REF.hover,
+        unhover_func=GAME_STATE_REF.remove_hover,
         text=[text, *description],
         is_gameplay_elem=True,
     )

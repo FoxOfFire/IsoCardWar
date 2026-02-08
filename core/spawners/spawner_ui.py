@@ -5,8 +5,9 @@ import esper
 from common import (
     BUTTON_HEIGHT,
     BUTTON_WIDTH,
+    Action,
     BoundingBox,
-    ButtonFunc,
+    EntityFunc,
     TextFunc,
     Untracked,
 )
@@ -27,9 +28,9 @@ def spawn_button(
     ui_elem_type: UIElemType,
     /,
     *,
-    click_func: Optional[ButtonFunc] = None,
-    hover_func: Optional[ButtonFunc] = None,
-    remove_hover_func: Optional[ButtonFunc] = None,
+    click_func: Optional[EntityFunc] = None,
+    hover_func: Optional[EntityFunc] = None,
+    remove_hover_func: Optional[Action] = None,
 ) -> int:
     logger.info("spawning button")
     x, y = topleft

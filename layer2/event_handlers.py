@@ -1,17 +1,13 @@
-import functools
-
 import pygame
 
-from common import EventProcessor
+from common import EVENT_PROC_REF
 
-from .scene_switcher import SceneSwitcher
+from .scene_switcher import SCENE_SWITCH_PROC_REF
 from .ui import SWITCH_SCENE
 
 
-def handle_world_switch(
-    event: pygame.event.Event, scene_switcher: SceneSwitcher
-) -> None:
-    scene_switcher.next_tick_world = event.dict["world"]
+def handle_world_switch(event: pygame.event.Event) -> None:
+    SCENE_SWITCH_PROC_REF.next_tick_world = event.dict["world"]
     # esper.switch_world(event.dict["world"])
     """
     for ent, _ in esper.get_component(UIElementComponent):
@@ -21,10 +17,5 @@ def handle_world_switch(
     """
 
 
-def bind_events(
-    event_processor: EventProcessor, scene_switcher: SceneSwitcher
-) -> None:
-    event_processor.bind(
-        SWITCH_SCENE,
-        functools.partial(handle_world_switch, scene_switcher=scene_switcher),
-    )
+def bind_events() -> None:
+    EVENT_PROC_REF.bind(SWITCH_SCENE, handle_world_switch)

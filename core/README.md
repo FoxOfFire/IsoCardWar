@@ -2,4 +2,9 @@
 
 ## Purpose
 
-This module is responsible to create entities and processors and other main game logic, like the game loop.
+This module is responsible for:
+
+- Initialising Processors
+- Seting up processor order
+- Linking througn dependency injection
+- Main game loop

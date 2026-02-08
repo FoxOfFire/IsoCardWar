@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from common import EntityFunc
 
@@ -6,7 +6,7 @@ from .cards import draw_card
 
 
 def draw_cards(count: int) -> List[EntityFunc]:
-    def _draw(ent: int, target: int) -> None:
+    def _draw(ent: Optional[int], target: Optional[int]) -> None:
         draw_card()
 
     effects: List[EntityFunc] = []

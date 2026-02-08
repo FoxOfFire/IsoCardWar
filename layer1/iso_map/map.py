@@ -12,7 +12,7 @@ class MapData:
     def __init__(self) -> None:
         self.tracker_tag: Optional[Type] = None
         self.sprite: Optional[Type] = None
-        self.size: Tuple[int, int] = (-1, -1)
+        self.size: Optional[Tuple[int, int]] = None
 
 
 map_obj = MapData()
@@ -22,10 +22,10 @@ def make_map() -> None:
     if (
         map_obj.tracker_tag is None
         or map_obj.sprite is None
-        or map_obj.size == (-1, -1)
+        or map_obj.size is None
     ):
         raise RuntimeError(
-            "failed to fetch map data of tracker:"
+            "failed to fetch map data of tracker:\t"
             + f"{map_obj.tracker_tag}, sprite:{map_obj.sprite} "
             + f"or size:{map_obj.size}"
         )
