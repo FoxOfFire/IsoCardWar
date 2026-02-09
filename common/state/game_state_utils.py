@@ -1,5 +1,5 @@
 from enum import Enum, auto
-from typing import Callable, List, Optional, Tuple
+from typing import Callable, Optional, Tuple
 
 ActionArgs = Optional[Tuple[Optional[int], Optional[int]]]
 Action = Callable[[ActionArgs], None]
@@ -30,7 +30,3 @@ class GamePhaseEnum(Enum):
     END_OF_TURN = auto()
     ENEMY_ACTION = auto()
     END_GAME = auto()
-
-
-class SelectableObject:
-    effects: List[Action]

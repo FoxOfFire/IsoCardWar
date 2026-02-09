@@ -84,7 +84,8 @@ class MaskRenderer:
             assert esper.entity_exists(ent)
 
             sprite = esper.try_component(ent, CardSprite)
-            assert sprite is not None
+            if sprite is None:
+                continue
             for hand_ent in ent_list:
                 assert esper.entity_exists(hand_ent)
 
@@ -142,10 +143,12 @@ class MaskRenderer:
         self, screen: pygame.Surface, ent_list: List[int]
     ) -> None:
         for ent in ent_list:
-            assert esper.entity_exists(ent)
+            if not esper.entity_exists(ent):
+                continue
 
             sprite = esper.try_component(ent, CardSprite)
-            assert sprite is not None
+            if sprite is None:
+                continue
             screen.blit(
                 sprite.mask.to_surface(
                     setcolor=pygame.Color(255, 255, 255, 50),

@@ -152,7 +152,7 @@ class UIProcessor(esper.Processor):
             if left_clicking:
                 ui_tag.state = UIStateEnum.PRESSED
                 self.clicked = ent
-            else:
+            elif len(ui_tag.hover_func) > 0:
                 for func in ui_tag.hover_func:
                     func((ent, None))
                 ui_tag.state = UIStateEnum.HOVER

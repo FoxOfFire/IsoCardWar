@@ -7,7 +7,6 @@ from .game_state_utils import (
     GamePhaseEnum,
     MarkerEnum,
     PriceEnum,
-    SelectableObject,
     TextFunc,
     TextFuncDecor,
 )

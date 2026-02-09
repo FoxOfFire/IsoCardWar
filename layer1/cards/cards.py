@@ -5,7 +5,6 @@ from common import (
     Action,
     MarkerEnum,
     PriceEnum,
-    SelectableObject,
 )
 
 from .card_utils import CardTypeEnum, OrganizationEnum
@@ -14,7 +13,7 @@ from .log import logger
 # data
 
 
-class Card(SelectableObject):
+class Card:
     def __init__(
         self,
         name: str,

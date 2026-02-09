@@ -1,8 +1,6 @@
 from enum import Enum, auto
 from typing import List, Optional, Tuple
 
-from common import Action, SelectableObject
-
 
 class TerrainEnum(Enum):
     EMPTY = auto()
@@ -24,21 +22,18 @@ class SelectionTypeEnum(Enum):
     BLUE = auto()
 
 
-class Tile(SelectableObject):
+class Tile:
     def __init__(
         self,
         pos: Tuple[int, int],
         terrain: TerrainEnum,
         /,
         *,
-        effects: Optional[List[Action]] = None,
         unit: Optional[UnitTypeEnum] = None,
     ):
-        if effects is None:
-            effects = []
         x, y = pos
         self.x = x
         self.y = y
         self.terrain = terrain
-        self.effects = effects
+        self.targets: List[int] = []
         self.unit = unit

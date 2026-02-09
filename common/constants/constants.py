@@ -2,7 +2,7 @@ import pygame
 
 # debug
 RENDER_BBS = False
-RENDER_MASKS = False
+RENDER_MASKS = True
 
 RENDER_FPS_UI = True
 RENDER_GAME_PHASE_UI = False

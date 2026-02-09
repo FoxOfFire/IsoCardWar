@@ -18,7 +18,6 @@ from .state import (
     GamePhaseEnum,
     MarkerEnum,
     PriceEnum,
-    SelectableObject,
     TextFunc,
     TextFuncDecor,
     end_player_phase_action,
