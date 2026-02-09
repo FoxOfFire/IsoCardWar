@@ -90,8 +90,7 @@ class MaskRenderer:
                 assert esper.entity_exists(hand_ent)
 
                 hand_sprite = esper.try_component(hand_ent, CardSprite)
-                if hand_sprite is None:
-                    continue
+                assert hand_sprite is not None
 
                 hand_sprite.mask.draw(
                     sprite.mask,
@@ -103,12 +102,10 @@ class MaskRenderer:
 
     def _invert_hand(self, ent_list: List[int]) -> None:
         for ent in ent_list:
-            if not esper.entity_exists(ent):
-                continue
+            assert esper.entity_exists(ent)
 
             sprite = esper.try_component(ent, CardSprite)
-            if sprite is None:
-                continue
+            assert sprite is not None,   esper.components_for_entity(ent)
 
             sprite.mask.invert()
 
@@ -165,4 +162,4 @@ class MaskRenderer:
         self._invert_hand(ent_list)
         self._draw_selection_to_selected()
         if RENDER_MASKS:
-            self._draw_mask_on_screen(screen, selection_list)
+            self._draw_mask_on_screen(screen, ent_list+selection_list)
