@@ -5,7 +5,7 @@ import esper
 
 from common import (
     GAME_STATE_REF,
-    MAX_CARD_COUNT,
+    SETTINGS_REF,
     Action,
     ActionArgs,
     Health,
@@ -49,7 +49,7 @@ def draw_card(_: ActionArgs = None) -> None:
     if DECK_REF.spawn_card is None:
         raise RuntimeError("failed to initialise deck_obj")
 
-    if len(DECK_REF.hand) == MAX_CARD_COUNT:
+    if len(DECK_REF.hand) == SETTINGS_REF.MAX_CARD_COUNT:
         logger.info("hand is full")
         return
     if len(DECK_REF.deck) == 0:

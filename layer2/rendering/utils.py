@@ -3,7 +3,7 @@ from enum import Enum, auto
 import esper
 import pygame
 
-from common import FONT_COLOR, BoundingBox
+from common import SETTINGS_REF, BoundingBox
 from layer2.tags import UIElementComponent
 
 from .rendering_asset_loader import get_font
@@ -34,5 +34,7 @@ def draw_text_on_surf(screen: pygame.Surface, ent: int) -> None:
     assert ui_elem is not None
 
     for text in ui_elem.text:
-        text_surf = get_font().render(text.text(), False, FONT_COLOR)
+        text_surf = get_font().render(
+            text.text(), False, SETTINGS_REF.FONT_COLOR
+        )
         screen.blit(text_surf, text_surf.get_rect(center=text.offset))

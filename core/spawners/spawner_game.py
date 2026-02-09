@@ -5,22 +5,7 @@ from typing import List, Type
 import esper
 
 from common import (
-    CARD_HEIGHT,
-    CARD_PARAGRAPH_LETTER_COUNT,
-    CARD_PARAGRAPH_LINE_COUNT,
-    CARD_PARAGRAPH_TEXT_RELATIVE_Y_OFFSET,
-    CARD_PARAGRAPH_TEXT_RELATIVE_Y_ONE,
-    CARD_START_X,
-    CARD_START_Y,
-    CARD_TEXT_RELATIVE_POS_X,
-    CARD_TITLE_TEXT_RELATIVE_POS_Y,
-    CARD_WIDTH,
-    ISO_MAP_HEIGHT,
-    ISO_MAP_WIDTH,
-    ISO_POS_OFFSET_X,
-    ISO_POS_OFFSET_Y,
-    ISO_TILE_OFFSET_X,
-    ISO_TILE_OFFSET_Y,
+    SETTINGS_REF,
     BoundingBox,
     Health,
     MarkerEnum,
@@ -41,10 +26,12 @@ from layer1 import (
 )
 from layer2 import (
     CardSprite,
+    SoundTypeEnum,
     TextData,
     TrackUI,
     UIElementComponent,
     click_on_tile,
+    get_sound_action,
     hover_over_tile,
 )
 
@@ -57,9 +44,12 @@ def spawn_iso_elem(
     map_sprite: Type,
     /,
 ) -> int:
-    map_size = (ISO_MAP_WIDTH, ISO_MAP_HEIGHT)
-    offset = (ISO_POS_OFFSET_X, ISO_POS_OFFSET_Y)
-    map_scale = (ISO_TILE_OFFSET_X, ISO_TILE_OFFSET_Y)
+    map_size = (SETTINGS_REF.ISO_MAP_WIDTH, SETTINGS_REF.ISO_MAP_HEIGHT)
+    offset = (SETTINGS_REF.ISO_POS_OFFSET_X, SETTINGS_REF.ISO_POS_OFFSET_Y)
+    map_scale = (
+        SETTINGS_REF.ISO_TILE_OFFSET_X,
+        SETTINGS_REF.ISO_TILE_OFFSET_Y,
+    )
 
     map_obj.tracker_tag = map_tracker
     map_obj.sprite = map_sprite
@@ -99,26 +89,32 @@ def spawn_card_ent(card: Card, /) -> int:
     """
 
     bb = BoundingBox(
-        CARD_START_X,
-        CARD_START_X + CARD_WIDTH,
-        CARD_START_Y,
-        CARD_START_Y + CARD_HEIGHT,
+        SETTINGS_REF.CARD_START_X,
+        SETTINGS_REF.CARD_START_X + SETTINGS_REF.CARD_WIDTH,
+        SETTINGS_REF.CARD_START_Y,
+        SETTINGS_REF.CARD_START_Y + SETTINGS_REF.CARD_HEIGHT,
     )
     text = TextData(
         lambda: card.name,
-        (CARD_TEXT_RELATIVE_POS_X, CARD_TITLE_TEXT_RELATIVE_POS_Y),
+        (
+            SETTINGS_REF.CARD_TEXT_RELATIVE_POS_X,
+            SETTINGS_REF.CARD_TITLE_TEXT_RELATIVE_POS_Y,
+        ),
     )
 
     description: List[TextData] = []
     desc_words = card.description.split()
     assert len(desc_words) > 0, "No card description given"
     current_word: str = desc_words.pop(0)
-    for i in range(0, CARD_PARAGRAPH_LINE_COUNT):
+    for i in range(0, SETTINGS_REF.CARD_PARAGRAPH_LINE_COUNT):
         if len(desc_words) == 0:
             break
         res_str = ""
         while True:
-            if len(res_str + " " + current_word) > CARD_PARAGRAPH_LETTER_COUNT:
+            if (
+                len(res_str + " " + current_word)
+                > SETTINGS_REF.CARD_PARAGRAPH_LETTER_COUNT
+            ):
                 break
             res_str += " " + current_word
             if len(desc_words) == 0:
@@ -132,17 +128,17 @@ def spawn_card_ent(card: Card, /) -> int:
             TextData(
                 partial(decr_text_func, res_str),
                 (
-                    CARD_TEXT_RELATIVE_POS_X - 1,
-                    CARD_PARAGRAPH_TEXT_RELATIVE_Y_ONE
-                    + i * CARD_PARAGRAPH_TEXT_RELATIVE_Y_OFFSET,
+                    SETTINGS_REF.CARD_TEXT_RELATIVE_POS_X - 1,
+                    SETTINGS_REF.CARD_PARAGRAPH_TEXT_RELATIVE_Y_ONE
+                    + i * SETTINGS_REF.CARD_PARAGRAPH_TEXT_RELATIVE_Y_OFFSET,
                 ),
             )
         )
 
     ui_elem = UIElementComponent(
-        click_func=[select],
-        hover_func=[hover],
-        unhover_func=[remove_hover],
+        click_func=[select, get_sound_action(SoundTypeEnum.POP)],
+        hover_func=[hover, get_sound_action(SoundTypeEnum.CLICK)],
+        unhover_func=[remove_hover, get_sound_action(SoundTypeEnum.WHOOSH)],
         text=[text, *description],
         is_gameplay_elem=True,
     )
@@ -150,6 +146,7 @@ def spawn_card_ent(card: Card, /) -> int:
     ent = esper.create_entity(
         card, bb, TrackUI(), CardSprite(), ui_elem, Health(), Untracked()
     )
+    logger.info(f"created card:{ent}")
     return ent
 
 

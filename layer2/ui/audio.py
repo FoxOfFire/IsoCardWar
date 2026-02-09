@@ -4,6 +4,8 @@ from typing import Dict
 
 import pygame
 
+from common import SETTINGS_REF
+
 from .log import logger
 
 
@@ -30,6 +32,8 @@ def init_audio() -> None:
 
 
 def play_sfx(sound: SoundTypeEnum) -> None:
+    if SETTINGS_REF.GAME_MUTE:
+        return
     if sound not in SFX_AUDIO_DICT.keys():
         return
     logger.info(f"Playing sound:{sound}")

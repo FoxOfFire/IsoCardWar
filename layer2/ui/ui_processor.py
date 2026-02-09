@@ -4,10 +4,9 @@ import esper
 import pygame
 
 from common import (
-    GAME_CAM_HEIGHT,
-    GAME_CAM_WIDTH,
     GAME_STATE_REF,
     POS_PROC_REF,
+    SETTINGS_REF,
     BoundingBox,
     GamePhaseEnum,
 )
@@ -36,6 +35,7 @@ class UIProcessor(esper.Processor):
         self.display_size: Optional[Tuple[int, int]] = None
 
     def set_display_size(self, display_size: Tuple[int, int]) -> None:
+        logger.info("set display size:" + str(display_size))
         self.display_size = display_size
 
     def clicked_things_stay_clicked(self) -> None:
@@ -101,7 +101,7 @@ class UIProcessor(esper.Processor):
             ):
                 tag.state = UIStateEnum.HOVER
             else:
-                unhovered = unhovered or ent == self.hover
+                unhovered = unhovered or ent != self.hover
                 tag.state = UIStateEnum.BASE
             if unhovered and self.hover is not None:
                 tag = esper.component_for_entity(
@@ -115,10 +115,14 @@ class UIProcessor(esper.Processor):
         assert self.display_size is not None
         self.mouse_pos = pygame.mouse.get_pos()
         self.mouse_bb = BoundingBox(
-            self.mouse_pos[0] * (GAME_CAM_WIDTH / self.display_size[0]),
-            self.mouse_pos[0] * (GAME_CAM_WIDTH / self.display_size[0]),
-            self.mouse_pos[1] * (GAME_CAM_HEIGHT / self.display_size[1]),
-            self.mouse_pos[1] * (GAME_CAM_HEIGHT / self.display_size[1]),
+            self.mouse_pos[0]
+            * (SETTINGS_REF.GAME_CAM_WIDTH / self.display_size[0]),
+            self.mouse_pos[0]
+            * (SETTINGS_REF.GAME_CAM_WIDTH / self.display_size[0]),
+            self.mouse_pos[1]
+            * (SETTINGS_REF.GAME_CAM_HEIGHT / self.display_size[1]),
+            self.mouse_pos[1]
+            * (SETTINGS_REF.GAME_CAM_HEIGHT / self.display_size[1]),
         )
         left_clicking, _, _ = pygame.mouse.get_pressed()
 

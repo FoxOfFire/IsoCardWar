@@ -7,14 +7,9 @@ import pygame
 from common import (
     BB_MOVE_PROC_REF,
     EVENT_PROC_REF,
-    GAME_CAM_HEIGHT,
-    GAME_CAM_WIDTH,
-    GAME_FULLSCREEN,
-    ISO_MAP_HEIGHT,
-    ISO_MAP_WIDTH,
     POS_PROC_REF,
     RUN_DATA_REF,
-    STARTER_DECK_COUNT,
+    SETTINGS_REF,
     BoundingBox,
 )
 from layer1 import (
@@ -72,7 +67,7 @@ def init_logging() -> None:
 def init_window() -> None:
     pygame.init()
 
-    if GAME_FULLSCREEN:
+    if SETTINGS_REF.GAME_FULLSCREEN:
         window_dimension = (1980, 1080)
         pygame.display.set_mode(
             size=window_dimension,
@@ -113,9 +108,13 @@ def init_game_world_esper() -> None:  # adding processors
     display = pygame.display.get_surface()
     assert display is not None
 
-    game_cam_bb = BoundingBox(0, GAME_CAM_WIDTH, 0, GAME_CAM_HEIGHT)
+    game_cam_bb = BoundingBox(
+        0, SETTINGS_REF.GAME_CAM_WIDTH, 0, SETTINGS_REF.GAME_CAM_HEIGHT
+    )
     esper.create_entity(game_cam_bb, GameCameraTag())
-    iso_cam_bb = BoundingBox(0, ISO_MAP_HEIGHT, 0, ISO_MAP_WIDTH)
+    iso_cam_bb = BoundingBox(
+        0, SETTINGS_REF.ISO_MAP_HEIGHT, 0, SETTINGS_REF.ISO_MAP_WIDTH
+    )
     esper.create_entity(iso_cam_bb, IsoCameraTag())
 
     spawn_iso_elem(TrackIso, TrackUI, IsoSprite)
@@ -128,7 +127,7 @@ def init_game_world_esper() -> None:  # adding processors
     CARD_MOV_PROC_REF.set_cam_bb(game_cam_bb)
     DECK_REF.spawn_card = spawn_card_ent
     DECK_REF.create_card = create_card_obj
-    DECK_REF.create_starting_deck(STARTER_DECK_COUNT)
+    DECK_REF.create_starting_deck()
 
     for phase, func_list in get_base_game_phase_dict().items():
         GAME_PHASE_PROC_REF.add_game_phase(phase, func_list=func_list)
@@ -152,7 +151,6 @@ def init() -> None:
     esper.switch_world(WorldEnum.GAME.value)
     init_game_world_esper()
     load_images()
-    esper.process()
     build_ui()
     logger.info(f"{esper.current_world} world init finished")
 

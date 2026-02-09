@@ -1,5 +1,5 @@
 # flake8: noqa
-from .constants import *
+from .constants import SETTINGS_REF
 from .dying import Health
 from .events import EVENT_PROC_REF
 from .globals import RUN_DATA_REF

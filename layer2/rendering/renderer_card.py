@@ -5,12 +5,9 @@ import esper
 import pygame
 
 from common import (
-    CARD_HEIGHT,
-    CARD_WIDTH,
     GAME_STATE_REF,
     POS_PROC_REF,
-    RELATIVE_MARKER_POS_X,
-    RELATIVE_MARKER_POS_Y,
+    SETTINGS_REF,
     BoundingBox,
 )
 from layer1 import DECK_REF, Card
@@ -72,7 +69,8 @@ class CardRenderer:
 
             bb = esper.component_for_entity(ent, BoundingBox)
             surf = pygame.Surface(
-                (CARD_WIDTH, CARD_HEIGHT), flags=pygame.SRCALPHA
+                (SETTINGS_REF.CARD_WIDTH, SETTINGS_REF.CARD_HEIGHT),
+                flags=pygame.SRCALPHA,
             )
             marker_surf = CARD_MARKER_SURFS[card.marker]
 
@@ -83,7 +81,10 @@ class CardRenderer:
             surf.blit(
                 marker_surf,
                 marker_surf.get_rect(
-                    topleft=(RELATIVE_MARKER_POS_X, RELATIVE_MARKER_POS_Y)
+                    topleft=(
+                        SETTINGS_REF.RELATIVE_MARKER_POS_X,
+                        SETTINGS_REF.RELATIVE_MARKER_POS_Y,
+                    )
                 ),
             )
             draw_text_on_surf(surf, ent)

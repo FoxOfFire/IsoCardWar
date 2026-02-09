@@ -3,7 +3,7 @@ from typing import Optional
 import esper
 import pygame
 
-from common import GAME_CAM_HEIGHT, GAME_CAM_WIDTH, RENDER_BBS
+from common import SETTINGS_REF
 from layer2.tags import GameCameraTag, IsoCameraTag, TrackIso, TrackUI
 
 from .log import logger
@@ -27,7 +27,9 @@ class RenderingProcessor(esper.Processor):
     ) -> None:
         self.display = None
 
-        self.screen = pygame.Surface((GAME_CAM_WIDTH, GAME_CAM_HEIGHT))
+        self.screen = pygame.Surface(
+            (SETTINGS_REF.GAME_CAM_WIDTH, SETTINGS_REF.GAME_CAM_HEIGHT)
+        )
 
         self.iso_renderer = IsoRenderer(TrackIso)
         self.card_renderer = CardRenderer(TrackUI)
@@ -35,7 +37,7 @@ class RenderingProcessor(esper.Processor):
         self.button_renderer = ButtonRenderer(TrackUI)
 
         # debug purposes
-        if RENDER_BBS:
+        if SETTINGS_REF.RENDER_BBS:
             self.bb_renderer = BBRenderer(GameCameraTag, TrackUI)
 
     def init(self, display: pygame.Surface) -> None:
@@ -64,7 +66,7 @@ class RenderingProcessor(esper.Processor):
         self.button_renderer.draw(self.screen)
 
         # debug purposes
-        if RENDER_BBS:
+        if SETTINGS_REF.RENDER_BBS:
             self.bb_renderer.draw(self.screen)
 
         scaled_screen = pygame.transform.scale(

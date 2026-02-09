@@ -22,8 +22,10 @@ from .tags import (
 )
 from .ui import (
     UI_PROC_REF,
+    SoundTypeEnum,
     bind_keyboard_events,
     click_on_tile,
+    get_sound_action,
     hover_over_tile,
     init_audio,
     quit_game,

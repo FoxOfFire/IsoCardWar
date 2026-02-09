@@ -1,2 +1,2 @@
 # flake8: noqa
-from .constants import *
+from .constants import SETTINGS_REF

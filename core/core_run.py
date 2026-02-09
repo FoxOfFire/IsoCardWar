@@ -1,7 +1,7 @@
 import esper
 import pygame
 
-from common import FPS, LOG_TICK_PERFORMANCE, RUN_DATA_REF
+from common import RUN_DATA_REF, SETTINGS_REF
 
 from .log import logger
 
@@ -16,11 +16,11 @@ def log_tick_performance() -> None:
 
 
 def run() -> None:
-    RUN_DATA_REF.game_clock.tick(FPS)
-    RUN_DATA_REF.game_clock.tick(FPS)
+    RUN_DATA_REF.game_clock.tick(SETTINGS_REF.FPS)
+    RUN_DATA_REF.game_clock.tick(SETTINGS_REF.FPS)
     while RUN_DATA_REF.game_running:
         esper.timed_process()
         pygame.display.flip()
-        RUN_DATA_REF.game_clock.tick(FPS)
-        if LOG_TICK_PERFORMANCE:
+        RUN_DATA_REF.game_clock.tick(SETTINGS_REF.FPS)
+        if SETTINGS_REF.LOG_TICK_PERFORMANCE:
             log_tick_performance()

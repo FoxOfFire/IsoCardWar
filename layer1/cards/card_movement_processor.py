@@ -3,17 +3,14 @@ from typing import Optional
 import esper
 
 from common import (
-    CARD_ANIMATION_SPEED,
-    CARD_X_FIX_DISTANCE,
-    CARD_Y_POS_BASE,
-    CARD_Y_POS_SELECTED,
-    CARD_Y_POS_SELECTING,
     GAME_STATE_REF,
     RUN_DATA_REF,
+    SETTINGS_REF,
     BoundingBox,
 )
 
 from .cards import DECK_REF, Card
+from .log import logger
 
 
 class CardMovementProcessor(esper.Processor):
@@ -21,6 +18,7 @@ class CardMovementProcessor(esper.Processor):
 
     def set_cam_bb(self, bb: BoundingBox) -> None:
         self.cam_bb = bb
+        logger.info("card cam set to:" + str(bb.points))
 
     def process(self) -> None:
         assert self.cam_bb is not None
@@ -36,18 +34,22 @@ class CardMovementProcessor(esper.Processor):
                 offset_index * self.cam_bb.width / len(DECK_REF.hand) * 0.8
             )
             if len(DECK_REF.hand) < 7:
-                offset = offset_index * CARD_X_FIX_DISTANCE
+                offset = offset_index * SETTINGS_REF.CARD_X_FIX_DISTANCE
 
-            y = CARD_Y_POS_BASE
+            y = SETTINGS_REF.CARD_Y_POS_BASE
             if ent == GAME_STATE_REF.selected:
-                y += CARD_Y_POS_SELECTED
+                y += SETTINGS_REF.CARD_Y_POS_SELECTED
             elif ent == GAME_STATE_REF.selecting:
-                y += CARD_Y_POS_SELECTING
+                y += SETTINGS_REF.CARD_Y_POS_SELECTING
 
-            delta_y = (y - bb.center[1]) / CARD_ANIMATION_SPEED * delta_time
+            delta_y = (
+                (y - bb.center[1])
+                / SETTINGS_REF.CARD_ANIMATION_SPEED
+                * delta_time
+            )
             delta_x = (
                 (self.cam_bb.center[0] - bb.center[0] - (offset))
-                / CARD_ANIMATION_SPEED
+                / SETTINGS_REF.CARD_ANIMATION_SPEED
                 * delta_time
             )
             bb.set_velocity(delta_x, delta_y)

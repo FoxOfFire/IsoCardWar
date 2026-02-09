@@ -2,6 +2,7 @@ from collections.abc import Callable
 from typing import Dict, List, Optional
 
 from common import (
+    SETTINGS_REF,
     Action,
     MarkerEnum,
     PriceEnum,
@@ -51,12 +52,14 @@ class Deck:
         return (hand_size - 1) / 2 - index
 
     # helper functions
-    def create_starting_deck(self, card_count: int) -> None:
+    def create_starting_deck(self) -> None:
+
+        logger.info("creating starting deck")
         cards = []
         if self.create_card is None:
             raise RuntimeError("create_card undefined")
 
-        for _ in range(card_count // 3):
+        for _ in range(SETTINGS_REF.STARTER_DECK_COUNT // 3):
             cards.append(self.create_card(CardTypeEnum.DRAW_ONE))
             cards.append(self.create_card(CardTypeEnum.CHANGE_UNIT_AND_DRAW))
             cards.append(

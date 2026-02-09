@@ -5,7 +5,7 @@ from typing import Dict, List, Optional, Type
 
 import pygame
 
-from common import FONT_SIZE, MarkerEnum
+from common import SETTINGS_REF, MarkerEnum
 from layer1 import SelectionTypeEnum, TerrainEnum, UnitTypeEnum
 
 from .log import logger
@@ -56,7 +56,7 @@ def get_font() -> pygame.font.Font:
     if _font_container.font is None:
         logger.info("loaded font")
         _font_container.font = pygame.font.Font(
-            FONT_ASSET_DIR / "tiny.ttf", FONT_SIZE
+            FONT_ASSET_DIR / "tiny.ttf", SETTINGS_REF.FONT_SIZE
         )
     return _font_container.font
 
