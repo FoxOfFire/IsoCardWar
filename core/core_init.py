@@ -21,8 +21,8 @@ from layer1 import (
     CARD_MOV_PROC_REF,
     DECK_REF,
     GAME_PHASE_PROC_REF,
-    draw_card,
     end_phase,
+    get_draw_cards_action,
 )
 from layer2 import (
     DYING_PROC_REF,
@@ -137,8 +137,7 @@ def init_game_world_esper() -> None:  # adding processors
     UI_PROC_REF.set_display_size(display.get_size())
 
     # draw starter cards
-    for _ in range(7):
-        draw_card(None, None)
+    get_draw_cards_action(7)(None)
     ui_event_obj.iso_tag = TrackIso
 
     bind_game_events()

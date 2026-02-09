@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List, Optional, Tuple
+from typing import List, Tuple
 
 import pygame
 
@@ -44,22 +44,24 @@ class TextData:
 class UIElementComponent:
     def __init__(
         self,
+        *,
+        click_func: List[Action],
+        hover_func: List[Action],
+        unhover_func: List[Action],
+        text: List[TextData],
         state: UIStateEnum = UIStateEnum.BASE,
         is_visible: bool = True,
         is_clickable: bool = True,
         is_active: bool = False,
         is_gameplay_elem: bool = False,
-        text: Optional[List[TextData]] = None,
-        click_func: Optional[Action] = None,
-        hover_func: Optional[Action] = None,
-        unhover_func: Optional[Action] = None,
     ):
+        self.text: List[TextData] = text
+        self.click_func: List[Action] = click_func
+        self.hover_func: List[Action] = unhover_func
+        self.unhover_func: List[Action] = hover_func
+
         self.state: UIStateEnum = state
         self.is_visible: bool = is_visible
         self.is_clickable: bool = is_clickable
         self.is_active: bool = is_active
         self.is_gameplay_elem = is_gameplay_elem
-        self.text: List[TextData] = [] if text is None else text
-        self.click_func: Optional[Action] = click_func
-        self.hover_func: Optional[Action] = hover_func
-        self.unhover_func: Optional[Action] = unhover_func

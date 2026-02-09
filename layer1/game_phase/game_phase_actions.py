@@ -1,16 +1,13 @@
-from typing import Optional
-
 from common import (
     GAME_STATE_REF,
-    ActionDecor,
+    ActionArgs,
     GamePhaseEnum,
 )
 
 from .log import logger
 
 
-@ActionDecor
-def end_phase(_: Optional[int], __: Optional[int]) -> None:
+def end_phase(_: ActionArgs = None) -> None:
 
     assert GAME_STATE_REF.game_phase != GamePhaseEnum.END_GAME
     logger.info(f"ending phase: {GAME_STATE_REF.game_phase}")

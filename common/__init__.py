@@ -14,7 +14,7 @@ from .position_tracking import (
 from .state import (
     GAME_STATE_REF,
     Action,
-    ActionDecor,
+    ActionArgs,
     GamePhaseEnum,
     MarkerEnum,
     PriceEnum,

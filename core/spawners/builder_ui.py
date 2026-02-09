@@ -72,10 +72,10 @@ def build_ui() -> None:
         )
         top_offset += 70
 
-    spawn_button((5, 65), "Quit", UIElemType.BUTTON, click_func=quit_game)
+    spawn_button((5, 65), "Quit", UIElemType.BUTTON, click_func=[quit_game])
     spawn_button(
         (5, 50),
         "End Turn",
         UIElemType.BUTTON,
-        click_func=end_player_phase_action,
+        click_func=[end_player_phase_action],
     )

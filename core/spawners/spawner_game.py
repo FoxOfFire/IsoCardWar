@@ -35,7 +35,7 @@ from layer1 import (
     CardTypeEnum,
     change_tile,
     change_unit,
-    draw_cards,
+    get_draw_cards_action,
     make_map,
     map_obj,
 )
@@ -79,9 +79,10 @@ def spawn_iso_elem(
         ui_bb,
         ui_tracker(),
         UIElementComponent(
-            click_func=click_on_tile,
-            hover_func=hover_over_tile,
-            unhover_func=remove_hover,
+            click_func=[click_on_tile],
+            hover_func=[hover_over_tile],
+            unhover_func=[remove_hover],
+            text=[],
             is_gameplay_elem=True,
         ),
         Untracked(),
@@ -139,9 +140,9 @@ def spawn_card_ent(card: Card, /) -> int:
         )
 
     ui_elem = UIElementComponent(
-        click_func=select,
-        hover_func=hover,
-        unhover_func=remove_hover,
+        click_func=[select],
+        hover_func=[hover],
+        unhover_func=[remove_hover],
         text=[text, *description],
         is_gameplay_elem=True,
     )
@@ -157,7 +158,7 @@ def create_card_obj(card_type: CardTypeEnum) -> Card:
     match card_type:
         case CardTypeEnum.DRAW_ONE:
             marker = MarkerEnum.ACTION
-            effects = [draw_cards(rand)]
+            effects = [get_draw_cards_action(rand)]
             description = f"Draw {rand} card" + ("s" if rand > 1 else "")
         case CardTypeEnum.CHANGE_TERRAIN_AND_DRAW:
             marker = MarkerEnum.BUILDING

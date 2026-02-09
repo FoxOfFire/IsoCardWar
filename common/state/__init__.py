@@ -3,7 +3,7 @@ from .game_state import GAME_STATE_REF
 from .game_state_actions import *
 from .game_state_utils import (
     Action,
-    ActionDecor,
+    ActionArgs,
     GamePhaseEnum,
     MarkerEnum,
     PriceEnum,

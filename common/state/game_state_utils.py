@@ -1,12 +1,9 @@
 from enum import Enum, auto
-from typing import Callable, List, Optional
+from typing import Callable, List, Optional, Tuple
 
-Action = Callable[[Optional[int], Optional[int]], None]
+ActionArgs = Optional[Tuple[Optional[int], Optional[int]]]
+Action = Callable[[ActionArgs], None]
 TextFunc = Callable[[], str]
-
-
-def ActionDecor(func: Action) -> Action:
-    return func
 
 
 def TextFuncDecor(func: TextFunc) -> TextFunc:

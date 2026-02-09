@@ -1,4 +1,4 @@
-from typing import Optional, Tuple
+from typing import List, Optional, Tuple
 
 import esper
 
@@ -28,9 +28,9 @@ def spawn_button(
     ui_elem_type: UIElemType,
     /,
     *,
-    click_func: Optional[Action] = None,
-    hover_func: Optional[Action] = None,
-    remove_hover_func: Optional[Action] = None,
+    click_func: Optional[List[Action]] = None,
+    hover_func: Optional[List[Action]] = None,
+    remove_hover_func: Optional[List[Action]] = None,
 ) -> int:
     logger.info("spawning button")
     x, y = topleft
@@ -52,9 +52,11 @@ def spawn_button(
 
     ui_elem = UIElementComponent(
         text=[text_data],
-        click_func=click_func,
-        hover_func=hover_func,
-        unhover_func=remove_hover_func,
+        click_func=click_func if click_func is not None else [],
+        hover_func=hover_func if hover_func is not None else [],
+        unhover_func=(
+            remove_hover_func if remove_hover_func is not None else []
+        ),
     )
     tracker = TrackUI()
     ui_elem_sprite = UIElemSprite(ui_elem_type)

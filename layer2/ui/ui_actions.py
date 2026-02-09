@@ -1,22 +1,27 @@
-from typing import Optional
-
 import esper
 import pygame
 
 from common import (
     POS_PROC_REF,
-    ActionDecor,
+    Action,
+    ActionArgs,
     BoundingBox,
     hover,
     play_card,
     remove_hover,
 )
 
+from .audio import SoundTypeEnum, play_sfx
 from .ui_utils import get_transformed_mouse_pos, ui_event_obj
 
 
-@ActionDecor
-def click_on_tile(ent: Optional[int], _: Optional[int]) -> None:
+def get_sound_action(sound: SoundTypeEnum) -> Action:
+    return lambda _: play_sfx(sound)
+
+
+def click_on_tile(args: ActionArgs) -> None:
+    assert args is not None
+    ent, _ = args
     assert ent is not None
     bb = esper.component_for_entity(ent, BoundingBox)
     trans_mouse_pos = get_transformed_mouse_pos(bb)
@@ -29,16 +34,16 @@ def click_on_tile(ent: Optional[int], _: Optional[int]) -> None:
     assert ui_event_obj.iso_tag is not None
 
     for intersect in POS_PROC_REF.intersect(mouse_bb, ui_event_obj.iso_tag):
-        play_card(intersect, None)
+        play_card((intersect, None))
 
 
-@ActionDecor
-def quit_game(_: Optional[int], __: Optional[int]) -> None:
+def quit_game(_: ActionArgs = None) -> None:
     pygame.event.post(pygame.event.Event(pygame.QUIT))
 
 
-@ActionDecor
-def hover_over_tile(ent: Optional[int], _: Optional[int]) -> None:
+def hover_over_tile(args: ActionArgs) -> None:
+    assert args is not None
+    ent, _ = args
     assert ent is not None
     bb = esper.component_for_entity(ent, BoundingBox)
     trans_mouse_pos = get_transformed_mouse_pos(bb)
@@ -51,6 +56,6 @@ def hover_over_tile(ent: Optional[int], _: Optional[int]) -> None:
     assert ui_event_obj.iso_tag is not None
 
     for intersect in POS_PROC_REF.intersect(mouse_bb, ui_event_obj.iso_tag):
-        hover(intersect, None)
+        hover((intersect, None))
         return
-    remove_hover(None, None)
+    remove_hover()

@@ -1,7 +1,7 @@
 # flake8: noqa
 from .card_actions import (
     draw_card,
-    draw_cards,
+    get_draw_cards_action,
     play_card,
     shuffle_deck,
     sort_hand,

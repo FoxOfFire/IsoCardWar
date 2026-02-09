@@ -78,15 +78,12 @@ class UIProcessor(esper.Processor):
         assert self.mouse_bb is not None
         if self.clicked is not None and self.prev_click:
             tag = esper.component_for_entity(self.clicked, UIElementComponent)
-            if (
-                tag.click_func is not None
-                and self.mask_mouse_overlap(self.clicked)
-                and (
-                    GAME_STATE_REF.game_phase == GamePhaseEnum.PLAYER_ACTION
-                    or not tag.is_gameplay_elem
-                )
+            if self.mask_mouse_overlap(self.clicked) and (
+                GAME_STATE_REF.game_phase == GamePhaseEnum.PLAYER_ACTION
+                or not tag.is_gameplay_elem
             ):
-                tag.click_func(self.clicked, None)
+                for func in tag.click_func:
+                    func((self.clicked, None))
             self.clicked = None
 
         pass
@@ -110,8 +107,8 @@ class UIProcessor(esper.Processor):
                 tag = esper.component_for_entity(
                     self.hover, UIElementComponent
                 )
-                if tag.unhover_func is not None:
-                    tag.unhover_func(ent, None)
+                for func in tag.unhover_func:
+                    func((ent, None))
         return ent
 
     def process(self) -> None:
@@ -155,8 +152,9 @@ class UIProcessor(esper.Processor):
             if left_clicking:
                 ui_tag.state = UIStateEnum.PRESSED
                 self.clicked = ent
-            elif ui_tag.hover_func is not None:
-                ui_tag.hover_func(ent, None)
+            else:
+                for func in ui_tag.hover_func:
+                    func((ent, None))
                 ui_tag.state = UIStateEnum.HOVER
                 self.hover = ent
             break

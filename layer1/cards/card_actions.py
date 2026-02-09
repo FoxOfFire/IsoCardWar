@@ -1,17 +1,24 @@
 import random
-from typing import Any, Optional
+from typing import Any
 
 import esper
 
-from common import GAME_STATE_REF, MAX_CARD_COUNT, Action, ActionDecor, Health
+from common import (
+    GAME_STATE_REF,
+    MAX_CARD_COUNT,
+    Action,
+    ActionArgs,
+    Health,
+)
 
 from .card_utils import OrganizationEnum
 from .cards import DECK_REF, Card
 from .log import logger
 
 
-@ActionDecor
-def play_card(target: Optional[int], card_num: Optional[int]) -> None:
+def play_card(args: ActionArgs) -> None:
+    assert args is not None
+    target, card_num = args
     if card_num is None:
         ent = GAME_STATE_REF.selected
     else:
@@ -29,7 +36,7 @@ def play_card(target: Optional[int], card_num: Optional[int]) -> None:
         return
     if target is not None:
         for effect in card.effects:
-            effect(ent, target)
+            effect((ent, target))
 
     if GAME_STATE_REF.selected == ent:
         GAME_STATE_REF.selected = None
@@ -38,8 +45,7 @@ def play_card(target: Optional[int], card_num: Optional[int]) -> None:
     esper.component_for_entity(ent, Health).hp = 0
 
 
-@ActionDecor
-def draw_card(_: Optional[int] = None, __: Optional[int] = None) -> None:
+def draw_card(_: ActionArgs = None) -> None:
     if DECK_REF.spawn_card is None:
         raise RuntimeError("failed to initialise deck_obj")
 
@@ -49,7 +55,7 @@ def draw_card(_: Optional[int] = None, __: Optional[int] = None) -> None:
     if len(DECK_REF.deck) == 0:
         DECK_REF.deck = DECK_REF.discard
         DECK_REF.discard = []
-        shuffle_deck(None, None)
+        shuffle_deck(None)
 
     if len(DECK_REF.deck) == 0:
         logger.info("out of cards!")
@@ -58,22 +64,20 @@ def draw_card(_: Optional[int] = None, __: Optional[int] = None) -> None:
     card = DECK_REF.deck.pop()
     ent = DECK_REF.spawn_card(card)
     DECK_REF.hand.append(ent)
-    sort_hand(None, None)
+    sort_hand(None)
 
 
-def draw_cards(count: int) -> Action:
-    @ActionDecor
-    def _draw(_: Optional[int] = None, __: Optional[int] = None) -> None:
+def get_draw_cards_action(count: int) -> Action:
+    def _draw(__: ActionArgs = None) -> None:
         for _ in range(count):
-            draw_card(None, None)
+            draw_card(None)
 
     fn = _draw
     return fn
 
 
 # deck management functions
-@ActionDecor
-def sort_hand(_: Optional[int] = None, __: Optional[int] = None) -> None:
+def sort_hand(_: ActionArgs = None) -> None:
     match DECK_REF.order:
         case OrganizationEnum.MARKER:
 
@@ -98,8 +102,7 @@ def sort_hand(_: Optional[int] = None, __: Optional[int] = None) -> None:
     DECK_REF.hand.sort(key=sorter)
 
 
-@ActionDecor
-def shuffle_deck(_: Optional[int] = None, __: Optional[int] = None) -> None:
+def shuffle_deck(_: ActionArgs = None) -> None:
     new = []
     while len(DECK_REF.deck) > 0:
         new.append(

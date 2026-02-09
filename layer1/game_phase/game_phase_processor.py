@@ -31,18 +31,18 @@ class GamePhaseProcessor(esper.Processor):
         phase: GamePhaseEnum = GAME_STATE_REF.game_phase
 
         for func in self.phase_funk_queue[phase]:
-            func(None, None)
+            func(None)
         if phase == GamePhaseEnum.END_GAME:
             return
         assert self.end_phase is not None
-        self.end_phase(None, None)
+        self.end_phase(None)
 
     def _player_action_phase(self) -> None:
         if GAME_STATE_REF.end_player_phase:
             GAME_STATE_REF.end_player_phase = False
             self.timer = 0
             assert self.end_phase is not None
-            self.end_phase(None, None)
+            self.end_phase(None)
 
     def process(self) -> None:
         phase = GAME_STATE_REF.game_phase
