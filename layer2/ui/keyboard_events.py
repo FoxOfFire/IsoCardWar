@@ -4,7 +4,7 @@ from pygame.event import Event
 from common import EVENT_PROC_REF, play_card, unselect
 from layer1 import DECK_REF, OrganizationEnum, draw_card, sort_hand
 
-from .ui_tactics import quit_game
+from .ui_actions import quit_game
 
 
 def key_bind_handler(event: Event) -> None:
