@@ -19,8 +19,7 @@ def unselect(_: ActionArgs = None) -> None:
 def play_card(args: ActionArgs) -> None:
     assert args is not None
     target, card_num = args
-    if GAME_STATE_REF.play_card_func is None:
-        return
+    assert GAME_STATE_REF.play_card_func is not None
     GAME_STATE_REF.play_card_func((target, card_num))
 
 
