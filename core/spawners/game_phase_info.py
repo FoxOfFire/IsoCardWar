@@ -1,8 +1,7 @@
-from functools import partial
 from typing import Dict, List
 
-from common import Action
-from layer1 import GamePhaseEnum, draw_cards
+from common import Action, GamePhaseEnum
+from layer1 import draw_card
 
 
 def _begin_game() -> List[Action]:
@@ -12,8 +11,7 @@ def _begin_game() -> List[Action]:
 
 def _draw() -> List[Action]:
     effects: List[Action] = []
-    for func in draw_cards(1):
-        effects.append(partial(func, None, None))
+    effects.append(draw_card)
     return effects
 
 

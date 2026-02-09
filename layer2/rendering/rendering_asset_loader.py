@@ -5,8 +5,8 @@ from typing import Dict, List, Optional, Type
 
 import pygame
 
-from common import FONT_SIZE
-from layer1 import MarkerEnum, SelectionTypeEnum, TerrainEnum, UnitTypeEnum
+from common import FONT_SIZE, MarkerEnum
+from layer1 import SelectionTypeEnum, TerrainEnum, UnitTypeEnum
 
 from .log import logger
 

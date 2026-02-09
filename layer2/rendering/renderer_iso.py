@@ -6,6 +6,7 @@ import esper
 import pygame
 
 from common import (
+    GAME_STATE_REF,
     ISO_POS_OFFSET_X,
     ISO_POS_OFFSET_Y,
     ISO_TILE_OFFSET_X,
@@ -13,8 +14,9 @@ from common import (
     ISO_TILE_SELECT_OFFSET,
     POS_PROC_REF,
     BoundingBox,
+    MarkerEnum,
 )
-from layer1 import GAME_STATE_REF, Card, MarkerEnum, SelectionTypeEnum, Tile
+from layer1 import Card, SelectionTypeEnum, Tile
 
 from .log import logger
 from .rendering_asset_loader import (

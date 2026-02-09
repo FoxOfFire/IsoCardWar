@@ -3,8 +3,14 @@ from typing import Any, Optional, Tuple
 import esper
 import pygame
 
-from common import GAME_CAM_HEIGHT, GAME_CAM_WIDTH, POS_PROC_REF, BoundingBox
-from layer1 import GAME_STATE_REF, GamePhaseEnum
+from common import (
+    GAME_CAM_HEIGHT,
+    GAME_CAM_WIDTH,
+    GAME_STATE_REF,
+    POS_PROC_REF,
+    BoundingBox,
+    GamePhaseEnum,
+)
 from layer2.tags import (
     GameCameraTag,
     MaskedSprite,
@@ -105,7 +111,7 @@ class UIProcessor(esper.Processor):
                     self.hover, UIElementComponent
                 )
                 if tag.unhover_func is not None:
-                    tag.unhover_func()
+                    tag.unhover_func(ent, None)
         return ent
 
     def process(self) -> None:

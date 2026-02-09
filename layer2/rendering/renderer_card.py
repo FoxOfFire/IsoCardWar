@@ -7,12 +7,13 @@ import pygame
 from common import (
     CARD_HEIGHT,
     CARD_WIDTH,
+    GAME_STATE_REF,
     POS_PROC_REF,
     RELATIVE_MARKER_POS_X,
     RELATIVE_MARKER_POS_Y,
     BoundingBox,
 )
-from layer1 import DECK_REF, GAME_STATE_REF, Card
+from layer1 import DECK_REF, Card
 from layer2.tags import MaskedSprite
 
 from .rendering_asset_loader import (
