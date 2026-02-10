@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Dict, Optional
 
-from .game_state_utils import (
+from .state_utils import (
     Action,
     GamePhaseEnum,
     PriceEnum,
@@ -18,4 +18,4 @@ class GameState:
     end_player_phase: bool = False
 
 
-GAME_STATE_REF = GameState({})
+STATE_REF = GameState({})

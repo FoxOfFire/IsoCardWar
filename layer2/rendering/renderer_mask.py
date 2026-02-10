@@ -3,7 +3,7 @@ from typing import List, Optional, Tuple, Type
 import esper
 import pygame
 
-from common import GAME_STATE_REF, POS_PROC_REF, SETTINGS_REF, BoundingBox
+from common import POS_PROC_REF, SETTINGS_REF, STATE_REF, BoundingBox
 from layer1 import DECK_REF
 
 from .log import logger
@@ -48,8 +48,8 @@ class MaskRenderer:
         )
 
         selection_list = []
-        selected = GAME_STATE_REF.selected
-        selecting = GAME_STATE_REF.selecting
+        selected = STATE_REF.selected
+        selecting = STATE_REF.selecting
 
         if selected is not None and selected in ent_list:
             ent_list.remove(selected)
@@ -118,20 +118,18 @@ class MaskRenderer:
             sprite.mask.invert()
 
     def _draw_selection_to_selected(self) -> None:
-        if GAME_STATE_REF.selecting is None or GAME_STATE_REF.selected is None:
+        if STATE_REF.selecting is None or STATE_REF.selected is None:
             return
 
-        assert esper.entity_exists(
-            GAME_STATE_REF.selected
-        ) and esper.entity_exists(GAME_STATE_REF.selecting)
+        assert esper.entity_exists(STATE_REF.selected) and esper.entity_exists(
+            STATE_REF.selecting
+        )
 
-        selecting_sprite = esper.try_component(
-            GAME_STATE_REF.selecting, CardSprite
-        )
-        selected_sprite = esper.try_component(
-            GAME_STATE_REF.selected, CardSprite
-        )
-        assert selecting_sprite is not None and selected_sprite is not None
+        selecting_sprite = esper.try_component(STATE_REF.selecting, CardSprite)
+        selected_sprite = esper.try_component(STATE_REF.selected, CardSprite)
+
+        if selecting_sprite is None or selected_sprite is None:
+            return
 
         selected_sprite.mask.invert()
         selected_sprite.mask.draw(

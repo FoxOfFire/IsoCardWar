@@ -1,9 +1,9 @@
 from typing import Type
 
 from common import (
-    GAME_STATE_REF,
     POS_PROC_REF,
     RUN_DATA_REF,
+    STATE_REF,
     BoundingBox,
     TextFuncDecor,
 )
@@ -24,4 +24,4 @@ def get_fps_str() -> str:
 
 @TextFuncDecor
 def get_game_phase_str() -> str:
-    return f"{GAME_STATE_REF.game_phase.name}"
+    return f"{STATE_REF.game_phase.name}"

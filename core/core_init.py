@@ -134,6 +134,7 @@ def init_game_world_esper() -> None:  # adding processors
     GAME_PHASE_PROC_REF.set_end_phase(end_phase)
 
     UI_PROC_REF.set_display_size(display.get_size())
+    UI_PROC_REF.set_tracker_tag(TrackUI)
 
     # draw starter cards
     get_draw_cards_action(7)(None)

@@ -4,8 +4,8 @@ from typing import Any
 import esper
 
 from common import (
-    GAME_STATE_REF,
     SETTINGS_REF,
+    STATE_REF,
     Action,
     ActionArgs,
     Health,
@@ -20,7 +20,7 @@ def play_card(args: ActionArgs) -> None:
     assert args is not None
     target, card_num = args
     if card_num is None:
-        ent = GAME_STATE_REF.selected
+        ent = STATE_REF.selected
     else:
         if card_num < 0 or card_num >= len(DECK_REF.hand):
             return
@@ -38,8 +38,8 @@ def play_card(args: ActionArgs) -> None:
         for effect in card.effects:
             effect((ent, target))
 
-    if GAME_STATE_REF.selected == ent:
-        GAME_STATE_REF.selected = None
+    if STATE_REF.selected == ent:
+        STATE_REF.selected = None
     DECK_REF.hand.remove(ent)
     DECK_REF.discard.append(card)
     esper.component_for_entity(ent, Health).hp = 0
@@ -113,4 +113,4 @@ def shuffle_deck(_: ActionArgs = None) -> None:
     DECK_REF.deck = new
 
 
-GAME_STATE_REF.play_card_func = play_card
+STATE_REF.play_card_func = play_card

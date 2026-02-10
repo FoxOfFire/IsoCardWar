@@ -3,9 +3,9 @@ from typing import Dict, List, Optional
 import esper
 
 from common import (
-    GAME_STATE_REF,
     RUN_DATA_REF,
     SETTINGS_REF,
+    STATE_REF,
     Action,
     GamePhaseEnum,
 )
@@ -28,7 +28,7 @@ class GamePhaseProcessor(esper.Processor):
             return
         self.wait = SETTINGS_REF.GAME_PHASE_PAUSE
 
-        phase: GamePhaseEnum = GAME_STATE_REF.game_phase
+        phase: GamePhaseEnum = STATE_REF.game_phase
 
         for func in self.phase_funk_queue[phase]:
             func(None)
@@ -38,14 +38,14 @@ class GamePhaseProcessor(esper.Processor):
         self.end_phase(None)
 
     def _player_action_phase(self) -> None:
-        if GAME_STATE_REF.end_player_phase:
-            GAME_STATE_REF.end_player_phase = False
+        if STATE_REF.end_player_phase:
+            STATE_REF.end_player_phase = False
             self.timer = 0
             assert self.end_phase is not None
             self.end_phase(None)
 
     def process(self) -> None:
-        phase = GAME_STATE_REF.game_phase
+        phase = STATE_REF.game_phase
         if phase == GamePhaseEnum.PLAYER_ACTION:
             self._player_action_phase()
         else:

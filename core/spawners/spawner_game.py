@@ -1,5 +1,4 @@
 from functools import partial
-from random import randint
 from typing import List, Type
 
 import esper
@@ -8,22 +7,12 @@ from common import (
     SETTINGS_REF,
     BoundingBox,
     Health,
-    MarkerEnum,
-    PriceEnum,
     Untracked,
     hover,
     remove_hover,
     select,
 )
-from layer1 import (
-    Card,
-    CardTypeEnum,
-    change_tile,
-    change_unit,
-    get_draw_cards_action,
-    make_map,
-    map_obj,
-)
+from layer1 import Card, CardTypeEnum, make_map, map_obj
 from layer2 import (
     CardSprite,
     SoundTypeEnum,
@@ -35,6 +24,7 @@ from layer2 import (
     hover_over_tile,
 )
 
+from .cards import CARD_TYPES_DICT_REF
 from .log import logger
 
 
@@ -71,7 +61,8 @@ def spawn_iso_elem(
         UIElementComponent(
             click_func=[click_on_tile],
             hover_func=[hover_over_tile],
-            unhover_func=[remove_hover],
+            start_hover_func=[],
+            end_hover_func=[remove_hover],
             text=[],
             is_gameplay_elem=True,
         ),
@@ -136,9 +127,10 @@ def spawn_card_ent(card: Card, /) -> int:
         )
 
     ui_elem = UIElementComponent(
-        click_func=[select, get_sound_action(SoundTypeEnum.POP)],
-        hover_func=[hover, get_sound_action(SoundTypeEnum.CLICK)],
-        unhover_func=[remove_hover, get_sound_action(SoundTypeEnum.WHOOSH)],
+        click_func=[select, get_sound_action(SoundTypeEnum.CLICK)],
+        hover_func=[],
+        start_hover_func=[hover, get_sound_action(SoundTypeEnum.POP)],
+        end_hover_func=[remove_hover],
         text=[text, *description],
         is_gameplay_elem=True,
     )
@@ -151,22 +143,4 @@ def spawn_card_ent(card: Card, /) -> int:
 
 
 def create_card_obj(card_type: CardTypeEnum) -> Card:
-    rand = randint(2, 4)
-    match card_type:
-        case CardTypeEnum.DRAW_ONE:
-            marker = MarkerEnum.ACTION
-            effects = [get_draw_cards_action(rand)]
-            description = f"Draw {rand} card" + ("s" if rand > 1 else "")
-        case CardTypeEnum.CHANGE_TERRAIN_AND_DRAW:
-            marker = MarkerEnum.BUILDING
-            effects = [change_tile]
-            description = "Cycles tile clicked between available"
-        case CardTypeEnum.CHANGE_UNIT_AND_DRAW:
-            marker = MarkerEnum.UNIT
-            effects = [change_unit]
-            description = "Cycles units"
-        case _:
-            raise RuntimeError("unexpected card type")
-
-    prices = {PriceEnum.AMMO: 1, PriceEnum.METAL: 1, PriceEnum.FOOD: 1}
-    return Card(f"{card_type.value}", description, prices, marker, effects)
+    return CARD_TYPES_DICT_REF[card_type]

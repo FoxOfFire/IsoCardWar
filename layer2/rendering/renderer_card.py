@@ -5,9 +5,9 @@ import esper
 import pygame
 
 from common import (
-    GAME_STATE_REF,
     POS_PROC_REF,
     SETTINGS_REF,
+    STATE_REF,
     BoundingBox,
 )
 from layer1 import DECK_REF, Card
@@ -48,9 +48,9 @@ class CardRenderer:
         def sorter(ent: int) -> int:
             if ent not in DECK_REF.hand:
                 return -1
-            if ent == GAME_STATE_REF.selected:
+            if ent == STATE_REF.selected:
                 return 10000
-            if ent == GAME_STATE_REF.selecting:
+            if ent == STATE_REF.selecting:
                 return 10001
             return DECK_REF.hand.index(ent)
 

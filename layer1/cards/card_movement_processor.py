@@ -3,9 +3,9 @@ from typing import Optional
 import esper
 
 from common import (
-    GAME_STATE_REF,
     RUN_DATA_REF,
     SETTINGS_REF,
+    STATE_REF,
     BoundingBox,
 )
 
@@ -37,9 +37,9 @@ class CardMovementProcessor(esper.Processor):
                 offset = offset_index * SETTINGS_REF.CARD_X_FIX_DISTANCE
 
             y = SETTINGS_REF.CARD_Y_POS_BASE
-            if ent == GAME_STATE_REF.selected:
+            if ent == STATE_REF.selected:
                 y += SETTINGS_REF.CARD_Y_POS_SELECTED
-            elif ent == GAME_STATE_REF.selecting:
+            elif ent == STATE_REF.selecting:
                 y += SETTINGS_REF.CARD_Y_POS_SELECTING
 
             delta_y = (

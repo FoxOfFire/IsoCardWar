@@ -7,7 +7,7 @@ import pygame
 class Settings:
     # debug
     RENDER_BBS = False
-    RENDER_MASKS = True
+    RENDER_MASKS = False
 
     RENDER_FPS_UI = True
     RENDER_GAME_PHASE_UI = False
@@ -19,11 +19,11 @@ class Settings:
     GAME_CAM_HEIGHT = 240
     GAME_CAM_WIDTH = GAME_CAM_HEIGHT // 9 * 16
 
-    GAME_FULLSCREEN = True
-    GAME_MUTE = True
+    GAME_FULLSCREEN = False
+    GAME_MUTE = False
     # Performance
     LOG_TICK_PERFORMANCE = False
-    FPS = 600
+    FPS = 60
 
     # cards
     CARD_START_X = 0
@@ -53,8 +53,8 @@ class Settings:
     # map
     SEED = None
 
-    ISO_MAP_HEIGHT = 9
-    ISO_MAP_WIDTH = 8
+    ISO_MAP_HEIGHT = 4
+    ISO_MAP_WIDTH = 4
 
     ISO_TILE_OFFSET_X = 16
     ISO_TILE_OFFSET_Y = ISO_TILE_OFFSET_X // 2

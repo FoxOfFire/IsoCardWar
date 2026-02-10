@@ -1,4 +1,5 @@
 from collections.abc import Callable
+from dataclasses import dataclass
 from typing import Dict, List, Optional
 
 from common import (
@@ -14,20 +15,13 @@ from .log import logger
 # data
 
 
+@dataclass()
 class Card:
-    def __init__(
-        self,
-        name: str,
-        description: str,
-        price: Dict[PriceEnum, int],
-        marker: MarkerEnum,
-        effects: List[Action],
-    ):
-        self.name = name
-        self.description = description
-        self.price = price
-        self.marker = marker
-        self.effects = effects
+    name: str
+    description: str
+    price: Dict[PriceEnum, int]
+    marker: MarkerEnum
+    effects: List[Action]
 
 
 class Deck:

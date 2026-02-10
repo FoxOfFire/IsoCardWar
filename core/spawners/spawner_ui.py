@@ -31,6 +31,7 @@ def spawn_button(
     *,
     click_func: Optional[List[Action]] = None,
     hover_func: Optional[List[Action]] = None,
+    start_hover_func: Optional[List[Action]] = None,
     remove_hover_func: Optional[List[Action]] = None,
 ) -> int:
     logger.info("spawning button")
@@ -57,17 +58,19 @@ def spawn_button(
         click_func = []
     if hover_func is None:
         hover_func = []
+    if start_hover_func is None:
+        start_hover_func = []
     if remove_hover_func is None:
         remove_hover_func = []
-    click_func.append(get_sound_action(SoundTypeEnum.MONEY))
-    hover_func.append(get_sound_action(SoundTypeEnum.POP))
-    remove_hover_func.append(get_sound_action(SoundTypeEnum.WHOOSH))
+    click_func.append(get_sound_action(SoundTypeEnum.CLICK))
+    start_hover_func.append(get_sound_action(SoundTypeEnum.POP))
 
     ui_elem = UIElementComponent(
         text=[text_data],
         click_func=click_func,
         hover_func=hover_func,
-        unhover_func=remove_hover_func,
+        start_hover_func=start_hover_func,
+        end_hover_func=remove_hover_func,
     )
     tracker = TrackUI()
     ui_elem_sprite = UIElemSprite(ui_elem_type)

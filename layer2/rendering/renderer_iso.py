@@ -6,9 +6,9 @@ import esper
 import pygame
 
 from common import (
-    GAME_STATE_REF,
     POS_PROC_REF,
     SETTINGS_REF,
+    STATE_REF,
     BoundingBox,
     MarkerEnum,
 )
@@ -55,11 +55,11 @@ class IsoRenderer:
         x: float,
         y: float,
     ) -> None:
-        if GAME_STATE_REF.selected is None:
+        if STATE_REF.selected is None:
             return
-        card = esper.try_component(GAME_STATE_REF.selected, Card)
+        card = esper.try_component(STATE_REF.selected, Card)
 
-        if ent != GAME_STATE_REF.selecting or card is None:
+        if ent != STATE_REF.selecting or card is None:
             return
 
         match card.marker:
@@ -99,7 +99,7 @@ class IsoRenderer:
                 + SETTINGS_REF.ISO_POS_OFFSET_Y
                 + (tile.x - tile.y) * SETTINGS_REF.ISO_TILE_OFFSET_Y
             )
-            if ent == GAME_STATE_REF.selecting:
+            if ent == STATE_REF.selecting:
                 y += SETTINGS_REF.ISO_TILE_SELECT_OFFSET
             match draw_type:
                 case self._DrawType.TILE:
