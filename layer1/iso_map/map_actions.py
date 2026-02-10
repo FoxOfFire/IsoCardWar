@@ -1,16 +1,15 @@
-from typing import Optional
-
 import esper
 
-from common import Action, ActionDecor
+from common import Action, ActionArgs
 
 from .log import logger
 from .tile import TerrainEnum, Tile, UnitTypeEnum
 
 
-def change_tile_to(terrain: TerrainEnum) -> Action:
-    @ActionDecor
-    def change(ent: Optional[int], target: Optional[int]) -> None:
+def get_change_tile_to_action(terrain: TerrainEnum) -> Action:
+    def change(args: ActionArgs) -> None:
+        assert args is not None
+        ent, target = args
         assert target is not None
         tile = esper.component_for_entity(target, Tile)
         tile.terrain = terrain
@@ -20,16 +19,18 @@ def change_tile_to(terrain: TerrainEnum) -> Action:
     return fn
 
 
-@ActionDecor
-def change_tile(ent: Optional[int], target: Optional[int]) -> None:
+def change_tile(args: ActionArgs) -> None:
+    assert args is not None
+    ent, target = args
     assert target is not None
     tile = esper.component_for_entity(target, Tile)
     terrain = TerrainEnum(tile.terrain.value % len(list(TerrainEnum)) + 1)
-    change_tile_to(terrain)(ent, target)
+    get_change_tile_to_action(terrain)((ent, target))
 
 
-@ActionDecor
-def change_unit(ent: Optional[int], target: Optional[int]) -> None:
+def change_unit(args: ActionArgs) -> None:
+    assert args is not None
+    ent, target = args
     assert target is not None
     tile = esper.component_for_entity(target, Tile)
     logger.info(tile.terrain)

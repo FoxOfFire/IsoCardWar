@@ -1,10 +1,9 @@
-from typing import Optional, Tuple
+from typing import List, Optional, Tuple
 
 import esper
 
 from common import (
-    BUTTON_HEIGHT,
-    BUTTON_WIDTH,
+    SETTINGS_REF,
     Action,
     BoundingBox,
     TextFunc,
@@ -12,11 +11,13 @@ from common import (
     Untracked,
 )
 from layer2 import (
+    SoundTypeEnum,
     TextData,
     TrackUI,
     UIElementComponent,
     UIElemSprite,
     UIElemType,
+    get_sound_action,
 )
 
 from .log import logger
@@ -28,9 +29,10 @@ def spawn_button(
     ui_elem_type: UIElemType,
     /,
     *,
-    click_func: Optional[Action] = None,
-    hover_func: Optional[Action] = None,
-    remove_hover_func: Optional[Action] = None,
+    click_func: Optional[List[Action]] = None,
+    hover_func: Optional[List[Action]] = None,
+    start_hover_func: Optional[List[Action]] = None,
+    remove_hover_func: Optional[List[Action]] = None,
 ) -> int:
     logger.info("spawning button")
     x, y = topleft
@@ -45,16 +47,30 @@ def spawn_button(
     else:
         mod_text = text
 
-    bb = BoundingBox(x, x + BUTTON_WIDTH, y, y + BUTTON_HEIGHT)
+    bb = BoundingBox(
+        x, x + SETTINGS_REF.BUTTON_WIDTH, y, y + SETTINGS_REF.BUTTON_HEIGHT
+    )
     offset_x = bb.width / 2
     offset_y = bb.height / 2
     text_data = TextData(mod_text, (offset_x, offset_y))
+
+    if click_func is None:
+        click_func = []
+    if hover_func is None:
+        hover_func = []
+    if start_hover_func is None:
+        start_hover_func = []
+    if remove_hover_func is None:
+        remove_hover_func = []
+    click_func.append(get_sound_action(SoundTypeEnum.CLICK))
+    start_hover_func.append(get_sound_action(SoundTypeEnum.POP))
 
     ui_elem = UIElementComponent(
         text=[text_data],
         click_func=click_func,
         hover_func=hover_func,
-        unhover_func=remove_hover_func,
+        start_hover_func=start_hover_func,
+        end_hover_func=remove_hover_func,
     )
     tracker = TrackUI()
     ui_elem_sprite = UIElemSprite(ui_elem_type)

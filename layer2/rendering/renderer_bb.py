@@ -4,7 +4,7 @@ from typing import Type
 import esper
 import pygame
 
-from common import POS_PROC_REF, RENDER_BBS, BoundingBox
+from common import POS_PROC_REF, SETTINGS_REF, BoundingBox
 
 from .log import logger
 from .utils import bb_to_rect, sort_by_bb
@@ -21,7 +21,7 @@ class BBRenderer:
         logger.info("bb render init finished")
 
     def draw(self, screen: pygame.Surface) -> None:
-        if not RENDER_BBS:
+        if not SETTINGS_REF.RENDER_BBS:
             return
 
         ent_list = sorted(

@@ -6,13 +6,9 @@ import esper
 import pygame
 
 from common import (
-    GAME_STATE_REF,
-    ISO_POS_OFFSET_X,
-    ISO_POS_OFFSET_Y,
-    ISO_TILE_OFFSET_X,
-    ISO_TILE_OFFSET_Y,
-    ISO_TILE_SELECT_OFFSET,
     POS_PROC_REF,
+    SETTINGS_REF,
+    STATE_REF,
     BoundingBox,
     MarkerEnum,
 )
@@ -59,11 +55,11 @@ class IsoRenderer:
         x: float,
         y: float,
     ) -> None:
-        if GAME_STATE_REF.selected is None:
+        if STATE_REF.selected is None:
             return
-        card = esper.try_component(GAME_STATE_REF.selected, Card)
+        card = esper.try_component(STATE_REF.selected, Card)
 
-        if ent != GAME_STATE_REF.selecting or card is None:
+        if ent != STATE_REF.selecting or card is None:
             return
 
         match card.marker:
@@ -95,16 +91,16 @@ class IsoRenderer:
             tile = esper.component_for_entity(ent, Tile)
             x = (
                 delta_x
-                + ISO_POS_OFFSET_X
-                + (tile.x + tile.y) * ISO_TILE_OFFSET_X
+                + SETTINGS_REF.ISO_POS_OFFSET_X
+                + (tile.x + tile.y) * SETTINGS_REF.ISO_TILE_OFFSET_X
             )
             y = (
                 delta_y
-                + ISO_POS_OFFSET_Y
-                + (tile.x - tile.y) * ISO_TILE_OFFSET_Y
+                + SETTINGS_REF.ISO_POS_OFFSET_Y
+                + (tile.x - tile.y) * SETTINGS_REF.ISO_TILE_OFFSET_Y
             )
-            if ent == GAME_STATE_REF.selecting:
-                y += ISO_TILE_SELECT_OFFSET
+            if ent == STATE_REF.selecting:
+                y += SETTINGS_REF.ISO_TILE_SELECT_OFFSET
             match draw_type:
                 case self._DrawType.TILE:
                     screen.blit(surfs[tile.terrain], (x, y))
@@ -140,12 +136,12 @@ class IsoRenderer:
             SELECTION_SURFS,
             ent_list,
             self._DrawType.SELECTION,
-            offset=(0, -ISO_TILE_OFFSET_Y * 2),
+            offset=(0, -SETTINGS_REF.ISO_TILE_OFFSET_Y * 2),
         )
         self._draw_type(
             screen,
             UNIT_TYPE_SURFS,
             ent_list,
             self._DrawType.UNIT,
-            offset=(0, -ISO_TILE_OFFSET_Y * 2),
+            offset=(0, -SETTINGS_REF.ISO_TILE_OFFSET_Y * 2),
         )

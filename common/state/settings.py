@@ -1,0 +1,84 @@
+from dataclasses import dataclass
+
+import pygame
+
+
+@dataclass
+class Settings:
+    # debug
+    RENDER_BBS = False
+    RENDER_MASKS = False
+
+    RENDER_FPS_UI = True
+    RENDER_GAME_PHASE_UI = False
+    RENDER_TRACKED_ISO_UI = False
+    RENDER_TRACKED_UI_UI = False
+    RENDER_GAME_CAM_INTERSECT_UI = True
+    RENDER_ISO_CAM_INTERSECT_UI = True
+    # rendering
+    GAME_CAM_HEIGHT = 240
+    GAME_CAM_WIDTH = GAME_CAM_HEIGHT // 9 * 16
+
+    GAME_FULLSCREEN = False
+    GAME_MUTE = False
+    # Performance
+    LOG_TICK_PERFORMANCE = False
+    FPS = 60
+
+    # cards
+    CARD_START_X = 0
+    CARD_START_Y = 0
+
+    CARD_Y_POS_BASE = GAME_CAM_HEIGHT * 11 / 12
+    CARD_Y_POS_SELECTING = -10
+    CARD_Y_POS_SELECTED = -14
+    CARD_X_FIX_DISTANCE = GAME_CAM_HEIGHT // 5
+
+    CARD_ANIMATION_SPEED = 70
+
+    CARD_WIDTH: float = 62.0
+    CARD_HEIGHT: float = 88.0
+    RELATIVE_MARKER_POS_X = 4
+    RELATIVE_MARKER_POS_Y = 13
+    CARD_TEXT_RELATIVE_POS_X = CARD_WIDTH // 2
+    CARD_TITLE_TEXT_RELATIVE_POS_Y = 7
+    CARD_PARAGRAPH_TEXT_RELATIVE_Y_ONE = 49
+    CARD_PARAGRAPH_TEXT_RELATIVE_Y_OFFSET = 6
+    CARD_PARAGRAPH_LETTER_COUNT = 17
+    CARD_PARAGRAPH_LINE_COUNT = 4
+
+    MAX_CARD_COUNT = 10
+    STARTER_DECK_COUNT = 30
+
+    # map
+    SEED = None
+
+    ISO_MAP_HEIGHT = 4
+    ISO_MAP_WIDTH = 4
+
+    ISO_TILE_OFFSET_X = 16
+    ISO_TILE_OFFSET_Y = ISO_TILE_OFFSET_X // 2
+    ISO_POS_OFFSET_X = (
+        GAME_CAM_WIDTH // 2
+        - ISO_TILE_OFFSET_X * (ISO_MAP_WIDTH + ISO_MAP_HEIGHT) // 2
+    )
+    ISO_POS_OFFSET_Y = (
+        (CARD_Y_POS_BASE + CARD_Y_POS_SELECTED) / 2
+        - ISO_TILE_OFFSET_Y * (ISO_MAP_HEIGHT - ISO_MAP_WIDTH) / 2
+        - 20
+    )
+
+    ISO_TILE_SELECT_OFFSET = -2
+
+    # game phases
+    GAME_PHASE_PAUSE = 1000
+
+    # UI
+    FONT_COLOR = pygame.Color(53, 43, 66, 255)
+    FONT_SIZE = 6
+
+    BUTTON_WIDTH = 64
+    BUTTON_HEIGHT = 13
+
+
+SETTINGS_REF = Settings()

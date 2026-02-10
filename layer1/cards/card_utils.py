@@ -1,13 +1,13 @@
-import enum
+from enum import Enum, auto
 
 
-class OrganizationEnum(enum.Enum):
-    NONE = enum.auto()
-    NAME = enum.auto()
-    MARKER = enum.auto()
+class OrganizationEnum(Enum):
+    NONE = auto()
+    NAME = auto()
+    MARKER = auto()
 
 
-class CardTypeEnum(enum.Enum):
+class CardTypeEnum(Enum):
     DRAW_ONE = "Supply lines"
     CHANGE_TERRAIN_AND_DRAW = "Terrain"
     CHANGE_UNIT_AND_DRAW = "Unit"

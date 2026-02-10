@@ -6,7 +6,7 @@ from .cards import (
     CardTypeEnum,
     OrganizationEnum,
     draw_card,
-    draw_cards,
+    get_draw_cards_action,
     shuffle_deck,
     sort_hand,
 )

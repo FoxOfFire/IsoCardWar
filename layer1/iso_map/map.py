@@ -1,9 +1,9 @@
 from random import randint
-from typing import List, Optional, Tuple, Type
+from typing import Optional, Tuple, Type
 
 import esper
 
-from common import Action, BoundingBox, Untracked
+from common import BoundingBox, Untracked
 
 from .tile import TerrainEnum, Tile, UnitTypeEnum
 
@@ -38,7 +38,6 @@ def make_map() -> None:
             pos = (round(bb.left), round(bb.top))
             terrain = TerrainEnum(randint(1, len(list(TerrainEnum))))
             unit: Optional[UnitTypeEnum] = None
-            effects: List[Action] = []
 
             if (
                 randint(0, 2) == 0
@@ -47,6 +46,6 @@ def make_map() -> None:
             ):
                 unit = UnitTypeEnum(randint(1, len(list(UnitTypeEnum))))
 
-            tile = Tile(pos, terrain, effects=effects, unit=unit)
+            tile = Tile(pos, terrain, unit=unit)
 
             esper.create_entity(bb, sprite(), tracker(), tile, Untracked())

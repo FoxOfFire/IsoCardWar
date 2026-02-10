@@ -4,6 +4,7 @@ import esper
 
 from .bb_rtree import BBRTree
 from .bounding_box import BoundingBox
+from .log import logger
 from .tags import Moved, TrackBase, Untracked
 
 
@@ -65,6 +66,7 @@ class PositionProcessor(esper.Processor):
         return self.__tracker_dict[ty].rtree_size()
 
     def start_tracking_type(self, ty: Type) -> None:
+        logger.info("started tracking:" + str(ty))
         self.__tracked_tags.append(ty)
         self.__tracker_dict.update({ty: BBRTree(ty)})
 
