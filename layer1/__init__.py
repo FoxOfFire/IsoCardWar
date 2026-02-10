@@ -16,8 +16,8 @@ from .iso_map import (
     TerrainEnum,
     Tile,
     UnitTypeEnum,
-    change_tile,
     change_unit,
     make_map,
     map_obj,
+    rotate_tiles,
 )
