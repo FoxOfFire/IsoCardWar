@@ -17,7 +17,6 @@ from layer1 import (
     DECK_REF,
     GAME_PHASE_PROC_REF,
     end_phase,
-    get_draw_cards_action,
 )
 from layer2 import (
     DYING_PROC_REF,
@@ -42,6 +41,7 @@ from .spawners import (
     build_ui,
     create_card_obj,
     get_base_game_phase_dict,
+    set_type_actions,
     spawn_card_ent,
     spawn_iso_elem,
 )
@@ -123,6 +123,8 @@ def init_game_world_esper() -> None:  # adding processors
 
     POS_PROC_REF.start_tracking_type(TrackIso)
     POS_PROC_REF.start_tracking_type(TrackUI)
+
+    set_type_actions()
 
     CARD_MOV_PROC_REF.set_cam_bb(game_cam_bb)
     DECK_REF.spawn_card = spawn_card_ent

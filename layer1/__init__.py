@@ -11,7 +11,7 @@ from .cards import (
     shuffle_deck,
     sort_hand,
 )
-from .game_phase import GAME_PHASE_PROC_REF, end_phase
+from .game_phase import GAME_PHASE_PROC_REF, end_phase, get_wait_ms_action
 from .iso_map import (
     MAP_DATA_REF,
     SelectionTypeEnum,

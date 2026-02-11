@@ -14,6 +14,7 @@ class GameState:
     play_card_func: Optional[Action] = None
     selected: Optional[int] = None
     selecting: Optional[int] = None
+    target_tile: Optional[int] = None
     game_phase: GamePhaseEnum = GamePhaseEnum.BEGIN_GAME
     end_player_phase: bool = False
 

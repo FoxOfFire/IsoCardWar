@@ -131,7 +131,7 @@ class UIProcessor(esper.Processor):
                 if self.hover == ent:
                     self.hover = None
                     for func in tag.end_hover_func:
-                        func(self.hover)
+                        func(None)
 
     def process(self) -> None:
         assert self.display_size is not None

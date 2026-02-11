@@ -9,7 +9,6 @@ from common import (
     Health,
     Untracked,
     hover,
-    remove_hover,
     select,
 )
 from layer1 import MAP_DATA_REF, Card, CardTypeEnum
@@ -61,7 +60,7 @@ def spawn_iso_elem(
             click_func=[click_on_tile],
             hover_func=[hover_over_tile],
             start_hover_func=[],
-            end_hover_func=[remove_hover],
+            end_hover_func=[hover],
             text=[],
             is_gameplay_elem=True,
         ),
@@ -129,7 +128,7 @@ def spawn_card_ent(card: Card, /) -> int:
         click_func=[select, get_sound_action(SoundTypeEnum.CLICK)],
         hover_func=[],
         start_hover_func=[hover, get_sound_action(SoundTypeEnum.POP)],
-        end_hover_func=[remove_hover],
+        end_hover_func=[hover],
         text=[text, *description],
         is_gameplay_elem=True,
     )

@@ -8,7 +8,6 @@ from common import (
     BoundingBox,
     hover,
     play_card,
-    remove_hover,
 )
 
 from .audio import SoundTypeEnum, play_sfx
@@ -54,4 +53,4 @@ def hover_over_tile(ent: ActionArgs) -> None:
     for intersect in POS_PROC_REF.intersect(mouse_bb, ui_event_obj.iso_tag):
         hover(intersect)
         return
-    remove_hover()
+    hover(None)

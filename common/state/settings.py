@@ -23,7 +23,7 @@ class Settings:
     GAME_MUTE = False
     # Performance
     LOG_TICK_PERFORMANCE = False
-    FPS = 60
+    FPS = 600
 
     # cards
     CARD_START_X = 0
@@ -53,8 +53,8 @@ class Settings:
     # map
     SEED = None
 
-    ISO_MAP_HEIGHT = 4
-    ISO_MAP_WIDTH = 4
+    ISO_MAP_HEIGHT = 8
+    ISO_MAP_WIDTH = 8
 
     ISO_TILE_OFFSET_X = 16
     ISO_TILE_OFFSET_Y = ISO_TILE_OFFSET_X // 2
@@ -71,7 +71,7 @@ class Settings:
     ISO_TILE_SELECT_OFFSET = -2
 
     # game phases
-    GAME_PHASE_PAUSE = 1000
+    GAME_PHASE_PAUSE = 50
 
     # UI
     FONT_COLOR = pygame.Color(53, 43, 66, 255)
