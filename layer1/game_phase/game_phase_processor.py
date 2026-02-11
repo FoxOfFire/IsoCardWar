@@ -19,6 +19,7 @@ class GamePhaseProcessor(esper.Processor):
     def __init__(self) -> None:
         self.wait = SETTINGS_REF.GAME_PHASE_PAUSE
         self.phase_funk_queue: Dict[GamePhaseEnum, List[Action]] = {}
+        self.next_funk_queue: List[Action] = []
         logger.info("GamePhaseProcessor init finished")
         self.end_phase = None
 
@@ -30,8 +31,9 @@ class GamePhaseProcessor(esper.Processor):
 
         phase: GamePhaseEnum = STATE_REF.game_phase
 
-        for func in self.phase_funk_queue[phase]:
-            func(None)
+        if len(self.next_funk_queue) > 0:
+            self.next_funk_queue.pop()(None)
+            return
         if phase == GamePhaseEnum.END_GAME:
             return
         assert self.end_phase is not None

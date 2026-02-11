@@ -20,7 +20,9 @@ def play_card(target: ActionArgs) -> None:
     ent = STATE_REF.selected
 
     if ent is None:
-        return
+        if len(DECK_REF.hand) <= 0:
+            return
+        ent = DECK_REF.hand[0]
 
     assert esper.entity_exists(ent)
 
@@ -36,6 +38,11 @@ def play_card(target: ActionArgs) -> None:
     DECK_REF.hand.remove(ent)
     DECK_REF.discard.append(card)
     esper.component_for_entity(ent, Health).hp = 0
+
+
+def discard_hand(_: ActionArgs) -> None:
+    while len(DECK_REF.hand) > 0:
+        play_card(None)
 
 
 def draw_card(_: ActionArgs = None) -> None:

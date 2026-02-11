@@ -14,9 +14,6 @@ def key_bind_handler(event: Event) -> None:
         elif event.key == pygame.K_q:
             draw_card()
         elif event.key == pygame.K_w:
-            if len(DECK_REF.hand) <= 0:
-                return
-            select(DECK_REF.hand[0])
             play_card(None)
         elif event.key == pygame.K_a:
             DECK_REF.set_order(OrganizationEnum.MARKER)

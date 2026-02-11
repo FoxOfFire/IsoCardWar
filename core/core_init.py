@@ -137,7 +137,6 @@ def init_game_world_esper() -> None:  # adding processors
     UI_PROC_REF.set_tracker_tag(TrackUI)
 
     # draw starter cards
-    get_draw_cards_action(7)(None)
     ui_event_obj.iso_tag = TrackIso
 
     bind_game_events()

@@ -1,7 +1,7 @@
 from typing import Dict, List
 
 from common import Action, GamePhaseEnum
-from layer1 import draw_card
+from layer1 import discard_hand, draw_card
 
 
 def _begin_game() -> List[Action]:
@@ -10,13 +10,20 @@ def _begin_game() -> List[Action]:
 
 
 def _draw() -> List[Action]:
-    effects: List[Action] = []
-    effects.append(draw_card)
+    effects: List[Action] = [
+        draw_card,
+        draw_card,
+        draw_card,
+        draw_card,
+        draw_card,
+    ]
     return effects
 
 
 def _end_of_turn() -> List[Action]:
-    effects: List[Action] = []
+    effects: List[Action] = [
+        discard_hand,
+    ]
     return effects
 
 
