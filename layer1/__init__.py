@@ -12,12 +12,16 @@ from .cards import (
 )
 from .game_phase import GAME_PHASE_PROC_REF, end_phase
 from .iso_map import (
+    MAP_DATA_REF,
     SelectionTypeEnum,
     TerrainEnum,
     Tile,
     UnitTypeEnum,
-    change_unit,
-    make_map,
-    map_obj,
-    rotate_tiles,
+    get_change_target_tile_action,
+    get_change_target_unit_action,
+    get_set_target_tile_target_action,
+    move_ent_unit_to_target_unit,
+    rotate_target_tile,
+    rotate_target_unit,
+    switch_unit_types,
 )

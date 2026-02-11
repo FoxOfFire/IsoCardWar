@@ -1,5 +1,5 @@
 from enum import Enum, auto
-from typing import List, Optional, Tuple
+from typing import Optional, Tuple
 
 
 class TerrainEnum(Enum):
@@ -35,7 +35,5 @@ class Tile:
         self.x = x
         self.y = y
         self.terrain = terrain
-        self.targets: List[int] = []
+        self.target: Optional[int] = None
         self.unit = unit
-
-

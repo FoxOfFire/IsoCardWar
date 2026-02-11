@@ -16,24 +16,18 @@ def unselect(_: ActionArgs = None) -> None:
     STATE_REF.selected = None
 
 
-def play_card(args: ActionArgs) -> None:
-    assert args is not None
-    target, card_num = args
+def play_card(ent: ActionArgs) -> None:
     assert STATE_REF.play_card_func is not None
-    STATE_REF.play_card_func((target, card_num))
+    STATE_REF.play_card_func(ent)
 
 
-def select(args: ActionArgs) -> None:
-    assert args is not None
-    ent, _ = args
+def select(ent: ActionArgs) -> None:
     assert ent is not None
     assert esper.entity_exists(ent)
     STATE_REF.selected = ent
 
 
-def hover(args: ActionArgs) -> None:
-    assert args is not None
-    ent, _ = args
+def hover(ent: ActionArgs) -> None:
     assert ent is not None
     assert esper.entity_exists(ent)
     STATE_REF.selecting = ent

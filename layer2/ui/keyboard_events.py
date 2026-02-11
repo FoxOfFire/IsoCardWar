@@ -1,7 +1,7 @@
 import pygame
 from pygame.event import Event
 
-from common import EVENT_PROC_REF, play_card, unselect
+from common import EVENT_PROC_REF, play_card, select, unselect
 from layer1 import DECK_REF, OrganizationEnum, draw_card, sort_hand
 
 from .ui_actions import quit_game
@@ -14,7 +14,10 @@ def key_bind_handler(event: Event) -> None:
         elif event.key == pygame.K_q:
             draw_card()
         elif event.key == pygame.K_w:
-            play_card((None, 0))
+            if len(DECK_REF.hand) <= 0:
+                return
+            select(DECK_REF.hand[0])
+            play_card(None)
         elif event.key == pygame.K_a:
             DECK_REF.set_order(OrganizationEnum.MARKER)
             sort_hand()

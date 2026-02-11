@@ -110,7 +110,7 @@ class UIProcessor(esper.Processor):
             return
 
         for func in tag.click_func:
-            func((ent, None))
+            func(ent)
 
     def get_and_reset_hovered_ent(self) -> None:
         assert self.mouse_bb is not None
@@ -131,7 +131,7 @@ class UIProcessor(esper.Processor):
                 if self.hover == ent:
                     self.hover = None
                     for func in tag.end_hover_func:
-                        func((self.hover, None))
+                        func(self.hover)
 
     def process(self) -> None:
         assert self.display_size is not None
@@ -177,12 +177,12 @@ class UIProcessor(esper.Processor):
                 self.clicked = ent
             elif ent != self.hover:
                 for func in ui_tag.start_hover_func:
-                    func((ent, None))
+                    func(ent)
                 ui_tag.state = UIStateEnum.HOVER
                 self.hover = ent
             else:
                 for func in ui_tag.hover_func:
-                    func((ent, None))
+                    func(ent)
             break
 
 
