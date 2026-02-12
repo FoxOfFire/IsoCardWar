@@ -14,7 +14,6 @@ def get_ent_tile(ent: ActionArgs) -> Tile:
     assert ent is not None
     tile = esper.try_component(ent, Tile)
     assert tile is not None
-    # logger.info(f"fetching tile for {ent}")
     return tile
 
 
