@@ -5,19 +5,25 @@ from .cards import (
     Card,
     CardTypeEnum,
     OrganizationEnum,
+    discard_hand,
     draw_card,
     get_draw_cards_action,
     shuffle_deck,
     sort_hand,
 )
-from .game_phase import GAME_PHASE_PROC_REF, end_phase
+from .game_phase import GAME_PHASE_PROC_REF, end_phase, get_wait_ms_action
 from .iso_map import (
+    MAP_DATA_REF,
     SelectionTypeEnum,
     TerrainEnum,
     Tile,
     UnitTypeEnum,
-    change_tile,
-    change_unit,
-    make_map,
-    map_obj,
+    get_change_target_tile_action,
+    get_change_target_unit_action,
+    get_set_target_tile_target_action,
+    move_ent_unit_to_target_unit,
+    rotate_target_tile,
+    rotate_target_unit,
+    set_random_target,
+    switch_unit_types,
 )

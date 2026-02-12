@@ -9,10 +9,9 @@ from common import (
     Health,
     Untracked,
     hover,
-    remove_hover,
-    select,
+    select_card,
 )
-from layer1 import Card, CardTypeEnum, make_map, map_obj
+from layer1 import MAP_DATA_REF, Card, CardTypeEnum
 from layer2 import (
     CardSprite,
     SoundTypeEnum,
@@ -24,7 +23,7 @@ from layer2 import (
     hover_over_tile,
 )
 
-from .cards import CARD_TYPES_DICT_REF
+from .card_type_def import CARD_TYPES_DICT_REF
 from .log import logger
 
 
@@ -41,9 +40,8 @@ def spawn_iso_elem(
         SETTINGS_REF.ISO_TILE_OFFSET_Y,
     )
 
-    map_obj.tracker_tag = map_tracker
-    map_obj.sprite = map_sprite
-    map_obj.size = map_size
+    MAP_DATA_REF.tracker_tag = map_tracker
+    MAP_DATA_REF.sprite = map_sprite
 
     corrected_offset_y = offset[1] - (map_size[0] - 1) * map_scale[1]
 
@@ -62,13 +60,13 @@ def spawn_iso_elem(
             click_func=[click_on_tile],
             hover_func=[hover_over_tile],
             start_hover_func=[],
-            end_hover_func=[remove_hover],
+            end_hover_func=[hover],
             text=[],
             is_gameplay_elem=True,
         ),
         Untracked(),
     )
-    make_map()
+    MAP_DATA_REF.make_map()
     return ent
 
 
@@ -127,10 +125,10 @@ def spawn_card_ent(card: Card, /) -> int:
         )
 
     ui_elem = UIElementComponent(
-        click_func=[select, get_sound_action(SoundTypeEnum.CLICK)],
+        click_func=[select_card, get_sound_action(SoundTypeEnum.CLICK)],
         hover_func=[],
         start_hover_func=[hover, get_sound_action(SoundTypeEnum.POP)],
-        end_hover_func=[remove_hover],
+        end_hover_func=[hover],
         text=[text, *description],
         is_gameplay_elem=True,
     )

@@ -1,7 +1,7 @@
 from enum import Enum, auto
-from typing import Callable, Optional, Tuple
+from typing import Callable, Optional
 
-ActionArgs = Optional[Tuple[Optional[int], Optional[int]]]
+ActionArgs = Optional[int]
 Action = Callable[[ActionArgs], None]
 TextFunc = Callable[[], str]
 

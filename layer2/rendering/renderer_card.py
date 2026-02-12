@@ -48,9 +48,9 @@ class CardRenderer:
         def sorter(ent: int) -> int:
             if ent not in DECK_REF.hand:
                 return -1
-            if ent == STATE_REF.selected:
+            if ent == STATE_REF.selected_card:
                 return 10000
-            if ent == STATE_REF.selecting:
+            if ent == STATE_REF.hovered_ent:
                 return 10001
             return DECK_REF.hand.index(ent)
 

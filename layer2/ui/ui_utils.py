@@ -4,8 +4,7 @@ from typing import Optional, Tuple, Type
 import esper
 import pygame
 
-from common import BoundingBox
-from layer1 import map_obj
+from common import SETTINGS_REF, BoundingBox
 from layer2.tags import GameCameraTag
 
 from .log import logger
@@ -33,13 +32,14 @@ def get_transformed_mouse_pos(bb: BoundingBox) -> Tuple[float, float]:
     )
     display = pygame.display.get_surface()
     assert display is not None
-    assert map_obj.size is not None
 
     display_rect = display.get_rect()
     mouse = pygame.mouse.get_pos()
     mouse_x = mouse[0] * cam_bb.width / display_rect.width
     mouse_y = mouse[1] * cam_bb.height / display_rect.height
-    map_width, map_height = map_obj.size
+
+    map_width = SETTINGS_REF.ISO_MAP_HEIGHT
+    map_height = SETTINGS_REF.ISO_MAP_WIDTH
 
     mouse_in_bb_x = (mouse_x - bb.left) / bb.width
     mouse_in_bb_y = (mouse_y - bb.top) / bb.height

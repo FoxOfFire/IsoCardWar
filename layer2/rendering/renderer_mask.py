@@ -48,8 +48,8 @@ class MaskRenderer:
         )
 
         selection_list = []
-        selected = STATE_REF.selected
-        selecting = STATE_REF.selecting
+        selected = STATE_REF.selected_card
+        selecting = STATE_REF.hovered_ent
 
         if selected is not None and selected in ent_list:
             ent_list.remove(selected)
@@ -118,25 +118,27 @@ class MaskRenderer:
             sprite.mask.invert()
 
     def _draw_selection_to_selected(self) -> None:
-        if STATE_REF.selecting is None or STATE_REF.selected is None:
+        if STATE_REF.hovered_ent is None or STATE_REF.selected_card is None:
             return
 
-        assert esper.entity_exists(STATE_REF.selected) and esper.entity_exists(
-            STATE_REF.selecting
+        assert esper.entity_exists(
+            STATE_REF.selected_card
+        ) and esper.entity_exists(STATE_REF.hovered_ent)
+
+        hovered_sprite = esper.try_component(STATE_REF.hovered_ent, CardSprite)
+        selected_sprite = esper.try_component(
+            STATE_REF.selected_card, CardSprite
         )
 
-        selecting_sprite = esper.try_component(STATE_REF.selecting, CardSprite)
-        selected_sprite = esper.try_component(STATE_REF.selected, CardSprite)
-
-        if selecting_sprite is None or selected_sprite is None:
+        if hovered_sprite is None or selected_sprite is None:
             return
 
         selected_sprite.mask.invert()
         selected_sprite.mask.draw(
-            selecting_sprite.mask,
+            hovered_sprite.mask,
             (
-                selecting_sprite.rect.left - selected_sprite.rect.left,
-                selecting_sprite.rect.top - selected_sprite.rect.top,
+                hovered_sprite.rect.left - selected_sprite.rect.left,
+                hovered_sprite.rect.top - selected_sprite.rect.top,
             ),
         )
         selected_sprite.mask.invert()
