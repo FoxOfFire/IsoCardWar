@@ -1,7 +1,7 @@
 import pygame
 from pygame.event import Event
 
-from common import EVENT_PROC_REF, play_card, select
+from common import EVENT_PROC_REF, play_card, select_card
 from layer1 import DECK_REF, OrganizationEnum, draw_card, sort_hand
 
 from .ui_actions import quit_game
@@ -28,7 +28,7 @@ def key_bind_handler(event: Event) -> None:
 
 def mouse_handler(event: Event) -> None:
     if event.dict["button"] == 3:
-        select(None)
+        select_card(None)
 
 
 def bind_events() -> None:

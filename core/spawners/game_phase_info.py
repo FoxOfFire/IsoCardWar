@@ -6,7 +6,7 @@ from common import (
     SETTINGS_REF,
     Action,
     GamePhaseEnum,
-    get_set_target_action,
+    get_select_tile_action,
 )
 from layer1 import (
     MAP_DATA_REF,
@@ -15,6 +15,8 @@ from layer1 import (
     draw_card,
     get_wait_ms_action,
 )
+
+from .log import logger
 
 
 def _begin_game() -> List[Action]:
@@ -56,10 +58,11 @@ def _enemy_action() -> List[Action]:
             if len(tile_effects) < 1:
                 continue
 
-            effects.append(get_set_target_action(tile))
-            effects += tile_effects
+            effects.append(get_select_tile_action(tile))
+            for effect in tile_effects:
+                effects.append(effect)
             effects.append(get_wait_ms_action(50))
-            effects.append(get_set_target_action(tile))
+            effects.append(get_select_tile_action(tile))
     return effects
 
 

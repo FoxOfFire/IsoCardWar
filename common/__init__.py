@@ -21,9 +21,9 @@ from .state import (
     TextFunc,
     TextFuncDecor,
     end_player_phase_action,
-    get_set_target_action,
+    get_select_tile_action,
     hover,
     play_card,
-    select,
-    target,
+    select_card,
+    select_tile,
 )

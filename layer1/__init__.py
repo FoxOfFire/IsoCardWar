@@ -24,5 +24,6 @@ from .iso_map import (
     move_ent_unit_to_target_unit,
     rotate_target_tile,
     rotate_target_unit,
+    set_random_target,
     switch_unit_types,
 )

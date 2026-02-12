@@ -13,20 +13,20 @@ def play_card(ent: ActionArgs) -> None:
     STATE_REF.play_card_func(ent)
 
 
-def select(ent: ActionArgs) -> None:
+def select_card(ent: ActionArgs) -> None:
     assert ent is None or esper.entity_exists(ent)
-    STATE_REF.selected = ent
+    STATE_REF.selected_card = ent
 
 
 def hover(ent: ActionArgs) -> None:
     assert ent is None or esper.entity_exists(ent)
-    STATE_REF.selecting = ent
+    STATE_REF.hovered_ent = ent
 
 
-def target(ent: ActionArgs) -> None:
+def select_tile(ent: ActionArgs) -> None:
     assert ent is None or esper.entity_exists(ent)
-    STATE_REF.target_tile = ent
+    STATE_REF.selected_tile = ent
 
 
-def get_set_target_action(ent: ActionArgs) -> Action:
-    return lambda _: target(ent)
+def get_select_tile_action(ent: ActionArgs) -> Action:
+    return lambda _: select_tile(ent)

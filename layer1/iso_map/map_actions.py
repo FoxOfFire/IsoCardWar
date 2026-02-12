@@ -1,18 +1,20 @@
+from random import randint
 from typing import Optional, Tuple
 
 import esper
 
-from common import Action, ActionArgs
+from common import SETTINGS_REF, Action, ActionArgs
 
 from .log import logger
 from .map import MAP_DATA_REF
 from .tile import TerrainEnum, Tile, UnitTypeEnum
 
 
-def get_ent_tile(target: ActionArgs) -> Tile:
-    assert target is not None
-    tile = esper.try_component(target, Tile)
+def get_ent_tile(ent: ActionArgs) -> Tile:
+    assert ent is not None
+    tile = esper.try_component(ent, Tile)
     assert tile is not None
+    # logger.info(f"fetching tile for {ent}")
     return tile
 
 
@@ -34,8 +36,8 @@ def rotate_target_tile(args: ActionArgs) -> None:
 
 def get_change_target_unit_action(unit: Optional[UnitTypeEnum]) -> Action:
     def change(args: ActionArgs) -> None:
+        logger.info(f"set unit to {unit}")
         tile = get_ent_tile(args)
-        logger.info(tile.terrain)
         tile.unit = unit
 
     fn = change
@@ -50,24 +52,38 @@ def rotate_target_unit(args: ActionArgs) -> None:
     get_change_target_unit_action(unit)(args)
 
 
-def switch_unit_types(args: ActionArgs) -> None:
-    target_tile = get_ent_tile(args).unit
-    ent_tile = get_ent_tile((args)).unit
+def switch_unit_types(ent: ActionArgs) -> None:
+    ent_tile = get_ent_tile(ent)
+    target = ent_tile.target
+    target_tile = get_ent_tile(target)
 
-    get_change_target_unit_action(ent_tile)(args)
-    get_change_target_unit_action(target_tile)((args))
+    logger.info(f"switch units {ent} - {target}")
+    ent_unit = ent_tile.unit
+    target_unit = target_tile.unit
+    get_change_target_unit_action(ent_unit)(target)
+    get_change_target_unit_action(target_unit)((ent))
 
 
 def move_ent_unit_to_target_unit(args: ActionArgs) -> None:
-    get_ent_tile(args).unit = None
+    get_ent_tile(get_ent_tile(args).target).unit = None
     switch_unit_types(args)
 
 
 def get_set_target_tile_target_action(pos: Tuple[int, int]) -> Action:
     def set_target_tile_target(ent: ActionArgs) -> None:
+        logger.info(f"set target to {pos}")
         assert ent is not None
         target = MAP_DATA_REF.ent_at(pos)
         get_ent_tile(ent).target = target
 
     fn = set_target_tile_target
     return fn
+
+
+def set_random_target(ent: ActionArgs) -> None:
+    get_set_target_tile_target_action(
+        (
+            randint(0, SETTINGS_REF.ISO_MAP_WIDTH - 1),
+            randint(0, SETTINGS_REF.ISO_MAP_HEIGHT - 1),
+        )
+    )(ent)

@@ -17,7 +17,7 @@ from .log import logger
 
 
 def play_card(target: ActionArgs) -> None:
-    ent = STATE_REF.selected
+    ent = STATE_REF.selected_card
 
     if ent is None:
         if len(DECK_REF.hand) <= 0:
@@ -33,8 +33,8 @@ def play_card(target: ActionArgs) -> None:
         for effect in card.effects:
             effect(target)
 
-    if STATE_REF.selected == ent:
-        STATE_REF.selected = None
+    if STATE_REF.selected_card == ent:
+        STATE_REF.selected_card = None
     DECK_REF.hand.remove(ent)
     DECK_REF.discard.append(card)
     esper.component_for_entity(ent, Health).hp = 0

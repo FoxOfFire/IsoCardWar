@@ -1,12 +1,9 @@
-from random import randint
-
-from common import SETTINGS_REF
 from layer1 import (
     MAP_DATA_REF,
     UnitTypeEnum,
     get_change_target_unit_action,
-    get_set_target_tile_target_action,
     rotate_target_tile,
+    set_random_target,
     switch_unit_types,
 )
 
@@ -38,13 +35,7 @@ def set_type_actions() -> None:
     MAP_DATA_REF.set_actions_for_type(
         UnitTypeEnum.KNIGHT,
         [
-            get_change_target_unit_action(UnitTypeEnum.FARMER),
-            get_set_target_tile_target_action(
-                (
-                    randint(0, SETTINGS_REF.ISO_MAP_WIDTH),
-                    randint(0, SETTINGS_REF.ISO_MAP_HEIGHT),
-                )
-            ),
             switch_unit_types,
+            set_random_target,
         ],
     )

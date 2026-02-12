@@ -34,7 +34,7 @@ class GamePhaseProcessor(esper.Processor):
         phase: GamePhaseEnum = STATE_REF.game_phase
 
         if len(self.next_funk_queue) > 0:
-            self.next_funk_queue.pop()(STATE_REF.target_tile)
+            self.next_funk_queue.pop()(STATE_REF.selected_tile)
             return
         if phase == GamePhaseEnum.END_GAME:
             return

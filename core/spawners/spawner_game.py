@@ -9,7 +9,7 @@ from common import (
     Health,
     Untracked,
     hover,
-    select,
+    select_card,
 )
 from layer1 import MAP_DATA_REF, Card, CardTypeEnum
 from layer2 import (
@@ -125,7 +125,7 @@ def spawn_card_ent(card: Card, /) -> int:
         )
 
     ui_elem = UIElementComponent(
-        click_func=[select, get_sound_action(SoundTypeEnum.CLICK)],
+        click_func=[select_card, get_sound_action(SoundTypeEnum.CLICK)],
         hover_func=[],
         start_hover_func=[hover, get_sound_action(SoundTypeEnum.POP)],
         end_hover_func=[hover],

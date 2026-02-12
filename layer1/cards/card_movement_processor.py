@@ -37,9 +37,9 @@ class CardMovementProcessor(esper.Processor):
                 offset = offset_index * SETTINGS_REF.CARD_X_FIX_DISTANCE
 
             y = SETTINGS_REF.CARD_Y_POS_BASE
-            if ent == STATE_REF.selected:
+            if ent == STATE_REF.selected_card:
                 y += SETTINGS_REF.CARD_Y_POS_SELECTED
-            elif ent == STATE_REF.selecting:
+            elif ent == STATE_REF.hovered_ent:
                 y += SETTINGS_REF.CARD_Y_POS_SELECTING
 
             delta_y = (

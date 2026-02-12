@@ -7,6 +7,7 @@ from .map_actions import (
     move_ent_unit_to_target_unit,
     rotate_target_tile,
     rotate_target_unit,
+    set_random_target,
     switch_unit_types,
 )
 from .tile import SelectionTypeEnum, UnitTypeEnum

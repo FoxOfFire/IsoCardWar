@@ -12,9 +12,9 @@ from .state_utils import (
 class GameState:
     resources: Dict[PriceEnum, int]
     play_card_func: Optional[Action] = None
-    selected: Optional[int] = None
-    selecting: Optional[int] = None
-    target_tile: Optional[int] = None
+    selected_card: Optional[int] = None
+    selected_tile: Optional[int] = None
+    hovered_ent: Optional[int] = None
     game_phase: GamePhaseEnum = GamePhaseEnum.BEGIN_GAME
     end_player_phase: bool = False
 
