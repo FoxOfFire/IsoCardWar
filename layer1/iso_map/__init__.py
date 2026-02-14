@@ -10,4 +10,4 @@ from .map_actions import (
     set_random_target,
     switch_unit_types,
 )
-from .tile import SelectionTypeEnum, UnitTypeEnum
+from .tile import UnitTypeEnum

@@ -1,4 +1,4 @@
-from enum import Enum, auto
+from enum import IntEnum, auto
 from typing import Callable, Optional
 
 ActionArgs = Optional[int]
@@ -10,20 +10,20 @@ def TextFuncDecor(func: TextFunc) -> TextFunc:
     return func
 
 
-class MarkerEnum(Enum):
+class MarkerEnum(IntEnum):
     ACTION = auto()
     UNIT = auto()
-    BUILDING = auto()
+    TERRAIN = auto()
     UNIQUE = auto()
 
 
-class PriceEnum(Enum):
-    AMMO = "Ammo"
-    METAL = "Metal"
-    FOOD = "Food"
+class PriceEnum(IntEnum):
+    AMMO = auto()
+    METAL = auto()
+    FOOD = auto()
 
 
-class GamePhaseEnum(Enum):
+class GamePhaseType(IntEnum):
     BEGIN_GAME = auto()
     DRAW = auto()
     PLAYER_ACTION = auto()

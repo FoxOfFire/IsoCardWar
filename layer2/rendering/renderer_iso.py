@@ -1,6 +1,6 @@
 from dataclasses import dataclass
-from enum import Enum, auto
-from typing import Dict, Iterable, Optional, Tuple, Type
+from enum import IntEnum, auto
+from typing import Callable, Iterable, Optional, Tuple, Type
 
 import esper
 import pygame
@@ -10,16 +10,11 @@ from common import (
     SETTINGS_REF,
     STATE_REF,
     BoundingBox,
-    MarkerEnum,
 )
-from layer1 import Card, SelectionTypeEnum, Tile
+from layer1 import Card, Tile
 
 from .log import logger
-from .rendering_asset_loader import (
-    SELECTION_SURFS,
-    TILE_TYPE_SURFS,
-    UNIT_TYPE_SURFS,
-)
+from .rendering_asset_loader import RENDER_ASSET_REF
 
 
 @dataclass
@@ -42,7 +37,7 @@ class IsoRenderer:
         self.bb = None
         logger.info("iso renderer init finished")
 
-    class _DrawType(Enum):
+    class _DrawType(IntEnum):
         TILE = auto()
         UNIT = auto()
         SELECTION = auto()
@@ -50,7 +45,7 @@ class IsoRenderer:
     def _draw_selection(
         self,
         screen: pygame.Surface,
-        surfs: Dict[Enum, pygame.Surface],
+        surfs: Callable[[IntEnum], pygame.Surface],
         ent: int,
         x: float,
         y: float,
@@ -62,22 +57,12 @@ class IsoRenderer:
         if ent != STATE_REF.hovered_ent or card is None:
             return
 
-        match card.marker:
-            case MarkerEnum.BUILDING:
-                screen.blit(surfs[SelectionTypeEnum.BLUE], (x, y))
-            case MarkerEnum.ACTION:
-                screen.blit(surfs[SelectionTypeEnum.RED], (x, y))
-            case MarkerEnum.UNIT:
-                screen.blit(surfs[SelectionTypeEnum.GREEN], (x, y))
-            case MarkerEnum.UNIQUE:
-                pass
-            case _:
-                raise RuntimeError("unexpected card marker in selection")
+        screen.blit(surfs(card.marker), (x, y))
 
     def _draw_type(
         self,
         screen: pygame.Surface,
-        surfs: Dict[Enum, pygame.Surface],
+        surfs: Callable[[IntEnum], pygame.Surface],
         ent_list: Iterable[int],
         draw_type: _DrawType,
         /,
@@ -103,11 +88,11 @@ class IsoRenderer:
                 y += SETTINGS_REF.ISO_TILE_SELECT_OFFSET
             match draw_type:
                 case self._DrawType.TILE:
-                    screen.blit(surfs[tile.terrain], (x, y))
+                    screen.blit(surfs(tile.terrain), (x, y))
 
                 case self._DrawType.UNIT:
                     if tile.unit is not None:
-                        screen.blit(surfs[tile.unit], (x, y))
+                        screen.blit(surfs(tile.unit), (x, y))
 
                 case self._DrawType.SELECTION:
                     self._draw_selection(screen, surfs, ent, x, y)
@@ -130,17 +115,22 @@ class IsoRenderer:
             POS_PROC_REF.intersect(self.bb, self.track_tag),
             key=lambda ent: sort_by_bottom(ent),
         )
-        self._draw_type(screen, TILE_TYPE_SURFS, ent_list, self._DrawType.TILE)
         self._draw_type(
             screen,
-            SELECTION_SURFS,
+            RENDER_ASSET_REF.get_tile_type_surf,
+            ent_list,
+            self._DrawType.TILE,
+        )
+        self._draw_type(
+            screen,
+            RENDER_ASSET_REF.get_selection_surf,
             ent_list,
             self._DrawType.SELECTION,
             offset=(0, -SETTINGS_REF.ISO_TILE_OFFSET_Y * 2),
         )
         self._draw_type(
             screen,
-            UNIT_TYPE_SURFS,
+            RENDER_ASSET_REF.get_unit_type_surf,
             ent_list,
             self._DrawType.UNIT,
             offset=(0, -SETTINGS_REF.ISO_TILE_OFFSET_Y * 2),

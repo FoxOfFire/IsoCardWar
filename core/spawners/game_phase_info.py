@@ -5,7 +5,7 @@ import esper
 from common import (
     SETTINGS_REF,
     Action,
-    GamePhaseEnum,
+    GamePhaseType,
     get_select_tile_action,
 )
 from layer1 import (
@@ -78,13 +78,14 @@ def _player_action() -> List[Action]:
 
 
 def get_base_game_phase_dict() -> (
-    Dict[GamePhaseEnum, Callable[[], List[Action]]]
+    Dict[GamePhaseType, Callable[[], List[Action]]]
 ):
+    logger.info("getting phase dict")
     return {
-        GamePhaseEnum.BEGIN_GAME: _begin_game,
-        GamePhaseEnum.DRAW: _draw,
-        GamePhaseEnum.PLAYER_ACTION: _player_action,
-        GamePhaseEnum.END_OF_TURN: _end_of_turn,
-        GamePhaseEnum.ENEMY_ACTION: _enemy_action,
-        GamePhaseEnum.END_GAME: _end_game,
+        GamePhaseType.BEGIN_GAME: _begin_game,
+        GamePhaseType.DRAW: _draw,
+        GamePhaseType.PLAYER_ACTION: _player_action,
+        GamePhaseType.END_OF_TURN: _end_of_turn,
+        GamePhaseType.ENEMY_ACTION: _enemy_action,
+        GamePhaseType.END_GAME: _end_game,
     }

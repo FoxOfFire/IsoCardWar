@@ -5,7 +5,7 @@ from .state_actions import *
 from .state_utils import (
     Action,
     ActionArgs,
-    GamePhaseEnum,
+    GamePhaseType,
     MarkerEnum,
     PriceEnum,
     TextFunc,

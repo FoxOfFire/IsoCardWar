@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 from typing import Optional, Type
 
 import esper
@@ -8,13 +7,8 @@ from common import POS_PROC_REF, BoundingBox
 from layer2.tags import UIElementComponent
 
 from .log import logger
-from .rendering_asset_loader import BUTTON_SURFS, UIElemType
-from .utils import draw_text_on_surf
-
-
-@dataclass
-class UIElemSprite:
-    elem_type: UIElemType
+from .rendering_asset_loader import RENDER_ASSET_REF
+from .utils import UIElemSprite
 
 
 class ButtonRenderer:
@@ -40,12 +34,12 @@ class ButtonRenderer:
             bb = esper.component_for_entity(ent, BoundingBox)
             ui_sprite = esper.try_component(ent, UIElemSprite)
             ui_elem = esper.try_component(ent, UIElementComponent)
-            if ui_sprite is None or ui_elem is None:
+            if ui_sprite is None or ui_elem is None or not ui_elem.is_visible:
                 continue
 
-            surf = BUTTON_SURFS[ui_sprite.elem_type][
+            surf = RENDER_ASSET_REF.get_button_surf(ui_sprite)[
                 ui_elem.state.value - 1
             ].copy()
-            draw_text_on_surf(surf, ent)
+            RENDER_ASSET_REF.draw_text_on_surf(surf, ent)
 
             screen.blit(surf, surf.get_rect(center=bb.center))

@@ -20,6 +20,7 @@ from layer1 import (
 )
 from layer2 import (
     DYING_PROC_REF,
+    RENDER_ASSET_REF,
     RENDER_PROC_REF,
     SCENE_SWITCH_PROC_REF,
     UI_PROC_REF,
@@ -32,7 +33,6 @@ from layer2 import (
     bind_events,
     bind_keyboard_events,
     init_audio,
-    load_images,
     ui_event_obj,
 )
 
@@ -150,9 +150,10 @@ def init() -> None:
     init_audio()
 
     # game world
-    esper.switch_world(WorldEnum.GAME.value)
+    esper.switch_world(WorldEnum.GAME.name)
     init_game_world_esper()
-    load_images()
+    RENDER_ASSET_REF.load_images()
+    RENDER_ASSET_REF.load_font()
     build_ui()
     logger.info(f"{esper.current_world} world init finished")
 

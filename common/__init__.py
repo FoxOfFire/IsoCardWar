@@ -15,7 +15,7 @@ from .state import (
     STATE_REF,
     Action,
     ActionArgs,
-    GamePhaseEnum,
+    GamePhaseType,
     MarkerEnum,
     PriceEnum,
     TextFunc,

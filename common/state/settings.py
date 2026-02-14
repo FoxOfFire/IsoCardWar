@@ -77,8 +77,7 @@ class Settings:
     FONT_COLOR = pygame.Color(53, 43, 66, 255)
     FONT_SIZE = 6
 
-    BUTTON_WIDTH = 64
-    BUTTON_HEIGHT = 13
+    BUTTON_TILE_SIZE = 12
 
 
 SETTINGS_REF = Settings()
