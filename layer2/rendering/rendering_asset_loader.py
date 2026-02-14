@@ -104,14 +104,19 @@ class RenderAssetContainer:
         enum: UIElemType,
         /,
         *,
-        rect: Tuple[int, int],
+        size: Tuple[int, int],
         offset: int,
-        size: int,
     ) -> pygame.Surface:
         tilemap: List[pygame.Surface] = self._BUTTON_TILE_MAPS[enum]
-        x, y = rect
-        fin = pygame.Surface((x * size, y * size))
-        fin.fill(pygame.Color(1, 0, 1, 1))
+        x, y = size
+        fin = pygame.Surface(
+            (
+                x * SETTINGS_REF.BUTTON_TILE_SIZE,
+                y * SETTINGS_REF.BUTTON_TILE_SIZE,
+            ),
+            flags=pygame.SRCALPHA,
+        )
+        fin.fill((0, 0, 0, 0))
         tilemap_len = len(tilemap)
         for i in range(x):
             for j in range(y):
@@ -128,7 +133,15 @@ class RenderAssetContainer:
                     tile -= 1
 
                 surf = tilemap[tile]
-                fin.blit(surf, surf.get_rect(topleft=(i * size, j * size)))
+                fin.blit(
+                    surf,
+                    surf.get_rect(
+                        topleft=(
+                            i * SETTINGS_REF.BUTTON_TILE_SIZE,
+                            j * SETTINGS_REF.BUTTON_TILE_SIZE,
+                        )
+                    ),
+                )
         return fin
 
     def get_button_surf(self, sprite: UIElemSprite) -> List[pygame.Surface]:
@@ -140,9 +153,8 @@ class RenderAssetContainer:
             for i in range(3):
                 surf = self._get_rect_tile_surf(
                     elem,
-                    rect=(x, y),
+                    size=(x, y),
                     offset=i,
-                    size=SETTINGS_REF.BUTTON_TILE_SIZE,
                 )
                 surfs.append(surf)
 
@@ -248,7 +260,7 @@ class RenderAssetContainer:
                     y = info["y"]
                     w = info["w"]
                     h = info["h"]
-                    surf = pygame.Surface((w, h))
+                    surf = pygame.Surface((w, h), flags=pygame.SRCALPHA)
                     surf.blit(img, img.get_rect(topleft=(-x, -y)))
                     extracted_frames.append(surf)
 

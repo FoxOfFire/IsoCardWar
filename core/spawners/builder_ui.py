@@ -82,7 +82,7 @@ def build_ui() -> None:
 
     spawn_button(
         (5, 65),
-        (3, 1),
+        (3, 2),
         "Quit",
         UIElemType.BUTTON,
         click_func=[quit_game],
@@ -90,6 +90,14 @@ def build_ui() -> None:
     spawn_button(
         (5, 50),
         (4, 1),
+        "End Turn",
+        UIElemType.BUTTON,
+        click_func=[end_player_phase_action],
+    )
+
+    spawn_button(
+        (5, 100),
+        (4, 3),
         "End Turn",
         UIElemType.BUTTON,
         click_func=[end_player_phase_action],
