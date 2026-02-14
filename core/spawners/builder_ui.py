@@ -81,12 +81,12 @@ def build_ui() -> None:
         top_offset += 5 * SETTINGS_REF.BUTTON_TILE_SIZE
 
     spawn_button(
-            (5, 65),
-            (3, 1),
-            "Quit",
-            UIElemType.BUTTON,
-            click_func=[quit_game],
-        )
+        (5, 65),
+        (3, 1),
+        "Quit",
+        UIElemType.BUTTON,
+        click_func=[quit_game],
+    )
     spawn_button(
         (5, 50),
         (4, 1),
