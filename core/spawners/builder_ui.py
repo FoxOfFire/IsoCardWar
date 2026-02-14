@@ -30,19 +30,19 @@ def build_ui() -> None:
     if SETTINGS_REF.RENDER_FPS_UI:
         spawn_button(
             (top_offset, 5),
-            (5, 1),
+            (4, 1),
             get_fps_str,
             UIElemType.TEXTBOX,
         )
-        top_offset += 70
+        top_offset += 4 * SETTINGS_REF.BUTTON_TILE_SIZE
     if SETTINGS_REF.RENDER_GAME_PHASE_UI:
         spawn_button(
             (top_offset, 5),
-            (5, 1),
+            (6, 1),
             get_game_phase_str,
             UIElemType.TEXTBOX,
         )
-        top_offset += 70
+        top_offset += 6 * SETTINGS_REF.BUTTON_TILE_SIZE
 
     if SETTINGS_REF.RENDER_TRACKED_ISO_UI:
         spawn_button(
@@ -51,15 +51,16 @@ def build_ui() -> None:
             partial(get_tracked_bb_of_type_str, TrackIso, "TrackIso"),
             UIElemType.TEXTBOX,
         )
-        top_offset += 70
-    if SETTINGS_REF.RENDER_TRACKED_UI_UI:
+        top_offset += 5 * SETTINGS_REF.BUTTON_TILE_SIZE
+    if SETTINGS_REF.RENDER_ISO_CAM_INTERSECT_UI:
+        _, (cam_bb, _) = (esper.get_components(BoundingBox, IsoCameraTag))[0]
         spawn_button(
             (top_offset, 5),
             (5, 1),
-            partial(get_tracked_bb_of_type_str, TrackUI, "TrackUI"),
+            partial(get_intersection_count, "TrackIso", cam_bb, TrackIso),
             UIElemType.TEXTBOX,
         )
-        top_offset += 70
+        top_offset += 5 * SETTINGS_REF.BUTTON_TILE_SIZE
 
     if SETTINGS_REF.RENDER_GAME_CAM_INTERSECT_UI:
         _, (cam_bb, _) = (esper.get_components(BoundingBox, GameCameraTag))[0]
@@ -69,25 +70,23 @@ def build_ui() -> None:
             partial(get_intersection_count, "TrackUI", cam_bb, TrackUI),
             UIElemType.TEXTBOX,
         )
-        top_offset += 70
-
-    if SETTINGS_REF.RENDER_ISO_CAM_INTERSECT_UI:
-        _, (cam_bb, _) = (esper.get_components(BoundingBox, IsoCameraTag))[0]
+        top_offset += 5 * SETTINGS_REF.BUTTON_TILE_SIZE
+    if SETTINGS_REF.RENDER_TRACKED_UI_UI:
         spawn_button(
             (top_offset, 5),
             (5, 1),
-            partial(get_intersection_count, "TrackIso", cam_bb, TrackIso),
+            partial(get_tracked_bb_of_type_str, TrackUI, "TrackUI"),
             UIElemType.TEXTBOX,
         )
-        top_offset += 70
+        top_offset += 5 * SETTINGS_REF.BUTTON_TILE_SIZE
 
     spawn_button(
-        (5, 65),
-        (3, 1),
-        "Quit",
-        UIElemType.BUTTON,
-        click_func=[quit_game],
-    )
+            (5, 65),
+            (3, 1),
+            "Quit",
+            UIElemType.BUTTON,
+            click_func=[quit_game],
+        )
     spawn_button(
         (5, 50),
         (4, 1),
