@@ -49,7 +49,7 @@ class MapData:
                     and terrain != TerrainEnum.WATER
                     and terrain != TerrainEnum.EMPTY
                 ):
-                    while unit == UnitTypeEnum.WITCH or unit == None:
+                    while unit == UnitTypeEnum.WITCH or unit is None:
                         unit = UnitTypeEnum(
                             randint(1, len(list(UnitTypeEnum)))
                         )
