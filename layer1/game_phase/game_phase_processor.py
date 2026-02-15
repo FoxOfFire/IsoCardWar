@@ -7,7 +7,7 @@ from common import (
     SETTINGS_REF,
     STATE_REF,
     Action,
-    GamePhaseEnum,
+    GamePhaseType,
 )
 
 from .log import logger
@@ -19,7 +19,7 @@ class GamePhaseProcessor(esper.Processor):
     def __init__(self) -> None:
         self.wait = SETTINGS_REF.GAME_PHASE_PAUSE
         self.phase_funk_queue: Dict[
-            GamePhaseEnum, Callable[[], List[Action]]
+            GamePhaseType, Callable[[], List[Action]]
         ] = {}
         self.next_funk_queue: List[Action] = []
         logger.info("GamePhaseProcessor init finished")
@@ -31,12 +31,12 @@ class GamePhaseProcessor(esper.Processor):
             return
         self.wait = SETTINGS_REF.GAME_PHASE_PAUSE
 
-        phase: GamePhaseEnum = STATE_REF.game_phase
+        phase: GamePhaseType = STATE_REF.game_phase
 
         if len(self.next_funk_queue) > 0:
             self.next_funk_queue.pop()(STATE_REF.selected_tile)
             return
-        if phase == GamePhaseEnum.END_GAME:
+        if phase == GamePhaseType.END_GAME:
             return
         assert self.end_phase is not None
         self.end_phase(None)
@@ -50,13 +50,13 @@ class GamePhaseProcessor(esper.Processor):
 
     def process(self) -> None:
         phase = STATE_REF.game_phase
-        if phase == GamePhaseEnum.PLAYER_ACTION:
+        if phase == GamePhaseType.PLAYER_ACTION:
             self._player_action_phase()
         else:
             self._non_player_phase()
 
     def add_game_phase(
-        self, phase: GamePhaseEnum, func_list: Callable[[], List[Action]]
+        self, phase: GamePhaseType, func_list: Callable[[], List[Action]]
     ) -> None:
         logger.info("adding game phase:" + str(phase))
         self.phase_funk_queue.update({phase: func_list})

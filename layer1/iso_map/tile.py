@@ -1,25 +1,19 @@
-from enum import Enum, auto
+from enum import IntEnum, auto
 from typing import Optional, Tuple
 
 
-class TerrainEnum(Enum):
+class TerrainEnum(IntEnum):
     EMPTY = auto()
     CONCRETE = auto()
     GRASS = auto()
     WATER = auto()
 
 
-class UnitTypeEnum(Enum):
+class UnitTypeEnum(IntEnum):
     CAULDRON = auto()
     BIG_CAULDRON = auto()
     KNIGHT = auto()
     FARMER = auto()
-
-
-class SelectionTypeEnum(Enum):
-    RED = auto()
-    GREEN = auto()
-    BLUE = auto()
 
 
 class Tile:

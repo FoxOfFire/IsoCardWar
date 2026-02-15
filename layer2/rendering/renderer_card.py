@@ -4,23 +4,12 @@ from typing import Optional, Type
 import esper
 import pygame
 
-from common import (
-    POS_PROC_REF,
-    SETTINGS_REF,
-    STATE_REF,
-    BoundingBox,
-)
+from common import POS_PROC_REF, STATE_REF, BoundingBox
 from layer1 import DECK_REF, Card
 from layer2.tags import MaskedSprite
 
-from .rendering_asset_loader import (
-    CARD_IMAGE_SURFS,
-    CARD_MARKER_SURFS,
-    CARD_TYPE_SURFS,
-    CardImageEnum,
-    CardTypeEnum,
-)
-from .utils import draw_text_on_surf
+from .rendering_asset_loader import RENDER_ASSET_REF
+from .utils import CardImageEnum, CardTypeEnum
 
 
 @dataclass
@@ -68,26 +57,13 @@ class CardRenderer:
                 continue
 
             bb = esper.component_for_entity(ent, BoundingBox)
-            surf = pygame.Surface(
-                (SETTINGS_REF.CARD_WIDTH, SETTINGS_REF.CARD_HEIGHT),
-                flags=pygame.SRCALPHA,
+            surf = RENDER_ASSET_REF.get_card_surf(
+                border=CardTypeEnum.BASIC,
+                image=CardImageEnum.BASIC_IMAGE,
+                marker=card.marker,
+                frame=0,
             )
-            marker_surf = CARD_MARKER_SURFS[card.marker]
-
-            surf.blit(
-                CARD_IMAGE_SURFS[CardImageEnum.BASIC][0], surf.get_rect()
-            )
-            surf.blit(CARD_TYPE_SURFS[CardTypeEnum.BASIC], surf.get_rect())
-            surf.blit(
-                marker_surf,
-                marker_surf.get_rect(
-                    topleft=(
-                        SETTINGS_REF.RELATIVE_MARKER_POS_X,
-                        SETTINGS_REF.RELATIVE_MARKER_POS_Y,
-                    )
-                ),
-            )
-            draw_text_on_surf(surf, ent)
+            RENDER_ASSET_REF.draw_text_on_surf(surf, ent)
 
             sprite.mask = pygame.mask.from_surface(surf)
 

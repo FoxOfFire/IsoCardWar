@@ -25,6 +25,7 @@ from .log import logger
 
 def spawn_button(
     topleft: Tuple[float, float],
+    size: Tuple[int, int],
     text: str | TextFunc,
     ui_elem_type: UIElemType,
     /,
@@ -36,6 +37,7 @@ def spawn_button(
 ) -> int:
     logger.info("spawning button")
     x, y = topleft
+    w, h = size
     if not callable(text):
 
         @TextFuncDecor
@@ -48,7 +50,10 @@ def spawn_button(
         mod_text = text
 
     bb = BoundingBox(
-        x, x + SETTINGS_REF.BUTTON_WIDTH, y, y + SETTINGS_REF.BUTTON_HEIGHT
+        x,
+        x + w * SETTINGS_REF.BUTTON_TILE_SIZE,
+        y,
+        y + h * SETTINGS_REF.BUTTON_TILE_SIZE,
     )
     offset_x = bb.width / 2
     offset_y = bb.height / 2
@@ -73,7 +78,7 @@ def spawn_button(
         end_hover_func=remove_hover_func,
     )
     tracker = TrackUI()
-    ui_elem_sprite = UIElemSprite(ui_elem_type)
+    ui_elem_sprite = UIElemSprite(ui_elem_type, size)
 
     return esper.create_entity(
         bb, ui_elem, tracker, ui_elem_sprite, Untracked()

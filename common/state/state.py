@@ -3,7 +3,7 @@ from typing import Dict, Optional
 
 from .state_utils import (
     Action,
-    GamePhaseEnum,
+    GamePhaseType,
     PriceEnum,
 )
 
@@ -15,7 +15,7 @@ class GameState:
     selected_card: Optional[int] = None
     selected_tile: Optional[int] = None
     hovered_ent: Optional[int] = None
-    game_phase: GamePhaseEnum = GamePhaseEnum.BEGIN_GAME
+    game_phase: GamePhaseType = GamePhaseType.BEGIN_GAME
     end_player_phase: bool = False
 
 

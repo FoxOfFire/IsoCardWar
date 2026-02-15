@@ -10,11 +10,11 @@ class Settings:
     RENDER_MASKS = False
 
     RENDER_FPS_UI = True
-    RENDER_GAME_PHASE_UI = False
+    RENDER_GAME_PHASE_UI = True
     RENDER_TRACKED_ISO_UI = False
     RENDER_TRACKED_UI_UI = False
-    RENDER_GAME_CAM_INTERSECT_UI = True
-    RENDER_ISO_CAM_INTERSECT_UI = True
+    RENDER_GAME_CAM_INTERSECT_UI = False
+    RENDER_ISO_CAM_INTERSECT_UI = False
     # rendering
     GAME_CAM_HEIGHT = 240
     GAME_CAM_WIDTH = GAME_CAM_HEIGHT // 9 * 16
@@ -77,8 +77,7 @@ class Settings:
     FONT_COLOR = pygame.Color(53, 43, 66, 255)
     FONT_SIZE = 6
 
-    BUTTON_WIDTH = 64
-    BUTTON_HEIGHT = 13
+    BUTTON_TILE_SIZE = 12
 
 
 SETTINGS_REF = Settings()

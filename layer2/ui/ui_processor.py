@@ -8,7 +8,7 @@ from common import (
     SETTINGS_REF,
     STATE_REF,
     BoundingBox,
-    GamePhaseEnum,
+    GamePhaseType,
 )
 from layer2.tags import (
     GameCameraTag,
@@ -104,7 +104,7 @@ class UIProcessor(esper.Processor):
 
         tag = esper.component_for_entity(ent, UIElementComponent)
         if not self.__mask_mouse_overlap(ent) or (
-            STATE_REF.game_phase != GamePhaseEnum.PLAYER_ACTION
+            STATE_REF.game_phase != GamePhaseType.PLAYER_ACTION
             and tag.is_gameplay_elem
         ):
             return
