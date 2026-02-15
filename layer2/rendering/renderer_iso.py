@@ -13,8 +13,8 @@ from common import (
 )
 from layer1 import Card, Tile
 
+from .asset_container_iso import ISO_ASSET_REF
 from .log import logger
-from .rendering_asset_loader import RENDER_ASSET_REF
 
 
 @dataclass
@@ -117,20 +117,20 @@ class IsoRenderer:
         )
         self._draw_type(
             screen,
-            RENDER_ASSET_REF.get_tile_type_surf,
+            ISO_ASSET_REF.get_tile_type_surf,
             ent_list,
             self._DrawType.TILE,
         )
         self._draw_type(
             screen,
-            RENDER_ASSET_REF.get_selection_surf,
+            ISO_ASSET_REF.get_selection_surf,
             ent_list,
             self._DrawType.SELECTION,
             offset=(0, -SETTINGS_REF.ISO_TILE_OFFSET_Y * 2),
         )
         self._draw_type(
             screen,
-            RENDER_ASSET_REF.get_unit_type_surf,
+            ISO_ASSET_REF.get_unit_type_surf,
             ent_list,
             self._DrawType.UNIT,
             offset=(0, -SETTINGS_REF.ISO_TILE_OFFSET_Y * 2),

@@ -13,12 +13,19 @@ from .log import logger
 def set_type_actions() -> None:
     logger.info("set_type_actions")
 
-    MAP_DATA_REF.set_actions_for_type(None, [])
+    MAP_DATA_REF.set_actions_for_type(
+        None,
+        [],
+    )
     MAP_DATA_REF.set_actions_for_type(
         UnitTypeEnum.CAULDRON,
         [
             get_change_target_unit_action(UnitTypeEnum.BIG_CAULDRON),
         ],
+    )
+    MAP_DATA_REF.set_actions_for_type(
+        UnitTypeEnum.WITCH,
+        [],
     )
     MAP_DATA_REF.set_actions_for_type(
         UnitTypeEnum.BIG_CAULDRON,

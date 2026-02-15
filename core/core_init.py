@@ -19,10 +19,12 @@ from layer1 import (
     end_phase,
 )
 from layer2 import (
+    CARD_ASSET_REF,
     DYING_PROC_REF,
-    RENDER_ASSET_REF,
+    ISO_ASSET_REF,
     RENDER_PROC_REF,
     SCENE_SWITCH_PROC_REF,
+    UI_ASSET_REF,
     UI_PROC_REF,
     GameCameraTag,
     IsoCameraTag,
@@ -152,8 +154,10 @@ def init() -> None:
     # game world
     esper.switch_world(WorldEnum.GAME.name)
     init_game_world_esper()
-    RENDER_ASSET_REF.load_images()
-    RENDER_ASSET_REF.load_font()
+    UI_ASSET_REF.load_images()
+    ISO_ASSET_REF.load_images()
+    CARD_ASSET_REF.load_images()
+
     build_ui()
     logger.info(f"{esper.current_world} world init finished")
 

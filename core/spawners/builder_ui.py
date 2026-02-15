@@ -26,79 +26,79 @@ from .text_functions import (
 
 
 def build_ui() -> None:
+    spawn_button(
+        (0, 0),
+        (7, 10),
+        "",
+        UIElemType.MENU,
+    )
     top_offset = 5
     if SETTINGS_REF.RENDER_FPS_UI:
         spawn_button(
-            (top_offset, 5),
+            (5, top_offset),
             (4, 1),
             get_fps_str,
             UIElemType.TEXTBOX,
         )
-        top_offset += 4 * SETTINGS_REF.BUTTON_TILE_SIZE
+        top_offset += SETTINGS_REF.BUTTON_TILE_SIZE
     if SETTINGS_REF.RENDER_GAME_PHASE_UI:
         spawn_button(
-            (top_offset, 5),
+            (5, top_offset),
             (6, 1),
             get_game_phase_str,
             UIElemType.TEXTBOX,
         )
-        top_offset += 6 * SETTINGS_REF.BUTTON_TILE_SIZE
+        top_offset += SETTINGS_REF.BUTTON_TILE_SIZE
 
     if SETTINGS_REF.RENDER_TRACKED_ISO_UI:
         spawn_button(
-            (top_offset, 5),
+            (5, top_offset),
             (5, 1),
             partial(get_tracked_bb_of_type_str, TrackIso, "TrackIso"),
             UIElemType.TEXTBOX,
         )
-        top_offset += 5 * SETTINGS_REF.BUTTON_TILE_SIZE
+        top_offset += SETTINGS_REF.BUTTON_TILE_SIZE
     if SETTINGS_REF.RENDER_ISO_CAM_INTERSECT_UI:
         _, (cam_bb, _) = (esper.get_components(BoundingBox, IsoCameraTag))[0]
         spawn_button(
-            (top_offset, 5),
+            (5, top_offset),
             (5, 1),
             partial(get_intersection_count, "TrackIso", cam_bb, TrackIso),
             UIElemType.TEXTBOX,
         )
-        top_offset += 5 * SETTINGS_REF.BUTTON_TILE_SIZE
+        top_offset += SETTINGS_REF.BUTTON_TILE_SIZE
 
     if SETTINGS_REF.RENDER_GAME_CAM_INTERSECT_UI:
         _, (cam_bb, _) = (esper.get_components(BoundingBox, GameCameraTag))[0]
         spawn_button(
-            (top_offset, 5),
+            (5, top_offset),
             (5, 1),
             partial(get_intersection_count, "TrackUI", cam_bb, TrackUI),
             UIElemType.TEXTBOX,
         )
-        top_offset += 5 * SETTINGS_REF.BUTTON_TILE_SIZE
+        top_offset += SETTINGS_REF.BUTTON_TILE_SIZE
     if SETTINGS_REF.RENDER_TRACKED_UI_UI:
         spawn_button(
-            (top_offset, 5),
+            (5, top_offset),
             (5, 1),
             partial(get_tracked_bb_of_type_str, TrackUI, "TrackUI"),
             UIElemType.TEXTBOX,
         )
-        top_offset += 5 * SETTINGS_REF.BUTTON_TILE_SIZE
+        top_offset += SETTINGS_REF.BUTTON_TILE_SIZE
 
     spawn_button(
-        (5, 65),
+        (5, top_offset),
         (3, 2),
         "Quit",
         UIElemType.BUTTON,
         click_func=[quit_game],
     )
+    top_offset += 2 * SETTINGS_REF.BUTTON_TILE_SIZE
     spawn_button(
-        (5, 50),
+        (5, top_offset),
         (4, 1),
         "End Turn",
         UIElemType.BUTTON,
         click_func=[end_player_phase_action],
     )
-
-    spawn_button(
-        (5, 100),
-        (4, 3),
-        "End Turn",
-        UIElemType.BUTTON,
-        click_func=[end_player_phase_action],
-    )
+    top_offset += SETTINGS_REF.BUTTON_TILE_SIZE

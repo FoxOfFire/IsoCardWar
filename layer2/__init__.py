@@ -3,8 +3,10 @@ from .dying import DYING_PROC_REF
 from .enums import UIStateEnum, WorldEnum
 from .event_handlers import bind_events
 from .rendering import (
-    RENDER_ASSET_REF,
+    CARD_ASSET_REF,
+    ISO_ASSET_REF,
     RENDER_PROC_REF,
+    UI_ASSET_REF,
     CardSprite,
     IsoSprite,
     UIElemSprite,

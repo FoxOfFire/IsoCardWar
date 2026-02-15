@@ -8,6 +8,7 @@ from common import POS_PROC_REF, STATE_REF, BoundingBox
 from layer1 import DECK_REF, Card
 from layer2.tags import MaskedSprite
 
+from .asset_container_card import CARD_ASSET_REF
 from .rendering_asset_loader import RENDER_ASSET_REF
 from .utils import CardImageEnum, CardTypeEnum
 
@@ -57,7 +58,7 @@ class CardRenderer:
                 continue
 
             bb = esper.component_for_entity(ent, BoundingBox)
-            surf = RENDER_ASSET_REF.get_card_surf(
+            surf = CARD_ASSET_REF.get_card_surf(
                 border=CardTypeEnum.BASIC,
                 image=CardImageEnum.BASIC_IMAGE,
                 marker=card.marker,
