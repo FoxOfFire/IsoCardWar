@@ -162,7 +162,7 @@ class UIProcessor(esper.Processor):
             if not ui_tag.is_visible or not ui_tag.is_clickable:
                 continue
 
-            if self.left_clicking:
+            if self.left_clicking and ui_tag.is_clickable:
                 ui_tag.state = UIStateEnum.PRESSED
                 self.clicked.append(ent)
             elif ent not in self.hover:

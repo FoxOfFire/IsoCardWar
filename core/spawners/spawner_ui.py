@@ -70,12 +70,18 @@ def spawn_button(
     click_func.append(get_sound_action(SoundTypeEnum.CLICK))
     start_hover_func.append(get_sound_action(SoundTypeEnum.POP))
 
+    clickable: bool = (
+        ui_elem_type == UIElemType.BUTTON
+        or ui_elem_type == UIElemType.SLIDER
+        or ui_elem_type == UIElemType.CHECKBOX
+    )
     ui_elem = UIElementComponent(
         text=[text_data],
         click_func=click_func,
         hover_func=hover_func,
         start_hover_func=start_hover_func,
         end_hover_func=remove_hover_func,
+        is_clickable=clickable,
     )
     tracker = TrackUI()
     ui_elem_sprite = UIElemSprite(ui_elem_type, size)
