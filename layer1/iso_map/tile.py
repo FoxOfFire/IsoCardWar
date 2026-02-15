@@ -12,6 +12,7 @@ class TerrainEnum(IntEnum):
 class UnitTypeEnum(IntEnum):
     CAULDRON = auto()
     BIG_CAULDRON = auto()
+    WITCH = auto()
     KNIGHT = auto()
     FARMER = auto()
 
