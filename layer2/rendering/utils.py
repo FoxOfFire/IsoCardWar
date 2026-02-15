@@ -19,6 +19,9 @@ class CardImageEnum(IntEnum):
 class UIElemType(IntEnum):
     BUTTON = auto()
     TEXTBOX = auto()
+    MENU = auto()
+    CHECKBOX = auto()
+    SLIDER = auto()
 
 
 @dataclass
