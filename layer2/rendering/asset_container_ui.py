@@ -101,7 +101,7 @@ class UIAssetContainer:
                 surfs.append(surf)
             if is_checkbox:
                 elem = UIElemType.CHECKBOX
-            logger.info(f"updated button:{elem,x,y}")
+            logger.info(f"updated button:{elem, data, x, y}")
             self._BUTTON_SURFS.update({(elem, data, x, y): surfs})
 
         return surfs
