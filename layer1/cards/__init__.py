@@ -3,6 +3,7 @@ from .card_actions import (
     discard_hand,
     draw_card,
     get_draw_cards_action,
+    get_set_order_action,
     play_card,
     shuffle_deck,
     sort_hand,

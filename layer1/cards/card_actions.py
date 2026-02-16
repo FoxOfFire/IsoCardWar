@@ -40,6 +40,10 @@ def play_card(target: ActionArgs) -> None:
     esper.component_for_entity(ent, Health).hp = 0
 
 
+def get_set_order_action(order: OrganizationEnum) -> Action:
+    return lambda _: DECK_REF.set_order(order)
+
+
 def discard_hand(_: ActionArgs) -> None:
     while len(DECK_REF.hand) > 0:
         play_card(None)

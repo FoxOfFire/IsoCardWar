@@ -8,6 +8,7 @@ from .cards import (
     discard_hand,
     draw_card,
     get_draw_cards_action,
+    get_set_order_action,
     shuffle_deck,
     sort_hand,
 )
