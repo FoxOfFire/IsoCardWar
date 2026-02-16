@@ -89,14 +89,6 @@ def build_ui() -> None:
 
     spawn_button(
         (5, top_offset),
-        (3, 2),
-        "Quit",
-        UIElemType.BUTTON,
-        click_func=[quit_game],
-    )
-    top_offset += 2 * SETTINGS_REF.BUTTON_TILE_SIZE
-    spawn_button(
-        (5, top_offset),
         (4, 1),
         "End Turn",
         UIElemType.BUTTON,
@@ -106,8 +98,18 @@ def build_ui() -> None:
     spawn_button(
         (5, top_offset),
         (5, 1),
-        "Toggle Sound",
+        "Mute Game",
         UIElemType.CHECKBOX,
         click_func=[toggle_sound],
+        button_default_data=SETTINGS_REF.GAME_MUTE,
+    )
+    top_offset += SETTINGS_REF.BUTTON_TILE_SIZE
+
+    spawn_button(
+        (5, top_offset),
+        (3, 1),
+        "Quit",
+        UIElemType.BUTTON,
+        click_func=[quit_game],
     )
     top_offset += SETTINGS_REF.BUTTON_TILE_SIZE

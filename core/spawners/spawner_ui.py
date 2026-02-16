@@ -34,6 +34,7 @@ def spawn_button(
     hover_func: Optional[List[Action]] = None,
     start_hover_func: Optional[List[Action]] = None,
     remove_hover_func: Optional[List[Action]] = None,
+    button_default_data: Optional[bool | float] = None,
 ) -> int:
     logger.info("spawning button")
     x, y = topleft
@@ -74,7 +75,6 @@ def spawn_button(
 
     if ui_elem_type == UIElemType.CHECKBOX:
         offset_x += SETTINGS_REF.BUTTON_TILE_SIZE / 3
-        ui_elem_data = False
 
     text_data = TextData(mod_text, (offset_x, offset_y))
 
@@ -90,7 +90,7 @@ def spawn_button(
         start_hover_func=start_hover_func,
         end_hover_func=remove_hover_func,
         is_clickable=clickable,
-        button_val=ui_elem_data,
+        button_val=button_default_data,
     )
     tracker = TrackUI()
     ui_elem_sprite = UIElemSprite(ui_elem_type, size)

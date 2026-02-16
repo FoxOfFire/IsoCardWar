@@ -20,7 +20,7 @@ class Settings:
     GAME_CAM_WIDTH = GAME_CAM_HEIGHT // 9 * 16
 
     GAME_FULLSCREEN = True
-    GAME_MUTE = False
+    GAME_MUTE = True
     # Performance
     LOG_TICK_PERFORMANCE = False
     FPS = 600
