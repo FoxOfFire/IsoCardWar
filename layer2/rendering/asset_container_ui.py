@@ -72,7 +72,8 @@ class UIAssetContainer:
     def get_button_surf(self, sprite: UIElemSprite) -> List[pygame.Surface]:
         elem = sprite.elem_type
         x, y = sprite.size
-        assert elem != UIElemType.SLIDER
+        if elem == UIElemType.SLIDER:
+            assert x == 1 or y == 1
         is_checkbox = elem == UIElemType.CHECKBOX
         if is_checkbox:
             data = sprite.button_data

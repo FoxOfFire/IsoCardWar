@@ -14,6 +14,7 @@ from layer2 import (
     TrackUI,
     UIElemType,
     quit_game,
+    set_slider_val,
     toggle_sound,
 )
 
@@ -105,6 +106,15 @@ def build_ui() -> None:
     )
     top_offset += SETTINGS_REF.BUTTON_TILE_SIZE
 
+    spawn_button(
+        (5, top_offset),
+        (4, 1),
+        "Slider",
+        UIElemType.SLIDER,
+        button_default_data=0.5,
+        click_funcing=[set_slider_val],
+    )
+    top_offset += SETTINGS_REF.BUTTON_TILE_SIZE
     spawn_button(
         (5, top_offset),
         (3, 1),

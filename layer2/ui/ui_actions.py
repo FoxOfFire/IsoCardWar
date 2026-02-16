@@ -1,3 +1,5 @@
+from random import random
+
 import esper
 import pygame
 
@@ -10,10 +12,14 @@ from common import (
     hover,
     play_card,
 )
-from layer2.tags import UIElementComponent
+from layer2.tags import GameCameraTag, UIElementComponent
 
 from .audio import SoundTypeEnum, play_sfx
-from .ui_utils import get_transformed_mouse_pos, ui_event_obj
+from .ui_utils import (
+    get_mouse_pos_in_px,
+    get_transformed_mouse_pos,
+    ui_event_obj,
+)
 
 
 def get_sound_action(sound: SoundTypeEnum) -> Action:
@@ -48,11 +54,37 @@ def flip_ui_elem_val(ent: ActionArgs) -> None:
 
 
 def toggle_sound(ent: ActionArgs) -> None:
+    flip_ui_elem_val(ent)
     assert ent is not None
     ui_elem = esper.try_component(ent, UIElementComponent)
     assert ui_elem is not None
-    ui_elem.button_val = not SETTINGS_REF.GAME_MUTE
     SETTINGS_REF.GAME_MUTE = ui_elem.button_val
+
+
+def set_button_val_to_random(ent: ActionArgs) -> None:
+    assert ent is not None
+    ui_elem = esper.try_component(ent, UIElementComponent)
+    assert ui_elem is not None
+    ui_elem.button_val = random()
+
+
+def set_slider_val(ent: ActionArgs) -> None:
+    assert ent is not None
+    ui_elem = esper.try_component(ent, UIElementComponent)
+    bb = esper.try_component(ent, BoundingBox)
+    assert ui_elem is not None and bb is not None
+
+    mx, my = get_mouse_pos_in_px()
+
+    t_size = SETTINGS_REF.BUTTON_TILE_SIZE
+    if bb.width < t_size + 1:
+        w = bb.height - t_size
+        t = (my - bb.top - t_size / 2) / w
+    else:
+        w = bb.width - t_size
+        t = (mx - bb.left - t_size / 2) / w
+
+    ui_elem.button_val = min(1.0, max(0.0, t))
 
 
 def hover_over_tile(ent: ActionArgs) -> None:

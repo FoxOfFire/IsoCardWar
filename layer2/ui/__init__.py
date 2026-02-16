@@ -7,6 +7,8 @@ from .ui_actions import (
     flip_ui_elem_val,
     get_sound_action,
     hover_over_tile,
+    set_button_val_to_random,
+    set_slider_val,
     toggle_sound,
 )
 from .ui_processor import UI_PROC_REF

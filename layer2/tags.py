@@ -44,6 +44,7 @@ class TextData:
 @dataclass
 class UIElementComponent:
     click_func: List[Action]
+    clicking_func: List[Action]
     start_hover_func: List[Action]
     end_hover_func: List[Action]
     hover_func: List[Action]

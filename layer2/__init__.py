@@ -32,6 +32,8 @@ from .ui import (
     hover_over_tile,
     init_audio,
     quit_game,
+    set_button_val_to_random,
+    set_slider_val,
     toggle_sound,
     ui_event_obj,
 )
