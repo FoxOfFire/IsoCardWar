@@ -1,10 +1,11 @@
 from enum import IntEnum
-from typing import Dict, List, Tuple
+from typing import Dict, List, Optional, Tuple
 
 import pygame
 
 from common import SETTINGS_REF
 
+from .log import logger
 from .rendering_asset_loader import RENDER_ASSET_REF
 from .utils import UIElemSprite, UIElemType
 
@@ -12,7 +13,9 @@ from .utils import UIElemSprite, UIElemType
 class UIAssetContainer:
     _UI_ASSETS_DIR = "ui"
     _BUTTON_TILE_MAPS: Dict[IntEnum, List[pygame.Surface]] = {}
-    _BUTTON_SURFS: Dict[Tuple[IntEnum, int, int], List[pygame.Surface]] = {}
+    _BUTTON_SURFS: Dict[
+        Tuple[IntEnum, Optional[float | bool], int, int], List[pygame.Surface]
+    ] = {}
 
     def _get_rect_tile_surf(
         self,
@@ -72,16 +75,18 @@ class UIAssetContainer:
     def get_button_surf(self, sprite: UIElemSprite) -> List[pygame.Surface]:
         elem = sprite.elem_type
         x, y = sprite.size
+        data = sprite.button_data
+
         if elem == UIElemType.SLIDER:
+            data = None
             assert x == 1 or y == 1
-        is_checkbox = elem == UIElemType.CHECKBOX
-        if is_checkbox:
-            data = sprite.button_data
-            assert isinstance(data, bool) and x > 1
-            checksurf = self._get_checkbox_surf(data)
-            elem = UIElemType.BUTTON
-        surfs = self._BUTTON_SURFS.get((elem, x, y))
+        surfs = self._BUTTON_SURFS.get((elem, data, x, y))
         if surfs is None:
+            is_checkbox = elem == UIElemType.CHECKBOX
+            if is_checkbox:
+                assert isinstance(data, bool)
+                checksurf = self._get_checkbox_surf(data)
+                elem = UIElemType.BUTTON
             surfs = []
             for i in range(3):
                 surf = self._get_rect_tile_surf(
@@ -94,6 +99,10 @@ class UIAssetContainer:
                         checksurf[i], checksurf[i].get_rect(topleft=(0, 0))
                     )
                 surfs.append(surf)
+            if is_checkbox:
+                elem = UIElemType.CHECKBOX
+            logger.info(f"updated button:{elem,x,y}")
+            self._BUTTON_SURFS.update({(elem, data, x, y): surfs})
 
         return surfs
 
