@@ -33,6 +33,7 @@ class MapData:
     def make_map(self) -> None:
         assert self.tracker_tag is not None and self.sprite is not None
         w, h = SETTINGS_REF.ISO_MAP_WIDTH, SETTINGS_REF.ISO_MAP_HEIGHT
+        rpos = randint(0, w - 1), randint(0, h - 1)
         for i in range(h):
             for j in range(w):
                 bb = BoundingBox(i, i + 1, j, j + 1)
@@ -40,12 +41,18 @@ class MapData:
                 terrain = TerrainEnum(randint(1, len(list(TerrainEnum))))
                 unit: Optional[UnitTypeEnum] = None
 
-                if (
+                if (j, i) == rpos:
+                    terrain = TerrainEnum.GRASS
+                    unit = UnitTypeEnum.WITCH
+                elif (
                     randint(0, 2) == 0
                     and terrain != TerrainEnum.WATER
                     and terrain != TerrainEnum.EMPTY
                 ):
-                    unit = UnitTypeEnum(randint(1, len(list(UnitTypeEnum))))
+                    while unit == UnitTypeEnum.WITCH or unit is None:
+                        unit = UnitTypeEnum(
+                            randint(1, len(list(UnitTypeEnum)))
+                        )
 
                 tile = Tile(pos, terrain, unit=unit)
 

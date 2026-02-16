@@ -6,6 +6,7 @@ import pygame
 from common import POS_PROC_REF, BoundingBox
 from layer2.tags import UIElementComponent
 
+from .asset_container_ui import UI_ASSET_REF
 from .log import logger
 from .rendering_asset_loader import RENDER_ASSET_REF
 from .utils import UIElemSprite
@@ -37,7 +38,7 @@ class ButtonRenderer:
             if ui_sprite is None or ui_elem is None or not ui_elem.is_visible:
                 continue
 
-            surf = RENDER_ASSET_REF.get_button_surf(ui_sprite)[
+            surf = UI_ASSET_REF.get_button_surf(ui_sprite)[
                 ui_elem.state.value - 1
             ].copy()
             RENDER_ASSET_REF.draw_text_on_surf(surf, ent)
