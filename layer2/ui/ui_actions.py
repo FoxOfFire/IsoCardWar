@@ -3,12 +3,14 @@ import pygame
 
 from common import (
     POS_PROC_REF,
+    SETTINGS_REF,
     Action,
     ActionArgs,
     BoundingBox,
     hover,
     play_card,
 )
+from layer2.tags import UIElementComponent
 
 from .audio import SoundTypeEnum, play_sfx
 from .ui_utils import get_transformed_mouse_pos, ui_event_obj
@@ -36,6 +38,21 @@ def click_on_tile(ent: ActionArgs) -> None:
 
 def quit_game(_: ActionArgs = None) -> None:
     pygame.event.post(pygame.event.Event(pygame.QUIT))
+
+
+def flip_ui_elem_val(ent: ActionArgs) -> None:
+    assert ent is not None
+    ui_elem = esper.try_component(ent, UIElementComponent)
+    assert ui_elem is not None
+    ui_elem.button_val = not ui_elem.button_val
+
+
+def toggle_sound(ent: ActionArgs) -> None:
+    assert ent is not None
+    ui_elem = esper.try_component(ent, UIElementComponent)
+    assert ui_elem is not None
+    ui_elem.button_val = not SETTINGS_REF.GAME_MUTE
+    SETTINGS_REF.GAME_MUTE = ui_elem.button_val
 
 
 def hover_over_tile(ent: ActionArgs) -> None:

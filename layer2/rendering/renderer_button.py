@@ -38,6 +38,7 @@ class ButtonRenderer:
             if ui_sprite is None or ui_elem is None or not ui_elem.is_visible:
                 continue
 
+            ui_sprite.button_data = ui_elem.button_val
             surf = UI_ASSET_REF.get_button_surf(ui_sprite)[
                 ui_elem.state.value - 1
             ].copy()

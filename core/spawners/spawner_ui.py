@@ -57,7 +57,8 @@ def spawn_button(
     )
     offset_x = bb.width / 2
     offset_y = bb.height / 2
-    text_data = TextData(mod_text, (offset_x, offset_y))
+
+    ui_elem_data: Optional[bool | float] = None
 
     if click_func is None:
         click_func = []
@@ -67,8 +68,15 @@ def spawn_button(
         start_hover_func = []
     if remove_hover_func is None:
         remove_hover_func = []
+
     click_func.append(get_sound_action(SoundTypeEnum.CLICK))
     start_hover_func.append(get_sound_action(SoundTypeEnum.POP))
+
+    if ui_elem_type == UIElemType.CHECKBOX:
+        offset_x += SETTINGS_REF.BUTTON_TILE_SIZE / 3
+        ui_elem_data = False
+
+    text_data = TextData(mod_text, (offset_x, offset_y))
 
     clickable: bool = (
         ui_elem_type == UIElemType.BUTTON
@@ -82,6 +90,7 @@ def spawn_button(
         start_hover_func=start_hover_func,
         end_hover_func=remove_hover_func,
         is_clickable=clickable,
+        button_val=ui_elem_data,
     )
     tracker = TrackUI()
     ui_elem_sprite = UIElemSprite(ui_elem_type, size)

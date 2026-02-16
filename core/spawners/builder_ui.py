@@ -14,6 +14,7 @@ from layer2 import (
     TrackUI,
     UIElemType,
     quit_game,
+    toggle_sound,
 )
 
 from .spawner_ui import spawn_button
@@ -100,5 +101,13 @@ def build_ui() -> None:
         "End Turn",
         UIElemType.BUTTON,
         click_func=[end_player_phase_action],
+    )
+    top_offset += SETTINGS_REF.BUTTON_TILE_SIZE
+    spawn_button(
+        (5, top_offset),
+        (5, 1),
+        "Toggle Sound",
+        UIElemType.CHECKBOX,
+        click_func=[toggle_sound],
     )
     top_offset += SETTINGS_REF.BUTTON_TILE_SIZE

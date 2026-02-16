@@ -59,9 +59,26 @@ class UIAssetContainer:
                 )
         return fin
 
+    def _get_checkbox_surf(self, checked: bool) -> List[pygame.Surface]:
+        pos = 0
+        if checked:
+            pos += 3
+        tiles = self._BUTTON_TILE_MAPS[UIElemType.CHECKBOX]
+        ret = []
+        for i in range(pos, pos + 3):
+            ret.append(tiles[i])
+        return ret
+
     def get_button_surf(self, sprite: UIElemSprite) -> List[pygame.Surface]:
         elem = sprite.elem_type
         x, y = sprite.size
+        assert elem != UIElemType.SLIDER
+        is_checkbox = elem == UIElemType.CHECKBOX
+        if is_checkbox:
+            data = sprite.button_data
+            assert isinstance(data, bool) and x > 1
+            checksurf = self._get_checkbox_surf(data)
+            elem = UIElemType.BUTTON
         surfs = self._BUTTON_SURFS.get((elem, x, y))
         if surfs is None:
             surfs = []
@@ -71,6 +88,10 @@ class UIAssetContainer:
                     size=(x, y),
                     offset=i,
                 )
+                if is_checkbox:
+                    surf.blit(
+                        checksurf[i], checksurf[i].get_rect(topleft=(0, 0))
+                    )
                 surfs.append(surf)
 
         return surfs
