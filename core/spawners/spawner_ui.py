@@ -37,7 +37,11 @@ class ButtonData:
     button_default_data: Optional[bool | float] = None
 
 
-def spawn_button(topleft: Tuple[int, int], data: ButtonData) -> int:
+def spawn_button(
+    topleft: Tuple[int, int],
+    data: ButtonData,
+    parent: Optional[UIElementComponent] = None,
+) -> int:
     if SETTINGS_REF.LOG_SPAWNING:
         logger.info("spawning button")
     x, y = topleft
@@ -95,6 +99,7 @@ def spawn_button(topleft: Tuple[int, int], data: ButtonData) -> int:
         end_hover_func=data.remove_hover_func,
         is_clickable=clickable,
         button_val=data.button_default_data,
+        parent_elem=parent,
     )
     tracker = TrackUI()
     ui_elem_sprite = UIElemSprite(data.ui_elem_type, data.size)

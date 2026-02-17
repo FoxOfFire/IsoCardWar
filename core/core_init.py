@@ -37,7 +37,7 @@ from layer2 import (
 
 from .log import logger
 from .spawners import (
-    build_ui,
+    UI_BUILDER_REF,
     create_card_obj,
     get_base_game_phase_dict,
     set_type_actions,
@@ -151,7 +151,7 @@ def init() -> None:
     init_dependencies()
     bind_game_events()
 
-    build_ui()
+    UI_BUILDER_REF.build_ui()
     logger.info(f"{esper.current_world} world init finished")
 
     logger.info(

@@ -1,4 +1,4 @@
-from typing import Optional, Type
+from typing import Optional, Tuple, Type
 
 import esper
 import pygame
@@ -27,17 +27,41 @@ class ButtonRenderer:
         self.bb = None
         logger.info("button render init finished")
 
+    def _check_visible(
+        self, ent: int
+    ) -> Optional[Tuple[UIElemSprite, UIElementComponent]]:
+        ui_sprite = esper.try_component(ent, UIElemSprite)
+        if ui_sprite is None:
+            return None
+
+        ui_elem = esper.try_component(ent, UIElementComponent)
+        if ui_elem is None:
+            return None
+
+        elem_check: Optional[UIElementComponent] = ui_elem
+        visible = True
+        while elem_check is not None and visible:
+            visible = elem_check.is_visible
+            if elem_check.parent_elem is None:
+                break
+            parent = elem_check.parent_elem
+            assert isinstance(parent, UIElementComponent)
+            elem_check = parent
+
+        if not visible:
+            return None
+        return ui_sprite, ui_elem
+
     def draw(self, screen: pygame.Surface) -> None:
         assert self.bb is not None
         for ent in POS_PROC_REF.intersect(self.bb, self.track_tag):
             assert esper.entity_exists(ent)
 
             bb = esper.component_for_entity(ent, BoundingBox)
-            ui_sprite = esper.try_component(ent, UIElemSprite)
-            ui_elem = esper.try_component(ent, UIElementComponent)
-            if ui_sprite is None or ui_elem is None or not ui_elem.is_visible:
+            result = self._check_visible(ent)
+            if result is None:
                 continue
-
+            ui_sprite, ui_elem = result
             ui_sprite.button_data = ui_elem.button_val
             surf = UI_ASSET_REF.get_button_surf(ui_sprite)[
                 ui_elem.state.value - 1
