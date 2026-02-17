@@ -20,7 +20,9 @@ class RenderAssetContainer:
         assert esper.entity_exists(ent)
 
         if self._FONT is None:
-            logger.info("loaded font")
+
+            if SETTINGS_REF.LOG_ASSET_LOADING:
+                logger.info("loaded font")
             self._FONT = pygame.font.Font(
                 self._BASE_ASSET_DIR / "fonts" / "tiny.ttf",
                 SETTINGS_REF.FONT_SIZE,
@@ -43,7 +45,8 @@ class RenderAssetContainer:
         surfs: Dict[IntEnum, pygame.Surface],
         path: str,
     ) -> None:
-        logger.info(f"loaded image assets of type:{enum}")
+        if SETTINGS_REF.LOG_ASSET_LOADING:
+            logger.info(f"loaded image assets of type:{enum}")
         for e in enum:
             surfs.update(
                 {
@@ -61,7 +64,8 @@ class RenderAssetContainer:
         surfs: Dict[IntEnum, List[pygame.Surface]],
         path: str,
     ) -> None:
-        logger.info(f"loaded animation assets of type: {enum}")
+        if SETTINGS_REF.LOG_ASSET_LOADING:
+            logger.info(f"loaded animation assets of type: {enum}")
         for images, frame_cnt in [(e, e.value) for e in enum]:
             surfs.update(
                 {
@@ -84,6 +88,8 @@ class RenderAssetContainer:
         path: str,
         surfs: Dict[IntEnum, List[pygame.Surface]],
     ) -> None:
+        if SETTINGS_REF.LOG_ASSET_LOADING:
+            logger.info(f"loaded tile assets of type: {enum}")
         for name in enum:
             extracted_frames: List[pygame.Surface] = []
             with open(

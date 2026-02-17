@@ -16,7 +16,7 @@ def get_wait_ms_action(ms: int) -> Action:
 def end_phase(_: ActionArgs = None) -> None:
 
     assert STATE_REF.game_phase != GamePhaseType.END_GAME
-    logger.info(f"ending phase: {STATE_REF.game_phase}")
+    logger.info(f"ending phase: {STATE_REF.game_phase.name}")
 
     current_state = STATE_REF.game_phase.value
     last_valid_state = GamePhaseType.END_GAME.value - 1

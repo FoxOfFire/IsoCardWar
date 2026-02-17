@@ -118,7 +118,7 @@ def init_dependencies() -> None:
 
     spawn_iso_elem(TrackIso, TrackUI, IsoSprite)
 
-    RENDER_PROC_REF.set_display(display)
+    RENDER_PROC_REF.set_display_and_init_cam_types(display)
 
     POS_PROC_REF.start_tracking_type(TrackIso)
     POS_PROC_REF.start_tracking_type(TrackUI)

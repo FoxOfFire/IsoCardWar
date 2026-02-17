@@ -29,8 +29,11 @@ class CardAssetContainer:
             if not self._LOADED_CARD_SURFS:
                 self._load_anim_types()
                 self._load_image_types()
-                logger.info("loaded card images")
                 self._LOADED_CARD_SURFS = True
+
+                if SETTINGS_REF.LOG_ASSET_LOADING:
+                    logger.info("loaded card images")
+
             self._load_card_surf(border, marker, image)
             surfs = self._CARD_SURFS.get((border, marker, image))
             assert surfs is not None
@@ -40,7 +43,8 @@ class CardAssetContainer:
     def _load_card_surf(
         self, border: IntEnum, marker: IntEnum, image: IntEnum
     ) -> None:
-        logger.info(f"added card{border.name, image.name, marker.name}")
+        if SETTINGS_REF.LOG_ASSET_LOADING:
+            logger.info(f"added card{border.name, image.name, marker.name}")
         surfs = []
         for img_frame in self._CARD_IMAGE_SURFS[image]:
             surf: pygame.Surface = img_frame.copy()
