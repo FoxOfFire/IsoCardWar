@@ -22,7 +22,6 @@ from layer2 import (
     toggle_sound,
 )
 
-from .log import logger
 from .spawner_ui import ButtonData, spawn_button
 from .text_functions import (
     get_fps_str,
