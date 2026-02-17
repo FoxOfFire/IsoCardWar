@@ -15,16 +15,21 @@ class Settings:
     RENDER_TRACKED_UI_UI = False
     RENDER_GAME_CAM_INTERSECT_UI = False
     RENDER_ISO_CAM_INTERSECT_UI = False
+
+    # Logging
+    LOG_TICK_PERFORMANCE = False
+    LOG_ASSET_LOADING = False
+    LOG_SPAWNING = False
+    LOG_PLAY_SOUND = False
+
     # rendering
     GAME_CAM_HEIGHT = 240
     GAME_CAM_WIDTH = GAME_CAM_HEIGHT // 9 * 16
 
     GAME_FULLSCREEN = True
     GAME_MUTE = True
-    # Performance
-    LOG_TICK_PERFORMANCE = False
-    FPS = 600
 
+    FPS = 600
     # cards
     CARD_START_X = 0
     CARD_START_Y = 0

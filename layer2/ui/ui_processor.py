@@ -78,11 +78,21 @@ class UIProcessor(esper.Processor):
                 self.mouse_bb, self.tracker_tag
             )
 
+    def _ui_elem_visible(self, elem: UIElementComponent) -> bool:
+        vis = elem.is_visible
+        while elem.parent_elem is not None and vis:
+            elem = elem.parent_elem
+            assert isinstance(elem, UIElementComponent)
+            vis = elem.is_visible
+        return vis
+
     def clicked_things_stay_clicked(self) -> None:
         assert self.mouse_bb is not None
         for ent in self.clicked:
             ui_elem = esper.component_for_entity(ent, UIElementComponent)
-            if not self.__mouse_overlap(ent):
+            if not self.__mouse_overlap(ent) or not self._ui_elem_visible(
+                ui_elem
+            ):
                 self.clicked.remove(ent)
                 ui_elem.state = UIStateEnum.BASE
             else:
@@ -97,9 +107,13 @@ class UIProcessor(esper.Processor):
 
         for ent in self.clicked:
             tag = esper.component_for_entity(ent, UIElementComponent)
-            if not self.__mask_mouse_overlap(ent) or (
-                STATE_REF.game_phase != GamePhaseType.PLAYER_ACTION
-                and tag.is_gameplay_elem
+            if (
+                not self.__mask_mouse_overlap(ent)
+                or (
+                    STATE_REF.game_phase != GamePhaseType.PLAYER_ACTION
+                    and tag.is_gameplay_elem
+                )
+                or not self._ui_elem_visible(tag)
             ):
                 continue
 
@@ -118,6 +132,7 @@ class UIProcessor(esper.Processor):
                 or tag.is_active
                 or self.__mouse_overlap(ent)
                 or ent not in self.hover
+                or not self._ui_elem_visible(tag)
             ):
                 continue
 
@@ -161,7 +176,7 @@ class UIProcessor(esper.Processor):
 
             ui_tag = esper.try_component(ent, UIElementComponent)
             assert ui_tag is not None
-            if not ui_tag.is_visible or not ui_tag.is_clickable:
+            if not self._ui_elem_visible(ui_tag) or not ui_tag.is_clickable:
                 continue
 
             if self.left_clicking and ui_tag.is_clickable:

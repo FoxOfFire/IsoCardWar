@@ -86,7 +86,8 @@ class UIAssetContainer:
             if not self._LOADED_TILE_MAPS:
                 self._load_tile_types()
                 self._LOADED_TILE_MAPS = True
-                logger.info("loaded ui tile maps")
+                if SETTINGS_REF.LOG_ASSET_LOADING:
+                    logger.info("loaded ui tile maps")
 
             is_checkbox = elem == UIElemType.CHECKBOX
             if is_checkbox:
@@ -107,7 +108,9 @@ class UIAssetContainer:
                 surfs.append(surf)
             if is_checkbox:
                 elem = UIElemType.CHECKBOX
-            logger.info(f"updated button:{elem, data, x, y}")
+
+            if SETTINGS_REF.LOG_ASSET_LOADING:
+                logger.info(f"updated button:{elem, data, x, y}")
             self._BUTTON_SURFS.update({(elem, data, x, y): surfs})
 
         return surfs

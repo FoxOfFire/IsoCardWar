@@ -51,7 +51,9 @@ def spawn_iso_elem(
     bottom = corrected_offset_y + (map_size[0] + map_size[1]) * map_scale[1]
 
     ui_bb = BoundingBox(left, right, top, bottom)
-    logger.info(f"map ui elem created:{ui_bb.points}")
+
+    if SETTINGS_REF.LOG_SPAWNING:
+        logger.info(f"map ui elem created:{ui_bb.points}")
 
     ent = esper.create_entity(
         ui_bb,
@@ -138,7 +140,8 @@ def spawn_card_ent(card: Card, /) -> int:
     ent = esper.create_entity(
         card, bb, TrackUI(), CardSprite(), ui_elem, Health(), Untracked()
     )
-    logger.info(f"created card:{ent}")
+    if SETTINGS_REF.LOG_SPAWNING:
+        logger.info(f"created card:{ent}")
     return ent
 
 

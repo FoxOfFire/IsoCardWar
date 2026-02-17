@@ -40,7 +40,7 @@ class RenderingProcessor(esper.Processor):
         if SETTINGS_REF.RENDER_BBS:
             self.bb_renderer = BBRenderer(GameCameraTag, TrackUI)
 
-    def set_display(self, display: pygame.Surface) -> None:
+    def set_display_and_init_cam_types(self, display: pygame.Surface) -> None:
         self.__set_display(display)
         self.__set_camera_types()
 

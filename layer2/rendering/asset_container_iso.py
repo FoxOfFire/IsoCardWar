@@ -27,7 +27,8 @@ class IsoAssetContainer:
         surf = self._COMBINDED_SURFS.get((tile, unit, select))
         if surf is None:
             if not self._LOADED_IMAGES:
-                logger.info("Loaded base images")
+                if SETTINGS_REF.LOG_ASSET_LOADING:
+                    logger.info("Loaded base images")
                 self._load_image_types()
                 self._LOADED_IMAGES = True
 
@@ -54,7 +55,8 @@ class IsoAssetContainer:
                 s_rect = s_surf.get_rect(topleft=(0, 0))
                 surf.blit(s_surf, s_rect)
 
-            logger.info(f"added tile sprite: {tile.name, unit, select}")
+            if SETTINGS_REF.LOG_ASSET_LOADING:
+                logger.info(f"added tile sprite: {tile.name, unit, select}")
             self._COMBINDED_SURFS.update({(tile, unit, select): surf})
         return surf
 

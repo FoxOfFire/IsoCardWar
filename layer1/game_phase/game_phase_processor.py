@@ -58,7 +58,7 @@ class GamePhaseProcessor(esper.Processor):
     def add_game_phase(
         self, phase: GamePhaseType, func_list: Callable[[], List[Action]]
     ) -> None:
-        logger.info("adding game phase:" + str(phase))
+        logger.info("adding game phase:" + str(phase.name))
         self.phase_funk_queue.update({phase: func_list})
 
     def set_end_phase(self, fun: Action) -> None:
