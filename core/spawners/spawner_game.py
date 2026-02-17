@@ -59,6 +59,7 @@ def spawn_iso_elem(
         UIElementComponent(
             click_func=[click_on_tile],
             hover_func=[hover_over_tile],
+            clicking_func=[],
             start_hover_func=[],
             end_hover_func=[hover],
             text=[],
@@ -126,6 +127,7 @@ def spawn_card_ent(card: Card, /) -> int:
 
     ui_elem = UIElementComponent(
         click_func=[select_card, get_sound_action(SoundTypeEnum.CLICK)],
+        clicking_func=[],
         hover_func=[],
         start_hover_func=[hover, get_sound_action(SoundTypeEnum.POP)],
         end_hover_func=[hover],

@@ -27,9 +27,13 @@ from .ui import (
     SoundTypeEnum,
     bind_keyboard_events,
     click_on_tile,
+    flip_ui_elem_val,
     get_sound_action,
     hover_over_tile,
     init_audio,
     quit_game,
+    set_button_val_to_random,
+    set_slider_val,
+    toggle_sound,
     ui_event_obj,
 )

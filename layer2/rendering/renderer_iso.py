@@ -1,6 +1,5 @@
 from dataclasses import dataclass
-from enum import IntEnum, auto
-from typing import Callable, Iterable, Optional, Tuple, Type
+from typing import Optional, Tuple, Type
 
 import esper
 import pygame
@@ -10,6 +9,7 @@ from common import (
     SETTINGS_REF,
     STATE_REF,
     BoundingBox,
+    MarkerEnum,
 )
 from layer1 import Card, Tile
 
@@ -37,70 +37,19 @@ class IsoRenderer:
         self.bb = None
         logger.info("iso renderer init finished")
 
-    class _DrawType(IntEnum):
-        TILE = auto()
-        UNIT = auto()
-        SELECTION = auto()
-
-    def _draw_selection(
+    def _get_selection(
         self,
-        screen: pygame.Surface,
-        surfs: Callable[[IntEnum], pygame.Surface],
-        ent: int,
-        x: float,
-        y: float,
-    ) -> None:
-        if STATE_REF.selected_card is None:
-            return
-        card = esper.try_component(STATE_REF.selected_card, Card)
-
-        if ent != STATE_REF.hovered_ent or card is None:
-            return
-
-        screen.blit(surfs(card.marker), (x, y))
-
-    def _draw_type(
-        self,
-        screen: pygame.Surface,
-        surfs: Callable[[IntEnum], pygame.Surface],
-        ent_list: Iterable[int],
-        draw_type: _DrawType,
-        /,
-        *,
-        offset: Tuple[float, float] = (0, 0),
-    ) -> None:
-        delta_x, delta_y = offset
-        for ent in ent_list:
-            if not esper.has_component(ent, IsoSprite):
-                continue
-            tile = esper.component_for_entity(ent, Tile)
-            x = (
-                delta_x
-                + SETTINGS_REF.ISO_POS_OFFSET_X
-                + (tile.x + tile.y) * SETTINGS_REF.ISO_TILE_OFFSET_X
-            )
-            y = (
-                delta_y
-                + SETTINGS_REF.ISO_POS_OFFSET_Y
-                + (tile.x - tile.y) * SETTINGS_REF.ISO_TILE_OFFSET_Y
-            )
-            if ent == STATE_REF.hovered_ent:
-                y += SETTINGS_REF.ISO_TILE_SELECT_OFFSET
-            match draw_type:
-                case self._DrawType.TILE:
-                    screen.blit(surfs(tile.terrain), (x, y))
-
-                case self._DrawType.UNIT:
-                    if tile.unit is not None:
-                        screen.blit(surfs(tile.unit), (x, y))
-
-                case self._DrawType.SELECTION:
-                    self._draw_selection(screen, surfs, ent, x, y)
-
-                case _:
-                    raise RuntimeError(
-                        "unexpected type while drawing iso_tiles"
-                    )
+    ) -> Optional[Tuple[int, Optional[MarkerEnum]]]:
+        hovered_ent = STATE_REF.hovered_ent
+        selected_card = STATE_REF.selected_card
+        if hovered_ent is None:
+            return None
+        if selected_card is None:
+            return hovered_ent, None
+        card = esper.try_component(selected_card, Card)
+        if card is None:
+            return hovered_ent, None
+        return hovered_ent, card.marker
 
     def draw(self, screen: pygame.Surface) -> None:
         assert self.bb is not None
@@ -115,23 +64,30 @@ class IsoRenderer:
             POS_PROC_REF.intersect(self.bb, self.track_tag),
             key=lambda ent: sort_by_bottom(ent),
         )
-        self._draw_type(
-            screen,
-            ISO_ASSET_REF.get_tile_type_surf,
-            ent_list,
-            self._DrawType.TILE,
-        )
-        self._draw_type(
-            screen,
-            ISO_ASSET_REF.get_selection_surf,
-            ent_list,
-            self._DrawType.SELECTION,
-            offset=(0, -SETTINGS_REF.ISO_TILE_OFFSET_Y * 2),
-        )
-        self._draw_type(
-            screen,
-            ISO_ASSET_REF.get_unit_type_surf,
-            ent_list,
-            self._DrawType.UNIT,
-            offset=(0, -SETTINGS_REF.ISO_TILE_OFFSET_Y * 2),
-        )
+
+        maybe_select = self._get_selection()
+        if maybe_select is None:
+            selected, marker = -1, None
+        else:
+            selected, marker = maybe_select
+
+        for ent in ent_list:
+            if not esper.has_component(ent, IsoSprite):
+                continue
+            tile = esper.component_for_entity(ent, Tile)
+            x = (
+                SETTINGS_REF.ISO_POS_OFFSET_X
+                + (tile.x + tile.y) * SETTINGS_REF.ISO_TILE_OFFSET_X
+            )
+            y = (
+                SETTINGS_REF.ISO_POS_OFFSET_Y
+                + (tile.x - tile.y - 2) * SETTINGS_REF.ISO_TILE_OFFSET_Y
+            )
+            if ent == selected:
+                y += SETTINGS_REF.ISO_TILE_SELECT_OFFSET
+                select = marker
+            else:
+                select = None
+            surf = ISO_ASSET_REF.get_surf(tile.terrain, tile.unit, select)
+
+            screen.blit(surf, (x, y))

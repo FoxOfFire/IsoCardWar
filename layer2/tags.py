@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
 import pygame
 
@@ -44,11 +44,13 @@ class TextData:
 @dataclass
 class UIElementComponent:
     click_func: List[Action]
+    clicking_func: List[Action]
     start_hover_func: List[Action]
     end_hover_func: List[Action]
     hover_func: List[Action]
     text: List[TextData]
     state: UIStateEnum = UIStateEnum.BASE
+    button_val: Optional[bool | float] = None
     is_visible: bool = True
     is_clickable: bool = True
     is_active: bool = False

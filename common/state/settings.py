@@ -20,7 +20,7 @@ class Settings:
     GAME_CAM_WIDTH = GAME_CAM_HEIGHT // 9 * 16
 
     GAME_FULLSCREEN = True
-    GAME_MUTE = False
+    GAME_MUTE = True
     # Performance
     LOG_TICK_PERFORMANCE = False
     FPS = 600
@@ -56,15 +56,17 @@ class Settings:
     ISO_MAP_HEIGHT = 8
     ISO_MAP_WIDTH = 8
 
-    ISO_TILE_OFFSET_X = 16
+    ISO_TILE_SPRITE_HEIGHT = 64
+    ISO_TILE_SPRITE_WIDTH = 32
+    ISO_TILE_OFFSET_X = ISO_TILE_SPRITE_WIDTH // 2
     ISO_TILE_OFFSET_Y = ISO_TILE_OFFSET_X // 2
     ISO_POS_OFFSET_X = (
         GAME_CAM_WIDTH // 2
         - ISO_TILE_OFFSET_X * (ISO_MAP_WIDTH + ISO_MAP_HEIGHT) // 2
     )
     ISO_POS_OFFSET_Y = (
-        (CARD_Y_POS_BASE + CARD_Y_POS_SELECTED) / 2
-        - ISO_TILE_OFFSET_Y * (ISO_MAP_HEIGHT - ISO_MAP_WIDTH) / 2
+        (CARD_Y_POS_BASE + CARD_Y_POS_SELECTED) // 2
+        - ISO_TILE_OFFSET_Y * (ISO_MAP_HEIGHT - ISO_MAP_WIDTH) // 2
         - 20
     )
 

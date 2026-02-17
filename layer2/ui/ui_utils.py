@@ -26,7 +26,7 @@ logger.info("ui_event_obj created")
 # \  / ---/ |     |
 # .\/       L_____J
 # https://www.desmos.com/calculator/or2famsblw
-def get_transformed_mouse_pos(bb: BoundingBox) -> Tuple[float, float]:
+def get_mouse_pos_in_px() -> Tuple[float, float]:
     cam_bb = esper.component_for_entity(
         esper.get_component(GameCameraTag)[0][0], BoundingBox
     )
@@ -37,6 +37,11 @@ def get_transformed_mouse_pos(bb: BoundingBox) -> Tuple[float, float]:
     mouse = pygame.mouse.get_pos()
     mouse_x = mouse[0] * cam_bb.width / display_rect.width
     mouse_y = mouse[1] * cam_bb.height / display_rect.height
+    return mouse_x, mouse_y
+
+
+def get_transformed_mouse_pos(bb: BoundingBox) -> Tuple[float, float]:
+    mouse_x, mouse_y = get_mouse_pos_in_px()
 
     map_width = SETTINGS_REF.ISO_MAP_HEIGHT
     map_height = SETTINGS_REF.ISO_MAP_WIDTH

@@ -7,6 +7,12 @@ from common import (
     BoundingBox,
     end_player_phase_action,
 )
+from layer1 import (
+    OrganizationEnum,
+    draw_card,
+    get_set_order_action,
+    sort_hand,
+)
 from layer2 import (
     GameCameraTag,
     IsoCameraTag,
@@ -14,6 +20,8 @@ from layer2 import (
     TrackUI,
     UIElemType,
     quit_game,
+    set_slider_val,
+    toggle_sound,
 )
 
 from .spawner_ui import spawn_button
@@ -28,7 +36,7 @@ from .text_functions import (
 def build_ui() -> None:
     spawn_button(
         (0, 0),
-        (7, 10),
+        (7, 20),
         "",
         UIElemType.MENU,
     )
@@ -88,17 +96,92 @@ def build_ui() -> None:
 
     spawn_button(
         (5, top_offset),
-        (3, 2),
-        "Quit",
-        UIElemType.BUTTON,
-        click_func=[quit_game],
-    )
-    top_offset += 2 * SETTINGS_REF.BUTTON_TILE_SIZE
-    spawn_button(
-        (5, top_offset),
         (4, 1),
         "End Turn",
         UIElemType.BUTTON,
         click_func=[end_player_phase_action],
     )
     top_offset += SETTINGS_REF.BUTTON_TILE_SIZE
+    spawn_button(
+        (5, top_offset),
+        (5, 1),
+        "Mute Game",
+        UIElemType.CHECKBOX,
+        click_func=[toggle_sound],
+        button_default_data=SETTINGS_REF.GAME_MUTE,
+    )
+    top_offset += SETTINGS_REF.BUTTON_TILE_SIZE
+
+    spawn_button(
+        (5, top_offset),
+        (4, 1),
+        "Slider",
+        UIElemType.SLIDER,
+        button_default_data=0.5,
+        click_funcing=[set_slider_val],
+    )
+    top_offset += SETTINGS_REF.BUTTON_TILE_SIZE
+    spawn_button(
+        (5, top_offset),
+        (1, 3),
+        "Slider",
+        UIElemType.SLIDER,
+        button_default_data=0.5,
+        click_funcing=[set_slider_val],
+    )
+    top_offset += 3 * SETTINGS_REF.BUTTON_TILE_SIZE
+    spawn_button(
+        (5, top_offset),
+        (3, 1),
+        "Quit",
+        UIElemType.BUTTON,
+        click_func=[quit_game],
+    )
+
+    top_offset += SETTINGS_REF.BUTTON_TILE_SIZE
+    spawn_button(
+        (5, top_offset),
+        (5, 1),
+        "Draw Card",
+        UIElemType.BUTTON,
+        click_func=[draw_card],
+    )
+
+    top_offset += SETTINGS_REF.BUTTON_TILE_SIZE
+    spawn_button(
+        (5, top_offset),
+        (5, 1),
+        "Organise:Marker",
+        UIElemType.BUTTON,
+        click_func=[
+            sort_hand,
+            get_set_order_action(OrganizationEnum.MARKER),
+            sort_hand,
+        ],
+    )
+
+    top_offset += SETTINGS_REF.BUTTON_TILE_SIZE
+    spawn_button(
+        (5, top_offset),
+        (5, 1),
+        "Organise:Name",
+        UIElemType.BUTTON,
+        click_func=[
+            sort_hand,
+            get_set_order_action(OrganizationEnum.NAME),
+            sort_hand,
+        ],
+    )
+
+    top_offset += SETTINGS_REF.BUTTON_TILE_SIZE
+    spawn_button(
+        (5, top_offset),
+        (5, 1),
+        "Organise:None",
+        UIElemType.BUTTON,
+        click_func=[
+            sort_hand,
+            get_set_order_action(OrganizationEnum.NONE),
+            sort_hand,
+        ],
+    )

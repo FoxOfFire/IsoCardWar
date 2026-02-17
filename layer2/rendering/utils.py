@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from enum import IntEnum, auto
-from typing import Tuple
+from typing import Optional, Tuple
 
 import esper
 import pygame
@@ -28,6 +28,7 @@ class UIElemType(IntEnum):
 class UIElemSprite:
     elem_type: UIElemType
     size: Tuple[int, int]
+    button_data: Optional[bool | float] = None
 
 
 class RenderLayerEnum(IntEnum):

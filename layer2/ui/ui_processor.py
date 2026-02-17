@@ -81,11 +81,13 @@ class UIProcessor(esper.Processor):
     def clicked_things_stay_clicked(self) -> None:
         assert self.mouse_bb is not None
         for ent in self.clicked:
+            ui_elem = esper.component_for_entity(ent, UIElementComponent)
             if not self.__mouse_overlap(ent):
                 self.clicked.remove(ent)
-                esper.component_for_entity(ent, UIElementComponent).state = (
-                    UIStateEnum.BASE
-                )
+                ui_elem.state = UIStateEnum.BASE
+            else:
+                for func in ui_elem.clicking_func:
+                    func(ent)
 
     def press_button_on_release(self) -> None:
         assert self.mouse_bb is not None

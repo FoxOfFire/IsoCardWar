@@ -19,12 +19,9 @@ from layer1 import (
     end_phase,
 )
 from layer2 import (
-    CARD_ASSET_REF,
     DYING_PROC_REF,
-    ISO_ASSET_REF,
     RENDER_PROC_REF,
     SCENE_SWITCH_PROC_REF,
-    UI_ASSET_REF,
     UI_PROC_REF,
     GameCameraTag,
     IsoCameraTag,
@@ -105,8 +102,8 @@ def init_game_world_esper() -> None:  # adding processors
     esper.add_processor(DYING_PROC_REF)
     esper.add_processor(SCENE_SWITCH_PROC_REF)
 
-    # dependency injection
 
+def init_dependencies() -> None:
     display = pygame.display.get_surface()
     assert display is not None
 
@@ -121,7 +118,7 @@ def init_game_world_esper() -> None:  # adding processors
 
     spawn_iso_elem(TrackIso, TrackUI, IsoSprite)
 
-    RENDER_PROC_REF.init(display)
+    RENDER_PROC_REF.set_display(display)
 
     POS_PROC_REF.start_tracking_type(TrackIso)
     POS_PROC_REF.start_tracking_type(TrackUI)
@@ -140,10 +137,7 @@ def init_game_world_esper() -> None:  # adding processors
     UI_PROC_REF.set_display_size(display.get_size())
     UI_PROC_REF.set_tracker_tag(TrackUI)
 
-    # draw starter cards
     ui_event_obj.iso_tag = TrackIso
-
-    bind_game_events()
 
 
 def init() -> None:
@@ -154,9 +148,8 @@ def init() -> None:
     # game world
     esper.switch_world(WorldEnum.GAME.name)
     init_game_world_esper()
-    UI_ASSET_REF.load_images()
-    ISO_ASSET_REF.load_images()
-    CARD_ASSET_REF.load_images()
+    init_dependencies()
+    bind_game_events()
 
     build_ui()
     logger.info(f"{esper.current_world} world init finished")
