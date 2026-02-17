@@ -13,6 +13,7 @@ from .utils import UIElemSprite, UIElemType
 class UIAssetContainer:
     _UI_ASSETS_DIR = "ui"
     _BUTTON_TILE_MAPS: Dict[IntEnum, List[pygame.Surface]] = {}
+    _LOADED_TILE_MAPS: bool = False
     _BUTTON_SURFS: Dict[
         Tuple[IntEnum, Optional[float | bool], int, int], List[pygame.Surface]
     ] = {}
@@ -82,6 +83,11 @@ class UIAssetContainer:
             assert x == 1 or y == 1
         surfs = self._BUTTON_SURFS.get((elem, data, x, y))
         if surfs is None:
+            if not self._LOADED_TILE_MAPS:
+                self._load_tile_types()
+                self._LOADED_TILE_MAPS = True
+                logger.info("loaded ui tile maps")
+
             is_checkbox = elem == UIElemType.CHECKBOX
             if is_checkbox:
                 assert isinstance(data, bool)
@@ -112,9 +118,6 @@ class UIAssetContainer:
             surfs=self._BUTTON_TILE_MAPS,
             path=self._UI_ASSETS_DIR,
         )
-
-    def load_images(self) -> None:
-        self._load_tile_types()
 
 
 UI_ASSET_REF = UIAssetContainer()

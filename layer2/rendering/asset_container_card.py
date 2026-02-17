@@ -16,6 +16,7 @@ class CardAssetContainer:
     _CARD_TYPE_SURFS: Dict[IntEnum, pygame.Surface] = {}
     _CARD_MARKER_SURFS: Dict[IntEnum, pygame.Surface] = {}
     _CARD_IMAGE_SURFS: Dict[IntEnum, List[pygame.Surface]] = {}
+    _LOADED_CARD_SURFS: bool = False
     _CARD_SURFS: Dict[
         Tuple[IntEnum, IntEnum, IntEnum], List[pygame.Surface]
     ] = {}
@@ -25,6 +26,11 @@ class CardAssetContainer:
     ) -> pygame.Surface:
         surfs = self._CARD_SURFS.get((border, marker, image))
         if surfs is None:
+            if not self._LOADED_CARD_SURFS:
+                self._load_anim_types()
+                self._load_image_types()
+                logger.info("loaded card images")
+                self._LOADED_CARD_SURFS = True
             self._load_card_surf(border, marker, image)
             surfs = self._CARD_SURFS.get((border, marker, image))
             assert surfs is not None
@@ -72,10 +78,6 @@ class CardAssetContainer:
             surfs=self._CARD_MARKER_SURFS,
             path=self._CARD_ASSETS_DIR,
         )
-
-    def load_images(self) -> None:
-        self._load_anim_types()
-        self._load_image_types()
 
 
 CARD_ASSET_REF = CardAssetContainer()
