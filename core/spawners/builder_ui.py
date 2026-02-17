@@ -78,7 +78,7 @@ MENU_KETTO_REF = Menu(
 )
 MENU_REF = Menu(
     (0, 0),
-    (SnapHorisontalEnum.LEFT, SnapVerticalEnum.CENTER),
+    (SnapHorisontalEnum.LEFT, SnapVerticalEnum.TOP),
     1,
     [
         ButtonData(
@@ -144,7 +144,6 @@ MENU_REF = Menu(
 def _snap(snap: IntEnum, size: int, cam_size: int) -> int:
     offset = (snap.value * 2) // cam_size
     ret = snap.value - (offset * size // 2)
-    logger.info(f"{offset, (snap.name,snap.value), size, cam_size,ret}")
     return ret
 
 
@@ -176,7 +175,6 @@ def _build_menu(menu: Menu) -> None:
         (x, y),
         ButtonData((menu_width, menu_height), "", UIElemType.MENU),
     )
-    logger.info(f"x,y:{x, y}")
 
     w_offset = menu.edge_padding * SETTINGS_REF.BUTTON_TILE_SIZE // 2 + x
     h_offset = menu.edge_padding * SETTINGS_REF.BUTTON_TILE_SIZE // 2 + y
