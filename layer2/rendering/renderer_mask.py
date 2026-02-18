@@ -33,17 +33,16 @@ class MaskRenderer:
                 return -1
             return DECK_REF.hand.index(ent)
 
-        ent_list = sorted(
-            POS_PROC_REF.intersect(self.bb, self.track_tag),
-            key=lambda ent: sorter(ent),
-            reverse=False,
-        )
-
         ent_list = list(
             filter(
                 lambda ent: ent in DECK_REF.hand
+                and esper.entity_exists(ent)
                 and esper.has_component(ent, CardSprite),
-                ent_list,
+                sorted(
+                    POS_PROC_REF().intersect(self.bb, self.track_tag),
+                    key=lambda ent: sorter(ent),
+                    reverse=False,
+                ),
             )
         )
 

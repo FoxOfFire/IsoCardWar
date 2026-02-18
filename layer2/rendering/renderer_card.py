@@ -44,9 +44,14 @@ class CardRenderer:
                 return 10001
             return DECK_REF.hand.index(ent)
 
-        ent_list = sorted(
-            POS_PROC_REF.intersect(self.bb, self.track_tag),
-            key=lambda ent: sorter(ent),
+        ent_list = filter(
+            lambda ent: ent in DECK_REF.hand
+            and esper.entity_exists(ent)
+            and esper.has_component(ent, CardSprite),
+            sorted(
+                POS_PROC_REF().intersect(self.bb, self.track_tag),
+                key=lambda ent: sorter(ent),
+            ),
         )
 
         for ent in ent_list:

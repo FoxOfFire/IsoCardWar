@@ -54,8 +54,9 @@ class ButtonRenderer:
 
     def draw(self, screen: pygame.Surface) -> None:
         assert self.bb is not None
-        for ent in POS_PROC_REF.intersect(self.bb, self.track_tag):
-            assert esper.entity_exists(ent)
+        for ent in POS_PROC_REF().intersect(self.bb, self.track_tag):
+            if not esper.entity_exists(ent):
+                continue
 
             bb = esper.component_for_entity(ent, BoundingBox)
             result = self._check_visible(ent)

@@ -2,6 +2,8 @@ from typing import Any, Dict, List, Type
 
 import esper
 
+from common.worlds import WORLD_REF, WorldEnum
+
 from .bb_rtree import BBRTree
 from .bounding_box import BoundingBox
 from .log import logger
@@ -71,4 +73,10 @@ class PositionProcessor(esper.Processor):
         self.__tracker_dict.update({ty: BBRTree(ty)})
 
 
-POS_PROC_REF = PositionProcessor()
+_POS_PROC_WORLD_DICT: Dict[WorldEnum, PositionProcessor] = {}
+for world in WorldEnum:
+    _POS_PROC_WORLD_DICT.update({world: PositionProcessor()})
+
+
+def POS_PROC_REF() -> PositionProcessor:
+    return _POS_PROC_WORLD_DICT[WORLD_REF.world]

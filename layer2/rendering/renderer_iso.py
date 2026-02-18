@@ -61,7 +61,7 @@ class IsoRenderer:
             return tile.x - tile.y
 
         ent_list = sorted(
-            POS_PROC_REF.intersect(self.bb, self.track_tag),
+            POS_PROC_REF().intersect(self.bb, self.track_tag),
             key=lambda ent: sort_by_bottom(ent),
         )
 

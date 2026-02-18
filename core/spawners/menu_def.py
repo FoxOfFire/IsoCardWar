@@ -30,6 +30,7 @@ from .spawner_ui import ButtonData
 from .text_functions import (
     get_fps_str,
     get_game_phase_str,
+    get_game_world_str,
     get_tracked_bb_of_type_str,
 )
 
@@ -63,6 +64,7 @@ MENU_DEF_REF = [
         [
             ButtonData((6, 1), get_fps_str, UIElemType.TEXTBOX),
             ButtonData((6, 1), get_game_phase_str, UIElemType.TEXTBOX),
+            ButtonData((6, 1), get_game_world_str, UIElemType.TEXTBOX),
             ButtonData(
                 (6, 1),
                 partial(get_tracked_bb_of_type_str, TrackIso, "TrackIso"),

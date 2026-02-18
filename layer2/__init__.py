@@ -1,6 +1,6 @@
 # flake8: noqa
 from .dying import DYING_PROC_REF
-from .enums import UIStateEnum, WorldEnum
+from .enums import UIStateEnum
 from .rendering import (
     CARD_ASSET_REF,
     ISO_ASSET_REF,

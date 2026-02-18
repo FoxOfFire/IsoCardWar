@@ -74,7 +74,7 @@ class UIProcessor(esper.Processor):
         if self.__get_mask_component(ent) is not None:
             return self.__mask_mouse_overlap(ent)
         else:
-            return ent in POS_PROC_REF.intersect(
+            return ent in POS_PROC_REF().intersect(
                 self.mouse_bb, self.tracker_tag
             )
 
@@ -169,9 +169,12 @@ class UIProcessor(esper.Processor):
         self.prev_click = self.left_clicking
 
         # pressing first intersection of mouse
-        for ent in POS_PROC_REF.intersect(self.mouse_bb, self.tracker_tag):
-            assert esper.entity_exists(ent)
-            if ent == self.clicked or not self.__mask_mouse_overlap(ent):
+        for ent in POS_PROC_REF().intersect(self.mouse_bb, self.tracker_tag):
+            if (
+                not esper.entity_exists(ent)
+                or ent == self.clicked
+                or not self.__mask_mouse_overlap(ent)
+            ):
                 continue
 
             ui_tag = esper.try_component(ent, UIElementComponent)

@@ -11,6 +11,7 @@ from common import (
     RUN_DATA_REF,
     SETTINGS_REF,
     BoundingBox,
+    WorldEnum,
 )
 from layer1 import (
     CARD_MOV_PROC_REF,
@@ -28,7 +29,6 @@ from layer2 import (
     IsoSprite,
     TrackIso,
     TrackUI,
-    WorldEnum,
     bind_keyboard_events,
     init_audio,
     ui_event_obj,
@@ -87,15 +87,15 @@ def bind_game_events() -> None:
 
 def init_game_world_esper() -> None:  # adding processors
 
-    esper.add_processor(CARD_MOV_PROC_REF)
-    esper.add_processor(BB_MOVE_PROC_REF)
-    esper.add_processor(POS_PROC_REF)
+    esper.add_processor(CARD_MOV_PROC_REF())
+    esper.add_processor(BB_MOVE_PROC_REF())
+    esper.add_processor(POS_PROC_REF())
 
     esper.add_processor(EVENT_PROC_REF)
     esper.add_processor(UI_PROC_REF)
     esper.add_processor(GAME_PHASE_PROC_REF)
 
-    esper.add_processor(RENDER_PROC_REF)
+    esper.add_processor(RENDER_PROC_REF())
 
     esper.add_processor(DYING_PROC_REF)
     esper.add_processor(SCENE_SWITCH_PROC_REF)
@@ -116,14 +116,20 @@ def init_dependencies() -> None:
 
     spawn_iso_elem(TrackIso, TrackUI, IsoSprite)
 
-    RENDER_PROC_REF.set_display_and_init_cam_types(display)
+    RENDER_PROC_REF().set_display_and_init_cam_types(display)
 
-    POS_PROC_REF.start_tracking_type(TrackIso)
-    POS_PROC_REF.start_tracking_type(TrackUI)
+    POS_PROC_REF().start_tracking_type(TrackIso)
+    POS_PROC_REF().start_tracking_type(TrackUI)
 
     set_type_actions()
 
-    CARD_MOV_PROC_REF.set_cam_bb(game_cam_bb)
+    CARD_MOV_PROC_REF().set_cam_bb(game_cam_bb)
+
+
+def init_game() -> None:
+    display = pygame.display.get_surface()
+    assert display is not None
+
     DECK_REF.spawn_card = spawn_card_ent
     DECK_REF.create_card = create_card_obj
     DECK_REF.create_starting_deck()
@@ -144,18 +150,23 @@ def init() -> None:
     init_audio()
 
     # game world
-    esper.switch_world(WorldEnum.GAME.name)
+    SCENE_SWITCH_PROC_REF.switch_world_to(WorldEnum.GAME)
+    SCENE_SWITCH_PROC_REF.process()
+    init_game_world_esper()
+    init_dependencies()
+    init_game()
+
+    bind_game_events()
+    UI_BUILDER_REF.build_ui()
+
+    # game world
+    SCENE_SWITCH_PROC_REF.switch_world_to(WorldEnum.MAIN)
+    SCENE_SWITCH_PROC_REF.process()
     init_game_world_esper()
     init_dependencies()
     bind_game_events()
-
-    # game world
-    esper.switch_world(WorldEnum.MAIN.name)
-    init_game_world_esper()
-
-    esper.switch_world(WorldEnum.GAME.name)
-
     UI_BUILDER_REF.build_ui()
+
     logger.info(f"{esper.current_world} world init finished")
 
     logger.info(

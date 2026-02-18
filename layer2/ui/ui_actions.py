@@ -41,7 +41,7 @@ def click_on_tile(ent: ActionArgs) -> None:
     )
     assert ui_event_obj.iso_tag is not None
 
-    for intersect in POS_PROC_REF.intersect(mouse_bb, ui_event_obj.iso_tag):
+    for intersect in POS_PROC_REF().intersect(mouse_bb, ui_event_obj.iso_tag):
         play_card(intersect)
 
 
@@ -57,7 +57,7 @@ def hover_over_tile(ent: ActionArgs) -> None:
     )
     assert ui_event_obj.iso_tag is not None
 
-    for intersect in POS_PROC_REF.intersect(mouse_bb, ui_event_obj.iso_tag):
+    for intersect in POS_PROC_REF().intersect(mouse_bb, ui_event_obj.iso_tag):
         hover(intersect)
         return
     hover(None)
