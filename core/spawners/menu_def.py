@@ -21,6 +21,7 @@ from layer2 import (
     flip_ui_elem_val,
     quit_game,
     set_slider_val,
+    switch_world_action,
     toggle_sound,
 )
 
@@ -167,6 +168,12 @@ MENU_DEF_REF = [
                     flip_ui_elem_val,
                 ],
                 button_default_data=True,
+            ),
+            ButtonData(
+                (5, 1),
+                "Switch World",
+                UIElemType.BUTTON,
+                click_func=[switch_world_action],
             ),
         ],
     ),

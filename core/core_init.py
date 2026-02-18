@@ -29,7 +29,6 @@ from layer2 import (
     TrackIso,
     TrackUI,
     WorldEnum,
-    bind_events,
     bind_keyboard_events,
     init_audio,
     ui_event_obj,
@@ -78,7 +77,6 @@ def init_window() -> None:
 
 
 def bind_game_events() -> None:
-    bind_events()
     bind_keyboard_events()
 
     def handle_quit(_: pygame.event.Event) -> None:
@@ -150,6 +148,12 @@ def init() -> None:
     init_game_world_esper()
     init_dependencies()
     bind_game_events()
+
+    # game world
+    esper.switch_world(WorldEnum.MAIN.name)
+    init_game_world_esper()
+
+    esper.switch_world(WorldEnum.GAME.name)
 
     UI_BUILDER_REF.build_ui()
     logger.info(f"{esper.current_world} world init finished")
