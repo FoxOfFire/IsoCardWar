@@ -50,8 +50,7 @@ def discard_hand(_: ActionArgs) -> None:
 
 
 def draw_card(_: ActionArgs = None) -> None:
-    if DECK_REF.spawn_card is None:
-        raise RuntimeError("failed to initialise deck_obj")
+    assert DECK_REF.spawn_card is not None
 
     if len(DECK_REF.hand) == SETTINGS_REF.MAX_CARD_COUNT:
         logger.info("hand is full")
