@@ -84,9 +84,9 @@ class IsoRenderer:
                 + (tile.x - tile.y - 2) * SETTINGS_REF.ISO_TILE_OFFSET_Y
             )
             if ent == selected:
-                y += SETTINGS_REF.ISO_TILE_SELECT_OFFSET
                 select = marker
             else:
+                y -= SETTINGS_REF.ISO_TILE_SELECT_OFFSET
                 select = None
             surf = ISO_ASSET_REF.get_surf(tile.terrain, tile.unit, select)
 

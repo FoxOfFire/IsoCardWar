@@ -6,6 +6,7 @@ from typing import NamedTuple
 class WorldEnum(IntEnum):
     GAME = auto()
     MAIN = auto()
+    SETTINGS = auto()
 
 
 class TempObjectTag(NamedTuple):

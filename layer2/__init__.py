@@ -11,7 +11,7 @@ from .rendering import (
     UIElemSprite,
     UIElemType,
 )
-from .scene_switcher import SCENE_SWITCH_PROC_REF, switch_world_action
+from .scene_switcher import SCENE_SWITCH_PROC_REF, get_switch_world_action
 from .tags import (
     GameCameraTag,
     IsoCameraTag,

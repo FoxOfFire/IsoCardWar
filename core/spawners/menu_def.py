@@ -19,9 +19,9 @@ from layer2 import (
     TrackUI,
     UIElementComponent,
     UIElemType,
+    get_switch_world_action,
     quit_game,
     set_slider_val,
-    switch_world_action,
     toggle_sound,
 )
 
@@ -56,6 +56,36 @@ class MenuContainer:
 
 MENU_LIST_DEF: Dict[WorldEnum, List[UIElementComponent]] = {}
 MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
+    WorldEnum.SETTINGS: [
+        MenuContainer(
+            (0, 0),
+            (SnapHorisontalEnum.CENTER, SnapVerticalEnum.CENTER),
+            1,
+            [
+                ButtonData((6, 2), "Settings", UIElemType.TEXTBOX),
+                ButtonData(
+                    (6, 1),
+                    "Mute Game",
+                    UIElemType.CHECKBOX,
+                    click_func=[toggle_sound],
+                    button_default_data=SETTINGS_REF.GAME_MUTE,
+                ),
+                ButtonData(
+                    (6, 1),
+                    "Slider",
+                    UIElemType.SLIDER,
+                    button_default_data=0.5,
+                    click_funcing=[set_slider_val],
+                ),
+                ButtonData(
+                    (6, 1),
+                    "Main Menu",
+                    UIElemType.BUTTON,
+                    click_func=[get_switch_world_action(WorldEnum.MAIN)],
+                ),
+            ],
+        ),
+    ],
     WorldEnum.MAIN: [
         MenuContainer(
             (0, 0),
@@ -67,7 +97,13 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
                     (6, 1),
                     "Continue",
                     UIElemType.BUTTON,
-                    click_func=[switch_world_action],
+                    click_func=[get_switch_world_action(WorldEnum.GAME)],
+                ),
+                ButtonData(
+                    (6, 1),
+                    "Settings",
+                    UIElemType.BUTTON,
+                    click_func=[get_switch_world_action(WorldEnum.SETTINGS)],
                 ),
                 ButtonData(
                     (6, 1), "Quit", UIElemType.BUTTON, click_func=[quit_game]
@@ -98,7 +134,7 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
                     (6, 1),
                     "Main Menu",
                     UIElemType.BUTTON,
-                    click_func=[switch_world_action],
+                    click_func=[get_switch_world_action(WorldEnum.MAIN)],
                 ),
             ],
         ),
@@ -107,6 +143,7 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
             (SnapHorisontalEnum.LEFT, SnapVerticalEnum.TOP),
             1,
             [
+                ButtonData((5, 2), "Debug", UIElemType.TEXTBOX),
                 ButtonData(
                     (5, 1),
                     "End Turn",
@@ -115,27 +152,14 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
                 ),
                 ButtonData(
                     (5, 1),
-                    "Mute Game",
-                    UIElemType.CHECKBOX,
-                    click_func=[toggle_sound],
-                    button_default_data=SETTINGS_REF.GAME_MUTE,
-                ),
-                ButtonData(
-                    (5, 1),
-                    "Slider",
-                    UIElemType.SLIDER,
-                    button_default_data=0.5,
-                    click_funcing=[set_slider_val],
-                ),
-                ButtonData(
-                    (5, 1),
                     "Draw Card",
                     UIElemType.BUTTON,
                     click_func=[draw_card],
                 ),
+                ButtonData((5, 2), "Organise by", UIElemType.TEXTBOX),
                 ButtonData(
                     (5, 1),
-                    "Organise:Marker",
+                    "Marker",
                     UIElemType.BUTTON,
                     click_func=[
                         sort_hand,
@@ -145,7 +169,7 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
                 ),
                 ButtonData(
                     (5, 1),
-                    "Organise:Name",
+                    "Name",
                     UIElemType.BUTTON,
                     click_func=[
                         sort_hand,
@@ -155,7 +179,7 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
                 ),
                 ButtonData(
                     (5, 1),
-                    "Organise:None",
+                    "None",
                     UIElemType.BUTTON,
                     click_func=[
                         sort_hand,

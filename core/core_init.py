@@ -163,6 +163,12 @@ def init() -> None:
     init_world(game_ents=True)
 
     # menu world
+    SCENE_SWITCH_PROC_REF.switch_world_to(WorldEnum.SETTINGS)
+    SCENE_SWITCH_PROC_REF.process()
+    init_processors()
+    init_world()
+
+    # menu world
     SCENE_SWITCH_PROC_REF.switch_world_to(WorldEnum.MAIN)
     SCENE_SWITCH_PROC_REF.process()
     init_processors()
