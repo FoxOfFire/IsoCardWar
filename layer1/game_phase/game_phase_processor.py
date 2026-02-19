@@ -6,8 +6,10 @@ from common import (
     RUN_DATA_REF,
     SETTINGS_REF,
     STATE_REF,
+    WORLD_REF,
     Action,
     GamePhaseType,
+    WorldEnum,
 )
 
 from .log import logger
@@ -33,6 +35,7 @@ class GamePhaseProcessor(esper.Processor):
 
         phase: GamePhaseType = STATE_REF.game_phase
 
+        logger.info(f"{esper.current_world, len(self.next_funk_queue)}")
         if len(self.next_funk_queue) > 0:
             self.next_funk_queue.pop()(STATE_REF.selected_tile)
             return
@@ -66,4 +69,10 @@ class GamePhaseProcessor(esper.Processor):
         self.end_phase = fun
 
 
-GAME_PHASE_PROC_REF = GamePhaseProcessor()
+_GAME_PHASE_PROC_WORLD_DICT: Dict[WorldEnum, GamePhaseProcessor] = {}
+for world in WorldEnum:
+    _GAME_PHASE_PROC_WORLD_DICT.update({world: GamePhaseProcessor()})
+
+
+def GAME_PHASE_PROC_REF() -> GamePhaseProcessor:
+    return _GAME_PHASE_PROC_WORLD_DICT[WORLD_REF.world]

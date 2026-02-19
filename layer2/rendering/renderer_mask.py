@@ -4,7 +4,7 @@ import esper
 import pygame
 
 from common import POS_PROC_REF, SETTINGS_REF, STATE_REF, BoundingBox
-from layer1 import DECK_REF
+from layer1 import DECK_REF, Card
 
 from .log import logger
 from .renderer_card import CardSprite
@@ -29,49 +29,41 @@ class MaskRenderer:
         assert self.bb is not None
 
         def sorter(ent: int) -> int:
-            if ent not in DECK_REF.hand:
-                return -1
-            return DECK_REF.hand.index(ent)
+            card = esper.try_component(ent, Card)
+            assert card is not None and card in DECK_REF.hand
+            return DECK_REF.hand.index(card)
 
-        ent_list = list(
-            filter(
-                lambda ent: ent in DECK_REF.hand
-                and esper.entity_exists(ent)
-                and esper.has_component(ent, CardSprite),
-                sorted(
-                    POS_PROC_REF().intersect(self.bb, self.track_tag),
-                    key=lambda ent: sorter(ent),
-                    reverse=False,
-                ),
-            )
-        )
+        def filterer(ent: int) -> bool:
+            if not esper.entity_exists(ent):
+                return False
+            if not esper.has_component(ent, CardSprite):
+                return False
+            card = esper.component_for_entity(ent, Card)
+            return card is not None and card in DECK_REF.hand
+
+        ent_list = POS_PROC_REF().intersect(self.bb, self.track_tag)
+        ent_list = sorted(filter(filterer, ent_list), key=sorter)
 
         selection_list = []
-        selected = STATE_REF.selected_card
-        selecting = STATE_REF.hovered_ent
 
-        if selected is not None and selected in ent_list:
-            ent_list.remove(selected)
-            selection_list.append(selected)
-        if selecting is not None and selecting in ent_list:
-            ent_list.remove(selecting)
-            selection_list.append(selecting)
+        for ent in ent_list:
+            if ent == STATE_REF.selected_card or ent == STATE_REF.hovered_ent:
+                selection_list.append(ent)
+
+        for ent in selection_list:
+            ent_list.remove(ent)
+
         return ent_list, selection_list
 
     def _draw_hand_masks(self, ent_list: List[int]) -> None:
         for ent in ent_list:
-            assert (
-                esper.entity_exists(ent)
-                and ent in DECK_REF.hand
-                and esper.has_component(ent, CardSprite)
-            )
-
             sprite = esper.component_for_entity(ent, CardSprite)
             sprite.mask.invert()
-            this = DECK_REF.hand.index(ent)
+            card = esper.component_for_entity(ent, Card)
+            this = DECK_REF.hand.index(card)
 
-            for next in range(this + 1, len(DECK_REF.hand)):
-                ent = DECK_REF.hand[next]
+            for next_ent in range(this + 1, len(ent_list)):
+                ent = ent_list[next_ent]
                 assert esper.entity_exists(ent)
 
                 next_card_sprite = esper.component_for_entity(ent, CardSprite)

@@ -146,4 +146,4 @@ def spawn_card_ent(card: Card, /) -> int:
 
 
 def create_card_obj(card_type: CardTypeEnum) -> Card:
-    return CARD_TYPES_DICT_REF[card_type]
+    return CARD_TYPES_DICT_REF[card_type]()

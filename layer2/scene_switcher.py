@@ -2,9 +2,14 @@ from typing import Optional
 
 import esper
 
-from common import STATE_REF, WORLD_REF, ActionArgs, WorldEnum
-
-from .log import logger
+from common import (
+    POS_PROC_REF,
+    STATE_REF,
+    WORLD_REF,
+    ActionArgs,
+    TempObjectTag,
+    WorldEnum,
+)
 
 
 class SceneSwitcherProcessor(esper.Processor):
@@ -24,6 +29,10 @@ class SceneSwitcherProcessor(esper.Processor):
             STATE_REF.selected_tile = None
             STATE_REF.hovered_ent = None
 
+            for ent, _ in esper.get_component(TempObjectTag):
+                POS_PROC_REF().untrack(ent)
+                esper.delete_entity(ent)
+
             esper.switch_world(WORLD_REF.world.name)
 
     def switch_world_to(self, world: WorldEnum) -> None:
@@ -36,7 +45,6 @@ def switch_world_action(
     if world is None:
         world = WORLD_REF.world
     sw_to = WorldEnum((world.value) % (len(WorldEnum)) + 1)
-    logger.info((world.name, sw_to.name))
     SCENE_SWITCH_PROC_REF.switch_world_to((sw_to))
 
 

@@ -1,4 +1,4 @@
-from typing import Any, List, Optional, Tuple, Type
+from typing import Any, Dict, List, Optional, Tuple, Type
 
 import esper
 import pygame
@@ -7,8 +7,10 @@ from common import (
     POS_PROC_REF,
     SETTINGS_REF,
     STATE_REF,
+    WORLD_REF,
     BoundingBox,
     GamePhaseType,
+    WorldEnum,
 )
 from layer2.tags import (
     GameCameraTag,
@@ -195,4 +197,10 @@ class UIProcessor(esper.Processor):
                     func(ent)
 
 
-UI_PROC_REF = UIProcessor()
+_UI_PROC_WORLD_DICT: Dict[WorldEnum, UIProcessor] = {}
+for world in WorldEnum:
+    _UI_PROC_WORLD_DICT.update({world: UIProcessor()})
+
+
+def UI_PROC_REF() -> UIProcessor:
+    return _UI_PROC_WORLD_DICT[WORLD_REF.world]

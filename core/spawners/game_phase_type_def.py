@@ -26,7 +26,6 @@ def _begin_game() -> List[Action]:
 
 def _draw() -> List[Action]:
     effects: List[Action] = [
-        draw_card,
         get_wait_ms_action(50),
         draw_card,
         get_wait_ms_action(50),
@@ -36,6 +35,7 @@ def _draw() -> List[Action]:
         get_wait_ms_action(50),
         draw_card,
         get_wait_ms_action(50),
+        draw_card,
     ]
     return effects
 

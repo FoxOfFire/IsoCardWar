@@ -82,7 +82,7 @@ def bind_game_events() -> None:
     def handle_quit(_: pygame.event.Event) -> None:
         RUN_DATA_REF.game_running = False
 
-    EVENT_PROC_REF.bind(pygame.QUIT, handle_quit)
+    EVENT_PROC_REF().bind(pygame.QUIT, handle_quit)
 
 
 def init_game_world_esper() -> None:  # adding processors
@@ -91,9 +91,9 @@ def init_game_world_esper() -> None:  # adding processors
     esper.add_processor(BB_MOVE_PROC_REF())
     esper.add_processor(POS_PROC_REF())
 
-    esper.add_processor(EVENT_PROC_REF)
-    esper.add_processor(UI_PROC_REF)
-    esper.add_processor(GAME_PHASE_PROC_REF)
+    esper.add_processor(EVENT_PROC_REF())
+    esper.add_processor(UI_PROC_REF())
+    esper.add_processor(GAME_PHASE_PROC_REF())
 
     esper.add_processor(RENDER_PROC_REF())
 
@@ -121,9 +121,16 @@ def init_dependencies() -> None:
     POS_PROC_REF().start_tracking_type(TrackIso)
     POS_PROC_REF().start_tracking_type(TrackUI)
 
+    for phase, func_list in get_base_game_phase_dict().items():
+        GAME_PHASE_PROC_REF().add_game_phase(phase, func_list=func_list)
+    GAME_PHASE_PROC_REF().set_end_phase(end_phase)
+
     set_type_actions()
 
     CARD_MOV_PROC_REF().set_cam_bb(game_cam_bb)
+
+    UI_PROC_REF().set_display_size(display.get_size())
+    UI_PROC_REF().set_tracker_tag(TrackUI)
 
 
 def init_game() -> None:
@@ -133,14 +140,6 @@ def init_game() -> None:
     DECK_REF.spawn_card = spawn_card_ent
     DECK_REF.create_card = create_card_obj
     DECK_REF.create_starting_deck()
-
-    for phase, func_list in get_base_game_phase_dict().items():
-        GAME_PHASE_PROC_REF.add_game_phase(phase, func_list=func_list)
-    GAME_PHASE_PROC_REF.set_end_phase(end_phase)
-
-    UI_PROC_REF.set_display_size(display.get_size())
-    UI_PROC_REF.set_tracker_tag(TrackUI)
-
     ui_event_obj.iso_tag = TrackIso
 
 
@@ -167,6 +166,8 @@ def init() -> None:
     bind_game_events()
     UI_BUILDER_REF.build_ui()
 
+    SCENE_SWITCH_PROC_REF.switch_world_to(WorldEnum.GAME)
+    SCENE_SWITCH_PROC_REF.process()
     logger.info(f"{esper.current_world} world init finished")
 
     logger.info(
