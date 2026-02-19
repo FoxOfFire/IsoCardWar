@@ -26,9 +26,9 @@ from .log import logger
 
 @dataclass
 class ButtonData:
-    size: Tuple[int, int]
     text: str | TextFunc
     ui_elem_type: UIElemType
+    size: Optional[Tuple[int, int]] = None
     click_func: Optional[List[Action]] = None
     click_funcing: Optional[List[Action]] = None
     hover_func: Optional[List[Action]] = None
@@ -45,6 +45,7 @@ def spawn_button(
     if SETTINGS_REF.LOG_SPAWNING:
         logger.info("spawning button")
     x, y = topleft
+    assert data.size is not None
     w, h = data.size
     if not callable(data.text):
 

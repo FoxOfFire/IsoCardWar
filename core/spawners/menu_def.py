@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from enum import IntEnum
 from functools import partial
-from typing import Dict, List, Tuple
+from typing import Dict, List, Optional, Tuple
 
 from common import (
     SETTINGS_REF,
@@ -51,7 +51,7 @@ class MenuContainer:
     snap_point: Tuple[int, int]
     snap: Tuple[SnapHorisontalEnum, SnapVerticalEnum]
     edge_padding: int
-    BUTTONS: List[ButtonData]
+    BUTTONS: List[Optional[ButtonData]]
 
 
 MENU_LIST_DEF: Dict[WorldEnum, List[UIElementComponent]] = {}
@@ -62,23 +62,21 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
             (SnapHorisontalEnum.CENTER, SnapVerticalEnum.CENTER),
             1,
             [
-                ButtonData((6, 2), "Settings", UIElemType.TEXTBOX),
+                ButtonData("Settings", UIElemType.TEXTBOX, (6, 2)),
+                None,
                 ButtonData(
-                    (6, 1),
                     "Mute Game",
                     UIElemType.CHECKBOX,
                     click_func=[toggle_sound],
                     button_default_data=SETTINGS_REF.GAME_MUTE,
                 ),
                 ButtonData(
-                    (6, 1),
                     "Slider",
                     UIElemType.SLIDER,
                     button_default_data=0.5,
                     click_funcing=[set_slider_val],
                 ),
                 ButtonData(
-                    (6, 1),
                     "Main Menu",
                     UIElemType.BUTTON,
                     click_func=[get_switch_world_action(WorldEnum.MAIN)],
@@ -92,22 +90,19 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
             (SnapHorisontalEnum.CENTER, SnapVerticalEnum.CENTER),
             1,
             [
-                ButtonData((6, 2), "Main Menu", UIElemType.TEXTBOX),
+                ButtonData("Main Menu", UIElemType.TEXTBOX, (6, 2)),
+                None,
                 ButtonData(
-                    (6, 1),
                     "Continue",
                     UIElemType.BUTTON,
                     click_func=[get_switch_world_action(WorldEnum.GAME)],
                 ),
                 ButtonData(
-                    (6, 1),
                     "Settings",
                     UIElemType.BUTTON,
                     click_func=[get_switch_world_action(WorldEnum.SETTINGS)],
                 ),
-                ButtonData(
-                    (6, 1), "Quit", UIElemType.BUTTON, click_func=[quit_game]
-                ),
+                ButtonData("Quit", UIElemType.BUTTON, click_func=[quit_game]),
             ],
         ),
     ],
@@ -117,24 +112,18 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
             (SnapHorisontalEnum.RIGHT, SnapVerticalEnum.TOP),
             1,
             [
-                ButtonData((6, 1), get_fps_str, UIElemType.TEXTBOX),
-                ButtonData((6, 1), get_game_phase_str, UIElemType.TEXTBOX),
-                ButtonData((6, 1), get_game_world_str, UIElemType.TEXTBOX),
+                ButtonData("Info", UIElemType.TEXTBOX, (6, 2)),
+                None,
+                ButtonData(get_fps_str, UIElemType.TEXTBOX),
+                ButtonData(get_game_phase_str, UIElemType.TEXTBOX),
+                ButtonData(get_game_world_str, UIElemType.TEXTBOX),
                 ButtonData(
-                    (6, 1),
                     partial(get_tracked_bb_of_type_str, TrackIso, "TrackIso"),
                     UIElemType.TEXTBOX,
                 ),
                 ButtonData(
-                    (6, 1),
                     partial(get_tracked_bb_of_type_str, TrackUI, "TrackUI"),
                     UIElemType.TEXTBOX,
-                ),
-                ButtonData(
-                    (6, 1),
-                    "Main Menu",
-                    UIElemType.BUTTON,
-                    click_func=[get_switch_world_action(WorldEnum.MAIN)],
                 ),
             ],
         ),
@@ -143,22 +132,27 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
             (SnapHorisontalEnum.LEFT, SnapVerticalEnum.TOP),
             1,
             [
-                ButtonData((5, 2), "Debug", UIElemType.TEXTBOX),
+                ButtonData("Menu", UIElemType.TEXTBOX, (6, 2)),
                 ButtonData(
-                    (5, 1),
+                    "Main Menu",
+                    UIElemType.BUTTON,
+                    click_func=[get_switch_world_action(WorldEnum.MAIN)],
+                ),
+                None,
+                ButtonData("Debug", UIElemType.TEXTBOX),
+                ButtonData(
                     "End Turn",
                     UIElemType.BUTTON,
                     click_func=[end_player_phase_action],
                 ),
                 ButtonData(
-                    (5, 1),
                     "Draw Card",
                     UIElemType.BUTTON,
                     click_func=[draw_card],
                 ),
-                ButtonData((5, 2), "Organise by", UIElemType.TEXTBOX),
+                None,
+                ButtonData("Organise by", UIElemType.TEXTBOX),
                 ButtonData(
-                    (5, 1),
                     "Marker",
                     UIElemType.BUTTON,
                     click_func=[
@@ -168,7 +162,6 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
                     ],
                 ),
                 ButtonData(
-                    (5, 1),
                     "Name",
                     UIElemType.BUTTON,
                     click_func=[
@@ -178,7 +171,6 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
                     ],
                 ),
                 ButtonData(
-                    (5, 1),
                     "None",
                     UIElemType.BUTTON,
                     click_func=[

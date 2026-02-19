@@ -19,7 +19,9 @@ class UIBuilder:
         menu_width: int = 0
         menu_height: int = 0
         for button in menu.BUTTONS:
-            w, h = button.size
+            w, h = 1, 1
+            if button is not None and button.size is not None:
+                w, h = button.size
             menu_width = max(menu_width, w)
             menu_height += h
         menu_width += menu.edge_padding
@@ -41,15 +43,19 @@ class UIBuilder:
 
         menu_ent = spawn_button(
             (x, y),
-            ButtonData((menu_width, menu_height), "", UIElemType.MENU),
+            ButtonData("", UIElemType.MENU, (menu_width, menu_height)),
         )
         menu_ui_elem = esper.component_for_entity(menu_ent, UIElementComponent)
 
         w_offset = menu.edge_padding * SETTINGS_REF.BUTTON_TILE_SIZE // 2 + x
         h_offset = menu.edge_padding * SETTINGS_REF.BUTTON_TILE_SIZE // 2 + y
         for button in menu.BUTTONS:
-            _, h = button.size
-            spawn_button((w_offset, h_offset), button, menu_ui_elem)
+            h = 1
+            if button is not None:
+                if button.size is None:
+                    button.size = (menu_width - menu.edge_padding, 1)
+                _, h = button.size
+                spawn_button((w_offset, h_offset), button, menu_ui_elem)
             h_offset += (h) * SETTINGS_REF.BUTTON_TILE_SIZE
         return menu_ui_elem
 
