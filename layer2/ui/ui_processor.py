@@ -180,8 +180,11 @@ class UIProcessor(esper.Processor):
                 continue
 
             ui_tag = esper.try_component(ent, UIElementComponent)
-            assert ui_tag is not None
-            if not self._ui_elem_visible(ui_tag) or not ui_tag.is_clickable:
+            if (
+                ui_tag is None
+                or not self._ui_elem_visible(ui_tag)
+                or not ui_tag.is_clickable
+            ):
                 continue
 
             if self.left_clicking and ui_tag.is_clickable:

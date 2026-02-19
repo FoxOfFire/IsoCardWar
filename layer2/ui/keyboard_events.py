@@ -20,5 +20,5 @@ def mouse_handler(event: Event) -> None:
 
 
 def bind_events() -> None:
-    EVENT_PROC_REF().bind(pygame.KEYDOWN, key_bind_handler)
-    EVENT_PROC_REF().bind(pygame.MOUSEBUTTONUP, mouse_handler)
+    EVENT_PROC_REF.bind(pygame.KEYDOWN, key_bind_handler)
+    EVENT_PROC_REF.bind(pygame.MOUSEBUTTONUP, mouse_handler)

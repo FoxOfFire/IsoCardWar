@@ -2,7 +2,7 @@ from enum import IntEnum
 
 import esper
 
-from common import SETTINGS_REF
+from common import SETTINGS_REF, WORLD_REF
 from layer2 import UIElementComponent, UIElemType
 
 from .menu_def import MENU_DEF_REF, MENU_LIST_DEF, MenuContainer
@@ -54,8 +54,10 @@ class UIBuilder:
         return menu_ui_elem
 
     def build_ui(self) -> None:
-        for menu in MENU_DEF_REF:
-            MENU_LIST_DEF.append(self._build_menu(menu))
+        world = WORLD_REF.world
+        MENU_LIST_DEF.update({world: []})
+        for menu in MENU_DEF_REF[world]:
+            MENU_LIST_DEF[world].append(self._build_menu(menu))
 
 
 UI_BUILDER_REF = UIBuilder()

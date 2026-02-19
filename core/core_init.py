@@ -82,26 +82,28 @@ def bind_game_events() -> None:
     def handle_quit(_: pygame.event.Event) -> None:
         RUN_DATA_REF.game_running = False
 
-    EVENT_PROC_REF().bind(pygame.QUIT, handle_quit)
+    EVENT_PROC_REF.bind(pygame.QUIT, handle_quit)
 
 
-def init_game_world_esper() -> None:  # adding processors
+def init_processors(*, game_proc: bool = False) -> None:  # adding processors
 
-    esper.add_processor(CARD_MOV_PROC_REF())
+    if game_proc:
+        esper.add_processor(CARD_MOV_PROC_REF())
+
     esper.add_processor(BB_MOVE_PROC_REF())
     esper.add_processor(POS_PROC_REF())
-
-    esper.add_processor(EVENT_PROC_REF())
+    esper.add_processor(EVENT_PROC_REF)
     esper.add_processor(UI_PROC_REF())
-    esper.add_processor(GAME_PHASE_PROC_REF())
+
+    if game_proc:
+        esper.add_processor(GAME_PHASE_PROC_REF())
 
     esper.add_processor(RENDER_PROC_REF())
-
     esper.add_processor(DYING_PROC_REF)
     esper.add_processor(SCENE_SWITCH_PROC_REF)
 
 
-def init_dependencies() -> None:
+def init_world(*, game_ents: bool = False) -> None:
     display = pygame.display.get_surface()
     assert display is not None
 
@@ -109,28 +111,31 @@ def init_dependencies() -> None:
         0, SETTINGS_REF.GAME_CAM_WIDTH, 0, SETTINGS_REF.GAME_CAM_HEIGHT
     )
     esper.create_entity(game_cam_bb, GameCameraTag())
-    iso_cam_bb = BoundingBox(
-        0, SETTINGS_REF.ISO_MAP_HEIGHT, 0, SETTINGS_REF.ISO_MAP_WIDTH
-    )
-    esper.create_entity(iso_cam_bb, IsoCameraTag())
 
-    spawn_iso_elem(TrackIso, TrackUI, IsoSprite)
+    if game_ents:
+        iso_cam_bb = BoundingBox(
+            0, SETTINGS_REF.ISO_MAP_HEIGHT, 0, SETTINGS_REF.ISO_MAP_WIDTH
+        )
+        esper.create_entity(iso_cam_bb, IsoCameraTag())
+
+        spawn_iso_elem(TrackIso, TrackUI, IsoSprite)
+
+        POS_PROC_REF().start_tracking_type(TrackIso)
+        POS_PROC_REF().start_tracking_type(TrackUI)
+        for phase, func_list in get_base_game_phase_dict().items():
+            GAME_PHASE_PROC_REF().add_game_phase(phase, func_list=func_list)
+        GAME_PHASE_PROC_REF().set_end_phase(end_phase)
+
+        set_type_actions()
+
+        CARD_MOV_PROC_REF().set_cam_bb(game_cam_bb)
 
     RENDER_PROC_REF().set_display_and_init_cam_types(display)
 
-    POS_PROC_REF().start_tracking_type(TrackIso)
-    POS_PROC_REF().start_tracking_type(TrackUI)
-
-    for phase, func_list in get_base_game_phase_dict().items():
-        GAME_PHASE_PROC_REF().add_game_phase(phase, func_list=func_list)
-    GAME_PHASE_PROC_REF().set_end_phase(end_phase)
-
-    set_type_actions()
-
-    CARD_MOV_PROC_REF().set_cam_bb(game_cam_bb)
-
     UI_PROC_REF().set_display_size(display.get_size())
     UI_PROC_REF().set_tracker_tag(TrackUI)
+
+    UI_BUILDER_REF.build_ui()
 
 
 def init_game() -> None:
@@ -148,26 +153,21 @@ def init() -> None:
     init_window()
     init_audio()
 
+    init_game()
+    bind_game_events()
+
     # game world
     SCENE_SWITCH_PROC_REF.switch_world_to(WorldEnum.GAME)
     SCENE_SWITCH_PROC_REF.process()
-    init_game_world_esper()
-    init_dependencies()
-    init_game()
+    init_processors(game_proc=True)
+    init_world(game_ents=True)
 
-    bind_game_events()
-    UI_BUILDER_REF.build_ui()
-
-    # game world
+    # menu world
     SCENE_SWITCH_PROC_REF.switch_world_to(WorldEnum.MAIN)
     SCENE_SWITCH_PROC_REF.process()
-    init_game_world_esper()
-    init_dependencies()
-    bind_game_events()
-    UI_BUILDER_REF.build_ui()
+    init_processors()
+    init_world()
 
-    SCENE_SWITCH_PROC_REF.switch_world_to(WorldEnum.GAME)
-    SCENE_SWITCH_PROC_REF.process()
     logger.info(f"{esper.current_world} world init finished")
 
     logger.info(

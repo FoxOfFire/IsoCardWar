@@ -26,10 +26,9 @@ class IsoRenderer:
     bb: Optional[BoundingBox]
 
     def set_camera_type(self, cam_tag: Type) -> None:
-        self.bb = esper.component_for_entity(
-            esper.get_component(cam_tag)[0][0],
-            BoundingBox,
-        )
+        cams = esper.get_component(cam_tag)
+        if len(cams) > 0:
+            self.bb = esper.component_for_entity(cams[0][0], BoundingBox)
 
     def __init__(self, track_tag: Type, /) -> None:
         super().__init__()
@@ -52,7 +51,8 @@ class IsoRenderer:
         return hovered_ent, card.marker
 
     def draw(self, screen: pygame.Surface) -> None:
-        assert self.bb is not None
+        if self.bb is None:
+            return
 
         def sort_by_bottom(ent: int) -> int:
             tile = esper.try_component(ent, Tile)
