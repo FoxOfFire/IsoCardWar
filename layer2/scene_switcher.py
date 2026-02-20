@@ -27,7 +27,6 @@ class SceneSwitcherProcessor(esper.Processor):
             WORLD_REF.world = self._next_tick_world
             self._next_tick_world = None
             STATE_REF.selected_card = None
-            STATE_REF.selected_tile = None
             STATE_REF.hovered_ent = None
 
             for ent, _ in esper.get_component(TempObjectTag):

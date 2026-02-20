@@ -28,6 +28,7 @@ class UIElemType(IntEnum):
 class UIElemSprite:
     elem_type: UIElemType
     size: Tuple[int, int]
+    sub_size: Tuple[int, int] = (0, 0)
     button_data: Optional[bool | float] = None
 
 

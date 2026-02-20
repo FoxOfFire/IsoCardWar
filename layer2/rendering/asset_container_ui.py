@@ -15,49 +15,67 @@ class UIAssetContainer:
     _BUTTON_TILE_MAPS: Dict[IntEnum, List[pygame.Surface]] = {}
     _LOADED_TILE_MAPS: bool = False
     _BUTTON_SURFS: Dict[
-        Tuple[IntEnum, Optional[float | bool], int, int], List[pygame.Surface]
+        Tuple[
+            IntEnum, Optional[float | bool], Tuple[int, int], Tuple[int, int]
+        ],
+        List[pygame.Surface],
     ] = {}
 
     def _get_rect_tile_surf(
         self,
         enum: UIElemType,
-        /,
-        *,
         size: Tuple[int, int],
         offset: int,
+        sub_size: Tuple[int, int] = (0, 0),
     ) -> pygame.Surface:
         tilemap: List[pygame.Surface] = self._BUTTON_TILE_MAPS[enum]
         x, y = size
+        sub_x, sub_y = sub_size
+        flag_x, flag_y = sub_x > 0, sub_y > 0
+        assert sub_x >= 0 and sub_y >= 0
         fin = pygame.Surface(
             (
-                x * SETTINGS_REF.BUTTON_TILE_SIZE,
-                y * SETTINGS_REF.BUTTON_TILE_SIZE,
+                x * SETTINGS_REF.BUTTON_TILE_SIZE + sub_x,
+                y * SETTINGS_REF.BUTTON_TILE_SIZE + sub_y,
             ),
             flags=pygame.SRCALPHA,
         )
         fin.fill((0, 0, 0, 0))
         tilemap_len = len(tilemap)
+        if flag_x:
+            x += 1
+        if flag_y:
+            y += 1
         for i in range(x):
+            i_offset = 0
+            i_sub_offset = 0
+            if i == 0:
+                i_offset += 2
+            if i == x - 1:
+                i_offset += 1
+                if flag_x:
+                    i_sub_offset = SETTINGS_REF.BUTTON_TILE_SIZE - sub_x
+
             for j in range(y):
                 tile = (offset * 16 + 15) % tilemap_len
+                j_sub_offset = 0
 
                 if j == 0:
                     tile -= 8
                 if j == y - 1:
                     tile -= 4
+                    if flag_y:
+                        j_sub_offset = SETTINGS_REF.BUTTON_TILE_SIZE - sub_y
 
-                if i == 0:
-                    tile -= 2
-                if i == x - 1:
-                    tile -= 1
+                tile -= i_offset
 
                 surf = tilemap[tile]
                 fin.blit(
                     surf,
                     surf.get_rect(
                         topleft=(
-                            i * SETTINGS_REF.BUTTON_TILE_SIZE,
-                            j * SETTINGS_REF.BUTTON_TILE_SIZE,
+                            i * SETTINGS_REF.BUTTON_TILE_SIZE - i_sub_offset,
+                            j * SETTINGS_REF.BUTTON_TILE_SIZE - j_sub_offset,
                         )
                     ),
                 )
@@ -81,7 +99,7 @@ class UIAssetContainer:
         if elem == UIElemType.SLIDER:
             data = None
             assert x == 1 or y == 1
-        surfs = self._BUTTON_SURFS.get((elem, data, x, y))
+        surfs = self._BUTTON_SURFS.get((elem, data, (x, y), sprite.sub_size))
         if surfs is None:
             if not self._LOADED_TILE_MAPS:
                 self._load_tile_types()
@@ -97,9 +115,7 @@ class UIAssetContainer:
             surfs = []
             for i in range(3):
                 surf = self._get_rect_tile_surf(
-                    elem,
-                    size=(x, y),
-                    offset=i,
+                    elem, (x, y), i, sprite.sub_size
                 )
                 if is_checkbox:
                     surf.blit(
@@ -111,7 +127,9 @@ class UIAssetContainer:
 
             if SETTINGS_REF.LOG_ASSET_LOADING:
                 logger.info(f"updated button:{elem, data, x, y}")
-            self._BUTTON_SURFS.update({(elem, data, x, y): surfs})
+            self._BUTTON_SURFS.update(
+                {(elem, data, (x, y), sprite.sub_size): surfs}
+            )
 
         return surfs
 

@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional, Tuple, Type
+from typing import Any, Dict, Optional, Set, Tuple, Type
 
 import esper
 import pygame
@@ -29,9 +29,9 @@ class UIProcessor(esper.Processor):
             if esper.has_component(ent, GameCameraTag):
                 self.cam_bb = bb
                 break
-        self.clicked: List[int] = []
+        self.clicked: Set[int] = set()
         self.mouse_bb: Optional[BoundingBox] = None
-        self.hover: List[int] = []
+        self.hover: Set[int] = set()
         logger.info("init finished")
         self.prev_click = False
         self.left_clicking = False
@@ -90,7 +90,8 @@ class UIProcessor(esper.Processor):
 
     def clicked_things_stay_clicked(self) -> None:
         assert self.mouse_bb is not None
-        for ent in self.clicked:
+        clicked = list(self.clicked)
+        for ent in clicked:
             ui_elem = esper.component_for_entity(ent, UIElementComponent)
             if not self.__mouse_overlap(ent) or not self._ui_elem_visible(
                 ui_elem
@@ -123,7 +124,7 @@ class UIProcessor(esper.Processor):
             for func in tag.click_func:
                 func(ent)
 
-        self.clicked = []
+        self.clicked = set()
 
     def reset_hovered_ent(self) -> None:
         assert self.mouse_bb is not None
@@ -189,12 +190,12 @@ class UIProcessor(esper.Processor):
 
             if self.left_clicking and ui_tag.is_clickable:
                 ui_tag.state = UIStateEnum.PRESSED
-                self.clicked.append(ent)
+                self.clicked.add(ent)
             elif ent not in self.hover:
                 for func in ui_tag.start_hover_func:
                     func(ent)
                 ui_tag.state = UIStateEnum.HOVER
-                self.hover.append(ent)
+                self.hover.add(ent)
             else:
                 for func in ui_tag.hover_func:
                     func(ent)

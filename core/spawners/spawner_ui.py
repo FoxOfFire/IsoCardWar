@@ -29,6 +29,7 @@ class ButtonData:
     text: str | TextFunc
     ui_elem_type: UIElemType
     size: Optional[Tuple[int, int]] = None
+    sub_size: Tuple[int, int] = (0, 0)
     click_func: Optional[List[Action]] = None
     click_funcing: Optional[List[Action]] = None
     hover_func: Optional[List[Action]] = None
@@ -47,6 +48,11 @@ def spawn_button(
     x, y = topleft
     assert data.size is not None
     w, h = data.size
+    s_w, s_h = data.sub_size
+    if w == 1 and s_w != 0:
+        s_w = max(SETTINGS_REF.BUTTON_TILE_SIZE // 2, s_w)
+    if h == 1 and s_h != 0:
+        s_h = max(SETTINGS_REF.BUTTON_TILE_SIZE // 2, s_h)
     if not callable(data.text):
 
         @TextFuncDecor
@@ -60,12 +66,12 @@ def spawn_button(
 
     bb = BoundingBox(
         x,
-        x + w * SETTINGS_REF.BUTTON_TILE_SIZE,
+        x + w * SETTINGS_REF.BUTTON_TILE_SIZE + s_w,
         y,
-        y + h * SETTINGS_REF.BUTTON_TILE_SIZE,
+        y + h * SETTINGS_REF.BUTTON_TILE_SIZE + s_h,
     )
-    offset_x = bb.width / 2
-    offset_y = bb.height / 2
+    offset_x = bb.width // 2
+    offset_y = bb.height // 2
 
     if data.click_func is None:
         data.click_func = []
@@ -103,7 +109,9 @@ def spawn_button(
         parent_elem=parent,
     )
     tracker = TrackUI()
-    ui_elem_sprite = UIElemSprite(data.ui_elem_type, data.size)
+    ui_elem_sprite = UIElemSprite(
+        data.ui_elem_type, data.size, sub_size=data.sub_size
+    )
 
     return esper.create_entity(
         bb, ui_elem, tracker, ui_elem_sprite, Untracked()

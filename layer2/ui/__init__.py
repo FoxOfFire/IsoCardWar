@@ -4,6 +4,7 @@ from .keyboard_events import bind_events as bind_keyboard_events
 from .keyboard_events import quit_game
 from .ui_actions import (
     click_on_tile,
+    debug_print,
     flip_ui_elem_val,
     get_sound_action,
     hover_over_tile,

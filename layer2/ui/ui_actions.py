@@ -16,6 +16,7 @@ from common import (
 from layer2.tags import UIElementComponent
 
 from .audio import SoundTypeEnum, play_sfx
+from .log import logger
 from .ui_utils import (
     get_mouse_pos_in_px,
     get_transformed_mouse_pos,
@@ -25,6 +26,10 @@ from .ui_utils import (
 
 def get_sound_action(sound: SoundTypeEnum) -> Action:
     return lambda _: play_sfx(sound)
+
+
+def debug_print(ent: ActionArgs) -> None:
+    logger.info(f"button perssed: {ent}")
 
 
 def click_on_tile(ent: ActionArgs) -> None:

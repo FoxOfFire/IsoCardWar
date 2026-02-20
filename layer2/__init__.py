@@ -26,6 +26,7 @@ from .ui import (
     SoundTypeEnum,
     bind_keyboard_events,
     click_on_tile,
+    debug_print,
     flip_ui_elem_val,
     get_sound_action,
     hover_over_tile,
