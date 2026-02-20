@@ -1,4 +1,4 @@
-from typing import Optional, Tuple, Type
+from typing import Iterable, Optional, Tuple, Type
 
 import esper
 import pygame
@@ -52,16 +52,35 @@ class ButtonRenderer:
             return None
         return ui_sprite, ui_elem
 
+    def _filter(self, ent: int) -> bool:
+        if not esper.entity_exists(ent):
+            return False
+
+        if self._check_visible(ent) is None:
+            return False
+
+        return True
+
+    def _sorter(self, ent: int) -> int:
+        res = self._check_visible(ent)
+        if res is None:
+            return -1
+        sprite, _ = res
+        return sprite.elem_type
+
     def draw(self, screen: pygame.Surface) -> None:
         assert self.bb is not None
-        for ent in POS_PROC_REF().intersect(self.bb, self.track_tag):
-            if not esper.entity_exists(ent):
-                continue
+        ent_list: Iterable[int] = POS_PROC_REF().intersect(
+            self.bb, self.track_tag
+        )
+        ent_list = filter(self._filter, ent_list)
+        ent_list = sorted(ent_list, key=self._sorter)
 
+        for ent in ent_list:
             bb = esper.component_for_entity(ent, BoundingBox)
             result = self._check_visible(ent)
-            if result is None:
-                continue
+            assert result is not None
+
             ui_sprite, ui_elem = result
             ui_sprite.button_data = ui_elem.button_val
             surf = UI_ASSET_REF.get_button_surf(ui_sprite)[

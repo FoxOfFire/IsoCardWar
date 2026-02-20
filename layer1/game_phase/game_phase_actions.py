@@ -7,7 +7,7 @@ from .log import logger
 def get_wait_ms_action(ms: int) -> Action:
     def wait_ms(_: ActionArgs) -> None:
         logger.info(f"wait for {ms}ms")
-        GAME_PHASE_PROC_REF().wait += ms
+        GAME_PHASE_PROC_REF.wait += ms
 
     fn = wait_ms
 
@@ -27,6 +27,6 @@ def end_phase(_: ActionArgs = None) -> None:
         if current_state != last_valid_state
         else GamePhaseType.DRAW
     )
-    GAME_PHASE_PROC_REF().next_funk_queue = (
-        GAME_PHASE_PROC_REF().phase_funk_queue[STATE_REF.game_phase]()
-    )
+    GAME_PHASE_PROC_REF.next_funk_queue = GAME_PHASE_PROC_REF.phase_funk_queue[
+        STATE_REF.game_phase
+    ]()

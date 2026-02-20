@@ -1,4 +1,4 @@
-from typing import Dict, Optional
+from typing import Optional
 
 import esper
 
@@ -6,9 +6,7 @@ from common import (
     RUN_DATA_REF,
     SETTINGS_REF,
     STATE_REF,
-    WORLD_REF,
     BoundingBox,
-    WorldEnum,
 )
 
 from .cards import DECK_REF, Card
@@ -57,10 +55,4 @@ class CardMovementProcessor(esper.Processor):
             bb.set_velocity(delta_x, delta_y)
 
 
-_CARD_MOVE_PROC_WORLD_DICT: Dict[WorldEnum, CardMovementProcessor] = {}
-for world in WorldEnum:
-    _CARD_MOVE_PROC_WORLD_DICT.update({world: CardMovementProcessor()})
-
-
-def CARD_MOV_PROC_REF() -> CardMovementProcessor:
-    return _CARD_MOVE_PROC_WORLD_DICT[WORLD_REF.world]
+CARD_MOV_PROC_REF = CardMovementProcessor()

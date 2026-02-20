@@ -88,7 +88,7 @@ def bind_game_events() -> None:
 def init_processors(*, game_proc: bool = False) -> None:  # adding processors
 
     if game_proc:
-        esper.add_processor(CARD_MOV_PROC_REF())
+        esper.add_processor(CARD_MOV_PROC_REF)
 
     esper.add_processor(BB_MOVE_PROC_REF())
     esper.add_processor(POS_PROC_REF())
@@ -96,7 +96,7 @@ def init_processors(*, game_proc: bool = False) -> None:  # adding processors
     esper.add_processor(UI_PROC_REF())
 
     if game_proc:
-        esper.add_processor(GAME_PHASE_PROC_REF())
+        esper.add_processor(GAME_PHASE_PROC_REF)
 
     esper.add_processor(RENDER_PROC_REF())
     esper.add_processor(DYING_PROC_REF)
@@ -123,12 +123,12 @@ def init_world(*, game_ents: bool = False) -> None:
         POS_PROC_REF().start_tracking_type(TrackIso)
         POS_PROC_REF().start_tracking_type(TrackUI)
         for phase, func_list in get_base_game_phase_dict().items():
-            GAME_PHASE_PROC_REF().add_game_phase(phase, func_list=func_list)
-        GAME_PHASE_PROC_REF().set_end_phase(end_phase)
+            GAME_PHASE_PROC_REF.add_game_phase(phase, func_list=func_list)
+        GAME_PHASE_PROC_REF.set_end_phase(end_phase)
 
         set_type_actions()
 
-        CARD_MOV_PROC_REF().set_cam_bb(game_cam_bb)
+        CARD_MOV_PROC_REF.set_cam_bb(game_cam_bb)
 
     RENDER_PROC_REF().set_display_and_init_cam_types(display)
 

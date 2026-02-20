@@ -58,8 +58,8 @@ class Settings:
     # map
     SEED = None
 
-    ISO_MAP_HEIGHT = 8
-    ISO_MAP_WIDTH = 8
+    ISO_MAP_HEIGHT = 7
+    ISO_MAP_WIDTH = 7
 
     ISO_TILE_SPRITE_HEIGHT = 64
     ISO_TILE_SPRITE_WIDTH = 32
