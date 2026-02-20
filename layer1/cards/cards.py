@@ -15,7 +15,7 @@ from .log import logger
 # data
 
 
-@dataclass()
+@dataclass
 class Card:
     name: str
     description: str
@@ -28,7 +28,7 @@ class Deck:
     def __init__(self) -> None:
         self.spawn_card: Optional[Callable[[Card], int]] = None
         self.create_card: Optional[Callable[[CardTypeEnum], Card]] = None
-        self.hand: List[int] = []
+        self.hand: List[Card] = []
         self.deck: List[Card] = []
         self.discard: List[Card] = []
         self.order: OrganizationEnum = OrganizationEnum.MARKER
@@ -37,11 +37,11 @@ class Deck:
         self.order = order
 
     # card positioning functions
-    def get_card_center_offset(self, ent: int) -> float:
-        if ent not in self.hand:
-            return -1
+    def get_card_center_offset(self, card: Card) -> float:
+        assert card in self.hand
+
         hand_size = len(self.hand)
-        index = self.hand.index(ent)
+        index = self.hand.index(card)
 
         return (hand_size - 1) / 2 - index
 

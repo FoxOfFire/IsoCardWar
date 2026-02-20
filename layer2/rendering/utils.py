@@ -17,9 +17,9 @@ class CardImageEnum(IntEnum):
 
 
 class UIElemType(IntEnum):
-    BUTTON = auto()
-    TEXTBOX = auto()
     MENU = auto()
+    TEXTBOX = auto()
+    BUTTON = auto()
     CHECKBOX = auto()
     SLIDER = auto()
 
@@ -28,6 +28,7 @@ class UIElemType(IntEnum):
 class UIElemSprite:
     elem_type: UIElemType
     size: Tuple[int, int]
+    sub_size: Tuple[int, int] = (0, 0)
     button_data: Optional[bool | float] = None
 
 

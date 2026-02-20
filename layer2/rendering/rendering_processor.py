@@ -1,9 +1,9 @@
-from typing import Optional
+from typing import Dict, Optional
 
 import esper
 import pygame
 
-from common import SETTINGS_REF
+from common import SETTINGS_REF, WORLD_REF, WorldEnum
 from layer2.tags import GameCameraTag, IsoCameraTag, TrackIso, TrackUI
 
 from .log import logger
@@ -78,4 +78,10 @@ class RenderingProcessor(esper.Processor):
         )
 
 
-RENDER_PROC_REF = RenderingProcessor()
+_RENDER_PROC_WORLD_DICT: Dict[WorldEnum, RenderingProcessor] = {}
+for world in WorldEnum:
+    _RENDER_PROC_WORLD_DICT.update({world: RenderingProcessor()})
+
+
+def RENDER_PROC_REF() -> RenderingProcessor:
+    return _RENDER_PROC_WORLD_DICT[WORLD_REF.world]

@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Callable, Dict
 
 from common import MarkerEnum, PriceEnum
 from layer1 import (
@@ -10,8 +10,8 @@ from layer1 import (
 )
 from layer2 import SoundTypeEnum, get_sound_action
 
-CARD_TYPES_DICT_REF: Dict[CardTypeEnum, Card] = {
-    CardTypeEnum.DRAW_ONE: Card(
+CARD_TYPES_DICT_REF: Dict[CardTypeEnum, Callable[[], Card]] = {
+    CardTypeEnum.DRAW_ONE: lambda: Card(
         name="Draw",
         description="Draw 3 cards",
         marker=MarkerEnum.ACTION,
@@ -21,7 +21,7 @@ CARD_TYPES_DICT_REF: Dict[CardTypeEnum, Card] = {
         ],
         price={PriceEnum.AMMO: 1, PriceEnum.METAL: 1, PriceEnum.FOOD: 1},
     ),
-    CardTypeEnum.CHANGE_TERRAIN_AND_DRAW: Card(
+    CardTypeEnum.CHANGE_TERRAIN_AND_DRAW: lambda: Card(
         name="Terraform",
         description="Cycles tile clicked between available",
         marker=MarkerEnum.TERRAIN,
@@ -31,7 +31,7 @@ CARD_TYPES_DICT_REF: Dict[CardTypeEnum, Card] = {
         ],
         price={PriceEnum.AMMO: 1, PriceEnum.METAL: 1, PriceEnum.FOOD: 1},
     ),
-    CardTypeEnum.CHANGE_UNIT_AND_DRAW: Card(
+    CardTypeEnum.CHANGE_UNIT_AND_DRAW: lambda: Card(
         name="Swap",
         description="Cycles units",
         marker=MarkerEnum.UNIT,

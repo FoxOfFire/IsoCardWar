@@ -16,6 +16,7 @@ from common import (
 from layer2.tags import UIElementComponent
 
 from .audio import SoundTypeEnum, play_sfx
+from .log import logger
 from .ui_utils import (
     get_mouse_pos_in_px,
     get_transformed_mouse_pos,
@@ -25,6 +26,10 @@ from .ui_utils import (
 
 def get_sound_action(sound: SoundTypeEnum) -> Action:
     return lambda _: play_sfx(sound)
+
+
+def debug_print(ent: ActionArgs) -> None:
+    logger.info(f"button perssed: {ent}")
 
 
 def click_on_tile(ent: ActionArgs) -> None:
@@ -41,7 +46,7 @@ def click_on_tile(ent: ActionArgs) -> None:
     )
     assert ui_event_obj.iso_tag is not None
 
-    for intersect in POS_PROC_REF.intersect(mouse_bb, ui_event_obj.iso_tag):
+    for intersect in POS_PROC_REF().intersect(mouse_bb, ui_event_obj.iso_tag):
         play_card(intersect)
 
 
@@ -57,7 +62,7 @@ def hover_over_tile(ent: ActionArgs) -> None:
     )
     assert ui_event_obj.iso_tag is not None
 
-    for intersect in POS_PROC_REF.intersect(mouse_bb, ui_event_obj.iso_tag):
+    for intersect in POS_PROC_REF().intersect(mouse_bb, ui_event_obj.iso_tag):
         hover(intersect)
         return
     hover(None)

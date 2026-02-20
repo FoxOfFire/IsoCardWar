@@ -33,6 +33,7 @@ class GamePhaseProcessor(esper.Processor):
 
         phase: GamePhaseType = STATE_REF.game_phase
 
+        logger.info(f"{esper.current_world, len(self.next_funk_queue)}")
         if len(self.next_funk_queue) > 0:
             self.next_funk_queue.pop()(STATE_REF.selected_tile)
             return

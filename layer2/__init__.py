@@ -1,7 +1,6 @@
 # flake8: noqa
 from .dying import DYING_PROC_REF
-from .enums import UIStateEnum, WorldEnum
-from .event_handlers import bind_events
+from .enums import UIStateEnum
 from .rendering import (
     CARD_ASSET_REF,
     ISO_ASSET_REF,
@@ -12,7 +11,7 @@ from .rendering import (
     UIElemSprite,
     UIElemType,
 )
-from .scene_switcher import SCENE_SWITCH_PROC_REF
+from .scene_switcher import SCENE_SWITCH_PROC_REF, get_switch_world_action
 from .tags import (
     GameCameraTag,
     IsoCameraTag,
@@ -27,6 +26,7 @@ from .ui import (
     SoundTypeEnum,
     bind_keyboard_events,
     click_on_tile,
+    debug_print,
     flip_ui_elem_val,
     get_sound_action,
     hover_over_tile,

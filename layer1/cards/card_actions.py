@@ -1,5 +1,5 @@
 import random
-from typing import Any
+from typing import Any, Optional
 
 import esper
 
@@ -18,24 +18,30 @@ from .log import logger
 
 def play_card(target: ActionArgs) -> None:
     ent = STATE_REF.selected_card
+    card: Optional[Card] = None
 
     if ent is None:
         if len(DECK_REF.hand) <= 0:
             return
-        ent = DECK_REF.hand[0]
+        card = DECK_REF.hand[0]
+        for search_ent, search_card in esper.get_component(Card):
+            if search_card == card:
+                ent = search_ent
+                logger.info("break")
+                break
+        assert ent is not None
+    else:
+        card = esper.try_component(ent, Card)
+        if card is None:
+            return
 
-    assert esper.entity_exists(ent)
-
-    card = esper.try_component(ent, Card)
-    if card is None:
-        return
     if target is not None:
         for effect in card.effects:
             effect(target)
 
     if STATE_REF.selected_card == ent:
         STATE_REF.selected_card = None
-    DECK_REF.hand.remove(ent)
+    DECK_REF.hand.remove(card)
     DECK_REF.discard.append(card)
     esper.component_for_entity(ent, Health).hp = 0
 
@@ -50,8 +56,7 @@ def discard_hand(_: ActionArgs) -> None:
 
 
 def draw_card(_: ActionArgs = None) -> None:
-    if DECK_REF.spawn_card is None:
-        raise RuntimeError("failed to initialise deck_obj")
+    assert DECK_REF.spawn_card is not None
 
     if len(DECK_REF.hand) == SETTINGS_REF.MAX_CARD_COUNT:
         logger.info("hand is full")
@@ -66,9 +71,10 @@ def draw_card(_: ActionArgs = None) -> None:
         return
 
     card = DECK_REF.deck.pop()
-    ent = DECK_REF.spawn_card(card)
-    DECK_REF.hand.append(ent)
+    card_ent = DECK_REF.spawn_card(card)
+    DECK_REF.hand.append(card)
     sort_hand()
+    logger.info(f"Spawned Card {card.name, card_ent}")
 
 
 def get_draw_cards_action(count: int) -> Action:
@@ -82,26 +88,17 @@ def get_draw_cards_action(count: int) -> Action:
 
 # deck management functions
 def sort_hand(_: ActionArgs = None) -> None:
-    match DECK_REF.order:
-        case OrganizationEnum.MARKER:
 
-            def sorter(ent: int) -> Any:
-                card = esper.component_for_entity(ent, Card)
+    def sorter(card: Card) -> Any:
+        match DECK_REF.order:
+            case OrganizationEnum.MARKER:
                 return card.marker.value
-
-        case OrganizationEnum.NAME:
-
-            def sorter(ent: int) -> Any:
-                card = esper.component_for_entity(ent, Card)
+            case OrganizationEnum.NAME:
                 return card.name
-
-        case OrganizationEnum.NONE:
-
-            def sorter(ent: int) -> Any:
-                return 1
-
-        case _:
-            raise RuntimeError("unexpected organizer")
+            case OrganizationEnum.NONE:
+                return 0
+            case _:
+                raise RuntimeError("unexpected organizer")
 
     DECK_REF.hand.sort(key=sorter)
 

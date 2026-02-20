@@ -1,4 +1,4 @@
-from typing import Any, List, Optional, Tuple, Type
+from typing import Any, Dict, Optional, Set, Tuple, Type
 
 import esper
 import pygame
@@ -7,8 +7,10 @@ from common import (
     POS_PROC_REF,
     SETTINGS_REF,
     STATE_REF,
+    WORLD_REF,
     BoundingBox,
     GamePhaseType,
+    WorldEnum,
 )
 from layer2.tags import (
     GameCameraTag,
@@ -27,9 +29,9 @@ class UIProcessor(esper.Processor):
             if esper.has_component(ent, GameCameraTag):
                 self.cam_bb = bb
                 break
-        self.clicked: List[int] = []
+        self.clicked: Set[int] = set()
         self.mouse_bb: Optional[BoundingBox] = None
-        self.hover: List[int] = []
+        self.hover: Set[int] = set()
         logger.info("init finished")
         self.prev_click = False
         self.left_clicking = False
@@ -74,7 +76,7 @@ class UIProcessor(esper.Processor):
         if self.__get_mask_component(ent) is not None:
             return self.__mask_mouse_overlap(ent)
         else:
-            return ent in POS_PROC_REF.intersect(
+            return ent in POS_PROC_REF().intersect(
                 self.mouse_bb, self.tracker_tag
             )
 
@@ -88,7 +90,8 @@ class UIProcessor(esper.Processor):
 
     def clicked_things_stay_clicked(self) -> None:
         assert self.mouse_bb is not None
-        for ent in self.clicked:
+        clicked = list(self.clicked)
+        for ent in clicked:
             ui_elem = esper.component_for_entity(ent, UIElementComponent)
             if not self.__mouse_overlap(ent) or not self._ui_elem_visible(
                 ui_elem
@@ -121,7 +124,7 @@ class UIProcessor(esper.Processor):
             for func in tag.click_func:
                 func(ent)
 
-        self.clicked = []
+        self.clicked = set()
 
     def reset_hovered_ent(self) -> None:
         assert self.mouse_bb is not None
@@ -169,27 +172,39 @@ class UIProcessor(esper.Processor):
         self.prev_click = self.left_clicking
 
         # pressing first intersection of mouse
-        for ent in POS_PROC_REF.intersect(self.mouse_bb, self.tracker_tag):
-            assert esper.entity_exists(ent)
-            if ent == self.clicked or not self.__mask_mouse_overlap(ent):
+        for ent in POS_PROC_REF().intersect(self.mouse_bb, self.tracker_tag):
+            if (
+                not esper.entity_exists(ent)
+                or ent == self.clicked
+                or not self.__mask_mouse_overlap(ent)
+            ):
                 continue
 
             ui_tag = esper.try_component(ent, UIElementComponent)
-            assert ui_tag is not None
-            if not self._ui_elem_visible(ui_tag) or not ui_tag.is_clickable:
+            if (
+                ui_tag is None
+                or not self._ui_elem_visible(ui_tag)
+                or not ui_tag.is_clickable
+            ):
                 continue
 
             if self.left_clicking and ui_tag.is_clickable:
                 ui_tag.state = UIStateEnum.PRESSED
-                self.clicked.append(ent)
+                self.clicked.add(ent)
             elif ent not in self.hover:
                 for func in ui_tag.start_hover_func:
                     func(ent)
                 ui_tag.state = UIStateEnum.HOVER
-                self.hover.append(ent)
+                self.hover.add(ent)
             else:
                 for func in ui_tag.hover_func:
                     func(ent)
 
 
-UI_PROC_REF = UIProcessor()
+_UI_PROC_WORLD_DICT: Dict[WorldEnum, UIProcessor] = {}
+for world in WorldEnum:
+    _UI_PROC_WORLD_DICT.update({world: UIProcessor()})
+
+
+def UI_PROC_REF() -> UIProcessor:
+    return _UI_PROC_WORLD_DICT[WORLD_REF.world]

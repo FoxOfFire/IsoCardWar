@@ -26,10 +26,9 @@ class IsoRenderer:
     bb: Optional[BoundingBox]
 
     def set_camera_type(self, cam_tag: Type) -> None:
-        self.bb = esper.component_for_entity(
-            esper.get_component(cam_tag)[0][0],
-            BoundingBox,
-        )
+        cams = esper.get_component(cam_tag)
+        if len(cams) > 0:
+            self.bb = esper.component_for_entity(cams[0][0], BoundingBox)
 
     def __init__(self, track_tag: Type, /) -> None:
         super().__init__()
@@ -52,7 +51,8 @@ class IsoRenderer:
         return hovered_ent, card.marker
 
     def draw(self, screen: pygame.Surface) -> None:
-        assert self.bb is not None
+        if self.bb is None:
+            return
 
         def sort_by_bottom(ent: int) -> int:
             tile = esper.try_component(ent, Tile)
@@ -61,7 +61,7 @@ class IsoRenderer:
             return tile.x - tile.y
 
         ent_list = sorted(
-            POS_PROC_REF.intersect(self.bb, self.track_tag),
+            POS_PROC_REF().intersect(self.bb, self.track_tag),
             key=lambda ent: sort_by_bottom(ent),
         )
 
@@ -84,9 +84,9 @@ class IsoRenderer:
                 + (tile.x - tile.y - 2) * SETTINGS_REF.ISO_TILE_OFFSET_Y
             )
             if ent == selected:
-                y += SETTINGS_REF.ISO_TILE_SELECT_OFFSET
                 select = marker
             else:
+                y -= SETTINGS_REF.ISO_TILE_SELECT_OFFSET
                 select = None
             surf = ISO_ASSET_REF.get_surf(tile.terrain, tile.unit, select)
 

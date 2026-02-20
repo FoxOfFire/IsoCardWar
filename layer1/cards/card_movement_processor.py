@@ -26,10 +26,10 @@ class CardMovementProcessor(esper.Processor):
             return
         delta_time = RUN_DATA_REF.delta_time
 
-        for ent, _ in esper.get_component(Card):
+        for ent, card in esper.get_component(Card):
             bb = esper.component_for_entity(ent, BoundingBox)
 
-            offset_index = DECK_REF.get_card_center_offset(ent)
+            offset_index = DECK_REF.get_card_center_offset(card)
             offset = (
                 offset_index * self.cam_bb.width / len(DECK_REF.hand) * 0.8
             )

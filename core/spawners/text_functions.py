@@ -1,5 +1,7 @@
 from typing import Type
 
+import esper
+
 from common import (
     POS_PROC_REF,
     RUN_DATA_REF,
@@ -10,11 +12,16 @@ from common import (
 
 
 def get_tracked_bb_of_type_str(ty: Type, name: str) -> str:
-    return f"{name}: {str(POS_PROC_REF.tracked_count_of_type(ty))}"
+    return f"{name}: {str(POS_PROC_REF().tracked_count_of_type(ty))}"
 
 
 def get_intersection_count(name: str, bb: BoundingBox, ty: Type) -> str:
-    return f"{name}x{len(POS_PROC_REF.intersect(bb, ty))}"
+    return f"{name}x{len(POS_PROC_REF().intersect(bb, ty))}"
+
+
+@TextFuncDecor
+def get_game_world_str() -> str:
+    return f"World: {esper.current_world}"
 
 
 @TextFuncDecor

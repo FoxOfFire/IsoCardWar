@@ -6,6 +6,7 @@ from .log import logger
 
 def get_wait_ms_action(ms: int) -> Action:
     def wait_ms(_: ActionArgs) -> None:
+        logger.info(f"wait for {ms}ms")
         GAME_PHASE_PROC_REF.wait += ms
 
     fn = wait_ms

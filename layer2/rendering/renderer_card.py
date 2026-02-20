@@ -36,17 +36,31 @@ class CardRenderer:
         assert self.bb is not None
 
         def sorter(ent: int) -> int:
-            if ent not in DECK_REF.hand:
+            card = esper.try_component(ent, Card)
+            if card is None or card not in DECK_REF.hand:
                 return -1
             if ent == STATE_REF.selected_card:
                 return 10000
             if ent == STATE_REF.hovered_ent:
                 return 10001
-            return DECK_REF.hand.index(ent)
+            return DECK_REF.hand.index(card)
+
+        def filterer(ent: int) -> bool:
+            if not esper.entity_exists(ent):
+                return False
+            card = esper.try_component(ent, Card)
+            return (
+                card is not None
+                and card in DECK_REF.hand
+                and esper.has_component(ent, CardSprite)
+            )
 
         ent_list = sorted(
-            POS_PROC_REF.intersect(self.bb, self.track_tag),
-            key=lambda ent: sorter(ent),
+            filter(
+                filterer,
+                POS_PROC_REF().intersect(self.bb, self.track_tag),
+            ),
+            key=sorter,
         )
 
         for ent in ent_list:

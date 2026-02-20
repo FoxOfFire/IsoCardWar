@@ -25,7 +25,7 @@ class BBRenderer:
             return
 
         ent_list = sorted(
-            POS_PROC_REF.intersect(self.bb, self.track_tag),
+            POS_PROC_REF().intersect(self.bb, self.track_tag),
             key=partial(sort_by_bb, side=3),
         )
 
