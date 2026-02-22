@@ -78,6 +78,9 @@ class Settings:
 
     ISO_TILE_SELECT_OFFSET = -2
 
+    ISO_KNIGHT_SPAWN_CHANCE = 2
+    ISO_FARMER_SPAWN_CHANCE = 5
+    ISO_SPAWN_CHANCE_MAX = 100
     # game phases
     GAME_PHASE_PAUSE = 50
 

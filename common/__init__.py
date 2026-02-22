@@ -20,6 +20,7 @@ from .state import (
     TextFunc,
     TextFuncDecor,
     end_player_phase_action,
+    get_gain_resource_action,
     get_select_tile_action,
     hover,
     play_card,

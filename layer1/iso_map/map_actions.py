@@ -23,8 +23,7 @@ def get_change_target_tile_action(terrain: TerrainEnum) -> Action:
         tile.terrain = terrain
         logger.info(tile.terrain)
 
-    fn = change_target_tile
-    return fn
+    return change_target_tile
 
 
 def rotate_target_tile(args: ActionArgs) -> None:
@@ -39,8 +38,7 @@ def get_change_target_unit_action(unit: Optional[UnitTypeEnum]) -> Action:
         tile = get_ent_tile(args)
         tile.unit = unit
 
-    fn = change
-    return fn
+    return change
 
 
 def rotate_target_unit(args: ActionArgs) -> None:
@@ -75,8 +73,17 @@ def get_set_target_tile_target_action(pos: Tuple[int, int]) -> Action:
         target = MAP_DATA_REF.ent_at(pos)
         get_ent_tile(ent).target = target
 
-    fn = set_target_tile_target
-    return fn
+    return set_target_tile_target
+
+
+def get_spawn_unit_at_random(
+    roll_size: int, chance: int, unit: UnitTypeEnum
+) -> Action:
+    def action(ent: ActionArgs) -> None:
+        if randint(0, roll_size) < chance:
+            get_change_target_unit_action(unit)(ent)
+
+    return action
 
 
 def set_random_target(ent: ActionArgs) -> None:

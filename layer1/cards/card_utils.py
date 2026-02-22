@@ -7,6 +7,9 @@ class OrganizationEnum(IntEnum):
 
 
 class CardTypeEnum(IntEnum):
-    DRAW_ONE = auto()
-    CHANGE_TERRAIN_AND_DRAW = auto()
-    CHANGE_UNIT_AND_DRAW = auto()
+    DRAW = auto()
+    CHANGE_TERRAIN = auto()
+    REMOVE_UNIT = auto()
+    CAULDRON = auto()
+    BIG_CAULDRON = auto()
+    BUSH = auto()

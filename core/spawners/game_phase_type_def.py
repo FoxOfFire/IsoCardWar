@@ -61,7 +61,6 @@ def _enemy_action() -> List[Action]:
             effects.append(get_select_tile_action(tile))
             for effect in tile_effects:
                 effects.append(effect)
-            effects.append(get_wait_ms_action(50))
             effects.append(get_select_tile_action(tile))
     return effects
 
