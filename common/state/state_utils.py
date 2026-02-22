@@ -18,9 +18,9 @@ class MarkerEnum(IntEnum):
 
 
 class PriceEnum(IntEnum):
-    AMMO = auto()
-    METAL = auto()
-    FOOD = auto()
+    MANA = auto()
+    HERBS = auto()
+    BLOOD = auto()
 
 
 class GamePhaseType(IntEnum):

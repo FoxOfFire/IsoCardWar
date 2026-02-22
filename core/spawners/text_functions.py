@@ -7,6 +7,7 @@ from common import (
     RUN_DATA_REF,
     STATE_REF,
     BoundingBox,
+    PriceEnum,
     TextFuncDecor,
 )
 
@@ -17,6 +18,10 @@ def get_tracked_bb_of_type_str(ty: Type, name: str) -> str:
 
 def get_intersection_count(name: str, bb: BoundingBox, ty: Type) -> str:
     return f"{name}x{len(POS_PROC_REF().intersect(bb, ty))}"
+
+
+def get_resource_amount(resource: PriceEnum) -> str:
+    return f"{STATE_REF.resources[resource]}"
 
 
 @TextFuncDecor

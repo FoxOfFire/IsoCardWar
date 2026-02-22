@@ -19,7 +19,7 @@ CARD_TYPES_DICT_REF: Dict[CardTypeEnum, Callable[[], Card]] = {
             get_draw_cards_action(3),
             get_sound_action(SoundTypeEnum.WHOOSH),
         ],
-        price={PriceEnum.AMMO: 1, PriceEnum.METAL: 1, PriceEnum.FOOD: 1},
+        price={PriceEnum.MANA: 1, PriceEnum.HERBS: 1, PriceEnum.BLOOD: 1},
     ),
     CardTypeEnum.CHANGE_TERRAIN_AND_DRAW: lambda: Card(
         name="Terraform",
@@ -29,13 +29,13 @@ CARD_TYPES_DICT_REF: Dict[CardTypeEnum, Callable[[], Card]] = {
             rotate_target_tile,
             get_sound_action(SoundTypeEnum.TERRAFORM),
         ],
-        price={PriceEnum.AMMO: 1, PriceEnum.METAL: 1, PriceEnum.FOOD: 1},
+        price={PriceEnum.MANA: 1, PriceEnum.HERBS: 1, PriceEnum.BLOOD: 1},
     ),
     CardTypeEnum.CHANGE_UNIT_AND_DRAW: lambda: Card(
         name="Swap",
         description="Cycles units",
         marker=MarkerEnum.UNIT,
         effects=[rotate_target_unit, get_sound_action(SoundTypeEnum.POP)],
-        price={PriceEnum.AMMO: 1, PriceEnum.METAL: 1, PriceEnum.FOOD: 1},
+        price={PriceEnum.MANA: 1, PriceEnum.HERBS: 1, PriceEnum.BLOOD: 1},
     ),
 }

@@ -3,7 +3,7 @@ from typing import Dict, List, Optional, Tuple
 
 import pygame
 
-from common import SETTINGS_REF
+from common import SETTINGS_REF, PriceEnum
 
 from .log import logger
 from .rendering_asset_loader import RENDER_ASSET_REF
@@ -13,6 +13,8 @@ from .utils import UIElemSprite, UIElemType
 class UIAssetContainer:
     _UI_ASSETS_DIR = "ui"
     _BUTTON_TILE_MAPS: Dict[IntEnum, List[pygame.Surface]] = {}
+    _ICON_SURFS: List[pygame.Surface] = []
+    _ICON_BACKGROUND_SURFS: List[pygame.Surface] = []
     _LOADED_TILE_MAPS: bool = False
     _BUTTON_SURFS: Dict[
         Tuple[
@@ -81,13 +83,13 @@ class UIAssetContainer:
                 )
         return fin
 
-    def _get_checkbox_surf(self, checked: bool) -> List[pygame.Surface]:
-        pos = 0
-        if checked:
-            pos += 3
-        tiles = self._BUTTON_TILE_MAPS[UIElemType.CHECKBOX]
+    def _get_icon_surf(
+        self, icon_type: UIElemType, offset: int
+    ) -> List[pygame.Surface]:
+        tiles = self._BUTTON_TILE_MAPS[icon_type]
         ret = []
-        for i in range(pos, pos + 3):
+        logger.info(f"surfs:{len(tiles)}")
+        for i in range(3 * offset, 3 * (offset + 1)):
             ret.append(tiles[i])
         return ret
 
@@ -110,20 +112,32 @@ class UIAssetContainer:
             is_checkbox = elem == UIElemType.CHECKBOX
             if is_checkbox:
                 assert isinstance(data, bool)
-                checksurf = self._get_checkbox_surf(data)
+                offset = 0 if data else 1
+                checksurf = self._get_icon_surf(elem, offset)
                 elem = UIElemType.BUTTON
+
+            is_icon = elem == UIElemType.ICON
+            if is_icon:
+                assert isinstance(data, int)
+                icon_surf = self._get_icon_surf(elem, data)
+                elem = UIElemType.TEXTBOX
+
             surfs = []
             for i in range(3):
                 surf = self._get_rect_tile_surf(
                     elem, (x, y), i, sprite.sub_size
                 )
+
                 if is_checkbox:
-                    surf.blit(
-                        checksurf[i], checksurf[i].get_rect(topleft=(0, 0))
-                    )
+                    surf.blit(checksurf[i])
+                if is_icon:
+                    surf.blit(icon_surf[i])
+
                 surfs.append(surf)
             if is_checkbox:
                 elem = UIElemType.CHECKBOX
+            if is_icon:
+                elem = UIElemType.ICON
 
             if SETTINGS_REF.LOG_ASSET_LOADING:
                 logger.info(f"updated button:{elem, data, x, y}")
@@ -133,12 +147,42 @@ class UIAssetContainer:
 
         return surfs
 
+    def _load_checkbox_tiles(
+        self, checkbox_icon_num: int, background: int
+    ) -> None:
+        surfs: List[pygame.Surface] = []
+        for i in range(3):
+            surf = self._ICON_BACKGROUND_SURFS[i + background * 3].copy()
+            surf.blit(self._ICON_SURFS[checkbox_icon_num])
+            surfs.append(surf)
+        for i in range(3):
+            surfs.append(self._ICON_BACKGROUND_SURFS[i].copy())
+        self._BUTTON_TILE_MAPS.update({UIElemType.CHECKBOX: surfs})
+
+    def _load_icon_tiles(self, icon_start: int, background: int) -> None:
+        surfs: List[pygame.Surface] = []
+        for resource in PriceEnum:
+            for i in range(3):
+                surf = self._ICON_BACKGROUND_SURFS[i + background * 3].copy()
+                surf.blit(self._ICON_SURFS[icon_start + resource.value - 1])
+                surfs.append(surf)
+        self._BUTTON_TILE_MAPS.update({UIElemType.ICON: surfs})
+
     def _load_tile_types(self) -> None:
-        RENDER_ASSET_REF.load_tile_map(
+        RENDER_ASSET_REF.load_tile_map_enum(
             UIElemType,
             surfs=self._BUTTON_TILE_MAPS,
             path=self._UI_ASSETS_DIR,
         )
+        self._ICON_BACKGROUND_SURFS = RENDER_ASSET_REF.load_tile_map(
+            self._UI_ASSETS_DIR, "icon_backgrounds"
+        )
+        self._ICON_SURFS = RENDER_ASSET_REF.load_tile_map(
+            self._UI_ASSETS_DIR, "icons"
+        )
+        logger.info(len(self._ICON_BACKGROUND_SURFS))
+        self._load_checkbox_tiles(0, 0)
+        self._load_icon_tiles(1, 1)
 
 
 UI_ASSET_REF = UIAssetContainer()
