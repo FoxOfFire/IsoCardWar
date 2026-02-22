@@ -23,6 +23,7 @@ DEFAULT_RESOURCES: Dict[PriceEnum, int] = {
     PriceEnum.MANA: 3,
     PriceEnum.HERBS: 2,
     PriceEnum.BLOOD: 0,
+    PriceEnum.BREW: 0,
 }
 
 STATE_REF = GameState(DEFAULT_RESOURCES)

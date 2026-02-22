@@ -21,6 +21,7 @@ class PriceEnum(IntEnum):
     MANA = auto()
     HERBS = auto()
     BLOOD = auto()
+    BREW = auto()
 
 
 class GamePhaseType(IntEnum):

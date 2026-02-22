@@ -139,6 +139,13 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
                     (3, 1),
                     button_default_data=2,
                 ),
+                (2, 0),
+                ButtonData(
+                    partial(get_resource_amount, PriceEnum.BREW),
+                    UIElemType.ICON,
+                    (3, 1),
+                    button_default_data=3,
+                ),
             ],
             True,
         ),
