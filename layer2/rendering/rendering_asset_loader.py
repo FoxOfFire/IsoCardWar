@@ -1,5 +1,6 @@
 import json
 from enum import IntEnum
+from os.path import exists
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Type
 
@@ -80,7 +81,37 @@ class RenderAssetContainer:
                 }
             )
 
-    def load_tile_map(
+    def load_tile_map(self, path: str, file_name: str) -> List[pygame.Surface]:
+        extracted_frames: List[pygame.Surface] = []
+        json_path, _ = (
+            self._BASE_ASSET_DIR / path / f"{file_name}.json",
+            "r",
+        )
+        if not exists(json_path):
+            logger.warn(f"file does not exist: {path}/{file_name}.json")
+            return []
+        with open(json_path) as json_file:
+            data = json.load(json_file)
+
+            img_name = data["meta"]["image"]
+            assert img_name == f"{file_name}.png", (file_name, img_name)
+            img = pygame.image.load(
+                self._BASE_ASSET_DIR / path / img_name
+            ).convert_alpha()
+
+            frame_datas: List[Dict[str, Any]] = data["frames"]
+            for frame_data in frame_datas:
+                info: Dict[str, int] = frame_data["frame"]
+                x = info["x"]
+                y = info["y"]
+                w = info["w"]
+                h = info["h"]
+                surf = pygame.Surface((w, h), flags=pygame.SRCALPHA)
+                surf.blit(img, img.get_rect(topleft=(-x, -y)))
+                extracted_frames.append(surf)
+        return extracted_frames
+
+    def load_tile_map_enum(
         self,
         enum: Type[IntEnum],
         /,
@@ -91,33 +122,8 @@ class RenderAssetContainer:
         if SETTINGS_REF.LOG_ASSET_LOADING:
             logger.info(f"loaded tile assets of type: {enum}")
         for name in enum:
-            extracted_frames: List[pygame.Surface] = []
-            with open(
-                self._BASE_ASSET_DIR / path / f"{name.name.lower()}.json", "r"
-            ) as json_file:
-                data = json.load(json_file)
-
-                img_name = data["meta"]["image"]
-                assert img_name == f"{name.name.lower()}.png", (
-                    name.name.lower(),
-                    img_name,
-                )
-                img = pygame.image.load(
-                    self._BASE_ASSET_DIR / path / img_name
-                ).convert_alpha()
-
-                frame_datas: List[Dict[str, Any]] = data["frames"]
-                for frame_data in frame_datas:
-                    info: Dict[str, int] = frame_data["frame"]
-                    x = info["x"]
-                    y = info["y"]
-                    w = info["w"]
-                    h = info["h"]
-                    surf = pygame.Surface((w, h), flags=pygame.SRCALPHA)
-                    surf.blit(img, img.get_rect(topleft=(-x, -y)))
-                    extracted_frames.append(surf)
-
-            surfs[enum(name)] = extracted_frames
+            extracted_frames = self.load_tile_map(path, name.name.lower())
+            surfs.update({enum(name): extracted_frames})
 
 
 RENDER_ASSET_REF = RenderAssetContainer()

@@ -5,6 +5,7 @@ from typing import Dict, List, Tuple
 
 from common import (
     SETTINGS_REF,
+    PriceEnum,
     WorldEnum,
     end_player_phase_action,
 )
@@ -30,6 +31,7 @@ from .text_functions import (
     get_fps_str,
     get_game_phase_str,
     get_game_world_str,
+    get_resource_amount,
     get_tracked_bb_of_type_str,
 )
 
@@ -52,6 +54,7 @@ class MenuContainer:
     snap: Tuple[SnapHorisontalEnum, SnapVerticalEnum]
     edge_padding: int
     BUTTONS: List[ButtonData | Tuple[int, int]]
+    align_horizontal: bool = False
 
 
 MENU_LIST_DEF: Dict[WorldEnum, List[UIElementComponent]] = {}
@@ -113,6 +116,41 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
     WorldEnum.GAME: [
         MenuContainer(
             (0, 0),
+            (SnapHorisontalEnum.CENTER, SnapVerticalEnum.TOP),
+            4,
+            [
+                ButtonData(
+                    partial(get_resource_amount, PriceEnum.MANA),
+                    UIElemType.ICON,
+                    (3, 1),
+                    button_default_data=0,
+                ),
+                (2, 0),
+                ButtonData(
+                    partial(get_resource_amount, PriceEnum.HERBS),
+                    UIElemType.ICON,
+                    (3, 1),
+                    button_default_data=1,
+                ),
+                (2, 0),
+                ButtonData(
+                    partial(get_resource_amount, PriceEnum.BLOOD),
+                    UIElemType.ICON,
+                    (3, 1),
+                    button_default_data=2,
+                ),
+                (2, 0),
+                ButtonData(
+                    partial(get_resource_amount, PriceEnum.BREW),
+                    UIElemType.ICON,
+                    (3, 1),
+                    button_default_data=3,
+                ),
+            ],
+            True,
+        ),
+        MenuContainer(
+            (0, 0),
             (SnapHorisontalEnum.RIGHT, SnapVerticalEnum.TOP),
             4,
             [
@@ -133,6 +171,7 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
                     partial(get_tracked_bb_of_type_str, TrackUI, "TrackUI"),
                     UIElemType.TEXTBOX,
                 ),
+                (0, 4),
             ],
         ),
         MenuContainer(
@@ -164,16 +203,6 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
                 (0, 4),
                 ButtonData("Organise by", UIElemType.TEXTBOX, sub_size=(0, 4)),
                 (0, 2),
-                ButtonData(
-                    "Marker",
-                    UIElemType.BUTTON,
-                    click_func=[
-                        sort_hand,
-                        get_set_order_action(OrganizationEnum.MARKER),
-                        sort_hand,
-                    ],
-                ),
-                (0, 1),
                 ButtonData(
                     "Name",
                     UIElemType.BUTTON,

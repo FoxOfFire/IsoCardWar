@@ -1,6 +1,6 @@
 from typing import Callable, Dict
 
-from common import MarkerEnum, PriceEnum
+from common import PriceEnum
 from layer1 import (
     Card,
     CardTypeEnum,
@@ -14,28 +14,40 @@ CARD_TYPES_DICT_REF: Dict[CardTypeEnum, Callable[[], Card]] = {
     CardTypeEnum.DRAW_ONE: lambda: Card(
         name="Draw",
         description="Draw 3 cards",
-        marker=MarkerEnum.ACTION,
         effects=[
             get_draw_cards_action(3),
             get_sound_action(SoundTypeEnum.WHOOSH),
         ],
-        price={PriceEnum.AMMO: 1, PriceEnum.METAL: 1, PriceEnum.FOOD: 1},
+        price={
+            PriceEnum.MANA: 3,
+            PriceEnum.HERBS: 1,
+            PriceEnum.BLOOD: 0,
+            PriceEnum.BREW: 0,
+        },
     ),
     CardTypeEnum.CHANGE_TERRAIN_AND_DRAW: lambda: Card(
         name="Terraform",
         description="Cycles tile clicked between available",
-        marker=MarkerEnum.TERRAIN,
         effects=[
             rotate_target_tile,
             get_sound_action(SoundTypeEnum.TERRAFORM),
         ],
-        price={PriceEnum.AMMO: 1, PriceEnum.METAL: 1, PriceEnum.FOOD: 1},
+        price={
+            PriceEnum.MANA: 2,
+            PriceEnum.HERBS: 0,
+            PriceEnum.BLOOD: 0,
+            PriceEnum.BREW: 1,
+        },
     ),
     CardTypeEnum.CHANGE_UNIT_AND_DRAW: lambda: Card(
         name="Swap",
         description="Cycles units",
-        marker=MarkerEnum.UNIT,
         effects=[rotate_target_unit, get_sound_action(SoundTypeEnum.POP)],
-        price={PriceEnum.AMMO: 1, PriceEnum.METAL: 1, PriceEnum.FOOD: 1},
+        price={
+            PriceEnum.MANA: 0,
+            PriceEnum.HERBS: 0,
+            PriceEnum.BLOOD: 1,
+            PriceEnum.BREW: 1,
+        },
     ),
 }

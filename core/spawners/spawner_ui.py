@@ -87,7 +87,10 @@ def spawn_button(
     data.click_func.append(get_sound_action(SoundTypeEnum.CLICK))
     data.start_hover_func.append(get_sound_action(SoundTypeEnum.POP))
 
-    if data.ui_elem_type == UIElemType.CHECKBOX:
+    if (
+        data.ui_elem_type == UIElemType.CHECKBOX
+        or data.ui_elem_type == UIElemType.ICON
+    ):
         offset_x += SETTINGS_REF.BUTTON_TILE_SIZE / 3
 
     text_data = TextData(mod_text, (offset_x, offset_y))

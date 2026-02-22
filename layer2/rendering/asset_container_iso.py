@@ -3,7 +3,7 @@ from typing import Dict, Optional, Tuple
 
 import pygame
 
-from common import SETTINGS_REF, MarkerEnum
+from common import SETTINGS_REF, PriceEnum
 from layer1 import TerrainEnum, UnitTypeEnum
 
 from .log import logger
@@ -45,15 +45,15 @@ class IsoAssetContainer:
             t_rect = t_surf.get_rect(topleft=(0, t_offset))
             surf.blit(t_surf, t_rect)
 
-            if unit is not None:
-                u_surf = self._UNIT_TYPE_SURFS[unit]
-                u_rect = u_surf.get_rect(topleft=(0, 0))
-                surf.blit(u_surf, u_rect)
-
             if select is not None:
                 s_surf = self._SELECTION_SURFS[select]
                 s_rect = s_surf.get_rect(topleft=(0, 0))
                 surf.blit(s_surf, s_rect)
+
+            if unit is not None:
+                u_surf = self._UNIT_TYPE_SURFS[unit]
+                u_rect = u_surf.get_rect(topleft=(0, 0))
+                surf.blit(u_surf, u_rect)
 
             if SETTINGS_REF.LOG_ASSET_LOADING:
                 logger.info(f"added tile sprite: {tile.name, unit, select}")
@@ -72,7 +72,7 @@ class IsoAssetContainer:
             path=self._ISO_ASSETS_DIR,
         )
         RENDER_ASSET_REF.load_image_type(
-            MarkerEnum,
+            PriceEnum,
             surfs=self._SELECTION_SURFS,
             path=self._ISO_ASSETS_DIR,
         )

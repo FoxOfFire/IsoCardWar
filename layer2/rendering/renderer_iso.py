@@ -9,7 +9,7 @@ from common import (
     SETTINGS_REF,
     STATE_REF,
     BoundingBox,
-    MarkerEnum,
+    PriceEnum,
 )
 from layer1 import Card, Tile
 
@@ -36,19 +36,15 @@ class IsoRenderer:
         self.bb = None
         logger.info("iso renderer init finished")
 
-    def _get_selection(
-        self,
-    ) -> Optional[Tuple[int, Optional[MarkerEnum]]]:
+    def _get_selection(self) -> Optional[Tuple[int, bool]]:
         hovered_ent = STATE_REF.hovered_ent
         selected_card = STATE_REF.selected_card
         if hovered_ent is None:
             return None
         if selected_card is None:
-            return hovered_ent, None
+            return hovered_ent, False
         card = esper.try_component(selected_card, Card)
-        if card is None:
-            return hovered_ent, None
-        return hovered_ent, card.marker
+        return hovered_ent, card is not None
 
     def draw(self, screen: pygame.Surface) -> None:
         if self.bb is None:
@@ -65,11 +61,14 @@ class IsoRenderer:
             key=lambda ent: sort_by_bottom(ent),
         )
 
-        maybe_select = self._get_selection()
-        if maybe_select is None:
-            selected, marker = -1, None
+        crosshair = None
+        maybe_selected = self._get_selection()
+        if maybe_selected is None:
+            selected = -1
         else:
-            selected, marker = maybe_select
+            selected, marked = maybe_selected
+            if marked:
+                crosshair = PriceEnum.MANA
 
         for ent in ent_list:
             if not esper.has_component(ent, IsoSprite):
@@ -83,11 +82,11 @@ class IsoRenderer:
                 SETTINGS_REF.ISO_POS_OFFSET_Y
                 + (tile.x - tile.y - 2) * SETTINGS_REF.ISO_TILE_OFFSET_Y
             )
-            if ent == selected:
-                select = marker
-            else:
-                y -= SETTINGS_REF.ISO_TILE_SELECT_OFFSET
+            if ent != selected:
                 select = None
+                y -= SETTINGS_REF.ISO_TILE_SELECT_OFFSET
+            else:
+                select = crosshair
             surf = ISO_ASSET_REF.get_surf(tile.terrain, tile.unit, select)
 
             screen.blit(surf, (x, y))

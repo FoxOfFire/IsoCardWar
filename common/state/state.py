@@ -19,4 +19,11 @@ class GameState:
     end_player_phase: bool = False
 
 
-STATE_REF = GameState({})
+DEFAULT_RESOURCES: Dict[PriceEnum, int] = {
+    PriceEnum.MANA: 99,
+    PriceEnum.HERBS: 99,
+    PriceEnum.BLOOD: 99,
+    PriceEnum.BREW: 99,
+}
+
+STATE_REF = GameState(DEFAULT_RESOURCES)

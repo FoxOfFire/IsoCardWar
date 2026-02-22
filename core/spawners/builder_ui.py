@@ -31,8 +31,14 @@ class UIBuilder:
             else:
                 w, h = 1, 1
                 s_w, s_h = button.sub_size
-            menu_width = max(menu_width, w)
-            menu_height += h
+
+            if menu.align_horizontal:
+                menu_width += w
+                menu_height = max(menu_height, h)
+            else:
+                menu_width = max(menu_width, w)
+                menu_height += h
+
             menu_sub_width += s_w
             menu_sub_height += s_h
         menu_sub_width += menu.edge_padding * 2
@@ -75,16 +81,24 @@ class UIBuilder:
         h_offset = menu.edge_padding + y
         for button in menu.BUTTONS:
             h = 0
+            w = 0
             s_h = 0
+            s_w = 0
             if isinstance(button, ButtonData):
-                _, s_h = button.sub_size
+                s_w, s_h = button.sub_size
                 if button.size is None:
-                    button.size = (menu_width, 1)
-                _, h = button.size
+                    if menu.align_horizontal:
+                        button.size = (1, menu_height)
+                    else:
+                        button.size = (menu_width, 1)
+                w, h = button.size
                 spawn_button((w_offset, h_offset), button, menu_ui_elem)
             else:
-                _, s_h = button
-            h_offset += h * SETTINGS_REF.BUTTON_TILE_SIZE + s_h
+                s_w, s_h = button
+            if menu.align_horizontal:
+                w_offset += w * SETTINGS_REF.BUTTON_TILE_SIZE + s_w
+            else:
+                h_offset += h * SETTINGS_REF.BUTTON_TILE_SIZE + s_h
         return menu_ui_elem
 
     def build_ui(self) -> None:

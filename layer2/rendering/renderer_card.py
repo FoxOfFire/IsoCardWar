@@ -4,7 +4,7 @@ from typing import Optional, Type
 import esper
 import pygame
 
-from common import POS_PROC_REF, STATE_REF, BoundingBox
+from common import POS_PROC_REF, STATE_REF, BoundingBox, PriceEnum
 from layer1 import DECK_REF, Card
 from layer2.tags import MaskedSprite
 
@@ -72,12 +72,16 @@ class CardRenderer:
                 continue
 
             bb = esper.component_for_entity(ent, BoundingBox)
+            prices = []
+            for res in PriceEnum:
+                prices.append(card.price[res])
+            mana, herbs, blood, brew = tuple(prices)
             surf = CARD_ASSET_REF.get_card_surf(
                 border=CardTypeEnum.BASIC,
                 image=CardImageEnum.BASIC_IMAGE,
-                marker=card.marker,
+                prices=(mana, herbs, blood, brew),
                 frame=0,
-            )
+            ).copy()
             RENDER_ASSET_REF.draw_text_on_surf(surf, ent)
 
             sprite.mask = pygame.mask.from_surface(surf)

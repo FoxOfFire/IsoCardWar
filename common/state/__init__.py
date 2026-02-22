@@ -6,7 +6,6 @@ from .state_utils import (
     Action,
     ActionArgs,
     GamePhaseType,
-    MarkerEnum,
     PriceEnum,
     TextFunc,
     TextFuncDecor,
