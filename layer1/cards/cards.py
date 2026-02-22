@@ -5,7 +5,6 @@ from typing import Dict, List, Optional
 from common import (
     SETTINGS_REF,
     Action,
-    MarkerEnum,
     PriceEnum,
 )
 
@@ -20,7 +19,6 @@ class Card:
     name: str
     description: str
     price: Dict[PriceEnum, int]
-    marker: MarkerEnum
     effects: List[Action]
 
 
@@ -31,7 +29,7 @@ class Deck:
         self.hand: List[Card] = []
         self.deck: List[Card] = []
         self.discard: List[Card] = []
-        self.order: OrganizationEnum = OrganizationEnum.MARKER
+        self.order: OrganizationEnum = OrganizationEnum.NONE
 
     def set_order(self, order: OrganizationEnum) -> None:
         self.order = order

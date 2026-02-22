@@ -4,7 +4,6 @@ from enum import IntEnum, auto
 class OrganizationEnum(IntEnum):
     NONE = auto()
     NAME = auto()
-    MARKER = auto()
 
 
 class CardTypeEnum(IntEnum):

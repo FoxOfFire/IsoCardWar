@@ -10,13 +10,6 @@ def TextFuncDecor(func: TextFunc) -> TextFunc:
     return func
 
 
-class MarkerEnum(IntEnum):
-    ACTION = auto()
-    UNIT = auto()
-    TERRAIN = auto()
-    UNIQUE = auto()
-
-
 class PriceEnum(IntEnum):
     MANA = auto()
     HERBS = auto()

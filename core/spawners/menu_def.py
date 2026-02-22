@@ -204,16 +204,6 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
                 ButtonData("Organise by", UIElemType.TEXTBOX, sub_size=(0, 4)),
                 (0, 2),
                 ButtonData(
-                    "Marker",
-                    UIElemType.BUTTON,
-                    click_func=[
-                        sort_hand,
-                        get_set_order_action(OrganizationEnum.MARKER),
-                        sort_hand,
-                    ],
-                ),
-                (0, 1),
-                ButtonData(
                     "Name",
                     UIElemType.BUTTON,
                     click_func=[

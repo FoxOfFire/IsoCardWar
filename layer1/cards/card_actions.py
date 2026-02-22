@@ -34,10 +34,14 @@ def play_card(target: ActionArgs) -> None:
         card = esper.try_component(ent, Card)
         if card is None:
             return
-
     if target is not None:
+        for price in card.price:
+            if STATE_REF.resources[price] < card.price[price]:
+                return
         for effect in card.effects:
             effect(target)
+        for price in card.price:
+            STATE_REF.resources[price] -= card.price[price]
 
     if STATE_REF.selected_card == ent:
         STATE_REF.selected_card = None
@@ -91,8 +95,6 @@ def sort_hand(_: ActionArgs = None) -> None:
 
     def sorter(card: Card) -> Any:
         match DECK_REF.order:
-            case OrganizationEnum.MARKER:
-                return card.marker.value
             case OrganizationEnum.NAME:
                 return card.name
             case OrganizationEnum.NONE:
