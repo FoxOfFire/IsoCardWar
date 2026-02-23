@@ -1,11 +1,14 @@
 from typing import Callable, Dict, List
 
 import esper
+import pygame
 
 from common import (
     SETTINGS_REF,
     Action,
     GamePhaseType,
+    ParticleType,
+    get_random_spawn_particle_action,
     get_select_tile_action,
 )
 from layer1 import (
@@ -58,9 +61,19 @@ def _enemy_action() -> List[Action]:
             if len(tile_effects) < 1:
                 continue
 
-            effects.append(get_select_tile_action(tile))
+            effects.append(
+                get_random_spawn_particle_action(
+                    ParticleType.CIRCLE,
+                    pygame.Color(250, 100, 1),
+                    2,
+                    (50, 50),
+                    (0, 0),
+                    600,
+                )
+            )
             for effect in tile_effects:
                 effects.append(effect)
+
             effects.append(get_select_tile_action(tile))
     return effects
 

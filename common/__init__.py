@@ -2,7 +2,12 @@
 from .dying import Health
 from .events import EVENT_PROC_REF
 from .globals import RUN_DATA_REF
-from .particles import PARTICLE_PROC_REF, Particle, ParticleType
+from .particles import (
+    PARTICLE_PROC_REF,
+    Particle,
+    ParticleType,
+    get_random_spawn_particle_action,
+)
 from .position_tracking import (
     BB_MOVE_PROC_REF,
     POS_PROC_REF,

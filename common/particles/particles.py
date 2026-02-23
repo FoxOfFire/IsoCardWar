@@ -3,21 +3,25 @@ from enum import IntEnum, auto
 from typing import Dict, Tuple
 
 import esper
+import pygame
 
 from common.dying import Health
 from common.worlds import WORLD_REF, WorldEnum
 
 
 class ParticleType(IntEnum):
-    CIRLCE = auto()
+    CIRCLE = auto()
 
 
 @dataclass
 class Particle:
     particle_type: ParticleType
+    color: pygame.Color
     position: Tuple[int, int]
     velocity: Tuple[int, int] = (0, 0)
     drag: Tuple[int, int] = (0, 0)
+    immortal: bool = False
+    size_by_hp: bool = True
 
     def apply_velocity(self) -> None:
         x, y = self.position
@@ -26,7 +30,7 @@ class Particle:
 
     def apply_drag(self) -> None:
         vel_x, vel_y = self.velocity
-        drag_x, drag_y = self.position
+        drag_x, drag_y = self.drag
 
         if vel_x < 0:
             vel_x = min(0, vel_x + drag_x)
