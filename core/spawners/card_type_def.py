@@ -26,6 +26,34 @@ CARD_TYPES_DICT_REF: Dict[CardTypeEnum, Callable[[], Card]] = {
             PriceEnum.BREW: 2,
         },
     ),
+    CardTypeEnum.MANA_PYLON: lambda: Card(
+        name="Mana Pylon",
+        description="Spawns a mana pylon",
+        effects=[
+            get_change_target_unit_action(UnitTypeEnum.MANA_PYLON),
+            get_sound_action(SoundTypeEnum.POP),
+        ],
+        price={
+            PriceEnum.MANA: 1,
+            PriceEnum.HERBS: 0,
+            PriceEnum.BLOOD: 1,
+            PriceEnum.BREW: 1,
+        },
+    ),
+    CardTypeEnum.BLOOD_BUCKET: lambda: Card(
+        name="Blood Bucket",
+        description="Spawns a blood bucket",
+        effects=[
+            get_change_target_unit_action(UnitTypeEnum.BUSH),
+            get_sound_action(SoundTypeEnum.POP),
+        ],
+        price={
+            PriceEnum.MANA: 0,
+            PriceEnum.HERBS: 1,
+            PriceEnum.BLOOD: 2,
+            PriceEnum.BREW: 1,
+        },
+    ),
     CardTypeEnum.CHANGE_TERRAIN: lambda: Card(
         name="Terraform",
         description="Cycles tile clicked between available",

@@ -51,13 +51,10 @@ class Deck:
         if self.create_card is None:
             raise RuntimeError("create_card undefined")
 
-        for _ in range(SETTINGS_REF.STARTER_DECK_COUNT // 6):
-            cards.append(self.create_card(CardTypeEnum.DRAW))
-            cards.append(self.create_card(CardTypeEnum.REMOVE_UNIT))
-            cards.append(self.create_card(CardTypeEnum.CHANGE_TERRAIN))
-            cards.append(self.create_card(CardTypeEnum.CAULDRON))
-            cards.append(self.create_card(CardTypeEnum.BIG_CAULDRON))
-            cards.append(self.create_card(CardTypeEnum.BUSH))
+        cardtype_num = len(CardTypeEnum)
+        for _ in range(SETTINGS_REF.STARTER_DECK_COUNT // cardtype_num):
+            for c_type in CardTypeEnum:
+                cards.append(self.create_card(c_type))
 
         self.deck = cards
 

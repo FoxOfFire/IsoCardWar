@@ -33,6 +33,14 @@ def set_type_actions() -> None:
         [get_gain_resource_action(PriceEnum.BREW, 1)],
     )
     MAP_DATA_REF.set_actions_for_type(
+        UnitTypeEnum.MANA_PYLON,
+        [get_gain_resource_action(PriceEnum.MANA, 2)],
+    )
+    MAP_DATA_REF.set_actions_for_type(
+        UnitTypeEnum.BLOOD_BUCKET,
+        [get_gain_resource_action(PriceEnum.BLOOD, 2)],
+    )
+    MAP_DATA_REF.set_actions_for_type(
         UnitTypeEnum.WITCH,
         [get_gain_resource_action(PriceEnum.MANA, 5)],
     )
