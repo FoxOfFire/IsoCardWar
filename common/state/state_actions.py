@@ -1,7 +1,7 @@
 import esper
 
 from .state import STATE_REF
-from .state_utils import Action, ActionArgs
+from .state_utils import Action, ActionArgs, PriceEnum
 
 
 def end_player_phase_action(_: ActionArgs = None) -> None:
@@ -30,3 +30,11 @@ def select_tile(ent: ActionArgs) -> None:
 
 def get_select_tile_action(ent: ActionArgs) -> Action:
     return lambda _: select_tile(ent)
+
+
+def get_gain_resource_action(res: PriceEnum, amount: int) -> Action:
+    def add(_: ActionArgs) -> None:
+        STATE_REF.resources[res] += amount
+
+    fn = add
+    return fn

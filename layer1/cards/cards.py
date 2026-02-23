@@ -29,7 +29,7 @@ class Deck:
         self.hand: List[Card] = []
         self.deck: List[Card] = []
         self.discard: List[Card] = []
-        self.order: OrganizationEnum = OrganizationEnum.NONE
+        self.order: OrganizationEnum = OrganizationEnum.NAME
 
     def set_order(self, order: OrganizationEnum) -> None:
         self.order = order
@@ -51,12 +51,10 @@ class Deck:
         if self.create_card is None:
             raise RuntimeError("create_card undefined")
 
-        for _ in range(SETTINGS_REF.STARTER_DECK_COUNT // 3):
-            cards.append(self.create_card(CardTypeEnum.DRAW_ONE))
-            cards.append(self.create_card(CardTypeEnum.CHANGE_UNIT_AND_DRAW))
-            cards.append(
-                self.create_card(CardTypeEnum.CHANGE_TERRAIN_AND_DRAW)
-            )
+        cardtype_num = len(CardTypeEnum)
+        for _ in range(SETTINGS_REF.STARTER_DECK_COUNT // cardtype_num):
+            for c_type in CardTypeEnum:
+                cards.append(self.create_card(c_type))
 
         self.deck = cards
 
