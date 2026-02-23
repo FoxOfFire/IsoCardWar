@@ -7,6 +7,7 @@ import pygame
 from common import (
     BB_MOVE_PROC_REF,
     EVENT_PROC_REF,
+    PARTICLE_PROC_REF,
     POS_PROC_REF,
     RUN_DATA_REF,
     SETTINGS_REF,
@@ -94,6 +95,7 @@ def init_processors(*, game_proc: bool = False) -> None:  # adding processors
     esper.add_processor(POS_PROC_REF())
     esper.add_processor(EVENT_PROC_REF)
     esper.add_processor(UI_PROC_REF())
+    esper.add_processor(PARTICLE_PROC_REF())
 
     if game_proc:
         esper.add_processor(GAME_PHASE_PROC_REF)
