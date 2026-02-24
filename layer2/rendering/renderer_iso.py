@@ -74,14 +74,7 @@ class IsoRenderer:
             if not esper.has_component(ent, IsoSprite):
                 continue
             tile = esper.component_for_entity(ent, Tile)
-            x = (
-                SETTINGS_REF.ISO_POS_OFFSET_X
-                + (tile.x + tile.y) * SETTINGS_REF.ISO_TILE_OFFSET_X
-            )
-            y = (
-                SETTINGS_REF.ISO_POS_OFFSET_Y
-                + (tile.x - tile.y - 2) * SETTINGS_REF.ISO_TILE_OFFSET_Y
-            )
+            x, y = tile.offset
             if ent != selected:
                 select = None
                 y -= SETTINGS_REF.ISO_TILE_SELECT_OFFSET

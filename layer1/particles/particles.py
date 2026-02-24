@@ -63,14 +63,17 @@ class Particle:
 
 class ParticleProcessor(esper.Processor):
     def process(self) -> None:
-        for ent, particle in esper.get_component(Particle):
+        for _, (particle, health) in esper.get_components(Particle, Health):
             particle.apply_drag()
             particle.apply_velocity()
-            health = esper.component_for_entity(ent, Health)
             health.hp -= 1
             x, y = particle.position
             if abs(x) + abs(y) > 100000:
                 health.hp = 0
+
+    def clear_particles(self) -> None:
+        for _, (_, health) in esper.get_components(Particle, Health):
+            health.hp = 0
 
 
 _POS_PROC_WORLD_DICT: Dict[WorldEnum, ParticleProcessor] = {}

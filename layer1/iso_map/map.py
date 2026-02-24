@@ -37,7 +37,7 @@ class MapData:
         for i in range(h):
             for j in range(w):
                 bb = BoundingBox(i, i + 1, j, j + 1)
-                pos = (round(bb.left), round(bb.top))
+                x, y = round(bb.left), round(bb.top)
                 terrain = TerrainEnum(randint(1, len(list(TerrainEnum))))
                 unit: Optional[UnitTypeEnum] = None
 
@@ -54,7 +54,7 @@ class MapData:
                             randint(1, len(list(UnitTypeEnum)))
                         )
 
-                tile = Tile(pos, terrain, unit=unit)
+                tile = Tile(x, y, terrain, unit=unit)
 
                 ent = esper.create_entity(
                     bb, self.sprite(), self.tracker_tag(), tile, Untracked()

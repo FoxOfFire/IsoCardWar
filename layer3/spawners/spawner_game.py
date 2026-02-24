@@ -22,8 +22,8 @@ from layer2 import (
     get_sound_action,
     hover_over_tile,
 )
+from layer3.card_type_def import CARD_TYPES_DICT_REF
 
-from .card_type_def import CARD_TYPES_DICT_REF
 from .log import logger
 
 

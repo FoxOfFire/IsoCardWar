@@ -4,8 +4,8 @@ import esper
 
 from common import SETTINGS_REF, WORLD_REF
 from layer2 import UIElementComponent, UIElemType
+from layer3.menu_def import MENU_DEF_REF, MENU_LIST_DEF, MenuContainer
 
-from .menu_def import MENU_DEF_REF, MENU_LIST_DEF, MenuContainer
 from .spawner_ui import ButtonData, spawn_button
 
 

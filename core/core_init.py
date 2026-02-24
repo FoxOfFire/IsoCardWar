@@ -34,9 +34,7 @@ from layer2 import (
     init_audio,
     ui_event_obj,
 )
-
-from .log import logger
-from .spawners import (
+from layer3 import (
     UI_BUILDER_REF,
     create_card_obj,
     get_base_game_phase_dict,
@@ -44,6 +42,8 @@ from .spawners import (
     spawn_card_ent,
     spawn_iso_elem,
 )
+
+from .log import logger
 
 
 def init_logging() -> None:

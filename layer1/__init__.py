@@ -32,5 +32,6 @@ from .particles import (
     PARTICLE_PROC_REF,
     Particle,
     ParticleType,
+    clear_particles_action,
     get_random_spawn_particle_action,
 )

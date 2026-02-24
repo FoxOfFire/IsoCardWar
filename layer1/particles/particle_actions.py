@@ -8,7 +8,7 @@ import pygame
 from common.dying import Health
 from common.state import Action, ActionArgs
 
-from .particles import Particle, ParticleType
+from .particles import PARTICLE_PROC_REF, Particle, ParticleType
 
 
 def get_random_spawn_particle_action(
@@ -42,3 +42,7 @@ def get_random_spawn_particle_action(
             esper.create_entity(h, p)
 
     return action
+
+
+def clear_particles_action(_: ActionArgs) -> None:
+    PARTICLE_PROC_REF().clear_particles()
