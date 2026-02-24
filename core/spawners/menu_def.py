@@ -233,7 +233,7 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
                     click_funcing=[
                         get_random_spawn_particle_action(
                             t=ParticleType.CIRCLE,
-                            col=pygame.Color(200, 200, 200),
+                            col=pygame.Color(255, 255, 255),
                             random_range=50,
                             pos=(200, 100),
                             drag=5,

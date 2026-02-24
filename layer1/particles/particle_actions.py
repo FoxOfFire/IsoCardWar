@@ -36,6 +36,7 @@ def get_random_spawn_particle_action(
                 immortal=False,
                 size_by_hp=True,
                 mass=mass,
+                size=2,
             )
             h = Health(time)
             esper.create_entity(h, p)
