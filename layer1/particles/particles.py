@@ -66,7 +66,8 @@ class ParticleProcessor(esper.Processor):
         for _, (particle, health) in esper.get_components(Particle, Health):
             particle.apply_drag()
             particle.apply_velocity()
-            health.hp -= 1
+            if not particle.immortal:
+                health.hp -= 1
             x, y = particle.position
             if abs(x) + abs(y) > 100000:
                 health.hp = 0

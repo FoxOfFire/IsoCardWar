@@ -34,4 +34,5 @@ from .particles import (
     ParticleType,
     clear_particles_action,
     get_random_spawn_particle_action,
+    get_spawn_static_particle_action,
 )

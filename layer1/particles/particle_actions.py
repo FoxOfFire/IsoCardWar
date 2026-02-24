@@ -11,6 +11,19 @@ from common.state import Action, ActionArgs
 from .particles import PARTICLE_PROC_REF, Particle, ParticleType
 
 
+def get_spawn_static_particle_action(
+    t: ParticleType, col: pygame.Color, pos: Tuple[float, float], size: int
+) -> Action:
+    def action(ent: ActionArgs) -> None:
+        p = Particle(
+            particle_type=t, color=col, position=pos, size=size, immortal=True
+        )
+        h = Health()
+        esper.create_entity(h, p)
+
+    return action
+
+
 def get_random_spawn_particle_action(
     t: ParticleType,
     col: pygame.Color,

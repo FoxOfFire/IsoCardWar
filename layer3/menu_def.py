@@ -30,6 +30,7 @@ from layer2 import (
     set_slider_val,
     toggle_sound,
 )
+from layer3.actions import get_spawn_dots_between_coords_action
 
 from .text_functions import (
     get_fps_str,
@@ -219,6 +220,23 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
                             mass=10,
                             time=600,
                             particle_count=1,
+                        )
+                    ],
+                ),
+                (0, 1),
+                ButtonData(
+                    "Spawn Line",
+                    UIElemType.BUTTON,
+                    click_func=[
+                        get_spawn_dots_between_coords_action(
+                            (0, 0),
+                            (
+                                SETTINGS_REF.ISO_MAP_WIDTH - 1,
+                                SETTINGS_REF.ISO_MAP_HEIGHT - 1,
+                            ),
+                            40,
+                            0,
+                            13,
                         )
                     ],
                 ),
