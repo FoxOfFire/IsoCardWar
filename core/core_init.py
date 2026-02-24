@@ -7,7 +7,6 @@ import pygame
 from common import (
     BB_MOVE_PROC_REF,
     EVENT_PROC_REF,
-    PARTICLE_PROC_REF,
     POS_PROC_REF,
     RUN_DATA_REF,
     SETTINGS_REF,
@@ -18,6 +17,7 @@ from layer1 import (
     CARD_MOV_PROC_REF,
     DECK_REF,
     GAME_PHASE_PROC_REF,
+    PARTICLE_PROC_REF,
     end_phase,
 )
 from layer2 import (

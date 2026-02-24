@@ -1,12 +1,17 @@
 from dataclasses import dataclass
 from enum import IntEnum, auto
+from math import atan2, cos, sin, sqrt
 from typing import Dict, Tuple
 
 import esper
 import pygame
 
-from common.dying import Health
-from common.worlds import WORLD_REF, WorldEnum
+from common import (
+    RUN_DATA_REF,
+    WORLD_REF,
+    Health,
+    WorldEnum,
+)
 
 
 class ParticleType(IntEnum):
@@ -17,20 +22,31 @@ class ParticleType(IntEnum):
 class Particle:
     particle_type: ParticleType
     color: pygame.Color
-    position: Tuple[int, int]
-    velocity: Tuple[int, int] = (0, 0)
-    drag: Tuple[int, int] = (0, 0)
+    position: Tuple[float, float]
+    velocity: Tuple[float, float] = (0, 0)
+    drag: float = 0
+    mass: float = 2
+    size: int = 5
     immortal: bool = False
     size_by_hp: bool = True
 
     def apply_velocity(self) -> None:
         x, y = self.position
         vel_x, vel_y = self.velocity
+        d_t = RUN_DATA_REF.delta_time / 1000
+        vel_x *= d_t
+        vel_y *= d_t
         self.position = (x + vel_x, y + vel_y)
 
     def apply_drag(self) -> None:
+        d_t = RUN_DATA_REF.delta_time / 1000
         vel_x, vel_y = self.velocity
-        drag_x, drag_y = self.drag
+        vel_pow = sqrt(pow(vel_x, 2) + pow(vel_y, 2))
+        theta = atan2(vel_y, vel_x)
+        drag = self.drag / self.mass * d_t
+
+        drag_x = abs(cos(theta) * drag * vel_pow)
+        drag_y = abs(sin(theta) * drag * vel_pow)
 
         if vel_x < 0:
             vel_x = min(0, vel_x + drag_x)
@@ -48,10 +64,13 @@ class Particle:
 class ParticleProcessor(esper.Processor):
     def process(self) -> None:
         for ent, particle in esper.get_component(Particle):
-            particle.apply_velocity()
             particle.apply_drag()
+            particle.apply_velocity()
             health = esper.component_for_entity(ent, Health)
             health.hp -= 1
+            x, y = particle.position
+            if abs(x) + abs(y) > 100000:
+                health.hp = 0
 
 
 _POS_PROC_WORLD_DICT: Dict[WorldEnum, ParticleProcessor] = {}

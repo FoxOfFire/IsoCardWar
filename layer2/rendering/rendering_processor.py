@@ -7,12 +7,12 @@ from common import SETTINGS_REF, WORLD_REF, WorldEnum
 from layer2.tags import GameCameraTag, IsoCameraTag, TrackIso, TrackUI
 
 from .log import logger
-from .render_particle import ParticleRenderer
 from .renderer_bb import BBRenderer
 from .renderer_button import ButtonRenderer
 from .renderer_card import CardRenderer
 from .renderer_iso import IsoRenderer
 from .renderer_mask import MaskRenderer
+from .renderer_particle import ParticleRenderer
 
 
 class ScreenNotFoundException(Exception):

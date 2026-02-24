@@ -3,6 +3,8 @@ from enum import IntEnum
 from functools import partial
 from typing import Dict, List, Tuple
 
+import pygame
+
 from common import (
     SETTINGS_REF,
     PriceEnum,
@@ -11,7 +13,9 @@ from common import (
 )
 from layer1 import (
     OrganizationEnum,
+    ParticleType,
     draw_card,
+    get_random_spawn_particle_action,
     get_set_order_action,
     sort_hand,
 )
@@ -220,6 +224,23 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
                         sort_hand,
                         get_set_order_action(OrganizationEnum.NONE),
                         sort_hand,
+                    ],
+                ),
+                (0, 4),
+                ButtonData(
+                    "Spawn Particles",
+                    UIElemType.BUTTON,
+                    click_funcing=[
+                        get_random_spawn_particle_action(
+                            t=ParticleType.CIRCLE,
+                            col=pygame.Color(200, 200, 200),
+                            random_range=50,
+                            pos=(200, 100),
+                            drag=5,
+                            mass=10,
+                            time=600,
+                            particle_count=1,
+                        )
                     ],
                 ),
             ],

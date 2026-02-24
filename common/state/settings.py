@@ -29,7 +29,7 @@ class Settings:
     GAME_FULLSCREEN = True
     GAME_MUTE = True
 
-    FPS = 600
+    FPS = 60
     # cards
     CARD_START_X = 0
     CARD_START_Y = 0
