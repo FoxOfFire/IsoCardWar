@@ -24,6 +24,7 @@ from layer2 import (
     DYING_PROC_REF,
     RENDER_PROC_REF,
     SCENE_SWITCH_PROC_REF,
+    UI_EVENT_REF,
     UI_PROC_REF,
     GameCameraTag,
     IsoCameraTag,
@@ -32,7 +33,6 @@ from layer2 import (
     TrackUI,
     bind_keyboard_events,
     init_audio,
-    ui_event_obj,
 )
 from layer3 import (
     UI_BUILDER_REF,
@@ -147,7 +147,7 @@ def init_game() -> None:
     DECK_REF.spawn_card = spawn_card_ent
     DECK_REF.create_card = create_card_obj
     DECK_REF.create_starting_deck()
-    ui_event_obj.iso_tag = TrackIso
+    UI_EVENT_REF.iso_tag = TrackIso
 
 
 def init() -> None:

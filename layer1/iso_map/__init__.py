@@ -5,9 +5,7 @@ from .map_actions import (
     get_change_target_unit_action,
     get_set_target_tile_target_action,
     get_spawn_unit_at_random,
-    move_ent_unit_to_target_unit,
     rotate_target_tile,
-    rotate_target_unit,
     set_random_target,
     switch_unit_types,
 )

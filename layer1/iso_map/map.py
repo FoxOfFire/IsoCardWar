@@ -9,29 +9,29 @@ from .tile import TerrainEnum, Tile, UnitTypeEnum
 
 
 class MapData:
-    __tracker_tag: Optional[Type] = None
-    __sprite: Optional[Type] = None
-    __tiles: Dict[Tuple[int, int], int] = {}
-    __unit_actions: Dict[UnitTypeEnum | None, List[Action]] = {}
+    _tracker_tag: Optional[Type] = None
+    _sprite: Optional[Type] = None
+    _tiles: Dict[Tuple[int, int], int] = {}
+    _unit_actions: Dict[UnitTypeEnum | None, List[Action]] = {}
 
     def set_tracker_tag(self, tag: Type) -> None:
-        self.tracker_tag = tag
+        self._tracker_tag = tag
 
     def set_sprite(self, sprite: Type) -> None:
-        self.sprite = sprite
+        self._sprite = sprite
 
     def set_actions_for_type(
         self, unit: Optional[UnitTypeEnum], actions: List[Action]
     ) -> None:
-        self.__unit_actions.update({unit: actions})
+        self._unit_actions.update({unit: actions})
 
     def get_actions_for_type(
         self, unit: Optional[UnitTypeEnum]
     ) -> List[Action]:
-        return self.__unit_actions[unit]
+        return self._unit_actions[unit]
 
     def make_map(self) -> None:
-        assert self.tracker_tag is not None and self.sprite is not None
+        assert self._tracker_tag is not None and self._sprite is not None
         w, h = SETTINGS_REF.ISO_MAP_WIDTH, SETTINGS_REF.ISO_MAP_HEIGHT
         rpos = randint(0, w - 1), randint(0, h - 1)
         for i in range(h):
@@ -57,12 +57,12 @@ class MapData:
                 tile = Tile(x, y, terrain, unit=unit)
 
                 ent = esper.create_entity(
-                    bb, self.sprite(), self.tracker_tag(), tile, Untracked()
+                    bb, self._sprite(), self._tracker_tag(), tile, Untracked()
                 )
-                self.__tiles.update({(i, j): ent})
+                self._tiles.update({(i, j): ent})
 
     def ent_at(self, pos: Tuple[int, int]) -> int:
-        return self.__tiles[pos]
+        return self._tiles[pos]
 
 
 MAP_DATA_REF = MapData()

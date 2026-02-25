@@ -41,14 +41,6 @@ def get_change_target_unit_action(unit: Optional[UnitTypeEnum]) -> Action:
     return change
 
 
-def rotate_target_unit(args: ActionArgs) -> None:
-    tile = get_ent_tile(args)
-    n = tile.unit.value if tile.unit is not None else 0
-    n = (n + 1) % (len(list(UnitTypeEnum)) + 1)
-    unit = None if n == 0 else UnitTypeEnum(n)
-    get_change_target_unit_action(unit)(args)
-
-
 def switch_unit_types(ent: ActionArgs) -> None:
     ent_tile = get_ent_tile(ent)
     target = ent_tile.target
@@ -59,11 +51,6 @@ def switch_unit_types(ent: ActionArgs) -> None:
     target_unit = target_tile.unit
     get_change_target_unit_action(ent_unit)(target)
     get_change_target_unit_action(target_unit)((ent))
-
-
-def move_ent_unit_to_target_unit(args: ActionArgs) -> None:
-    get_ent_tile(get_ent_tile(args).target).unit = None
-    switch_unit_types(args)
 
 
 def get_set_target_tile_target_action(pos: Tuple[int, int]) -> Action:

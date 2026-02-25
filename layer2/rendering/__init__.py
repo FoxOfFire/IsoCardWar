@@ -5,4 +5,4 @@ from .asset_container_ui import UI_ASSET_REF
 from .renderer_card import CardSprite
 from .renderer_iso import IsoSprite
 from .rendering_processor import RENDER_PROC_REF
-from .utils import RenderLayerEnum, UIElemSprite, UIElemType
+from .utils import UIElemSprite, UIElemType

@@ -4,13 +4,11 @@ from .keyboard_events import bind_events as bind_keyboard_events
 from .keyboard_events import quit_game
 from .ui_actions import (
     click_on_tile,
-    debug_print,
     flip_ui_elem_val,
     get_sound_action,
     hover_over_tile,
-    set_button_val_to_random,
     set_slider_val,
     toggle_sound,
 )
 from .ui_processor import UI_PROC_REF
-from .ui_utils import SWITCH_SCENE, ui_event_obj
+from .ui_utils import UI_EVENT_REF

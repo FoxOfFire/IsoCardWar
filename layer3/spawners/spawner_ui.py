@@ -5,7 +5,6 @@ import esper
 from common import (
     SETTINGS_REF,
     BoundingBox,
-    TextFuncDecor,
     Untracked,
 )
 from layer2 import (
@@ -17,6 +16,7 @@ from layer2 import (
     UIElemType,
     get_sound_action,
 )
+from layer3.text_functions import text_funcify
 from layer3.utils import ButtonData
 
 from .log import logger
@@ -37,16 +37,7 @@ def spawn_button(
         s_w = max(SETTINGS_REF.BUTTON_TILE_SIZE // 2, s_w)
     if h == 1 and s_h != 0:
         s_h = max(SETTINGS_REF.BUTTON_TILE_SIZE // 2, s_h)
-    if not callable(data.text):
-
-        @TextFuncDecor
-        def text_func() -> str:
-            assert not callable(data.text)
-            return data.text
-
-        mod_text = text_func
-    else:
-        mod_text = data.text
+    mod_text = text_funcify(data.text)
 
     bb = BoundingBox(
         x,

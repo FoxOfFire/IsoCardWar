@@ -33,11 +33,6 @@ class UIElemSprite:
     button_data: Optional[bool | float | int] = None
 
 
-class RenderLayerEnum(IntEnum):
-    CARD = auto()
-    ISO = auto()
-
-
 def bb_to_rect(bb: BoundingBox) -> pygame.Rect:
     return pygame.Rect(bb.left, bb.top, bb.width, bb.height)
 

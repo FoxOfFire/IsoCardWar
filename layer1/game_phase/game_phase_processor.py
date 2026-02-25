@@ -46,7 +46,7 @@ class GamePhaseProcessor(esper.Processor):
     def _player_action_phase(self) -> None:
         if STATE_REF.end_player_phase:
             STATE_REF.end_player_phase = False
-            self.timer = 0
+            self.wait = 0
             assert self.end_phase is not None
             self.end_phase(None)
 

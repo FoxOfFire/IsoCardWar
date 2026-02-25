@@ -58,10 +58,6 @@ class Deck:
 
         self.deck = cards
 
-    def add_card(self, card: Card) -> None:
-        logger.info(f"adding card {card}")
-        self.deck.append(card)
-
 
 # module shenanigans
 DECK_REF: Deck = Deck()

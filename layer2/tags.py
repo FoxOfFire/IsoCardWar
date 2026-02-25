@@ -26,10 +26,6 @@ class IsoCameraTag:
     pass
 
 
-class TextCameraTag:
-    pass
-
-
 class MaskedSprite:
     mask: pygame.Mask = pygame.Mask((1, 1), fill=True)
     rect: pygame.Rect = pygame.Rect(0, 0, 1, 1)

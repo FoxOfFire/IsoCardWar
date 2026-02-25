@@ -1,5 +1,3 @@
-from random import random
-
 import esper
 import pygame
 
@@ -16,20 +14,15 @@ from common import (
 from layer2.tags import UIElementComponent
 
 from .audio import SoundTypeEnum, play_sfx
-from .log import logger
 from .ui_utils import (
+    UI_EVENT_REF,
     get_mouse_pos_in_px,
     get_transformed_mouse_pos,
-    ui_event_obj,
 )
 
 
 def get_sound_action(sound: SoundTypeEnum) -> Action:
     return lambda _: play_sfx(sound)
-
-
-def debug_print(ent: ActionArgs) -> None:
-    logger.info(f"button perssed: {ent}")
 
 
 def click_on_tile(ent: ActionArgs) -> None:
@@ -44,9 +37,9 @@ def click_on_tile(ent: ActionArgs) -> None:
         trans_mouse_pos[1],
         trans_mouse_pos[1],
     )
-    assert ui_event_obj.iso_tag is not None
+    assert UI_EVENT_REF.iso_tag is not None
 
-    for intersect in POS_PROC_REF().intersect(mouse_bb, ui_event_obj.iso_tag):
+    for intersect in POS_PROC_REF().intersect(mouse_bb, UI_EVENT_REF.iso_tag):
         play_card(intersect)
 
 
@@ -60,9 +53,9 @@ def hover_over_tile(ent: ActionArgs) -> None:
         trans_mouse_pos[1],
         trans_mouse_pos[1],
     )
-    assert ui_event_obj.iso_tag is not None
+    assert UI_EVENT_REF.iso_tag is not None
 
-    for intersect in POS_PROC_REF().intersect(mouse_bb, ui_event_obj.iso_tag):
+    for intersect in POS_PROC_REF().intersect(mouse_bb, UI_EVENT_REF.iso_tag):
         hover(intersect)
         return
     hover(None)
@@ -85,13 +78,6 @@ def toggle_sound(ent: ActionArgs) -> None:
     ui_elem = esper.try_component(ent, UIElementComponent)
     assert ui_elem is not None and isinstance(ui_elem.button_val, bool)
     SETTINGS_REF.GAME_MUTE = ui_elem.button_val
-
-
-def set_button_val_to_random(ent: ActionArgs) -> None:
-    assert ent is not None
-    ui_elem = esper.try_component(ent, UIElementComponent)
-    assert ui_elem is not None
-    ui_elem.button_val = random()
 
 
 def set_slider_val(ent: ActionArgs) -> None:

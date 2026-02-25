@@ -5,8 +5,7 @@ from typing import Tuple
 import esper
 import pygame
 
-from common.dying import Health
-from common.state import Action, ActionArgs
+from common import Action, ActionArgs, Health
 
 from .particles import PARTICLE_PROC_REF, Particle, ParticleType
 

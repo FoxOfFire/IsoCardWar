@@ -6,10 +6,6 @@ Action = Callable[[ActionArgs], None]
 TextFunc = Callable[[], str]
 
 
-def TextFuncDecor(func: TextFunc) -> TextFunc:
-    return func
-
-
 class PriceEnum(IntEnum):
     MANA = auto()
     HERBS = auto()

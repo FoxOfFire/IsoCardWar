@@ -9,13 +9,6 @@ class Settings:
     RENDER_BBS = False
     RENDER_MASKS = False
 
-    RENDER_FPS_UI = True
-    RENDER_GAME_PHASE_UI = True
-    RENDER_TRACKED_ISO_UI = False
-    RENDER_TRACKED_UI_UI = False
-    RENDER_GAME_CAM_INTERSECT_UI = False
-    RENDER_ISO_CAM_INTERSECT_UI = False
-
     # Logging
     LOG_TICK_PERFORMANCE = False
     LOG_ASSET_LOADING = False
@@ -57,7 +50,6 @@ class Settings:
     STARTER_DECK_COUNT = 30
 
     # map
-    SEED = None
 
     ISO_MAP_HEIGHT = 7
     ISO_MAP_WIDTH = 7

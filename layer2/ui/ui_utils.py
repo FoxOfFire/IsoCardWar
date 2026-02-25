@@ -9,15 +9,13 @@ from layer2.tags import GameCameraTag
 
 from .log import logger
 
-SWITCH_SCENE = pygame.event.custom_type()
-
 
 @dataclass
 class UIEventInfo:
     iso_tag: Optional[Type] = None
 
 
-ui_event_obj = UIEventInfo()
+UI_EVENT_REF = UIEventInfo()
 logger.info("ui_event_obj created")
 
 

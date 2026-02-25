@@ -8,5 +8,4 @@ from .state_utils import (
     GamePhaseType,
     PriceEnum,
     TextFunc,
-    TextFuncDecor,
 )

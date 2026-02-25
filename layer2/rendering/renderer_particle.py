@@ -4,7 +4,7 @@ import esper
 import pygame
 
 from common import BoundingBox
-from layer1 import Particle
+from layer1 import Particle, ParticleType
 
 from .log import logger
 
@@ -35,4 +35,8 @@ class ParticleRenderer:
             return
 
         for _, particle in esper.get_component(Particle):
-            self._draw_circle_particle(particle, screen)
+            match particle.particle_type:
+                case ParticleType.CIRCLE:
+                    self._draw_circle_particle(particle, screen)
+                case _:
+                    raise RuntimeError("Particle type rendering not specified")

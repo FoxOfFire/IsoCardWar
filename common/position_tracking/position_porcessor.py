@@ -47,22 +47,6 @@ class PositionProcessor(esper.Processor):
     def intersect(self, bb: BoundingBox, tag: Type) -> List[int]:
         return self.__tracker_dict[tag].intersect(bb)
 
-    def intersect_ent_type(self, bb: BoundingBox, ent: int) -> List[int]:
-        comp: Any
-        for comp in esper.components_for_entity(ent):
-            if isinstance(comp, TrackBase):
-                tag = type(comp)
-        return self.intersect(bb, tag)
-
-    def intersect_ent(self, ent: int) -> List[int]:
-        comp: Any
-        for comp in esper.components_for_entity(ent):
-            if isinstance(comp, TrackBase):
-                tag = type(comp)
-            if isinstance(comp, BoundingBox):
-                bb = comp
-        return self.intersect(bb, tag)
-
     def tracked_count_of_type(self, ty: Type) -> int:
         assert ty in self.__tracked_tags
         return self.__tracker_dict[ty].rtree_size()

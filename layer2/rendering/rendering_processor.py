@@ -15,10 +15,6 @@ from .renderer_mask import MaskRenderer
 from .renderer_particle import ParticleRenderer
 
 
-class ScreenNotFoundException(Exception):
-    pass
-
-
 class RenderingProcessor(esper.Processor):
 
     display: Optional[pygame.Surface]

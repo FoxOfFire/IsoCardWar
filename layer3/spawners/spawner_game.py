@@ -40,8 +40,8 @@ def spawn_iso_elem(
         SETTINGS_REF.ISO_TILE_OFFSET_Y,
     )
 
-    MAP_DATA_REF.tracker_tag = map_tracker
-    MAP_DATA_REF.sprite = map_sprite
+    MAP_DATA_REF.set_tracker_tag(map_tracker)
+    MAP_DATA_REF.set_sprite(map_sprite)
 
     corrected_offset_y = offset[1] - (map_size[0] - 1) * map_scale[1]
 

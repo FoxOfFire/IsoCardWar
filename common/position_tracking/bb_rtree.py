@@ -8,7 +8,6 @@ from .bounding_box import BoundingBox
 
 class BBRTree:
     __rt_index: rtree.index.Index
-    __tracked_tag: Type
     __tracked_boxes: int = 0
 
     def __init__(self, tag: Type) -> None:
@@ -19,7 +18,6 @@ class BBRTree:
         self.__rt_index = rtree.index.Index(
             properties=rt_props, interleaved=False
         )
-        self.tracked_tag = tag
 
     def insert(self, ent: int) -> None:
         bb = esper.component_for_entity(ent, BoundingBox)
