@@ -44,7 +44,7 @@ CARD_TYPES_DICT_REF: Dict[CardTypeEnum, Callable[[], Card]] = {
         name="Blood Bucket",
         description="Spawns a blood bucket",
         effects=[
-            get_change_target_unit_action(UnitTypeEnum.BUSH),
+            get_change_target_unit_action(UnitTypeEnum.BLOOD_BUCKET),
             get_sound_action(SoundTypeEnum.POP),
         ],
         price={

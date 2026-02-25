@@ -12,6 +12,7 @@ from .renderer_button import ButtonRenderer
 from .renderer_card import CardRenderer
 from .renderer_iso import IsoRenderer
 from .renderer_mask import MaskRenderer
+from .renderer_particle import ParticleRenderer
 
 
 class ScreenNotFoundException(Exception):
@@ -35,6 +36,7 @@ class RenderingProcessor(esper.Processor):
         self.card_renderer = CardRenderer(TrackUI)
         self.mask_renderer = MaskRenderer(TrackUI)
         self.button_renderer = ButtonRenderer(TrackUI)
+        self.particle_renderer = ParticleRenderer(TrackUI)
 
         # debug purposes
         if SETTINGS_REF.RENDER_BBS:
@@ -53,6 +55,7 @@ class RenderingProcessor(esper.Processor):
         self.mask_renderer.set_camera_type(GameCameraTag)
         self.card_renderer.set_camera_type(GameCameraTag)
         self.button_renderer.set_camera_type(GameCameraTag)
+        self.particle_renderer.set_camera_type(GameCameraTag)
         logger.info("cameras set")
 
     def process(self) -> None:
@@ -64,6 +67,7 @@ class RenderingProcessor(esper.Processor):
         self.card_renderer.draw(self.screen)
         self.mask_renderer.draw(self.screen)
         self.button_renderer.draw(self.screen)
+        self.particle_renderer.draw(self.screen)
 
         # debug purposes
         if SETTINGS_REF.RENDER_BBS:

@@ -28,3 +28,11 @@ from .iso_map import (
     set_random_target,
     switch_unit_types,
 )
+from .particles import (
+    PARTICLE_PROC_REF,
+    Particle,
+    ParticleType,
+    clear_particles_action,
+    get_random_spawn_particle_action,
+    get_spawn_static_particle_action,
+)

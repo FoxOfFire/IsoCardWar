@@ -3,6 +3,8 @@ from enum import IntEnum
 from functools import partial
 from typing import Dict, List, Tuple
 
+import pygame
+
 from common import (
     SETTINGS_REF,
     PriceEnum,
@@ -11,7 +13,10 @@ from common import (
 )
 from layer1 import (
     OrganizationEnum,
+    ParticleType,
+    clear_particles_action,
     draw_card,
+    get_random_spawn_particle_action,
     get_set_order_action,
     sort_hand,
 )
@@ -25,8 +30,8 @@ from layer2 import (
     set_slider_val,
     toggle_sound,
 )
+from layer3.actions import get_spawn_dots_between_coords_action
 
-from .spawner_ui import ButtonData
 from .text_functions import (
     get_fps_str,
     get_game_phase_str,
@@ -34,6 +39,7 @@ from .text_functions import (
     get_resource_amount,
     get_tracked_bb_of_type_str,
 )
+from .utils import ButtonData
 
 
 class SnapHorisontalEnum(IntEnum):
@@ -201,6 +207,46 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
                     click_func=[draw_card],
                 ),
                 (0, 4),
+                ButtonData(
+                    "Spawn Particles",
+                    UIElemType.BUTTON,
+                    click_funcing=[
+                        get_random_spawn_particle_action(
+                            t=ParticleType.CIRCLE,
+                            col=pygame.Color(255, 255, 255),
+                            random_range=50,
+                            pos=(200, 100),
+                            drag=5,
+                            mass=10,
+                            time=600,
+                            particle_count=1,
+                        )
+                    ],
+                ),
+                (0, 1),
+                ButtonData(
+                    "Spawn Line",
+                    UIElemType.BUTTON,
+                    click_func=[
+                        get_spawn_dots_between_coords_action(
+                            (0, 0),
+                            (
+                                SETTINGS_REF.ISO_MAP_WIDTH - 1,
+                                SETTINGS_REF.ISO_MAP_HEIGHT - 1,
+                            ),
+                            40,
+                            0,
+                            13,
+                        )
+                    ],
+                ),
+                (0, 1),
+                ButtonData(
+                    "Clear Particles",
+                    UIElemType.BUTTON,
+                    click_func=[clear_particles_action],
+                ),
+                (0, 4),
                 ButtonData("Organise by", UIElemType.TEXTBOX, sub_size=(0, 4)),
                 (0, 2),
                 ButtonData(
@@ -222,6 +268,7 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
                         sort_hand,
                     ],
                 ),
+                (0, 4),
             ],
         ),
     ],

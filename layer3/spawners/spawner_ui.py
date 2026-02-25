@@ -1,13 +1,10 @@
-from dataclasses import dataclass
-from typing import List, Optional, Tuple
+from typing import Optional, Tuple
 
 import esper
 
 from common import (
     SETTINGS_REF,
-    Action,
     BoundingBox,
-    TextFunc,
     TextFuncDecor,
     Untracked,
 )
@@ -20,22 +17,9 @@ from layer2 import (
     UIElemType,
     get_sound_action,
 )
+from layer3.utils import ButtonData
 
 from .log import logger
-
-
-@dataclass
-class ButtonData:
-    text: str | TextFunc
-    ui_elem_type: UIElemType
-    size: Optional[Tuple[int, int]] = None
-    sub_size: Tuple[int, int] = (0, 0)
-    click_func: Optional[List[Action]] = None
-    click_funcing: Optional[List[Action]] = None
-    hover_func: Optional[List[Action]] = None
-    start_hover_func: Optional[List[Action]] = None
-    remove_hover_func: Optional[List[Action]] = None
-    button_default_data: Optional[bool | float] = None
 
 
 def spawn_button(

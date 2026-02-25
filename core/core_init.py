@@ -17,6 +17,7 @@ from layer1 import (
     CARD_MOV_PROC_REF,
     DECK_REF,
     GAME_PHASE_PROC_REF,
+    PARTICLE_PROC_REF,
     end_phase,
 )
 from layer2 import (
@@ -33,9 +34,7 @@ from layer2 import (
     init_audio,
     ui_event_obj,
 )
-
-from .log import logger
-from .spawners import (
+from layer3 import (
     UI_BUILDER_REF,
     create_card_obj,
     get_base_game_phase_dict,
@@ -43,6 +42,8 @@ from .spawners import (
     spawn_card_ent,
     spawn_iso_elem,
 )
+
+from .log import logger
 
 
 def init_logging() -> None:
@@ -94,6 +95,7 @@ def init_processors(*, game_proc: bool = False) -> None:  # adding processors
     esper.add_processor(POS_PROC_REF())
     esper.add_processor(EVENT_PROC_REF)
     esper.add_processor(UI_PROC_REF())
+    esper.add_processor(PARTICLE_PROC_REF())
 
     if game_proc:
         esper.add_processor(GAME_PHASE_PROC_REF)

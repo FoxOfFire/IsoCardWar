@@ -22,8 +22,8 @@ from layer2 import (
     get_sound_action,
     hover_over_tile,
 )
+from layer3.card_type_def import CARD_TYPES_DICT_REF
 
-from .card_type_def import CARD_TYPES_DICT_REF
 from .log import logger
 
 
@@ -97,21 +97,22 @@ def spawn_card_ent(card: Card, /) -> int:
     description: List[TextData] = []
     desc_words = card.description.split()
     assert len(desc_words) > 0, "No card description given"
-    current_word: str = desc_words.pop(0)
     for i in range(0, SETTINGS_REF.CARD_PARAGRAPH_LINE_COUNT):
         if len(desc_words) == 0:
             break
         res_str = ""
         while True:
+            current_word = desc_words.pop(0)
+            if len(res_str) == 0:
+                res_str += current_word
+            else:
+                res_str += " " + current_word
             if (
-                len(res_str + " " + current_word)
+                len(desc_words) == 0
+                or len(res_str + " " + desc_words[-1])
                 > SETTINGS_REF.CARD_PARAGRAPH_LETTER_COUNT
             ):
                 break
-            res_str += " " + current_word
-            if len(desc_words) == 0:
-                break
-            current_word = desc_words.pop(0)
 
         def decr_text_func(res_str: str) -> str:
             return res_str

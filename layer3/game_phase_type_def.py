@@ -58,9 +58,8 @@ def _enemy_action() -> List[Action]:
             if len(tile_effects) < 1:
                 continue
 
-            effects.append(get_select_tile_action(tile))
-            for effect in tile_effects:
-                effects.append(effect)
+            effects += tile_effects
+
             effects.append(get_select_tile_action(tile))
     return effects
 
