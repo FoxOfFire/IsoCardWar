@@ -30,6 +30,22 @@ class Particle:
     immortal: bool = False
     size_by_hp: bool = True
 
+    @property
+    def velocity_x(self) -> float:
+        return self.velocity[0]
+
+    @property
+    def velocity_y(self) -> float:
+        return self.velocity[1]
+
+    @property
+    def position_x(self) -> float:
+        return self.position[0]
+
+    @property
+    def position_y(self) -> float:
+        return self.position[1]
+
     def apply_velocity(self) -> None:
         x, y = self.position
         vel_x, vel_y = self.velocity
@@ -48,17 +64,28 @@ class Particle:
         drag_x = abs(cos(theta) * drag * vel_pow)
         drag_y = abs(sin(theta) * drag * vel_pow)
 
-        if vel_x < 0:
-            vel_x = min(0, vel_x + drag_x)
-        else:
-            vel_x = max(0, vel_x - drag_x)
+        if vel_x > 0:
+            drag_x = -drag_x
+        if vel_y > 0:
+            drag_y = -drag_y
 
-        if vel_y < 0:
-            vel_y = min(0, vel_y + drag_y)
-        else:
-            vel_y = max(0, vel_y - drag_y)
+        self.add_velocity((drag_x, drag_y))
 
-        self.velocity = (vel_x, vel_y)
+    def add_velocity(self, velocity: Tuple[float, float]) -> None:
+        x, y = velocity
+        self.velocity = (self.velocity_x + x, self.velocity_y + y)
+
+    def set_velocity(self, velocity: Tuple[float, float]) -> None:
+        self.velocity = (0, 0)
+        self.add_velocity(velocity)
+
+    def add_position(self, position: Tuple[float, float]) -> None:
+        x, y = position
+        self.position = (self.position_x + x, self.position_y + y)
+
+    def set_position(self, position: Tuple[float, float]) -> None:
+        self.position = (0, 0)
+        self.add_position(position)
 
 
 class ParticleProcessor(esper.Processor):
