@@ -2,11 +2,8 @@ from typing import Optional, Tuple
 
 import esper
 
-from common import (
-    SETTINGS_REF,
-    BoundingBox,
-    Untracked,
-)
+from common import SETTINGS_REF, BoundingBox, Untracked
+from layer1 import ParticleGenerator
 from layer2 import (
     SoundTypeEnum,
     TextData,
@@ -91,6 +88,7 @@ def spawn_button(
         data.ui_elem_type, data.size, sub_size=data.sub_size
     )
 
-    return esper.create_entity(
-        bb, ui_elem, tracker, ui_elem_sprite, Untracked()
+    ent = esper.create_entity(
+        bb, ui_elem, tracker, ui_elem_sprite, Untracked(), ParticleGenerator()
     )
+    return ent

@@ -4,11 +4,16 @@ from typing import Tuple
 
 
 def lerp1(a: float, b: float, t: float) -> float:
-    return t * a + (1 - t) * b
+    t = max(0, min(1, t))
+    return (1 - t) * a + t * b
 
 
 def lerp2(
-    a: Tuple[float, float], b: Tuple[float, float], t: float, arch: float = 0
+    a: Tuple[float, float],
+    b: Tuple[float, float],
+    t: float,
+    *,
+    arch: float = 0
 ) -> Tuple[float, float]:
     ax, ay = a
     bx, by = b
@@ -26,4 +31,4 @@ def add2i(a: Tuple[int, int], b: Tuple[int, int]) -> Tuple[int, int]:
 
 @dataclass
 class Health:
-    hp: int = 5
+    hp: float = 5

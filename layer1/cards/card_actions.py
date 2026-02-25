@@ -3,13 +3,7 @@ from typing import Any, Optional
 
 import esper
 
-from common import (
-    SETTINGS_REF,
-    STATE_REF,
-    Action,
-    ActionArgs,
-    Health,
-)
+from common import SETTINGS_REF, STATE_REF, Action, ActionArgs, Health
 
 from .card_utils import OrganizationEnum
 from .cards import DECK_REF, Card

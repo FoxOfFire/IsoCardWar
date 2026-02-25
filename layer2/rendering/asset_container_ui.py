@@ -88,7 +88,6 @@ class UIAssetContainer:
     ) -> List[pygame.Surface]:
         tiles = self._BUTTON_TILE_MAPS[icon_type]
         ret = []
-        logger.info(f"surfs:{len(tiles)}")
         for i in range(3 * offset, 3 * (offset + 1)):
             ret.append(tiles[i])
         return ret

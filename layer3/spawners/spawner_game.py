@@ -11,7 +11,13 @@ from common import (
     hover,
     select_card,
 )
-from layer1 import MAP_DATA_REF, Card, CardTypeEnum
+from layer1 import (
+    MAP_DATA_REF,
+    Card,
+    CardTypeEnum,
+    ParticleGenerator,
+    clear_particles_action,
+)
 from layer2 import (
     CardSprite,
     SoundTypeEnum,
@@ -20,8 +26,9 @@ from layer2 import (
     UIElementComponent,
     click_on_tile,
     get_sound_action,
-    hover_over_tile,
+    get_transfered_to_iso_action,
 )
+from layer3.actions import get_spawn_dots_between_ent_and_target
 from layer3.card_type_def import CARD_TYPES_DICT_REF
 
 from .log import logger
@@ -42,6 +49,7 @@ def spawn_iso_elem(
 
     MAP_DATA_REF.set_tracker_tag(map_tracker)
     MAP_DATA_REF.set_sprite(map_sprite)
+    MAP_DATA_REF.set_particle_generator(ParticleGenerator)
 
     corrected_offset_y = offset[1] - (map_size[0] - 1) * map_scale[1]
 
@@ -59,9 +67,23 @@ def spawn_iso_elem(
         ui_bb,
         ui_tracker(),
         UIElementComponent(
-            click_func=[click_on_tile],
-            hover_func=[hover_over_tile],
-            clicking_func=[],
+            click_func=[
+                click_on_tile,
+                get_transfered_to_iso_action(clear_particles_action),
+                get_transfered_to_iso_action(
+                    get_spawn_dots_between_ent_and_target(
+                        SETTINGS_REF.ISO_TARGET_CUTOFF
+                    )
+                ),
+            ],
+            hover_func=[
+                get_transfered_to_iso_action(hover),
+            ],
+            clicking_func=[
+                get_transfered_to_iso_action(
+                    get_spawn_dots_between_ent_and_target(None)
+                ),
+            ],
             start_hover_func=[],
             end_hover_func=[hover],
             text=[],

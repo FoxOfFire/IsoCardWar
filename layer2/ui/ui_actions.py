@@ -8,7 +8,6 @@ from common import (
     Action,
     ActionArgs,
     BoundingBox,
-    hover,
     play_card,
 )
 from layer2.tags import UIElementComponent
@@ -43,22 +42,27 @@ def click_on_tile(ent: ActionArgs) -> None:
         play_card(intersect)
 
 
-def hover_over_tile(ent: ActionArgs) -> None:
-    assert ent is not None
-    bb = esper.component_for_entity(ent, BoundingBox)
-    trans_mouse_pos = get_transformed_mouse_pos(bb)
-    mouse_bb = BoundingBox(
-        trans_mouse_pos[0],
-        trans_mouse_pos[0],
-        trans_mouse_pos[1],
-        trans_mouse_pos[1],
-    )
-    assert UI_EVENT_REF.iso_tag is not None
+def get_transfered_to_iso_action(action: Action) -> Action:
+    def sub_action(ent: ActionArgs) -> None:
+        assert ent is not None
+        bb = esper.component_for_entity(ent, BoundingBox)
+        trans_mouse_pos = get_transformed_mouse_pos(bb)
+        mouse_bb = BoundingBox(
+            trans_mouse_pos[0],
+            trans_mouse_pos[0],
+            trans_mouse_pos[1],
+            trans_mouse_pos[1],
+        )
+        assert UI_EVENT_REF.iso_tag is not None
 
-    for intersect in POS_PROC_REF().intersect(mouse_bb, UI_EVENT_REF.iso_tag):
-        hover(intersect)
-        return
-    hover(None)
+        for intersect in POS_PROC_REF().intersect(
+            mouse_bb, UI_EVENT_REF.iso_tag
+        ):
+            action(intersect)
+            return
+        action(None)
+
+    return sub_action
 
 
 def quit_game(_: ActionArgs = None) -> None:

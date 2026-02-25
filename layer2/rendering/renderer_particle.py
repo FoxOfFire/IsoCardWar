@@ -3,7 +3,7 @@ from typing import Optional, Type
 import esper
 import pygame
 
-from common import BoundingBox
+from common import BoundingBox, lerp1
 from layer1 import Particle, ParticleType
 
 from .log import logger
@@ -11,32 +11,39 @@ from .log import logger
 
 class ParticleRenderer:
     bb: Optional[BoundingBox]
+    surf: Optional[pygame.Surface]
 
     def set_camera_type(self, cam_tag: Type) -> None:
         cams = esper.get_component(cam_tag)
         if len(cams) > 0:
             self.bb = esper.component_for_entity(cams[0][0], BoundingBox)
+            self.surf = pygame.Surface(
+                (self.bb.width, self.bb.height), flags=pygame.SRCALPHA
+            )
 
     def __init__(self, track_tag: Type, /) -> None:
         super().__init__()
         self.track_tag = track_tag
         self.bb = None
+        self.surf = None
         logger.info("iso renderer init finished")
 
     def _draw_circle_particle(
         self, particle: Particle, screen: pygame.Surface
     ) -> None:
-        pygame.draw.circle(
-            screen, particle.color, particle.position, particle.size
-        )
+        col = pygame.Color(particle.color)
+        col.a = round(lerp1(0, 255, particle.alpha))
+        pygame.draw.aacircle(screen, col, particle.position, particle.size)
 
     def draw(self, screen: pygame.Surface) -> None:
-        if self.bb is None:
+        if self.bb is None or self.surf is None:
             return
+        self.surf.fill(pygame.Color(0, 0, 0, 0))
 
         for _, particle in esper.get_component(Particle):
             match particle.particle_type:
                 case ParticleType.CIRCLE:
-                    self._draw_circle_particle(particle, screen)
+                    self._draw_circle_particle(particle, self.surf)
                 case _:
                     raise RuntimeError("Particle type rendering not specified")
+        screen.blit(self.surf)

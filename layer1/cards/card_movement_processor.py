@@ -2,12 +2,7 @@ from typing import Optional
 
 import esper
 
-from common import (
-    RUN_DATA_REF,
-    SETTINGS_REF,
-    STATE_REF,
-    BoundingBox,
-)
+from common import RUN_DATA_REF, SETTINGS_REF, STATE_REF, BoundingBox
 
 from .cards import DECK_REF, Card
 from .log import logger

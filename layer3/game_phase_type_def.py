@@ -1,13 +1,9 @@
+from functools import partial
 from typing import Callable, Dict, List
 
 import esper
 
-from common import (
-    SETTINGS_REF,
-    Action,
-    GamePhaseType,
-    get_select_tile_action,
-)
+from common import SETTINGS_REF, Action, GamePhaseType, get_select_tile_action
 from layer1 import (
     MAP_DATA_REF,
     Tile,
@@ -20,12 +16,9 @@ from .log import logger
 
 
 def _begin_game() -> List[Action]:
-    effects: List[Action] = []
-    return effects
-
-
-def _telegraph() -> List[Action]:
-    effects: List[Action] = []
+    effects: List[Action] = [
+        get_wait_ms_action(2000),
+    ]
     return effects
 
 
@@ -62,13 +55,16 @@ def _end_of_turn() -> List[Action]:
     return effects
 
 
-def _enemy_action() -> List[Action]:
+def _enemy_action(telegraphs: bool) -> List[Action]:
     effects: List[Action] = []
     for w in range(SETTINGS_REF.ISO_MAP_WIDTH):
         for h in range(SETTINGS_REF.ISO_MAP_HEIGHT):
             tile = MAP_DATA_REF.ent_at((h, w))
             unit = esper.component_for_entity(tile, Tile).unit
-            tile_effects = MAP_DATA_REF.get_actions_for_type(unit)
+            if telegraphs:
+                tile_effects = MAP_DATA_REF.get_telegraphs_for_type(unit)
+            else:
+                tile_effects = MAP_DATA_REF.get_actions_for_type(unit)
 
             if len(tile_effects) < 1:
                 continue
@@ -90,11 +86,11 @@ def get_base_game_phase_dict() -> (
     logger.info("getting phase dict")
     return {
         GamePhaseType.BEGIN_GAME: _begin_game,
-        GamePhaseType.TELEGRAPH: _telegraph,
+        GamePhaseType.TELEGRAPH: partial(_enemy_action, True),
         GamePhaseType.PRODUCTION: _production,
         GamePhaseType.DRAW: _draw,
         GamePhaseType.PLAYER_ACTION: _player_action,
         GamePhaseType.END_OF_TURN: _end_of_turn,
-        GamePhaseType.ENEMY_ACTION: _enemy_action,
+        GamePhaseType.ENEMY_ACTION: partial(_enemy_action, False),
         GamePhaseType.END_GAME: _end_game,
     }

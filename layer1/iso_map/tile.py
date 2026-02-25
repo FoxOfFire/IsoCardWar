@@ -30,6 +30,7 @@ class Tile:
     terrain: TerrainEnum
     target: Optional[int] = None
     unit: Optional[UnitTypeEnum] = None
+    is_targeted: bool = False
 
     @property
     def x_offset(self) -> int:

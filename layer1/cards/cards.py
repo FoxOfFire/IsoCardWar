@@ -2,11 +2,7 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Dict, List, Optional
 
-from common import (
-    SETTINGS_REF,
-    Action,
-    PriceEnum,
-)
+from common import SETTINGS_REF, Action, PriceEnum
 
 from .card_utils import CardTypeEnum, OrganizationEnum
 from .log import logger

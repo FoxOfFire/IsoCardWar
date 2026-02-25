@@ -10,7 +10,4 @@ from .card_actions import (
 )
 from .card_movement_processor import CARD_MOV_PROC_REF
 from .card_utils import CardTypeEnum, OrganizationEnum
-from .cards import (
-    DECK_REF,
-    Card,
-)
+from .cards import DECK_REF, Card

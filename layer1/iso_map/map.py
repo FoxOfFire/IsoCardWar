@@ -11,27 +11,47 @@ from .tile import TerrainEnum, Tile, UnitTypeEnum
 class MapData:
     _tracker_tag: Optional[Type] = None
     _sprite: Optional[Type] = None
+    _particle_generator: Optional[Type] = None
     _tiles: Dict[Tuple[int, int], int] = {}
+    _ents: Dict[int, Tuple[int, int]] = {}
     _unit_actions: Dict[UnitTypeEnum | None, List[Action]] = {}
+    _unit_telegraphs: Dict[UnitTypeEnum | None, List[Action]] = {}
 
     def set_tracker_tag(self, tag: Type) -> None:
         self._tracker_tag = tag
+
+    def set_particle_generator(self, tag: Type) -> None:
+        self._particle_generator = tag
 
     def set_sprite(self, sprite: Type) -> None:
         self._sprite = sprite
 
     def set_actions_for_type(
-        self, unit: Optional[UnitTypeEnum], actions: List[Action]
+        self, actions: Dict[Optional[UnitTypeEnum], List[Action]]
     ) -> None:
-        self._unit_actions.update({unit: actions})
+        self._unit_actions.update(actions)
 
     def get_actions_for_type(
         self, unit: Optional[UnitTypeEnum]
     ) -> List[Action]:
         return self._unit_actions[unit]
 
+    def set_telegraph_for_type(
+        self, telegraphs: Dict[Optional[UnitTypeEnum], List[Action]]
+    ) -> None:
+        self._unit_telegraphs.update(telegraphs)
+
+    def get_telegraphs_for_type(
+        self, unit: Optional[UnitTypeEnum]
+    ) -> List[Action]:
+        return self._unit_telegraphs[unit]
+
     def make_map(self) -> None:
-        assert self._tracker_tag is not None and self._sprite is not None
+        assert (
+            self._tracker_tag is not None
+            and self._sprite is not None
+            and self._particle_generator is not None
+        )
         w, h = SETTINGS_REF.ISO_MAP_WIDTH, SETTINGS_REF.ISO_MAP_HEIGHT
         rpos = randint(0, w - 1), randint(0, h - 1)
         for i in range(h):
@@ -57,12 +77,21 @@ class MapData:
                 tile = Tile(x, y, terrain, unit=unit)
 
                 ent = esper.create_entity(
-                    bb, self._sprite(), self._tracker_tag(), tile, Untracked()
+                    bb,
+                    self._sprite(),
+                    self._tracker_tag(),
+                    tile,
+                    Untracked(),
+                    self._particle_generator(),
                 )
                 self._tiles.update({(i, j): ent})
+                self._ents.update({ent: (i, j)})
 
     def ent_at(self, pos: Tuple[int, int]) -> int:
         return self._tiles[pos]
+
+    def pos_at(self, ent: int) -> Tuple[int, int]:
+        return self._ents[ent]
 
 
 MAP_DATA_REF = MapData()

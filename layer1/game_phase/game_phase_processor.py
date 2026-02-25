@@ -2,13 +2,7 @@ from typing import Callable, Dict, List, Optional
 
 import esper
 
-from common import (
-    RUN_DATA_REF,
-    SETTINGS_REF,
-    STATE_REF,
-    Action,
-    GamePhaseType,
-)
+from common import RUN_DATA_REF, SETTINGS_REF, STATE_REF, Action, GamePhaseType
 
 from .log import logger
 

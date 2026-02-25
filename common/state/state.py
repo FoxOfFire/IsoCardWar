@@ -1,11 +1,7 @@
 from dataclasses import dataclass
 from typing import Dict, Optional
 
-from .state_utils import (
-    Action,
-    GamePhaseType,
-    PriceEnum,
-)
+from .state_utils import Action, GamePhaseType, PriceEnum
 
 
 @dataclass
@@ -15,7 +11,7 @@ class GameState:
     selected_card: Optional[int] = None
     selected_tile: Optional[int] = None
     hovered_ent: Optional[int] = None
-    game_phase: GamePhaseType = GamePhaseType.BEGIN_GAME
+    game_phase: GamePhaseType = GamePhaseType.INIT
     end_player_phase: bool = False
 
 

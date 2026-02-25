@@ -2,12 +2,8 @@ from typing import Callable, Type
 
 import esper
 
-from common import (
-    POS_PROC_REF,
-    RUN_DATA_REF,
-    STATE_REF,
-    PriceEnum,
-)
+from common import POS_PROC_REF, RUN_DATA_REF, STATE_REF, PriceEnum
+from layer1 import Particle
 
 
 def get_tracked_bb_of_type_str(ty: Type, name: str) -> str:
@@ -20,6 +16,10 @@ def get_resource_amount(resource: PriceEnum) -> str:
 
 def get_game_world_str() -> str:
     return f"World: {esper.current_world}"
+
+
+def get_particle_count_str() -> str:
+    return f"Particle Count: {len(esper.get_component(Particle))}"
 
 
 def get_fps_str() -> str:
