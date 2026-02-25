@@ -3,6 +3,7 @@ from layer1 import (
     MAP_DATA_REF,
     UnitTypeEnum,
     get_spawn_unit_at_random,
+    get_wait_ms_action,
     set_random_target,
     switch_unit_types,
 )
@@ -30,33 +31,46 @@ def set_type_actions() -> None:
     )
     MAP_DATA_REF.set_actions_for_type(
         UnitTypeEnum.CAULDRON,
-        [get_gain_resource_action(PriceEnum.BREW, 1)],
+        [
+            get_gain_resource_action(PriceEnum.BREW, 1),
+        ],
     )
     MAP_DATA_REF.set_actions_for_type(
         UnitTypeEnum.MANA_PYLON,
-        [get_gain_resource_action(PriceEnum.MANA, 2)],
+        [
+            get_gain_resource_action(PriceEnum.MANA, 2),
+        ],
     )
     MAP_DATA_REF.set_actions_for_type(
         UnitTypeEnum.BLOOD_BUCKET,
-        [get_gain_resource_action(PriceEnum.BLOOD, 2)],
+        [
+            get_gain_resource_action(PriceEnum.BLOOD, 2),
+        ],
     )
     MAP_DATA_REF.set_actions_for_type(
         UnitTypeEnum.WITCH,
-        [get_gain_resource_action(PriceEnum.MANA, 5)],
+        [
+            get_gain_resource_action(PriceEnum.MANA, 5),
+        ],
     )
     MAP_DATA_REF.set_actions_for_type(
         UnitTypeEnum.BIG_CAULDRON,
-        [get_gain_resource_action(PriceEnum.BREW, 3)],
+        [
+            get_gain_resource_action(PriceEnum.BREW, 3),
+        ],
     )
     MAP_DATA_REF.set_actions_for_type(
         UnitTypeEnum.BUSH,
-        [get_gain_resource_action(PriceEnum.HERBS, 2)],
+        [
+            get_gain_resource_action(PriceEnum.HERBS, 2),
+        ],
     )
     MAP_DATA_REF.set_actions_for_type(
         UnitTypeEnum.FARMER,
         [
             switch_unit_types,
             set_random_target,
+            get_wait_ms_action(100),
         ],
     )
     MAP_DATA_REF.set_actions_for_type(
@@ -64,5 +78,6 @@ def set_type_actions() -> None:
         [
             switch_unit_types,
             set_random_target,
+            get_wait_ms_action(100),
         ],
     )

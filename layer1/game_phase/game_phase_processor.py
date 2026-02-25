@@ -29,13 +29,14 @@ class GamePhaseProcessor(esper.Processor):
         self.wait = max(0, self.wait - RUN_DATA_REF.delta_time)
         if self.wait > 0:
             return
-        self.wait = SETTINGS_REF.GAME_PHASE_PAUSE
 
         phase: GamePhaseType = STATE_REF.game_phase
 
         logger.info(f"{esper.current_world, len(self.next_funk_queue)}")
         if len(self.next_funk_queue) > 0:
-            self.next_funk_queue.pop()(STATE_REF.selected_tile)
+            logger.info(self.wait)
+            while self.wait == 0 and len(self.next_funk_queue) > 0:
+                self.next_funk_queue.pop()(STATE_REF.selected_tile)
             return
         if phase == GamePhaseType.END_GAME:
             return

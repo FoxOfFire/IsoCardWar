@@ -24,19 +24,34 @@ def _begin_game() -> List[Action]:
     return effects
 
 
+def _telegraph() -> List[Action]:
+    effects: List[Action] = []
+    return effects
+
+
+def _production() -> List[Action]:
+    effects: List[Action] = []
+    return effects
+
+
 def _draw() -> List[Action]:
     effects: List[Action] = [
-        get_wait_ms_action(50),
         draw_card,
-        get_wait_ms_action(50),
+        get_wait_ms_action(75),
         draw_card,
-        get_wait_ms_action(50),
+        get_wait_ms_action(75),
         draw_card,
-        get_wait_ms_action(50),
+        get_wait_ms_action(75),
         draw_card,
-        get_wait_ms_action(50),
+        get_wait_ms_action(75),
         draw_card,
     ]
+    return effects
+
+
+def _player_action() -> List[Action]:
+    effects: List[Action] = []
+    # TODO
     return effects
 
 
@@ -69,18 +84,14 @@ def _end_game() -> List[Action]:
     return effects
 
 
-def _player_action() -> List[Action]:
-    effects: List[Action] = []
-    # TODO
-    return effects
-
-
 def get_base_game_phase_dict() -> (
     Dict[GamePhaseType, Callable[[], List[Action]]]
 ):
     logger.info("getting phase dict")
     return {
         GamePhaseType.BEGIN_GAME: _begin_game,
+        GamePhaseType.TELEGRAPH: _telegraph,
+        GamePhaseType.PRODUCTION: _production,
         GamePhaseType.DRAW: _draw,
         GamePhaseType.PLAYER_ACTION: _player_action,
         GamePhaseType.END_OF_TURN: _end_of_turn,
