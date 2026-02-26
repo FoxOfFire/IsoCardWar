@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 from typing import Optional, Tuple, Type
 
 import esper
@@ -12,13 +11,13 @@ from common import (
     PriceEnum,
 )
 from layer1 import Card, Tile
+from layer2.tags import MaskedSprite
 
 from .asset_container_iso import ISO_ASSET_REF
 from .log import logger
 
 
-@dataclass
-class IsoSprite:
+class IsoSprite(MaskedSprite):
     pass
 
 

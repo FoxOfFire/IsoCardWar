@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 from typing import Optional, Type
 
 import esper
@@ -13,7 +12,6 @@ from .rendering_asset_loader import RENDER_ASSET_REF
 from .utils import CardImageEnum, CardTypeEnum
 
 
-@dataclass
 class CardSprite(MaskedSprite):
     pass
 

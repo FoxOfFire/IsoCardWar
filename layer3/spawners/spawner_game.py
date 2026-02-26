@@ -9,6 +9,7 @@ from common import (
     Health,
     Untracked,
     hover,
+    play_card,
     select_card,
 )
 from layer1 import (
@@ -24,7 +25,6 @@ from layer2 import (
     TextData,
     TrackUI,
     UIElementComponent,
-    click_on_tile,
     get_sound_action,
     get_transfered_to_iso_action,
 )
@@ -68,7 +68,15 @@ def spawn_iso_elem(
         ui_tracker(),
         UIElementComponent(
             click_func=[
-                click_on_tile,
+                get_transfered_to_iso_action(play_card, False, False),
+                get_transfered_to_iso_action(clear_particles_action),
+                get_transfered_to_iso_action(
+                    get_spawn_dots_between_ent_and_target(
+                        SETTINGS_REF.ISO_TARGET_CUTOFF
+                    )
+                ),
+            ],
+            click_cancel_func=[
                 get_transfered_to_iso_action(clear_particles_action),
                 get_transfered_to_iso_action(
                     get_spawn_dots_between_ent_and_target(
@@ -77,15 +85,25 @@ def spawn_iso_elem(
                 ),
             ],
             hover_func=[
-                get_transfered_to_iso_action(hover),
+                get_transfered_to_iso_action(
+                    hover,
+                )
             ],
             clicking_func=[
                 get_transfered_to_iso_action(
                     get_spawn_dots_between_ent_and_target(None)
                 ),
             ],
-            start_hover_func=[],
-            end_hover_func=[hover],
+            start_hover_func=[
+                get_transfered_to_iso_action(
+                    get_spawn_dots_between_ent_and_target(
+                        SETTINGS_REF.ISO_TARGET_CUTOFF
+                    )
+                ),
+            ],
+            end_hover_func=[
+                hover,
+            ],
             text=[],
             is_gameplay_elem=True,
         ),
@@ -153,6 +171,7 @@ def spawn_card_ent(card: Card, /) -> int:
     ui_elem = UIElementComponent(
         click_func=[select_card, get_sound_action(SoundTypeEnum.CLICK)],
         clicking_func=[],
+        click_cancel_func=[],
         hover_func=[],
         start_hover_func=[hover, get_sound_action(SoundTypeEnum.POP)],
         end_hover_func=[hover],

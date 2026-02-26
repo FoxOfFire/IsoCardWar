@@ -46,7 +46,7 @@ class MapData:
     ) -> List[Action]:
         return self._unit_telegraphs[unit]
 
-    def make_map(self) -> None:
+    def gake_map(self) -> None:
         assert (
             self._tracker_tag is not None
             and self._sprite is not None
@@ -57,7 +57,6 @@ class MapData:
         for i in range(h):
             for j in range(w):
                 bb = BoundingBox(i, i + 1, j, j + 1)
-                x, y = round(bb.left), round(bb.top)
                 terrain = TerrainEnum(randint(1, len(list(TerrainEnum))))
                 unit: Optional[UnitTypeEnum] = None
 
@@ -74,11 +73,20 @@ class MapData:
                             randint(1, len(list(UnitTypeEnum)))
                         )
 
-                tile = Tile(x, y, terrain, unit=unit)
+                tile = Tile(i, j, terrain, unit=unit)
+
+                sprite_offset = (
+                    tile.x_offset,
+                    tile.y_offset + SETTINGS_REF.ISO_TILE_OFFSET_Y * 2,
+                )
+                sprite_size = (
+                    SETTINGS_REF.ISO_TILE_OFFSET_X * 2,
+                    SETTINGS_REF.ISO_TILE_OFFSET_Y * 2,
+                )
 
                 ent = esper.create_entity(
                     bb,
-                    self._sprite(),
+                    self._sprite(sprite_offset, sprite_size),
                     self._tracker_tag(),
                     tile,
                     Untracked(),

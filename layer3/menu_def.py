@@ -3,9 +3,13 @@ from enum import IntEnum
 from functools import partial
 from typing import Dict, List, Tuple
 
-import pygame
-
-from common import SETTINGS_REF, PriceEnum, WorldEnum, end_player_phase_action
+from common import (
+    COLOR_REF,
+    SETTINGS_REF,
+    PriceEnum,
+    WorldEnum,
+    end_player_phase_action,
+)
 from layer1 import (
     OrganizationEnum,
     ParticleType,
@@ -212,7 +216,7 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
                     click_funcing=[
                         get_random_spawn_particle_action(
                             t=ParticleType.CIRCLE,
-                            col=pygame.Color(255, 255, 255),
+                            col=COLOR_REF.WHITE,
                             random_range=50,
                             pos=(200, 100),
                             drag=5,

@@ -98,6 +98,8 @@ class UIProcessor(esper.Processor):
             ):
                 self.clicked.remove(ent)
                 ui_elem.state = UIStateEnum.BASE
+                for func in ui_elem.click_cancel_func:
+                    func(ent)
             else:
                 for func in ui_elem.clicking_func:
                     func(ent)

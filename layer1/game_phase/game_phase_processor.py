@@ -2,7 +2,7 @@ from typing import Callable, Dict, List, Optional
 
 import esper
 
-from common import RUN_DATA_REF, SETTINGS_REF, STATE_REF, Action, GamePhaseType
+from common import RUN_DATA_REF, STATE_REF, Action, GamePhaseType
 
 from .log import logger
 
@@ -11,7 +11,7 @@ class GamePhaseProcessor(esper.Processor):
     end_phase: Optional[Action]
 
     def __init__(self) -> None:
-        self.wait = SETTINGS_REF.GAME_PHASE_PAUSE
+        self.wait = 0
         self.phase_funk_queue: Dict[
             GamePhaseType, Callable[[], List[Action]]
         ] = {}

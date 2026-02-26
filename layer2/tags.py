@@ -27,8 +27,17 @@ class IsoCameraTag:
 
 
 class MaskedSprite:
-    mask: pygame.Mask = pygame.Mask((1, 1), fill=True)
-    rect: pygame.Rect = pygame.Rect(0, 0, 1, 1)
+    mask: pygame.Mask
+    rect: pygame.Rect
+
+    def __init__(
+        self,
+        top_left: Tuple[float, float] = (0, 0),
+        size: Tuple[float, float] = (1, 1),
+    ) -> None:
+        print(top_left, size)
+        self.mask = pygame.Mask(size, fill=True)
+        self.rect = pygame.Rect(top_left, size)
 
 
 @dataclass
@@ -41,6 +50,7 @@ class TextData:
 class UIElementComponent:
     click_func: List[Action]
     clicking_func: List[Action]
+    click_cancel_func: List[Action]
     start_hover_func: List[Action]
     end_hover_func: List[Action]
     hover_func: List[Action]

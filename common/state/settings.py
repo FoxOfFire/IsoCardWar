@@ -1,13 +1,13 @@
 from dataclasses import dataclass
 
-import pygame
+from .colors import COLOR_REF
 
 
 @dataclass
 class Settings:
     # debug
     RENDER_BBS = False
-    RENDER_MASKS = False
+    RENDER_MASKS = True
 
     # Logging
     LOG_TICK_PERFORMANCE = False
@@ -23,6 +23,14 @@ class Settings:
     GAME_MUTE = True
 
     FPS = 60
+
+    # defaults
+    DEFAULT_RESOURCE_MANA = 99
+    DEFAULT_RESOURCE_HERBS = 99
+    DEFAULT_RESOURCE_BLOOD = 99
+    DEFAULT_RESOURCE_BREW = 99
+
+    STARTER_DECK_COUNT = 30
     # cards
     CARD_START_X = 0
     CARD_START_Y = 0
@@ -36,9 +44,11 @@ class Settings:
 
     CARD_WIDTH: float = 62.0
     CARD_HEIGHT: float = 88.0
+
     RELATIVE_MARKER_POS_X = 2
     RELATIVE_MARKER_POS_Y = 11
     MARKER_OFFSET_X = 8
+
     CARD_TEXT_RELATIVE_POS_X = CARD_WIDTH // 2
     CARD_TITLE_TEXT_RELATIVE_POS_Y = 7
     CARD_PARAGRAPH_TEXT_RELATIVE_Y_ONE = 49
@@ -47,7 +57,6 @@ class Settings:
     CARD_PARAGRAPH_LINE_COUNT = 4
 
     MAX_CARD_COUNT = 10
-    STARTER_DECK_COUNT = 30
 
     # map
 
@@ -75,11 +84,9 @@ class Settings:
     ISO_SPAWN_CHANCE_MAX = 100
 
     ISO_TARGET_CUTOFF = 4
-    # game phases
-    GAME_PHASE_PAUSE = 50
 
     # UI
-    FONT_COLOR = pygame.Color(53, 43, 66, 255)
+    FONT_COLOR = COLOR_REF.SHADE_DARK
     FONT_SIZE = 6
 
     BUTTON_TILE_SIZE = 12

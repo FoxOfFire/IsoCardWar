@@ -1,10 +1,8 @@
-from functools import partial
 from typing import Optional, Tuple
 
 import esper
-import pygame
 
-from common import SETTINGS_REF, Action, ActionArgs, add2i, lerp1, lerp2
+from common import COLOR_REF, SETTINGS_REF, Action, ActionArgs, add2i, lerp2
 from layer1 import (
     MAP_DATA_REF,
     ParticleType,
@@ -37,12 +35,7 @@ def get_spawn_dots_between_coords_action(
         for i in range(cnt):
             alpha: float = 0
             t = i / (cnt - 1)
-            col = pygame.Color(
-                round(lerp1(200, 255, t)),
-                round(lerp1(100, 30, t)),
-                round(lerp1(10, 30, t)),
-            )
-
+            col = COLOR_REF.RED
             if i < cutoff:
                 alpha += 1 - (i) / (cutoff)
             if i >= cnt - cutoff:
@@ -63,7 +56,7 @@ def get_spawn_dots_between_coords_action(
 
 def get_spawn_dots_between_ent_and_target(cutoff: Optional[int]) -> Action:
 
-    def action(cut: Optional[int], ent: ActionArgs) -> None:
+    def action(ent: ActionArgs) -> None:
         if ent is None or not esper.has_component(ent, Tile):
             return
         tile = esper.component_for_entity(ent, Tile)
@@ -78,10 +71,17 @@ def get_spawn_dots_between_ent_and_target(cutoff: Optional[int]) -> Action:
         diff = max(abs(ent_x - target_x), abs(ent_y - target_y))
         diff = diff * 4 - 1
 
-        if cut is None:
+        if cutoff is None:
             cut = diff
+        else:
+            cut = cutoff
         get_spawn_dots_between_coords_action(
-            ent_pos, target_pos, arch=60, height=0, cnt=diff, cutoff=cut
+            ent_pos,
+            target_pos,
+            arch=60,
+            height=0,
+            cnt=max(diff, 8),
+            cutoff=cut,
         )(ent)
 
-    return partial(action, cutoff)
+    return action

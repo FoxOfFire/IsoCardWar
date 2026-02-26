@@ -13,6 +13,7 @@ class ButtonData:
     sub_size: Tuple[int, int] = (0, 0)
     click_func: Optional[List[Action]] = None
     click_funcing: Optional[List[Action]] = None
+    click_cancel_func: Optional[List[Action]] = None
     hover_func: Optional[List[Action]] = None
     start_hover_func: Optional[List[Action]] = None
     remove_hover_func: Optional[List[Action]] = None

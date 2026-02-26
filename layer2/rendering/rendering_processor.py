@@ -3,7 +3,7 @@ from typing import Dict, Optional
 import esper
 import pygame
 
-from common import SETTINGS_REF, WORLD_REF, WorldEnum
+from common import COLOR_REF, SETTINGS_REF, WORLD_REF, WorldEnum
 from layer2.tags import GameCameraTag, IsoCameraTag, TrackIso, TrackUI
 
 from .log import logger
@@ -30,13 +30,13 @@ class RenderingProcessor(esper.Processor):
 
         self.iso_renderer = IsoRenderer(TrackIso)
         self.card_renderer = CardRenderer(TrackUI)
-        self.mask_renderer = MaskRenderer(TrackUI)
+        self.mask_renderer = MaskRenderer(TrackUI, TrackIso)
         self.button_renderer = ButtonRenderer(TrackUI)
         self.particle_renderer = ParticleRenderer(TrackUI)
 
         # debug purposes
         if SETTINGS_REF.RENDER_BBS:
-            self.bb_renderer = BBRenderer(GameCameraTag, TrackUI)
+            self.bb_renderer = BBRenderer(TrackUI)
 
     def set_display_and_init_cam_types(self, display: pygame.Surface) -> None:
         self.__set_display(display)
@@ -52,12 +52,14 @@ class RenderingProcessor(esper.Processor):
         self.card_renderer.set_camera_type(GameCameraTag)
         self.button_renderer.set_camera_type(GameCameraTag)
         self.particle_renderer.set_camera_type(GameCameraTag)
+        if SETTINGS_REF.RENDER_BBS:
+            self.bb_renderer.set_camera_type(GameCameraTag)
         logger.info("cameras set")
 
     def process(self) -> None:
         assert self.display is not None
 
-        self.screen.fill((100, 100, 100))
+        self.screen.fill(COLOR_REF.GRAY)
 
         self.iso_renderer.draw(self.screen)
         self.card_renderer.draw(self.screen)

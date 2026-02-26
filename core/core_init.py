@@ -10,7 +10,9 @@ from common import (
     POS_PROC_REF,
     RUN_DATA_REF,
     SETTINGS_REF,
+    STATE_REF,
     BoundingBox,
+    PriceEnum,
     WorldEnum,
 )
 from layer1 import (
@@ -147,7 +149,17 @@ def init_game() -> None:
     DECK_REF.spawn_card = spawn_card_ent
     DECK_REF.create_card = create_card_obj
     DECK_REF.create_starting_deck()
+
     UI_EVENT_REF.iso_tag = TrackIso
+
+    STATE_REF.resources.update(
+        {
+            PriceEnum.MANA: SETTINGS_REF.DEFAULT_RESOURCE_MANA,
+            PriceEnum.HERBS: SETTINGS_REF.DEFAULT_RESOURCE_HERBS,
+            PriceEnum.BLOOD: SETTINGS_REF.DEFAULT_RESOURCE_BLOOD,
+            PriceEnum.BREW: SETTINGS_REF.DEFAULT_RESOURCE_BREW,
+        }
+    )
 
 
 def init() -> None:

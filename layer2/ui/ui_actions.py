@@ -1,3 +1,5 @@
+from typing import List
+
 import esper
 import pygame
 
@@ -8,7 +10,6 @@ from common import (
     Action,
     ActionArgs,
     BoundingBox,
-    play_card,
 )
 from layer2.tags import UIElementComponent
 
@@ -24,26 +25,26 @@ def get_sound_action(sound: SoundTypeEnum) -> Action:
     return lambda _: play_sfx(sound)
 
 
-def click_on_tile(ent: ActionArgs) -> None:
-    assert ent is not None
-    if STATE_REF.selected_card is None:
-        return
-    bb = esper.component_for_entity(ent, BoundingBox)
-    trans_mouse_pos = get_transformed_mouse_pos(bb)
-    mouse_bb = BoundingBox(
-        trans_mouse_pos[0],
-        trans_mouse_pos[0],
-        trans_mouse_pos[1],
-        trans_mouse_pos[1],
-    )
-    assert UI_EVENT_REF.iso_tag is not None
-
-    for intersect in POS_PROC_REF().intersect(mouse_bb, UI_EVENT_REF.iso_tag):
-        play_card(intersect)
-
-
-def get_transfered_to_iso_action(action: Action) -> Action:
+def get_transfered_to_iso_actions(
+    actions: List[Action],
+    act_on_none: bool = True,
+    act_on_no_card: bool = True,
+) -> Action:
     def sub_action(ent: ActionArgs) -> None:
+        for action in actions:
+            get_transfered_to_iso_action(action, act_on_none, act_on_no_card)(
+                ent
+            )
+
+    return sub_action
+
+
+def get_transfered_to_iso_action(
+    action: Action, act_on_none: bool = True, act_on_no_card: bool = True
+) -> Action:
+    def sub_action(ent: ActionArgs) -> None:
+        if STATE_REF.selected_card is None and not act_on_no_card:
+            return
         assert ent is not None
         bb = esper.component_for_entity(ent, BoundingBox)
         trans_mouse_pos = get_transformed_mouse_pos(bb)
@@ -60,7 +61,8 @@ def get_transfered_to_iso_action(action: Action) -> Action:
         ):
             action(intersect)
             return
-        action(None)
+        if act_on_none:
+            action(None)
 
     return sub_action
 

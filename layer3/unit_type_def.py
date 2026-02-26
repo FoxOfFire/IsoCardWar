@@ -29,12 +29,16 @@ def set_type_actions() -> None:
             UnitTypeEnum.BUSH: [],
             UnitTypeEnum.FARMER: [
                 get_wait_ms_action(500),
-                get_spawn_dots_between_ent_and_target(4),
+                get_spawn_dots_between_ent_and_target(
+                    SETTINGS_REF.ISO_TARGET_CUTOFF
+                ),
                 set_random_target,
             ],
             UnitTypeEnum.KNIGHT: [
                 get_wait_ms_action(500),
-                get_spawn_dots_between_ent_and_target(4),
+                get_spawn_dots_between_ent_and_target(
+                    SETTINGS_REF.ISO_TARGET_CUTOFF
+                ),
                 set_random_target,
             ],
         }
