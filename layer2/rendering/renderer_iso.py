@@ -4,7 +4,6 @@ import esper
 import pygame
 
 from common import (
-    COLOR_REF,
     POS_PROC_REF,
     SETTINGS_REF,
     STATE_REF,
@@ -71,10 +70,16 @@ class IsoRenderer:
             tile = esper.component_for_entity(ent, Tile)
             x, y = tile.offset
             if ent != selected:
-                select = None
+                if tile.is_targeted:
+                    select = PriceEnum.BLOOD
+                else:
+                    select = None
                 y -= SETTINGS_REF.ISO_TILE_SELECT_OFFSET
             else:
-                select = crosshair
+                if crosshair is not None:
+                    select = crosshair
+                elif tile.is_targeted:
+                    select = PriceEnum.BLOOD
             surf = ISO_ASSET_REF.get_surf(tile.terrain, tile.unit, select)
             sprite.mask = ISO_ASSET_REF.get_mask()
 
