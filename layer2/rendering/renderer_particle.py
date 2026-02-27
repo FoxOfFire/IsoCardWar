@@ -21,9 +21,8 @@ class ParticleRenderer:
                 (self.bb.width, self.bb.height), flags=pygame.SRCALPHA
             )
 
-    def __init__(self, track_tag: Type, /) -> None:
+    def __init__(self) -> None:
         super().__init__()
-        self.track_tag = track_tag
         self.bb = None
         self.surf = None
         logger.info("iso renderer init finished")

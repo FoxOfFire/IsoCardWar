@@ -1,5 +1,4 @@
-from dataclasses import dataclass
-from typing import Optional, Tuple, Type
+from typing import Tuple
 
 import esper
 import pygame
@@ -9,13 +8,6 @@ from layer2.tags import GameCameraTag
 
 from .log import logger
 
-
-@dataclass
-class UIEventInfo:
-    iso_tag: Optional[Type] = None
-
-
-UI_EVENT_REF = UIEventInfo()
 logger.info("ui_event_obj created")
 
 

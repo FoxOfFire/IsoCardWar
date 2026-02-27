@@ -15,7 +15,6 @@ from layer2.tags import UIElementComponent
 
 from .audio import SoundTypeEnum, play_sfx
 from .ui_utils import (
-    UI_EVENT_REF,
     get_mouse_pos_in_px,
     get_transformed_mouse_pos,
 )
@@ -54,11 +53,8 @@ def get_transfered_to_iso_action(
             trans_mouse_pos[1],
             trans_mouse_pos[1],
         )
-        assert UI_EVENT_REF.iso_tag is not None
 
-        for intersect in POS_PROC_REF().intersect(
-            mouse_bb, UI_EVENT_REF.iso_tag
-        ):
+        for intersect in POS_PROC_REF().intersect(mouse_bb):
             action(intersect)
             return
         if act_on_none:

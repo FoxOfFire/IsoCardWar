@@ -18,9 +18,8 @@ class BBRenderer:
             BoundingBox,
         )
 
-    def __init__(self, track_tag: Type) -> None:
+    def __init__(self) -> None:
         super().__init__()
-        self.track_tag = track_tag
         self.bb = None
 
     def draw(self, screen: pygame.Surface) -> None:
@@ -29,7 +28,7 @@ class BBRenderer:
         assert self.bb is not None
 
         ent_list = sorted(
-            POS_PROC_REF().intersect(self.bb, self.track_tag),
+            POS_PROC_REF().intersect(self.bb),
             key=partial(sort_by_bb, side=3),
         )
 

@@ -5,11 +5,8 @@ from .rendering import *
 from .scene_switcher import SCENE_SWITCH_PROC_REF, get_switch_world_action
 from .tags import (
     GameCameraTag,
-    IsoCameraTag,
     MaskedSprite,
     TextData,
-    TrackIso,
-    TrackUI,
     UIElementComponent,
 )
 from .ui import *

@@ -3,26 +3,12 @@ from typing import Any, List, Optional, Tuple
 
 import pygame
 
-from common import Action, TextFunc, TrackBase
+from common import Action, TextFunc
 
 from .enums import UIStateEnum
 
 
-class TrackUI(TrackBase):
-    def __str__(self) -> str:
-        return "TrackUI"
-
-
-class TrackIso(TrackBase):
-    def __str__(self) -> str:
-        return "TrackISO"
-
-
 class GameCameraTag:
-    pass
-
-
-class IsoCameraTag:
     pass
 
 

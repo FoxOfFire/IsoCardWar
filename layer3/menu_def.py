@@ -21,8 +21,6 @@ from layer1 import (
     sort_hand,
 )
 from layer2 import (
-    TrackIso,
-    TrackUI,
     UIElementComponent,
     UIElemType,
     get_switch_world_action,
@@ -170,12 +168,12 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
                 ButtonData(get_game_world_str, UIElemType.TEXTBOX),
                 (0, 4),
                 ButtonData(
-                    partial(get_tracked_bb_of_type_str, TrackIso, "TrackIso"),
+                    get_tracked_bb_of_type_str,
                     UIElemType.TEXTBOX,
                 ),
                 (0, 1),
                 ButtonData(
-                    partial(get_tracked_bb_of_type_str, TrackUI, "TrackUI"),
+                    get_tracked_bb_of_type_str,
                     UIElemType.TEXTBOX,
                 ),
                 (0, 1),

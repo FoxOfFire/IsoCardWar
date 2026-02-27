@@ -6,55 +6,39 @@ from common.worlds import WORLD_REF, WorldEnum
 
 from .bb_rtree import BBRTree
 from .bounding_box import BoundingBox
-from .log import logger
-from .tags import Moved, TrackBase, Untracked
+from .tags import Moved, Untracked
 
 
 class PositionProcessor(esper.Processor):
-    __tracker_dict: Dict[Type, BBRTree] = {}
+    __tracker: BBRTree = BBRTree()
     __tracked_tags: List[Type] = []
 
     def process(self) -> None:
         tag: Any
         for ent, _ in esper.get_component(Moved):
             esper.remove_component(ent, Moved)
-            ty = None
-            for tag in esper.components_for_entity(ent):
-                if isinstance(tag, TrackBase):
-                    ty = tag
-                if isinstance(tag, Untracked):
-                    ty = None
-                    break
+            untr = False
 
-            if ty is not None:
-                self.__tracker_dict[type(ty)].update(ent)
+            for tag in esper.components_for_entity(ent):
+                if isinstance(tag, Untracked):
+                    untr = True
+                    break
+            if not untr:
+                self.__tracker.update(ent)
 
         for ent, _ in esper.get_component(Untracked):
             esper.remove_component(ent, Untracked)
-            for tag in esper.components_for_entity(ent):
-                if isinstance(tag, TrackBase):
-                    self.__tracker_dict[type(tag)].insert(ent)
-                    break
+            self.__tracker.insert(ent)
 
     def untrack(self, ent: int) -> None:
-        comp: Any
-        for comp in esper.components_for_entity(ent):
-            if isinstance(comp, TrackBase):
-                tag = type(comp)
-        self.__tracker_dict[tag].delete_prev(ent)
-        self.__tracker_dict[tag].delete_current(ent)
+        self.__tracker.delete_prev(ent)
+        self.__tracker.delete_current(ent)
 
-    def intersect(self, bb: BoundingBox, tag: Type) -> List[int]:
-        return self.__tracker_dict[tag].intersect(bb)
+    def intersect(self, bb: BoundingBox) -> List[int]:
+        return self.__tracker.intersect(bb)
 
-    def tracked_count_of_type(self, ty: Type) -> int:
-        assert ty in self.__tracked_tags
-        return self.__tracker_dict[ty].rtree_size()
-
-    def start_tracking_type(self, ty: Type) -> None:
-        logger.info("started tracking:" + str(ty))
-        self.__tracked_tags.append(ty)
-        self.__tracker_dict.update({ty: BBRTree(ty)})
+    def tracked_count(self) -> int:
+        return self.__tracker.rtree_size()
 
 
 _POS_PROC_WORLD_DICT: Dict[WorldEnum, PositionProcessor] = {}

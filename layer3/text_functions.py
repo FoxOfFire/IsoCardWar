@@ -1,4 +1,4 @@
-from typing import Callable, Type
+from typing import Callable
 
 import esper
 
@@ -6,8 +6,8 @@ from common import POS_PROC_REF, RUN_DATA_REF, STATE_REF, PriceEnum
 from layer1 import Particle
 
 
-def get_tracked_bb_of_type_str(ty: Type, name: str) -> str:
-    return f"{name}: {str(POS_PROC_REF().tracked_count_of_type(ty))}"
+def get_tracked_bb_of_type_str() -> str:
+    return f"tracked: {str(POS_PROC_REF().tracked_count())}"
 
 
 def get_resource_amount(resource: PriceEnum) -> str:

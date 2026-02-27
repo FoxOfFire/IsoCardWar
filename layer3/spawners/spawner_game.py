@@ -23,7 +23,6 @@ from layer2 import (
     CardSprite,
     SoundTypeEnum,
     TextData,
-    TrackUI,
     UIElementComponent,
     get_sound_action,
     get_transfered_to_iso_action,
@@ -34,12 +33,7 @@ from layer3.card_type_def import CARD_TYPES_DICT_REF
 from .log import logger
 
 
-def spawn_iso_elem(
-    map_tracker: Type,
-    ui_tracker: Type,
-    map_sprite: Type,
-    /,
-) -> int:
+def spawn_iso_elem(map_sprite: Type) -> int:
     map_size = (SETTINGS_REF.ISO_MAP_WIDTH, SETTINGS_REF.ISO_MAP_HEIGHT)
     offset = (SETTINGS_REF.ISO_POS_OFFSET_X, SETTINGS_REF.ISO_POS_OFFSET_Y)
     map_scale = (
@@ -47,7 +41,6 @@ def spawn_iso_elem(
         SETTINGS_REF.ISO_TILE_OFFSET_Y,
     )
 
-    MAP_DATA_REF.set_tracker_tag(map_tracker)
     MAP_DATA_REF.set_sprite(map_sprite)
     MAP_DATA_REF.set_particle_generator(ParticleGenerator)
 
@@ -65,7 +58,6 @@ def spawn_iso_elem(
 
     ent = esper.create_entity(
         ui_bb,
-        ui_tracker(),
         UIElementComponent(
             click_func=[
                 get_transfered_to_iso_action(play_card, False, False),
@@ -180,7 +172,7 @@ def spawn_card_ent(card: Card, /) -> int:
     )
     # creating card
     ent = esper.create_entity(
-        card, bb, TrackUI(), CardSprite(), ui_elem, Health(), Untracked()
+        card, bb, CardSprite(), ui_elem, Health(), Untracked()
     )
     if SETTINGS_REF.LOG_SPAWNING:
         logger.info(f"created card:{ent}")

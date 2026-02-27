@@ -26,10 +26,8 @@ class MaskRenderer:
             BoundingBox,
         )
 
-    def __init__(self, track_ui: Type, track_iso: Type) -> None:
+    def __init__(self) -> None:
         super().__init__()
-        self.track_ui = track_ui
-        self.track_iso = track_iso
         self.bb = None
 
     def _get_masked_sprite(self, ent: int) -> Optional[MaskedSprite]:
@@ -61,8 +59,7 @@ class MaskRenderer:
                 )
             )
 
-        ent_list = POS_PROC_REF().intersect(self.bb, self.track_ui)
-        ent_list += POS_PROC_REF().intersect(self.bb, self.track_iso)
+        ent_list = POS_PROC_REF().intersect(self.bb)
         ent_list = sorted(filter(filterer, ent_list), key=sorter)
 
         selection_list = []

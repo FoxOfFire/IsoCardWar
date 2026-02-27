@@ -25,9 +25,8 @@ class CardRenderer:
             BoundingBox,
         )
 
-    def __init__(self, track_tag: Type) -> None:
+    def __init__(self) -> None:
         super().__init__()
-        self.track_tag = track_tag
         self.bb = None
 
     def draw(self, screen: pygame.Surface) -> None:
@@ -54,10 +53,7 @@ class CardRenderer:
             )
 
         ent_list = sorted(
-            filter(
-                filterer,
-                POS_PROC_REF().intersect(self.bb, self.track_tag),
-            ),
+            filter(filterer, POS_PROC_REF().intersect(self.bb)),
             key=sorter,
         )
 

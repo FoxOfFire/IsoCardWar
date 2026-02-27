@@ -7,7 +7,6 @@ from layer1 import ParticleGenerator
 from layer2 import (
     SoundTypeEnum,
     TextData,
-    TrackUI,
     UIElementComponent,
     UIElemSprite,
     UIElemType,
@@ -86,12 +85,11 @@ def spawn_button(
         button_val=data.button_default_data,
         parent_elem=parent,
     )
-    tracker = TrackUI()
     ui_elem_sprite = UIElemSprite(
         data.ui_elem_type, data.size, sub_size=data.sub_size
     )
 
     ent = esper.create_entity(
-        bb, ui_elem, tracker, ui_elem_sprite, Untracked(), ParticleGenerator()
+        bb, ui_elem, ui_elem_sprite, Untracked(), ParticleGenerator()
     )
     return ent

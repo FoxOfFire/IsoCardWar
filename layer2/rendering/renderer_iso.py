@@ -29,9 +29,8 @@ class IsoRenderer:
         if len(cams) > 0:
             self.bb = esper.component_for_entity(cams[0][0], BoundingBox)
 
-    def __init__(self, track_tag: Type, /) -> None:
+    def __init__(self) -> None:
         super().__init__()
-        self.track_tag = track_tag
         self.bb = None
         logger.info("iso renderer init finished")
 
@@ -56,7 +55,7 @@ class IsoRenderer:
             return tile.x - tile.y
 
         ent_list = sorted(
-            POS_PROC_REF().intersect(self.bb, self.track_tag),
+            POS_PROC_REF().intersect(self.bb),
             key=lambda ent: sort_by_bottom(ent),
         )
 

@@ -4,7 +4,7 @@ import esper
 import pygame
 
 from common import COLOR_REF, SETTINGS_REF, WORLD_REF, WorldEnum
-from layer2.tags import GameCameraTag, IsoCameraTag, TrackIso, TrackUI
+from layer2.tags import GameCameraTag
 
 from .log import logger
 from .renderer_bb import BBRenderer
@@ -28,15 +28,15 @@ class RenderingProcessor(esper.Processor):
             (SETTINGS_REF.GAME_CAM_WIDTH, SETTINGS_REF.GAME_CAM_HEIGHT)
         )
 
-        self.iso_renderer = IsoRenderer(TrackIso)
-        self.card_renderer = CardRenderer(TrackUI)
-        self.mask_renderer = MaskRenderer(TrackUI, TrackIso)
-        self.button_renderer = ButtonRenderer(TrackUI)
-        self.particle_renderer = ParticleRenderer(TrackUI)
+        self.iso_renderer = IsoRenderer()
+        self.card_renderer = CardRenderer()
+        self.mask_renderer = MaskRenderer()
+        self.button_renderer = ButtonRenderer()
+        self.particle_renderer = ParticleRenderer()
 
         # debug purposes
         if SETTINGS_REF.RENDER_BBS:
-            self.bb_renderer = BBRenderer(TrackUI)
+            self.bb_renderer = BBRenderer()
 
     def set_display_and_init_cam_types(self, display: pygame.Surface) -> None:
         self.__set_display(display)
@@ -47,7 +47,7 @@ class RenderingProcessor(esper.Processor):
         logger.info("display set")
 
     def __set_camera_types(self) -> None:
-        self.iso_renderer.set_camera_type(IsoCameraTag)
+        self.iso_renderer.set_camera_type(GameCameraTag)
         self.mask_renderer.set_camera_type(GameCameraTag)
         self.card_renderer.set_camera_type(GameCameraTag)
         self.button_renderer.set_camera_type(GameCameraTag)
