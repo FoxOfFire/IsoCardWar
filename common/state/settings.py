@@ -6,7 +6,7 @@ from .colors import COLOR_REF
 @dataclass
 class Settings:
     # debug
-    RENDER_BBS = False
+    RENDER_BBS = True
     RENDER_MASKS = True
 
     # Logging

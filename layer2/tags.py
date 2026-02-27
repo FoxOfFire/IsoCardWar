@@ -16,14 +16,14 @@ class MaskedSprite:
     mask: pygame.Mask
     rect: pygame.Rect
 
-    def __init__(
-        self,
-        top_left: Tuple[float, float] = (0, 0),
-        size: Tuple[float, float] = (1, 1),
-    ) -> None:
-        print(top_left, size)
-        self.mask = pygame.Mask(size, fill=True)
-        self.rect = pygame.Rect(top_left, size)
+    def __init__(self, rect: Optional[pygame.Rect] = None) -> None:
+        if rect is None:
+            self.rect = pygame.Rect((0, 0), (1, 1))
+            self.mask = pygame.Mask((1, 1), fill=True)
+        else:
+            self.rect = rect
+            self.mask = pygame.Mask(rect.size, fill=False)
+            self.mask.fill()
 
 
 @dataclass

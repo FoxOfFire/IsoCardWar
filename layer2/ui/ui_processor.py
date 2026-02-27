@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional, Set, Tuple, Type
+from typing import Any, Dict, Optional, Set, Tuple
 
 import esper
 import pygame

@@ -1,4 +1,4 @@
-from typing import Any, List, Optional, Tuple, Type
+from typing import List, Optional, Tuple, Type
 
 import esper
 import pygame
@@ -31,14 +31,39 @@ class MaskRenderer:
         self.bb = None
 
     def _get_masked_sprite(self, ent: int) -> Optional[MaskedSprite]:
-        comp: Any
-        for comp in esper.components_for_entity(ent):
-            if isinstance(comp, MaskedSprite):
-                return comp
-        return None
+        return esper.try_component(ent, MaskedSprite)
 
     def _has_masked_sprite(self, ent: int) -> bool:
-        return self._get_masked_sprite(ent) is not None
+        return esper.has_component(ent, MaskedSprite)
+
+    def _draw_sprite_owerlap(
+        self,
+        target: MaskedSprite,
+        drawer: MaskedSprite,
+        *,
+        invert: bool = False,
+        erase: bool = False
+    ) -> None:
+        if invert:
+            target.mask.invert()
+        if not erase:
+            target.mask.draw(
+                drawer.mask,
+                (
+                    drawer.rect.left - target.rect.left,
+                    drawer.rect.top - target.rect.top,
+                ),
+            )
+        else:
+            target.mask.erase(
+                drawer.mask,
+                (
+                    drawer.rect.left - target.rect.left,
+                    drawer.rect.top - target.rect.top,
+                ),
+            )
+        if invert:
+            target.mask.invert()
 
     def _get_sorted_hand_and_selection(self) -> Tuple[List[int], List[int]]:
         assert self.bb is not None
@@ -91,13 +116,7 @@ class MaskRenderer:
                 next_card_sprite = self._get_masked_sprite(ent)
                 if next_card_sprite is None:
                     continue
-                sprite.mask.draw(
-                    next_card_sprite.mask,
-                    (
-                        next_card_sprite.rect.left - sprite.rect.left,
-                        next_card_sprite.rect.top - sprite.rect.top,
-                    ),
-                )
+                self._draw_sprite_owerlap(sprite, next_card_sprite)
 
     def _draw_selection_to_hand(
         self, ent_list: List[int], selection_list: List[int]
@@ -114,13 +133,7 @@ class MaskRenderer:
                 hand_sprite = self._get_masked_sprite(hand_ent)
                 assert hand_sprite is not None
 
-                hand_sprite.mask.draw(
-                    sprite.mask,
-                    (
-                        sprite.rect.left - hand_sprite.rect.left,
-                        sprite.rect.top - hand_sprite.rect.top,
-                    ),
-                )
+                self._draw_sprite_owerlap(hand_sprite, sprite)
 
     def _invert_hand(self, ent_list: List[int]) -> None:
         for ent in ent_list:
@@ -145,32 +158,25 @@ class MaskRenderer:
         if hovered_sprite is None or selected_sprite is None:
             return
 
-        selected_sprite.mask.invert()
-        selected_sprite.mask.draw(
-            hovered_sprite.mask,
-            (
-                hovered_sprite.rect.left - selected_sprite.rect.left,
-                hovered_sprite.rect.top - selected_sprite.rect.top,
-            ),
-        )
-        selected_sprite.mask.invert()
+        self._draw_sprite_owerlap(selected_sprite, hovered_sprite, invert=True)
 
     def _draw_mask_on_screen(
         self, screen: pygame.Surface, ent_list: List[int]
     ) -> None:
-        db_white = pygame.Color(COLOR_REF.WHITE)
-        db_white.a = 50
-        db_black = pygame.Color(COLOR_REF.BLACK)
-        db_black.a = 50
+        mask_sprite = MaskedSprite()
+        mask_surf = pygame.mask.Mask(screen.get_size())
+        mask_surf.fill()
+        mask_sprite.mask = mask_surf
+        mask_sprite.rect = screen.get_rect()
 
         for ent in ent_list:
-            assert esper.entity_exists(ent)
-
             sprite = self._get_masked_sprite(ent)
-            assert sprite is not None
 
+            assert sprite is not None
             screen.blit(
-                sprite.mask.to_surface(setcolor=db_white, unsetcolor=db_black),
+                sprite.mask.to_surface(
+                    setcolor=COLOR_REF.TRANSPARENT, unsetcolor=COLOR_REF.ERROR
+                ),
                 sprite.rect,
             )
 

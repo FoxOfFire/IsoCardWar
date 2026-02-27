@@ -35,6 +35,7 @@ class Colors:
     PURPLE = Color("#cf8acb")
     PURPLE_DARK = Color("#6a536e")
     TRANSPARENT = Color("#00000000")
+    ERROR = Color("#ff00ff")
 
 
 COLOR_REF = Colors()

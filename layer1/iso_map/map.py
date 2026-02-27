@@ -1,7 +1,8 @@
 from random import randint
-from typing import Dict, List, Optional, Tuple, Type
+from typing import Any, Callable, Dict, List, Optional, Tuple, Type
 
 import esper
+import pygame
 
 from common import SETTINGS_REF, Action, BoundingBox, Untracked
 
@@ -42,7 +43,7 @@ class MapData:
     ) -> List[Action]:
         return self._unit_telegraphs[unit]
 
-    def make_map(self) -> None:
+    def make_map(self, get_ui_component: Callable[[], Any]) -> None:
         assert (
             self._sprite is not None and self._particle_generator is not None
         )
@@ -50,7 +51,6 @@ class MapData:
         rpos = randint(0, w - 1), randint(0, h - 1)
         for i in range(h):
             for j in range(w):
-                bb = BoundingBox(i, i + 1, j, j + 1)
                 terrain = TerrainEnum(randint(1, len(list(TerrainEnum))))
                 unit: Optional[UnitTypeEnum] = None
 
@@ -77,10 +77,17 @@ class MapData:
                     SETTINGS_REF.ISO_TILE_OFFSET_X * 2,
                     SETTINGS_REF.ISO_TILE_OFFSET_Y * 2,
                 )
+                bb = BoundingBox(
+                    tile.x_offset,
+                    tile.x_offset + SETTINGS_REF.ISO_TILE_OFFSET_X * 2,
+                    tile.y_offset + SETTINGS_REF.ISO_TILE_OFFSET_Y * 2,
+                    tile.y_offset + SETTINGS_REF.ISO_TILE_OFFSET_Y * 4,
+                )
 
                 ent = esper.create_entity(
                     bb,
-                    self._sprite(sprite_offset, sprite_size),
+                    get_ui_component(),
+                    self._sprite(pygame.Rect(sprite_offset, sprite_size)),
                     tile,
                     Untracked(),
                     self._particle_generator(),

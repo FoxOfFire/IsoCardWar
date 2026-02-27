@@ -20,7 +20,7 @@ from layer1 import (
     clear_particles_action,
 )
 from layer2 import (
-    CardSprite,
+    MaskedSprite,
     SoundTypeEnum,
     TextData,
     UIElementComponent,
@@ -33,7 +33,51 @@ from layer3.card_type_def import CARD_TYPES_DICT_REF
 from .log import logger
 
 
-def spawn_iso_elem(map_sprite: Type) -> int:
+def get_ui_component() -> UIElementComponent:
+    return UIElementComponent(
+        click_func=[
+            get_transfered_to_iso_action(play_card, False, False),
+            get_transfered_to_iso_action(clear_particles_action),
+            get_transfered_to_iso_action(
+                get_spawn_dots_between_ent_and_target(
+                    SETTINGS_REF.ISO_TARGET_CUTOFF
+                )
+            ),
+        ],
+        click_cancel_func=[
+            get_transfered_to_iso_action(clear_particles_action),
+            get_transfered_to_iso_action(
+                get_spawn_dots_between_ent_and_target(
+                    SETTINGS_REF.ISO_TARGET_CUTOFF
+                )
+            ),
+        ],
+        hover_func=[
+            get_transfered_to_iso_action(
+                hover,
+            )
+        ],
+        clicking_func=[
+            get_transfered_to_iso_action(
+                get_spawn_dots_between_ent_and_target(None)
+            ),
+        ],
+        start_hover_func=[
+            get_transfered_to_iso_action(
+                get_spawn_dots_between_ent_and_target(
+                    SETTINGS_REF.ISO_TARGET_CUTOFF
+                )
+            ),
+        ],
+        end_hover_func=[
+            hover,
+        ],
+        text=[],
+        is_gameplay_elem=True,
+    )
+
+
+def spawn_iso_elem(map_sprite: Type) -> None:
     map_size = (SETTINGS_REF.ISO_MAP_WIDTH, SETTINGS_REF.ISO_MAP_HEIGHT)
     offset = (SETTINGS_REF.ISO_POS_OFFSET_X, SETTINGS_REF.ISO_POS_OFFSET_Y)
     map_scale = (
@@ -55,54 +99,7 @@ def spawn_iso_elem(map_sprite: Type) -> int:
 
     if SETTINGS_REF.LOG_SPAWNING:
         logger.info(f"map ui elem created:{ui_bb.points}")
-
-    ent = esper.create_entity(
-        ui_bb,
-        UIElementComponent(
-            click_func=[
-                get_transfered_to_iso_action(play_card, False, False),
-                get_transfered_to_iso_action(clear_particles_action),
-                get_transfered_to_iso_action(
-                    get_spawn_dots_between_ent_and_target(
-                        SETTINGS_REF.ISO_TARGET_CUTOFF
-                    )
-                ),
-            ],
-            click_cancel_func=[
-                get_transfered_to_iso_action(clear_particles_action),
-                get_transfered_to_iso_action(
-                    get_spawn_dots_between_ent_and_target(
-                        SETTINGS_REF.ISO_TARGET_CUTOFF
-                    )
-                ),
-            ],
-            hover_func=[
-                get_transfered_to_iso_action(
-                    hover,
-                )
-            ],
-            clicking_func=[
-                get_transfered_to_iso_action(
-                    get_spawn_dots_between_ent_and_target(None)
-                ),
-            ],
-            start_hover_func=[
-                get_transfered_to_iso_action(
-                    get_spawn_dots_between_ent_and_target(
-                        SETTINGS_REF.ISO_TARGET_CUTOFF
-                    )
-                ),
-            ],
-            end_hover_func=[
-                hover,
-            ],
-            text=[],
-            is_gameplay_elem=True,
-        ),
-        Untracked(),
-    )
-    MAP_DATA_REF.make_map()
-    return ent
+    MAP_DATA_REF.make_map(get_ui_component)
 
 
 def spawn_card_ent(card: Card, /) -> int:
@@ -172,7 +169,7 @@ def spawn_card_ent(card: Card, /) -> int:
     )
     # creating card
     ent = esper.create_entity(
-        card, bb, CardSprite(), ui_elem, Health(), Untracked()
+        card, bb, MaskedSprite(), ui_elem, Health(), Untracked()
     )
     if SETTINGS_REF.LOG_SPAWNING:
         logger.info(f"created card:{ent}")

@@ -55,8 +55,7 @@ class IsoRenderer:
             return tile.x - tile.y
 
         ent_list = sorted(
-            POS_PROC_REF().intersect(self.bb),
-            key=lambda ent: sort_by_bottom(ent),
+            POS_PROC_REF().intersect(self.bb), key=sort_by_bottom
         )
 
         crosshair = None
@@ -69,7 +68,8 @@ class IsoRenderer:
                 crosshair = PriceEnum.MANA
 
         for ent in ent_list:
-            if not esper.has_component(ent, IsoSprite):
+            sprite = esper.try_component(ent, MaskedSprite)
+            if sprite is None:
                 continue
             tile = esper.component_for_entity(ent, Tile)
             x, y = tile.offset
@@ -79,5 +79,6 @@ class IsoRenderer:
             else:
                 select = crosshair
             surf = ISO_ASSET_REF.get_surf(tile.terrain, tile.unit, select)
+            sprite.mask = ISO_ASSET_REF.get_mask()
 
             screen.blit(surf, (x, y))

@@ -14,10 +14,7 @@ from common import (
 from layer2.tags import UIElementComponent
 
 from .audio import SoundTypeEnum, play_sfx
-from .ui_utils import (
-    get_mouse_pos_in_px,
-    get_transformed_mouse_pos,
-)
+from .ui_utils import get_mouse_pos_in_px
 
 
 def get_sound_action(sound: SoundTypeEnum) -> Action:
@@ -45,14 +42,8 @@ def get_transfered_to_iso_action(
         if STATE_REF.selected_card is None and not act_on_no_card:
             return
         assert ent is not None
-        bb = esper.component_for_entity(ent, BoundingBox)
-        trans_mouse_pos = get_transformed_mouse_pos(bb)
-        mouse_bb = BoundingBox(
-            trans_mouse_pos[0],
-            trans_mouse_pos[0],
-            trans_mouse_pos[1],
-            trans_mouse_pos[1],
-        )
+        mouse_x, mouse_y = get_mouse_pos_in_px()
+        mouse_bb = BoundingBox(mouse_x, mouse_x, mouse_y, mouse_y)
 
         for intersect in POS_PROC_REF().intersect(mouse_bb):
             action(intersect)

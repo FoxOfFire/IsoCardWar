@@ -12,10 +12,6 @@ from .rendering_asset_loader import RENDER_ASSET_REF
 from .utils import CardImageEnum, CardTypeEnum
 
 
-class CardSprite(MaskedSprite):
-    pass
-
-
 class CardRenderer:
     bb: Optional[BoundingBox]
 
@@ -49,7 +45,7 @@ class CardRenderer:
             return (
                 card is not None
                 and card in DECK_REF.hand
-                and esper.has_component(ent, CardSprite)
+                and esper.has_component(ent, MaskedSprite)
             )
 
         ent_list = sorted(
@@ -60,7 +56,7 @@ class CardRenderer:
         for ent in ent_list:
             assert esper.entity_exists(ent)
 
-            sprite = esper.try_component(ent, CardSprite)
+            sprite = esper.try_component(ent, MaskedSprite)
             card = esper.try_component(ent, Card)
             if sprite is None or card is None:
                 continue

@@ -38,6 +38,15 @@ class RenderAssetContainer:
             )
             screen.blit(text_surf, text_surf.get_rect(center=text.offset))
 
+    def load_single_image(
+        self,
+        path: str,
+        name: str,
+    ) -> pygame.Surface:
+        return pygame.image.load(
+            self._BASE_ASSET_DIR / path / f"{name.lower()}.png"
+        ).convert_alpha()
+
     def load_image_type(
         self,
         enum: Type[IntEnum],

@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Type
+from typing import Any, Dict, List
 
 import esper
 
@@ -10,8 +10,10 @@ from .tags import Moved, Untracked
 
 
 class PositionProcessor(esper.Processor):
-    __tracker: BBRTree = BBRTree()
-    __tracked_tags: List[Type] = []
+    __tracker: BBRTree
+
+    def __init__(self) -> None:
+        self.__tracker = BBRTree()
 
     def process(self) -> None:
         tag: Any
