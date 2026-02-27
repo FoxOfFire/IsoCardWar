@@ -1,10 +1,7 @@
-from typing import List
-
 import esper
 import pygame
 
 from common import (
-    POS_PROC_REF,
     SETTINGS_REF,
     STATE_REF,
     Action,
@@ -21,37 +18,12 @@ def get_sound_action(sound: SoundTypeEnum) -> Action:
     return lambda _: play_sfx(sound)
 
 
-def get_transfered_to_iso_actions(
-    actions: List[Action],
-    act_on_none: bool = True,
-    act_on_no_card: bool = True,
-) -> Action:
-    def sub_action(ent: ActionArgs) -> None:
-        for action in actions:
-            get_transfered_to_iso_action(action, act_on_none, act_on_no_card)(
-                ent
-            )
+def card_guard(action: Action) -> Action:
+    def sub_acton(ent: ActionArgs) -> None:
+        if STATE_REF.selected_card is not None and ent is not None:
+            action(ent)
 
-    return sub_action
-
-
-def get_transfered_to_iso_action(
-    action: Action, act_on_none: bool = True, act_on_no_card: bool = True
-) -> Action:
-    def sub_action(ent: ActionArgs) -> None:
-        if STATE_REF.selected_card is None and not act_on_no_card:
-            return
-        assert ent is not None
-        mouse_x, mouse_y = get_mouse_pos_in_px()
-        mouse_bb = BoundingBox(mouse_x, mouse_x, mouse_y, mouse_y)
-
-        for intersect in POS_PROC_REF().intersect(mouse_bb):
-            action(intersect)
-            return
-        if act_on_none:
-            action(None)
-
-    return sub_action
+    return sub_acton
 
 
 def quit_game(_: ActionArgs = None) -> None:

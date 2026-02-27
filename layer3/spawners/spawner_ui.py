@@ -46,6 +46,8 @@ def spawn_button(
 
     if data.click_func is None:
         data.click_func = []
+    if data.click_start_func is None:
+        data.click_start_func = []
     if data.click_funcing is None:
         data.click_funcing = []
     if data.click_cancel_func is None:
@@ -75,6 +77,7 @@ def spawn_button(
     )
     ui_elem = UIElementComponent(
         text=[text_data],
+        click_start_func=data.click_start_func,
         click_func=data.click_func,
         clicking_func=data.click_funcing,
         click_cancel_func=data.click_cancel_func,

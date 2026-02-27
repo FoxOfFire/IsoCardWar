@@ -6,12 +6,12 @@ from .colors import COLOR_REF
 @dataclass
 class Settings:
     # debug
-    RENDER_BBS = True
-    RENDER_MASKS = True
+    RENDER_BBS = False
+    RENDER_MASKS = False
 
     # Logging
     LOG_TICK_PERFORMANCE = False
-    LOG_ASSET_LOADING = False
+    LOG_ASSET_LOADING = True
     LOG_SPAWNING = False
     LOG_PLAY_SOUND = False
 

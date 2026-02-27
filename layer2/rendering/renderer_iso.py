@@ -4,6 +4,7 @@ import esper
 import pygame
 
 from common import (
+    COLOR_REF,
     POS_PROC_REF,
     SETTINGS_REF,
     STATE_REF,
@@ -15,10 +16,6 @@ from layer2.tags import MaskedSprite
 
 from .asset_container_iso import ISO_ASSET_REF
 from .log import logger
-
-
-class IsoSprite(MaskedSprite):
-    pass
 
 
 class IsoRenderer:
@@ -48,15 +45,17 @@ class IsoRenderer:
         if self.bb is None:
             return
 
+        def filterer(ent: int) -> bool:
+            mask = esper.has_component(ent, MaskedSprite)
+            tile = esper.has_component(ent, Tile)
+            return mask and tile
+
         def sort_by_bottom(ent: int) -> int:
-            tile = esper.try_component(ent, Tile)
-            if tile is None:
-                return -1
+            tile = esper.component_for_entity(ent, Tile)
             return tile.x - tile.y
 
-        ent_list = sorted(
-            POS_PROC_REF().intersect(self.bb), key=sort_by_bottom
-        )
+        ent_list = POS_PROC_REF().intersect(self.bb)
+        ent_list = sorted(filter(filterer, ent_list), key=sort_by_bottom)
 
         crosshair = None
         maybe_selected = self._get_selection()
@@ -68,9 +67,7 @@ class IsoRenderer:
                 crosshair = PriceEnum.MANA
 
         for ent in ent_list:
-            sprite = esper.try_component(ent, MaskedSprite)
-            if sprite is None:
-                continue
+            sprite = esper.component_for_entity(ent, MaskedSprite)
             tile = esper.component_for_entity(ent, Tile)
             x, y = tile.offset
             if ent != selected:

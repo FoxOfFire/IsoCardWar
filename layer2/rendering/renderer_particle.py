@@ -32,7 +32,7 @@ class ParticleRenderer:
     ) -> None:
         col = pygame.Color(particle.color)
         col.a = round(lerp1(0, 255, particle.alpha))
-        pygame.draw.aacircle(screen, col, particle.position, particle.size)
+        pygame.draw.circle(screen, col, particle.position, particle.size)
 
     def draw(self, screen: pygame.Surface) -> None:
         if self.bb is None or self.surf is None:

@@ -34,12 +34,13 @@ class TextData:
 
 @dataclass
 class UIElementComponent:
+    click_start_func: List[Action]
     click_func: List[Action]
     clicking_func: List[Action]
     click_cancel_func: List[Action]
     start_hover_func: List[Action]
-    end_hover_func: List[Action]
     hover_func: List[Action]
+    end_hover_func: List[Action]
     text: List[TextData]
     state: UIStateEnum = UIStateEnum.BASE
     button_val: Optional[bool | float] = None

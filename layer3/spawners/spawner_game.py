@@ -5,6 +5,7 @@ import esper
 
 from common import (
     SETTINGS_REF,
+    Action,
     BoundingBox,
     Health,
     Untracked,
@@ -24,8 +25,8 @@ from layer2 import (
     SoundTypeEnum,
     TextData,
     UIElementComponent,
+    card_guard,
     get_sound_action,
-    get_transfered_to_iso_action,
 )
 from layer3.actions import get_spawn_dots_between_ent_and_target
 from layer3.card_type_def import CARD_TYPES_DICT_REF
@@ -34,47 +35,43 @@ from .log import logger
 
 
 def get_ui_component() -> UIElementComponent:
-    return UIElementComponent(
-        click_func=[
-            get_transfered_to_iso_action(play_card, False, False),
-            get_transfered_to_iso_action(clear_particles_action),
-            get_transfered_to_iso_action(
-                get_spawn_dots_between_ent_and_target(
-                    SETTINGS_REF.ISO_TARGET_CUTOFF
-                )
-            ),
-        ],
-        click_cancel_func=[
-            get_transfered_to_iso_action(clear_particles_action),
-            get_transfered_to_iso_action(
-                get_spawn_dots_between_ent_and_target(
-                    SETTINGS_REF.ISO_TARGET_CUTOFF
-                )
-            ),
-        ],
-        hover_func=[
-            get_transfered_to_iso_action(
-                hover,
-            )
-        ],
-        clicking_func=[
-            get_transfered_to_iso_action(
-                get_spawn_dots_between_ent_and_target(None)
-            ),
-        ],
-        start_hover_func=[
-            get_transfered_to_iso_action(
-                get_spawn_dots_between_ent_and_target(
-                    SETTINGS_REF.ISO_TARGET_CUTOFF
-                )
-            ),
-        ],
-        end_hover_func=[
-            hover,
-        ],
+    click_func: List[Action] = [
+        card_guard(play_card),
+        clear_particles_action,
+        get_spawn_dots_between_ent_and_target(SETTINGS_REF.ISO_TARGET_CUTOFF),
+    ]
+    click_start_func: List[Action] = [
+        clear_particles_action,
+        get_spawn_dots_between_ent_and_target(None),
+    ]
+    click_cancel_func: List[Action] = [
+        clear_particles_action,
+        get_spawn_dots_between_ent_and_target(SETTINGS_REF.ISO_TARGET_CUTOFF),
+    ]
+    hover_func: List[Action] = [
+        hover,
+    ]
+    clicking_func: List[Action] = []
+    start_hover_func: List[Action] = [
+        clear_particles_action,
+        get_spawn_dots_between_ent_and_target(SETTINGS_REF.ISO_TARGET_CUTOFF),
+    ]
+    end_hover_func: List[Action] = [
+        hover,
+    ]
+
+    comp = UIElementComponent(
+        click_func=click_func,
+        click_start_func=click_start_func,
+        click_cancel_func=click_cancel_func,
+        hover_func=hover_func,
+        clicking_func=clicking_func,
+        start_hover_func=start_hover_func,
+        end_hover_func=end_hover_func,
         text=[],
         is_gameplay_elem=True,
     )
+    return comp
 
 
 def spawn_iso_elem(map_sprite: Type) -> None:
@@ -161,6 +158,7 @@ def spawn_card_ent(card: Card, /) -> int:
         click_func=[select_card, get_sound_action(SoundTypeEnum.CLICK)],
         clicking_func=[],
         click_cancel_func=[],
+        click_start_func=[],
         hover_func=[],
         start_hover_func=[hover, get_sound_action(SoundTypeEnum.POP)],
         end_hover_func=[hover],

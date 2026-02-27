@@ -183,6 +183,8 @@ class UIProcessor(esper.Processor):
             if self.left_clicking and ui_tag.is_clickable:
                 ui_tag.state = UIStateEnum.PRESSED
                 self.clicked.add(ent)
+                for func in ui_tag.click_start_func:
+                    func(ent)
             elif ent not in self.hover:
                 for func in ui_tag.start_hover_func:
                     func(ent)

@@ -43,57 +43,63 @@ class MapData:
     ) -> List[Action]:
         return self._unit_telegraphs[unit]
 
-    def make_map(self, get_ui_component: Callable[[], Any]) -> None:
+    def _spawn_iso_item_at(
+        self,
+        i: int,
+        j: int,
+        rpos: Tuple[int, int],
+        get_ui_component: Callable[[], Any],
+    ) -> None:
+        terrain = TerrainEnum(randint(1, len(list(TerrainEnum))))
+        unit: Optional[UnitTypeEnum] = None
+
+        if (j, i) == rpos:
+            terrain = TerrainEnum.GRASS
+            unit = UnitTypeEnum.WITCH
+        elif (
+            randint(0, 2) == 0
+            and terrain != TerrainEnum.WATER
+            and terrain != TerrainEnum.EMPTY
+        ):
+            while unit == UnitTypeEnum.WITCH or unit is None:
+                unit = UnitTypeEnum(randint(1, len(list(UnitTypeEnum))))
+
+        tile = Tile(i, j, terrain, unit=unit)
+
+        sprite_offset = (
+            tile.x_offset,
+            tile.y_offset + SETTINGS_REF.ISO_TILE_OFFSET_Y * 2,
+        )
+        sprite_size = (
+            SETTINGS_REF.ISO_TILE_OFFSET_X * 2,
+            SETTINGS_REF.ISO_TILE_OFFSET_Y * 2,
+        )
+        bb = BoundingBox(
+            tile.x_offset,
+            tile.x_offset + SETTINGS_REF.ISO_TILE_OFFSET_X * 2,
+            tile.y_offset + SETTINGS_REF.ISO_TILE_OFFSET_Y * 2,
+            tile.y_offset + SETTINGS_REF.ISO_TILE_OFFSET_Y * 4,
+        )
         assert (
             self._sprite is not None and self._particle_generator is not None
         )
+        ent = esper.create_entity(
+            bb,
+            get_ui_component(),
+            self._sprite(pygame.Rect(sprite_offset, sprite_size)),
+            tile,
+            Untracked(),
+            self._particle_generator(),
+        )
+        self._tiles.update({(i, j): ent})
+        self._ents.update({ent: (i, j)})
+
+    def make_map(self, get_ui_component: Callable[[], Any]) -> None:
         w, h = SETTINGS_REF.ISO_MAP_WIDTH, SETTINGS_REF.ISO_MAP_HEIGHT
         rpos = randint(0, w - 1), randint(0, h - 1)
         for i in range(h):
             for j in range(w):
-                terrain = TerrainEnum(randint(1, len(list(TerrainEnum))))
-                unit: Optional[UnitTypeEnum] = None
-
-                if (j, i) == rpos:
-                    terrain = TerrainEnum.GRASS
-                    unit = UnitTypeEnum.WITCH
-                elif (
-                    randint(0, 2) == 0
-                    and terrain != TerrainEnum.WATER
-                    and terrain != TerrainEnum.EMPTY
-                ):
-                    while unit == UnitTypeEnum.WITCH or unit is None:
-                        unit = UnitTypeEnum(
-                            randint(1, len(list(UnitTypeEnum)))
-                        )
-
-                tile = Tile(i, j, terrain, unit=unit)
-
-                sprite_offset = (
-                    tile.x_offset,
-                    tile.y_offset + SETTINGS_REF.ISO_TILE_OFFSET_Y * 2,
-                )
-                sprite_size = (
-                    SETTINGS_REF.ISO_TILE_OFFSET_X * 2,
-                    SETTINGS_REF.ISO_TILE_OFFSET_Y * 2,
-                )
-                bb = BoundingBox(
-                    tile.x_offset,
-                    tile.x_offset + SETTINGS_REF.ISO_TILE_OFFSET_X * 2,
-                    tile.y_offset + SETTINGS_REF.ISO_TILE_OFFSET_Y * 2,
-                    tile.y_offset + SETTINGS_REF.ISO_TILE_OFFSET_Y * 4,
-                )
-
-                ent = esper.create_entity(
-                    bb,
-                    get_ui_component(),
-                    self._sprite(pygame.Rect(sprite_offset, sprite_size)),
-                    tile,
-                    Untracked(),
-                    self._particle_generator(),
-                )
-                self._tiles.update({(i, j): ent})
-                self._ents.update({ent: (i, j)})
+                self._spawn_iso_item_at(i, j, rpos, get_ui_component)
 
     def ent_at(self, pos: Tuple[int, int]) -> int:
         return self._tiles[pos]

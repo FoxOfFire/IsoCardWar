@@ -65,7 +65,7 @@ class IsoAssetContainer:
         if self._ISO_MASK is None:
             mask_surf = RENDER_ASSET_REF.load_single_image(
                 self._ISO_ASSETS_DIR, "tile_mask"
-            )
+            ).convert_alpha()
             mask = pygame.mask.from_surface(mask_surf)
             self._ISO_MASK = mask
         return self._ISO_MASK.copy()

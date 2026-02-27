@@ -28,7 +28,7 @@ from layer2 import (
     SCENE_SWITCH_PROC_REF,
     UI_PROC_REF,
     GameCameraTag,
-    IsoSprite,
+    MaskedSprite,
     bind_keyboard_events,
     init_audio,
 )
@@ -113,7 +113,7 @@ def init_world(*, game_ents: bool = False) -> None:
     esper.create_entity(game_cam_bb, GameCameraTag())
 
     if game_ents:
-        spawn_iso_elem(IsoSprite)
+        spawn_iso_elem(MaskedSprite)
 
         for phase, func_list in get_base_game_phase_dict().items():
             GAME_PHASE_PROC_REF.add_game_phase(phase, func_list=func_list)

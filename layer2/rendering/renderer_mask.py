@@ -100,6 +100,8 @@ class MaskRenderer:
 
     def _draw_hand_masks(self, ent_list: List[int]) -> None:
         for ent in ent_list:
+            if esper.has_component(ent, Tile):
+                continue
             card = esper.try_component(ent, Card)
             if card is None:
                 continue
@@ -110,6 +112,8 @@ class MaskRenderer:
             this = ent_list.index(ent)
 
             for next_ent in range(this + 1, len(ent_list)):
+                if esper.has_component(ent, Tile):
+                    continue
                 ent = ent_list[next_ent]
                 assert esper.entity_exists(ent)
 
@@ -122,12 +126,16 @@ class MaskRenderer:
         self, ent_list: List[int], selection_list: List[int]
     ) -> None:
         for ent in selection_list:
+            if esper.has_component(ent, Tile):
+                continue
             assert esper.entity_exists(ent)
 
             sprite = self._get_masked_sprite(ent)
             assert sprite is not None
 
             for hand_ent in ent_list:
+                if esper.has_component(ent, Tile):
+                    continue
                 assert esper.entity_exists(hand_ent)
 
                 hand_sprite = self._get_masked_sprite(hand_ent)
@@ -138,6 +146,8 @@ class MaskRenderer:
     def _invert_hand(self, ent_list: List[int]) -> None:
         for ent in ent_list:
             assert esper.entity_exists(ent)
+            if esper.has_component(ent, Tile):
+                continue
 
             sprite = self._get_masked_sprite(ent)
             assert sprite is not None
