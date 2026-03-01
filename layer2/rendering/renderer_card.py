@@ -8,7 +8,7 @@ from layer1 import DECK_REF, Card
 from layer2.tags import MaskedSprite
 
 from .asset_container_card import CARD_ASSET_REF
-from .rendering_asset_loader import RENDER_ASSET_REF
+from .asset_container_font import FONT_ASSET_REF
 from .utils import CardImageEnum, CardTypeEnum
 
 
@@ -70,7 +70,7 @@ class CardRenderer:
                 prices=(mana, herbs, blood, brew),
                 frame=0,
             ).copy()
-            RENDER_ASSET_REF.draw_text_on_surf(surf, ent)
+            FONT_ASSET_REF.draw_text_on_surf(surf, ent)
 
             sprite.mask = pygame.mask.from_surface(surf)
 

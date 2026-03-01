@@ -22,7 +22,7 @@ class Settings:
     GAME_FULLSCREEN = True
     GAME_MUTE = True
 
-    FPS = 60
+    FPS = 600
 
     # defaults
     DEFAULT_RESOURCE_MANA = 99
