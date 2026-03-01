@@ -2,11 +2,7 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Dict, List, Optional
 
-from common import (
-    SETTINGS_REF,
-    Action,
-    PriceEnum,
-)
+from common import SETTINGS_REF, Action, PriceEnum
 
 from .card_utils import CardTypeEnum, OrganizationEnum
 from .log import logger
@@ -57,10 +53,6 @@ class Deck:
                 cards.append(self.create_card(c_type))
 
         self.deck = cards
-
-    def add_card(self, card: Card) -> None:
-        logger.info(f"adding card {card}")
-        self.deck.append(card)
 
 
 # module shenanigans

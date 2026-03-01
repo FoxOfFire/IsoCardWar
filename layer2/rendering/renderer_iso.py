@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 from typing import Optional, Tuple, Type
 
 import esper
@@ -12,14 +11,10 @@ from common import (
     PriceEnum,
 )
 from layer1 import Card, Tile
+from layer2.tags import MaskedSprite
 
 from .asset_container_iso import ISO_ASSET_REF
 from .log import logger
-
-
-@dataclass
-class IsoSprite:
-    pass
 
 
 class IsoRenderer:
@@ -30,9 +25,8 @@ class IsoRenderer:
         if len(cams) > 0:
             self.bb = esper.component_for_entity(cams[0][0], BoundingBox)
 
-    def __init__(self, track_tag: Type, /) -> None:
+    def __init__(self) -> None:
         super().__init__()
-        self.track_tag = track_tag
         self.bb = None
         logger.info("iso renderer init finished")
 
@@ -50,16 +44,17 @@ class IsoRenderer:
         if self.bb is None:
             return
 
+        def filterer(ent: int) -> bool:
+            mask = esper.has_component(ent, MaskedSprite)
+            tile = esper.has_component(ent, Tile)
+            return mask and tile
+
         def sort_by_bottom(ent: int) -> int:
-            tile = esper.try_component(ent, Tile)
-            if tile is None:
-                return -1
+            tile = esper.component_for_entity(ent, Tile)
             return tile.x - tile.y
 
-        ent_list = sorted(
-            POS_PROC_REF().intersect(self.bb, self.track_tag),
-            key=lambda ent: sort_by_bottom(ent),
-        )
+        ent_list = POS_PROC_REF().intersect(self.bb)
+        ent_list = sorted(filter(filterer, ent_list), key=sort_by_bottom)
 
         crosshair = None
         maybe_selected = self._get_selection()
@@ -71,15 +66,20 @@ class IsoRenderer:
                 crosshair = PriceEnum.MANA
 
         for ent in ent_list:
-            if not esper.has_component(ent, IsoSprite):
-                continue
+            sprite = esper.component_for_entity(ent, MaskedSprite)
             tile = esper.component_for_entity(ent, Tile)
             x, y = tile.offset
             if ent != selected:
-                select = None
+                if tile.is_targeted:
+                    select = PriceEnum.BLOOD
+                else:
+                    select = None
                 y -= SETTINGS_REF.ISO_TILE_SELECT_OFFSET
             else:
                 select = crosshair
+                if tile.is_targeted:
+                    select = PriceEnum.BLOOD
             surf = ISO_ASSET_REF.get_surf(tile.terrain, tile.unit, select)
+            sprite.mask = ISO_ASSET_REF.get_mask()
 
             screen.blit(surf, (x, y))

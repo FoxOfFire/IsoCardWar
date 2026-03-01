@@ -1,0 +1,4 @@
+[tool.black]
+extend-exclude = "(examples|.venv)"
+force-exclude = "examples"
+line-length = 79

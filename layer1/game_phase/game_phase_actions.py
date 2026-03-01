@@ -25,7 +25,7 @@ def end_phase(_: ActionArgs = None) -> None:
     STATE_REF.game_phase = (
         GamePhaseType(current_state + 1)
         if current_state != last_valid_state
-        else GamePhaseType.DRAW
+        else GamePhaseType(GamePhaseType.BEGIN_GAME.value + 1)
     )
     GAME_PHASE_PROC_REF.next_funk_queue = GAME_PHASE_PROC_REF.phase_funk_queue[
         STATE_REF.game_phase

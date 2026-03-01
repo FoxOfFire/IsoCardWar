@@ -21,9 +21,8 @@ class ButtonRenderer:
             BoundingBox,
         )
 
-    def __init__(self, track_tag: Type) -> None:
+    def __init__(self) -> None:
         super().__init__()
-        self.track_tag = track_tag
         self.bb = None
         logger.info("button render init finished")
 
@@ -70,9 +69,7 @@ class ButtonRenderer:
 
     def draw(self, screen: pygame.Surface) -> None:
         assert self.bb is not None
-        ent_list: Iterable[int] = POS_PROC_REF().intersect(
-            self.bb, self.track_tag
-        )
+        ent_list: Iterable[int] = POS_PROC_REF().intersect(self.bb)
         ent_list = filter(self._filter, ent_list)
         ent_list = sorted(ent_list, key=self._sorter)
 

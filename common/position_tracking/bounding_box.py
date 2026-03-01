@@ -59,14 +59,3 @@ class BoundingBox:
     def add_velocity(self, vel_x: float, vel_y: float) -> None:
         self._vel_x += vel_x
         self._vel_y += vel_y
-
-    def move_towards_point(
-        self, point: tuple[float, float], by: float
-    ) -> None:
-        def lerp(a: float, b: float, t: float) -> float:
-            return t * a + (1 - t) * b
-
-        self.add_velocity(
-            lerp(self.center[0], point[0], by),
-            lerp(self.center[1], point[1], by),
-        )

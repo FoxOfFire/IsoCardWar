@@ -7,7 +7,3 @@ class Moved(NamedTuple):
 
 class Untracked(NamedTuple):
     pass
-
-
-class TrackBase(NamedTuple):
-    pass

@@ -2,21 +2,17 @@ from typing import Optional, Tuple
 
 import esper
 
-from common import (
-    SETTINGS_REF,
-    BoundingBox,
-    TextFuncDecor,
-    Untracked,
-)
+from common import SETTINGS_REF, BoundingBox, Untracked
+from layer1 import ParticleGenerator
 from layer2 import (
     SoundTypeEnum,
     TextData,
-    TrackUI,
     UIElementComponent,
     UIElemSprite,
     UIElemType,
     get_sound_action,
 )
+from layer3.text_functions import text_funcify
 from layer3.utils import ButtonData
 
 from .log import logger
@@ -37,16 +33,7 @@ def spawn_button(
         s_w = max(SETTINGS_REF.BUTTON_TILE_SIZE // 2, s_w)
     if h == 1 and s_h != 0:
         s_h = max(SETTINGS_REF.BUTTON_TILE_SIZE // 2, s_h)
-    if not callable(data.text):
-
-        @TextFuncDecor
-        def text_func() -> str:
-            assert not callable(data.text)
-            return data.text
-
-        mod_text = text_func
-    else:
-        mod_text = data.text
+    mod_text = text_funcify(data.text)
 
     bb = BoundingBox(
         x,
@@ -59,8 +46,12 @@ def spawn_button(
 
     if data.click_func is None:
         data.click_func = []
-    if data.click_funcing is None:
-        data.click_funcing = []
+    if data.click_start_func is None:
+        data.click_start_func = []
+    if data.clicking_func is None:
+        data.clicking_func = []
+    if data.click_cancel_func is None:
+        data.click_cancel_func = []
     if data.hover_func is None:
         data.hover_func = []
     if data.start_hover_func is None:
@@ -86,8 +77,10 @@ def spawn_button(
     )
     ui_elem = UIElementComponent(
         text=[text_data],
+        click_start_func=data.click_start_func,
         click_func=data.click_func,
-        clicking_func=data.click_funcing,
+        clicking_func=data.clicking_func,
+        click_cancel_func=data.click_cancel_func,
         hover_func=data.hover_func,
         start_hover_func=data.start_hover_func,
         end_hover_func=data.remove_hover_func,
@@ -95,11 +88,11 @@ def spawn_button(
         button_val=data.button_default_data,
         parent_elem=parent,
     )
-    tracker = TrackUI()
     ui_elem_sprite = UIElemSprite(
         data.ui_elem_type, data.size, sub_size=data.sub_size
     )
 
-    return esper.create_entity(
-        bb, ui_elem, tracker, ui_elem_sprite, Untracked()
+    ent = esper.create_entity(
+        bb, ui_elem, ui_elem_sprite, Untracked(), ParticleGenerator()
     )
+    return ent

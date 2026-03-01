@@ -1,4 +1,4 @@
-from typing import List, Type
+from typing import List
 
 import esper
 import rtree
@@ -8,10 +8,9 @@ from .bounding_box import BoundingBox
 
 class BBRTree:
     __rt_index: rtree.index.Index
-    __tracked_tag: Type
     __tracked_boxes: int = 0
 
-    def __init__(self, tag: Type) -> None:
+    def __init__(self) -> None:
         rt_props = rtree.index.Property(
             dimension=2,
             storage=rtree.index.RT_Memory,
@@ -19,7 +18,6 @@ class BBRTree:
         self.__rt_index = rtree.index.Index(
             properties=rt_props, interleaved=False
         )
-        self.tracked_tag = tag
 
     def insert(self, ent: int) -> None:
         bb = esper.component_for_entity(ent, BoundingBox)

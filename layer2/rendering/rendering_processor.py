@@ -3,8 +3,8 @@ from typing import Dict, Optional
 import esper
 import pygame
 
-from common import SETTINGS_REF, WORLD_REF, WorldEnum
-from layer2.tags import GameCameraTag, IsoCameraTag, TrackIso, TrackUI
+from common import COLOR_REF, SETTINGS_REF, WORLD_REF, WorldEnum
+from layer2.tags import GameCameraTag
 
 from .log import logger
 from .renderer_bb import BBRenderer
@@ -13,10 +13,6 @@ from .renderer_card import CardRenderer
 from .renderer_iso import IsoRenderer
 from .renderer_mask import MaskRenderer
 from .renderer_particle import ParticleRenderer
-
-
-class ScreenNotFoundException(Exception):
-    pass
 
 
 class RenderingProcessor(esper.Processor):
@@ -32,15 +28,15 @@ class RenderingProcessor(esper.Processor):
             (SETTINGS_REF.GAME_CAM_WIDTH, SETTINGS_REF.GAME_CAM_HEIGHT)
         )
 
-        self.iso_renderer = IsoRenderer(TrackIso)
-        self.card_renderer = CardRenderer(TrackUI)
-        self.mask_renderer = MaskRenderer(TrackUI)
-        self.button_renderer = ButtonRenderer(TrackUI)
-        self.particle_renderer = ParticleRenderer(TrackUI)
+        self.iso_renderer = IsoRenderer()
+        self.card_renderer = CardRenderer()
+        self.mask_renderer = MaskRenderer()
+        self.button_renderer = ButtonRenderer()
+        self.particle_renderer = ParticleRenderer()
 
         # debug purposes
         if SETTINGS_REF.RENDER_BBS:
-            self.bb_renderer = BBRenderer(GameCameraTag, TrackUI)
+            self.bb_renderer = BBRenderer()
 
     def set_display_and_init_cam_types(self, display: pygame.Surface) -> None:
         self.__set_display(display)
@@ -51,17 +47,19 @@ class RenderingProcessor(esper.Processor):
         logger.info("display set")
 
     def __set_camera_types(self) -> None:
-        self.iso_renderer.set_camera_type(IsoCameraTag)
+        self.iso_renderer.set_camera_type(GameCameraTag)
         self.mask_renderer.set_camera_type(GameCameraTag)
         self.card_renderer.set_camera_type(GameCameraTag)
         self.button_renderer.set_camera_type(GameCameraTag)
         self.particle_renderer.set_camera_type(GameCameraTag)
+        if SETTINGS_REF.RENDER_BBS:
+            self.bb_renderer.set_camera_type(GameCameraTag)
         logger.info("cameras set")
 
     def process(self) -> None:
         assert self.display is not None
 
-        self.screen.fill((100, 100, 100))
+        self.screen.fill(COLOR_REF.GRAY)
 
         self.iso_renderer.draw(self.screen)
         self.card_renderer.draw(self.screen)

@@ -20,6 +20,7 @@ def select_card(ent: ActionArgs) -> None:
 
 def hover(ent: ActionArgs) -> None:
     assert ent is None or esper.entity_exists(ent)
+
     STATE_REF.hovered_ent = ent
 
 

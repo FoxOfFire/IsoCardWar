@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-import pygame
+from .colors import COLOR_REF
 
 
 @dataclass
@@ -9,16 +9,9 @@ class Settings:
     RENDER_BBS = False
     RENDER_MASKS = False
 
-    RENDER_FPS_UI = True
-    RENDER_GAME_PHASE_UI = True
-    RENDER_TRACKED_ISO_UI = False
-    RENDER_TRACKED_UI_UI = False
-    RENDER_GAME_CAM_INTERSECT_UI = False
-    RENDER_ISO_CAM_INTERSECT_UI = False
-
     # Logging
     LOG_TICK_PERFORMANCE = False
-    LOG_ASSET_LOADING = False
+    LOG_ASSET_LOADING = True
     LOG_SPAWNING = False
     LOG_PLAY_SOUND = False
 
@@ -30,6 +23,14 @@ class Settings:
     GAME_MUTE = True
 
     FPS = 60
+
+    # defaults
+    DEFAULT_RESOURCE_MANA = 99
+    DEFAULT_RESOURCE_HERBS = 99
+    DEFAULT_RESOURCE_BLOOD = 99
+    DEFAULT_RESOURCE_BREW = 99
+
+    STARTER_DECK_COUNT = 30
     # cards
     CARD_START_X = 0
     CARD_START_Y = 0
@@ -43,9 +44,11 @@ class Settings:
 
     CARD_WIDTH: float = 62.0
     CARD_HEIGHT: float = 88.0
+
     RELATIVE_MARKER_POS_X = 2
     RELATIVE_MARKER_POS_Y = 11
     MARKER_OFFSET_X = 8
+
     CARD_TEXT_RELATIVE_POS_X = CARD_WIDTH // 2
     CARD_TITLE_TEXT_RELATIVE_POS_Y = 7
     CARD_PARAGRAPH_TEXT_RELATIVE_Y_ONE = 49
@@ -54,10 +57,8 @@ class Settings:
     CARD_PARAGRAPH_LINE_COUNT = 4
 
     MAX_CARD_COUNT = 10
-    STARTER_DECK_COUNT = 30
 
     # map
-    SEED = None
 
     ISO_MAP_HEIGHT = 7
     ISO_MAP_WIDTH = 7
@@ -78,14 +79,14 @@ class Settings:
 
     ISO_TILE_SELECT_OFFSET = -2
 
-    ISO_KNIGHT_SPAWN_CHANCE = 2
-    ISO_FARMER_SPAWN_CHANCE = 5
+    ISO_KNIGHT_SPAWN_CHANCE = 0
+    ISO_FARMER_SPAWN_CHANCE = 0
     ISO_SPAWN_CHANCE_MAX = 100
-    # game phases
-    GAME_PHASE_PAUSE = 50
+
+    ISO_TARGET_CUTOFF = 4
 
     # UI
-    FONT_COLOR = pygame.Color(53, 43, 66, 255)
+    FONT_COLOR = COLOR_REF.SHADE_DARK
     FONT_SIZE = 6
 
     BUTTON_TILE_SIZE = 12

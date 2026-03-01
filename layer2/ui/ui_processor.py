@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional, Set, Tuple, Type
+from typing import Any, Dict, Optional, Set, Tuple
 
 import esper
 import pygame
@@ -36,15 +36,10 @@ class UIProcessor(esper.Processor):
         self.prev_click = False
         self.left_clicking = False
         self.display_size: Optional[Tuple[int, int]] = None
-        self.tracker_tag: Optional[Type] = None
 
     def set_display_size(self, display_size: Tuple[int, int]) -> None:
         logger.info("set display size:" + str(display_size))
         self.display_size = display_size
-
-    def set_tracker_tag(self, tag: Type) -> None:
-        logger.info(f"set display size:{tag}")
-        self.tracker_tag = tag
 
     def __get_mask_component(self, ent: int) -> Optional[MaskedSprite]:
         comp: Any
@@ -54,7 +49,6 @@ class UIProcessor(esper.Processor):
         return None
 
     def __mask_mouse_overlap(self, ent: int) -> bool:
-        assert esper.entity_exists(ent)
         assert self.mouse_bb is not None
         mask = self.__get_mask_component(ent)
         if mask is None:
@@ -72,13 +66,10 @@ class UIProcessor(esper.Processor):
 
     def __mouse_overlap(self, ent: int) -> bool:
         assert self.mouse_bb is not None
-        assert self.tracker_tag is not None
         if self.__get_mask_component(ent) is not None:
             return self.__mask_mouse_overlap(ent)
         else:
-            return ent in POS_PROC_REF().intersect(
-                self.mouse_bb, self.tracker_tag
-            )
+            return ent in POS_PROC_REF().intersect(self.mouse_bb)
 
     def _ui_elem_visible(self, elem: UIElementComponent) -> bool:
         vis = elem.is_visible
@@ -98,6 +89,8 @@ class UIProcessor(esper.Processor):
             ):
                 self.clicked.remove(ent)
                 ui_elem.state = UIStateEnum.BASE
+                for func in ui_elem.click_cancel_func:
+                    func(ent)
             else:
                 for func in ui_elem.clicking_func:
                     func(ent)
@@ -146,7 +139,6 @@ class UIProcessor(esper.Processor):
 
     def process(self) -> None:
         assert self.display_size is not None
-        assert self.tracker_tag is not None
         self.mouse_pos = pygame.mouse.get_pos()
         self.mouse_bb = BoundingBox(
             self.mouse_pos[0]
@@ -172,7 +164,7 @@ class UIProcessor(esper.Processor):
         self.prev_click = self.left_clicking
 
         # pressing first intersection of mouse
-        for ent in POS_PROC_REF().intersect(self.mouse_bb, self.tracker_tag):
+        for ent in POS_PROC_REF().intersect(self.mouse_bb):
             if (
                 not esper.entity_exists(ent)
                 or ent == self.clicked
@@ -191,6 +183,8 @@ class UIProcessor(esper.Processor):
             if self.left_clicking and ui_tag.is_clickable:
                 ui_tag.state = UIStateEnum.PRESSED
                 self.clicked.add(ent)
+                for func in ui_tag.click_start_func:
+                    func(ent)
             elif ent not in self.hover:
                 for func in ui_tag.start_hover_func:
                     func(ent)

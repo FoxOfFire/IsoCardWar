@@ -1,71 +1,29 @@
-from random import random
-
 import esper
 import pygame
 
 from common import (
-    POS_PROC_REF,
     SETTINGS_REF,
     STATE_REF,
     Action,
     ActionArgs,
     BoundingBox,
-    hover,
-    play_card,
 )
 from layer2.tags import UIElementComponent
 
 from .audio import SoundTypeEnum, play_sfx
-from .log import logger
-from .ui_utils import (
-    get_mouse_pos_in_px,
-    get_transformed_mouse_pos,
-    ui_event_obj,
-)
+from .ui_utils import get_mouse_pos_in_px
 
 
 def get_sound_action(sound: SoundTypeEnum) -> Action:
     return lambda _: play_sfx(sound)
 
 
-def debug_print(ent: ActionArgs) -> None:
-    logger.info(f"button perssed: {ent}")
+def card_guard(action: Action) -> Action:
+    def sub_acton(ent: ActionArgs) -> None:
+        if STATE_REF.selected_card is not None and ent is not None:
+            action(ent)
 
-
-def click_on_tile(ent: ActionArgs) -> None:
-    assert ent is not None
-    if STATE_REF.selected_card is None:
-        return
-    bb = esper.component_for_entity(ent, BoundingBox)
-    trans_mouse_pos = get_transformed_mouse_pos(bb)
-    mouse_bb = BoundingBox(
-        trans_mouse_pos[0],
-        trans_mouse_pos[0],
-        trans_mouse_pos[1],
-        trans_mouse_pos[1],
-    )
-    assert ui_event_obj.iso_tag is not None
-
-    for intersect in POS_PROC_REF().intersect(mouse_bb, ui_event_obj.iso_tag):
-        play_card(intersect)
-
-
-def hover_over_tile(ent: ActionArgs) -> None:
-    assert ent is not None
-    bb = esper.component_for_entity(ent, BoundingBox)
-    trans_mouse_pos = get_transformed_mouse_pos(bb)
-    mouse_bb = BoundingBox(
-        trans_mouse_pos[0],
-        trans_mouse_pos[0],
-        trans_mouse_pos[1],
-        trans_mouse_pos[1],
-    )
-    assert ui_event_obj.iso_tag is not None
-
-    for intersect in POS_PROC_REF().intersect(mouse_bb, ui_event_obj.iso_tag):
-        hover(intersect)
-        return
-    hover(None)
+    return sub_acton
 
 
 def quit_game(_: ActionArgs = None) -> None:
@@ -74,31 +32,22 @@ def quit_game(_: ActionArgs = None) -> None:
 
 def flip_ui_elem_val(ent: ActionArgs) -> None:
     assert ent is not None
-    ui_elem = esper.try_component(ent, UIElementComponent)
-    assert ui_elem is not None
+    ui_elem = esper.component_for_entity(ent, UIElementComponent)
     ui_elem.button_val = not ui_elem.button_val
 
 
 def toggle_sound(ent: ActionArgs) -> None:
     flip_ui_elem_val(ent)
     assert ent is not None
-    ui_elem = esper.try_component(ent, UIElementComponent)
-    assert ui_elem is not None and isinstance(ui_elem.button_val, bool)
+    ui_elem = esper.component_for_entity(ent, UIElementComponent)
+    assert isinstance(ui_elem.button_val, bool)
     SETTINGS_REF.GAME_MUTE = ui_elem.button_val
-
-
-def set_button_val_to_random(ent: ActionArgs) -> None:
-    assert ent is not None
-    ui_elem = esper.try_component(ent, UIElementComponent)
-    assert ui_elem is not None
-    ui_elem.button_val = random()
 
 
 def set_slider_val(ent: ActionArgs) -> None:
     assert ent is not None
-    ui_elem = esper.try_component(ent, UIElementComponent)
-    bb = esper.try_component(ent, BoundingBox)
-    assert ui_elem is not None and bb is not None
+    ui_elem = esper.component_for_entity(ent, UIElementComponent)
+    bb = esper.component_for_entity(ent, BoundingBox)
 
     mx, my = get_mouse_pos_in_px()
 

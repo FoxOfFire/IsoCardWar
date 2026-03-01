@@ -10,7 +10,9 @@ from common import (
     POS_PROC_REF,
     RUN_DATA_REF,
     SETTINGS_REF,
+    STATE_REF,
     BoundingBox,
+    PriceEnum,
     WorldEnum,
 )
 from layer1 import (
@@ -26,13 +28,9 @@ from layer2 import (
     SCENE_SWITCH_PROC_REF,
     UI_PROC_REF,
     GameCameraTag,
-    IsoCameraTag,
-    IsoSprite,
-    TrackIso,
-    TrackUI,
+    MaskedSprite,
     bind_keyboard_events,
     init_audio,
-    ui_event_obj,
 )
 from layer3 import (
     UI_BUILDER_REF,
@@ -115,15 +113,8 @@ def init_world(*, game_ents: bool = False) -> None:
     esper.create_entity(game_cam_bb, GameCameraTag())
 
     if game_ents:
-        iso_cam_bb = BoundingBox(
-            0, SETTINGS_REF.ISO_MAP_HEIGHT, 0, SETTINGS_REF.ISO_MAP_WIDTH
-        )
-        esper.create_entity(iso_cam_bb, IsoCameraTag())
+        spawn_iso_elem(MaskedSprite)
 
-        spawn_iso_elem(TrackIso, TrackUI, IsoSprite)
-
-        POS_PROC_REF().start_tracking_type(TrackIso)
-        POS_PROC_REF().start_tracking_type(TrackUI)
         for phase, func_list in get_base_game_phase_dict().items():
             GAME_PHASE_PROC_REF.add_game_phase(phase, func_list=func_list)
         GAME_PHASE_PROC_REF.set_end_phase(end_phase)
@@ -135,7 +126,6 @@ def init_world(*, game_ents: bool = False) -> None:
     RENDER_PROC_REF().set_display_and_init_cam_types(display)
 
     UI_PROC_REF().set_display_size(display.get_size())
-    UI_PROC_REF().set_tracker_tag(TrackUI)
 
     UI_BUILDER_REF.build_ui()
 
@@ -147,7 +137,15 @@ def init_game() -> None:
     DECK_REF.spawn_card = spawn_card_ent
     DECK_REF.create_card = create_card_obj
     DECK_REF.create_starting_deck()
-    ui_event_obj.iso_tag = TrackIso
+
+    STATE_REF.resources.update(
+        {
+            PriceEnum.MANA: SETTINGS_REF.DEFAULT_RESOURCE_MANA,
+            PriceEnum.HERBS: SETTINGS_REF.DEFAULT_RESOURCE_HERBS,
+            PriceEnum.BLOOD: SETTINGS_REF.DEFAULT_RESOURCE_BLOOD,
+            PriceEnum.BREW: SETTINGS_REF.DEFAULT_RESOURCE_BREW,
+        }
+    )
 
 
 def init() -> None:

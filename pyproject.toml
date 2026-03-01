@@ -3,6 +3,15 @@ extend-exclude = "(examples|.venv)"
 force-exclude = "examples"
 line-length = 79
 
+[tool.vulture]
+exclude = ["*/.venv/*.py","*file*.py", "dir/"]
+ignore_decorators = ["@app.route", "@require_*"]
+ignore_names = ["visit_*", "do_*"]
+make_whitelist = true
+min_confidence = 80
+paths = ["myscript.py", "mydir", "whitelist.py"]
+sort_by_size = true
+
 [tool.flake8]
 python = ".venv/bin/python"
 max-line-length = 79
@@ -15,7 +24,7 @@ extend-ignore = [
 ]
 
 [tool.mypy]
-exclude = "examples"
+exclude = ".*__init__.py"
 disallow_untyped_defs = true
 ignore_missing_imports = true
 

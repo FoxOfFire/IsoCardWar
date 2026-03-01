@@ -14,6 +14,11 @@ fi
 #	SCRIPT_RET=1
 #fi
 
+echo "Running: vulture ."
+if ! vulture .; then
+	SCRIPT_RET=1
+fi
+
 echo "Running: flake8 ."
 if ! pyenv exec flake8 . ; then
         SCRIPT_RET=1

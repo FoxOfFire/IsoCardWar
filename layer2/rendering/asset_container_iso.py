@@ -13,6 +13,7 @@ from .rendering_asset_loader import RENDER_ASSET_REF
 class IsoAssetContainer:
 
     _ISO_ASSETS_DIR = "iso"
+    _ISO_MASK: Optional[pygame.Mask] = None
     _TILE_TYPE_SURFS: Dict[IntEnum, pygame.Surface] = {}
     _UNIT_TYPE_SURFS: Dict[IntEnum, pygame.Surface] = {}
     _SELECTION_SURFS: Dict[IntEnum, pygame.Surface] = {}
@@ -59,6 +60,15 @@ class IsoAssetContainer:
                 logger.info(f"added tile sprite: {tile.name, unit, select}")
             self._COMBINDED_SURFS.update({(tile, unit, select): surf})
         return surf
+
+    def get_mask(self) -> pygame.Mask:
+        if self._ISO_MASK is None:
+            mask_surf = RENDER_ASSET_REF.load_single_image(
+                self._ISO_ASSETS_DIR, "tile_mask"
+            ).convert_alpha()
+            mask = pygame.mask.from_surface(mask_surf)
+            self._ISO_MASK = mask
+        return self._ISO_MASK.copy()
 
     def _load_image_types(self) -> None:
         RENDER_ASSET_REF.load_image_type(

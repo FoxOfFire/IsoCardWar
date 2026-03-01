@@ -1,17 +1,12 @@
 from dataclasses import dataclass
 from enum import IntEnum, auto
 from math import atan2, cos, sin, sqrt
-from typing import Dict, Tuple
+from typing import Any, Dict, Tuple
 
 import esper
 import pygame
 
-from common import (
-    RUN_DATA_REF,
-    WORLD_REF,
-    Health,
-    WorldEnum,
-)
+from common import RUN_DATA_REF, WORLD_REF, Health, WorldEnum
 
 
 class ParticleType(IntEnum):
@@ -27,6 +22,8 @@ class Particle:
     drag: float = 0
     mass: float = 2
     size: int = 5
+    fade: float = 0.5
+    alpha: float = 1
     immortal: bool = False
     size_by_hp: bool = True
 
@@ -87,6 +84,23 @@ class Particle:
         self.position = (0, 0)
         self.add_position(position)
 
+    def __eq__(self, o: Any) -> bool:
+        if not isinstance(o, Particle):
+            return NotImplemented
+
+        return (
+            self.particle_type == o.particle_type
+            and self.color == o.color
+            and self.position == o.position
+            and self.velocity == o.velocity
+            and self.mass == o.mass
+            and self.size == o.size
+            and self.fade == o.fade
+            and self.alpha == o.alpha
+            and self.immortal == o.immortal
+            and self.size_by_hp == o.size_by_hp
+        )
+
 
 class ParticleProcessor(esper.Processor):
     def process(self) -> None:
@@ -94,9 +108,14 @@ class ParticleProcessor(esper.Processor):
             particle.apply_drag()
             particle.apply_velocity()
             if not particle.immortal:
-                health.hp -= 1
+                health.hp -= RUN_DATA_REF.delta_time / 1000
+                particle.alpha = max(
+                    0,
+                    particle.alpha
+                    - particle.fade * RUN_DATA_REF.delta_time / 1000,
+                )
             x, y = particle.position
-            if abs(x) + abs(y) > 100000:
+            if abs(x) + abs(y) > 100000 or particle.alpha <= 0.000001:
                 health.hp = 0
 
     def clear_particles(self) -> None:

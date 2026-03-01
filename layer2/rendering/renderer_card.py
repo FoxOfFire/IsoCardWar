@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 from typing import Optional, Type
 
 import esper
@@ -13,11 +12,6 @@ from .rendering_asset_loader import RENDER_ASSET_REF
 from .utils import CardImageEnum, CardTypeEnum
 
 
-@dataclass
-class CardSprite(MaskedSprite):
-    pass
-
-
 class CardRenderer:
     bb: Optional[BoundingBox]
 
@@ -27,9 +21,8 @@ class CardRenderer:
             BoundingBox,
         )
 
-    def __init__(self, track_tag: Type) -> None:
+    def __init__(self) -> None:
         super().__init__()
-        self.track_tag = track_tag
         self.bb = None
 
     def draw(self, screen: pygame.Surface) -> None:
@@ -52,21 +45,16 @@ class CardRenderer:
             return (
                 card is not None
                 and card in DECK_REF.hand
-                and esper.has_component(ent, CardSprite)
+                and esper.has_component(ent, MaskedSprite)
             )
 
         ent_list = sorted(
-            filter(
-                filterer,
-                POS_PROC_REF().intersect(self.bb, self.track_tag),
-            ),
+            filter(filterer, POS_PROC_REF().intersect(self.bb)),
             key=sorter,
         )
 
         for ent in ent_list:
-            assert esper.entity_exists(ent)
-
-            sprite = esper.try_component(ent, CardSprite)
+            sprite = esper.try_component(ent, MaskedSprite)
             card = esper.try_component(ent, Card)
             if sprite is None or card is None:
                 continue

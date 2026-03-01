@@ -6,10 +6,6 @@ Action = Callable[[ActionArgs], None]
 TextFunc = Callable[[], str]
 
 
-def TextFuncDecor(func: TextFunc) -> TextFunc:
-    return func
-
-
 class PriceEnum(IntEnum):
     MANA = auto()
     HERBS = auto()
@@ -18,7 +14,10 @@ class PriceEnum(IntEnum):
 
 
 class GamePhaseType(IntEnum):
+    INIT = auto()
     BEGIN_GAME = auto()
+    TELEGRAPH = auto()
+    PRODUCTION = auto()
     DRAW = auto()
     PLAYER_ACTION = auto()
     END_OF_TURN = auto()
