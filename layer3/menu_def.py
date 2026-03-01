@@ -4,8 +4,8 @@ from functools import partial
 from typing import Dict, List, Tuple
 
 from common import (
-    COLOR_REF,
     SETTINGS_REF,
+    ColorEnum,
     PriceEnum,
     WorldEnum,
     end_player_phase_action,
@@ -214,7 +214,7 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
                     clicking_func=[
                         get_random_spawn_particle_action(
                             t=ParticleType.CIRCLE,
-                            col=COLOR_REF.WHITE,
+                            col=ColorEnum.WHITE.value,
                             random_range=50,
                             pos=(200, 100),
                             drag=5,

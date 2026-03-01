@@ -2,7 +2,7 @@ from typing import Optional, Tuple
 
 import esper
 
-from common import COLOR_REF, SETTINGS_REF, Action, ActionArgs, add2i, lerp2
+from common import SETTINGS_REF, Action, ActionArgs, ColorEnum, add2i, lerp2
 from layer1 import (
     MAP_DATA_REF,
     ParticleType,
@@ -35,7 +35,7 @@ def get_spawn_dots_between_coords_action(
         for i in range(cnt):
             alpha: float = 0
             t = i / (cnt - 1)
-            col = COLOR_REF.RED
+            col = ColorEnum.RED.value
             if i < cutoff:
                 alpha += 1 - (i) / (cutoff)
             if i >= cnt - cutoff:

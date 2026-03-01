@@ -3,7 +3,7 @@ from typing import Dict, Optional
 import esper
 import pygame
 
-from common import COLOR_REF, SETTINGS_REF, WORLD_REF, WorldEnum
+from common import SETTINGS_REF, WORLD_REF, ColorEnum, WorldEnum
 from layer2.tags import GameCameraTag
 
 from .log import logger
@@ -59,7 +59,7 @@ class RenderingProcessor(esper.Processor):
     def process(self) -> None:
         assert self.display is not None
 
-        self.screen.fill(COLOR_REF.GRAY)
+        self.screen.fill(ColorEnum.GRAY.value)
 
         self.iso_renderer.draw(self.screen)
         self.card_renderer.draw(self.screen)

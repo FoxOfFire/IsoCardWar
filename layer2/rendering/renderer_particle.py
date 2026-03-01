@@ -3,7 +3,7 @@ from typing import Optional, Type
 import esper
 import pygame
 
-from common import COLOR_REF, BoundingBox, lerp1
+from common import BoundingBox, ColorEnum, lerp1
 from layer1 import Particle, ParticleType
 
 from .log import logger
@@ -37,7 +37,7 @@ class ParticleRenderer:
     def draw(self, screen: pygame.Surface) -> None:
         if self.bb is None or self.surf is None:
             return
-        self.surf.fill(COLOR_REF.TRANSPARENT)
+        self.surf.fill(ColorEnum.TRANSPARENT.value)
 
         for _, particle in esper.get_component(Particle):
             match particle.particle_type:

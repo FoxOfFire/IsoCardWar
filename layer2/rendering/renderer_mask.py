@@ -4,11 +4,11 @@ import esper
 import pygame
 
 from common import (
-    COLOR_REF,
     POS_PROC_REF,
     SETTINGS_REF,
     STATE_REF,
     BoundingBox,
+    ColorEnum,
 )
 from layer1 import DECK_REF, Card, Tile
 from layer2.tags import MaskedSprite
@@ -167,8 +167,8 @@ class MaskRenderer:
 
             screen.blit(
                 sprite.mask.to_surface(
-                    setcolor=COLOR_REF.MASK_SET,
-                    unsetcolor=COLOR_REF.MASK_UNSET,
+                    setcolor=ColorEnum.MASK_SET.value,
+                    unsetcolor=ColorEnum.MASK_UNSET.value,
                 ),
                 sprite.rect,
             )
