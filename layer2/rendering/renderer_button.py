@@ -6,9 +6,9 @@ import pygame
 from common import POS_PROC_REF, SETTINGS_REF, BoundingBox
 from layer2.tags import UIElementComponent
 
+from .asset_container_font import FONT_ASSET_REF
 from .asset_container_ui import UI_ASSET_REF
 from .log import logger
-from .rendering_asset_loader import RENDER_ASSET_REF
 from .utils import UIElemSprite, UIElemType
 
 
@@ -106,5 +106,5 @@ class ButtonRenderer:
                 ]
                 surf.blit(dot_surf, dot_surf.get_rect(center=center))
             else:
-                RENDER_ASSET_REF.draw_text_on_surf(surf, ent)
+                FONT_ASSET_REF.draw_text_on_surf(surf, ent)
             screen.blit(surf, surf.get_rect(center=bb.center))

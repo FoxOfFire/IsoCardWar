@@ -2,44 +2,25 @@ import json
 from enum import IntEnum
 from os.path import exists
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Type
+from typing import Any, Dict, List, Type
 
-import esper
 import pygame
 
 from common import SETTINGS_REF
-from layer2.tags import UIElementComponent
 
 from .log import logger
 
 
 class RenderAssetContainer:
     _BASE_ASSET_DIR: Path = Path(".") / "layer2" / "rendering" / "assets"
-    _FONT: Optional[pygame.font.Font] = None
 
-    def draw_text_on_surf(self, screen: pygame.Surface, ent: int) -> None:
-        if self._FONT is None:
+    def load_font(self, path: str, name: str) -> pygame.font.Font:
+        return pygame.font.Font(
+            self._BASE_ASSET_DIR / path / name,
+            SETTINGS_REF.FONT_SIZE,
+        )
 
-            if SETTINGS_REF.LOG_ASSET_LOADING:
-                logger.info("loaded font")
-            self._FONT = pygame.font.Font(
-                self._BASE_ASSET_DIR / "fonts" / "tiny.ttf",
-                SETTINGS_REF.FONT_SIZE,
-            )
-
-        ui_elem = esper.component_for_entity(ent, UIElementComponent)
-
-        for text in ui_elem.text:
-            text_surf = self._FONT.render(
-                text.text(), False, SETTINGS_REF.FONT_COLOR
-            )
-            screen.blit(text_surf, text_surf.get_rect(center=text.offset))
-
-    def load_single_image(
-        self,
-        path: str,
-        name: str,
-    ) -> pygame.Surface:
+    def load_single_image(self, path: str, name: str) -> pygame.Surface:
         return pygame.image.load(
             self._BASE_ASSET_DIR / path / f"{name.lower()}.png"
         ).convert_alpha()
