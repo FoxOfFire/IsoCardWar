@@ -28,9 +28,10 @@ class ParticleGenerator:
         self.tracked_particles.update({ent: p})
 
     def clear_particles(self) -> None:
-        if self.tracked_particles is not None:
-            for ent in self.tracked_particles:
-                if esper.entity_exists(ent):
-                    esper.component_for_entity(ent, Particle).alpha = 0
+        if self.tracked_particles is None:
+            self.tracked_particles = {}
 
+        for ent in self.tracked_particles:
+            if esper.entity_exists(ent):
+                esper.component_for_entity(ent, Particle).alpha = 0
         self.tracked_particles = {}

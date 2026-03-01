@@ -48,8 +48,8 @@ def spawn_button(
         data.click_func = []
     if data.click_start_func is None:
         data.click_start_func = []
-    if data.click_funcing is None:
-        data.click_funcing = []
+    if data.clicking_func is None:
+        data.clicking_func = []
     if data.click_cancel_func is None:
         data.click_cancel_func = []
     if data.hover_func is None:
@@ -79,7 +79,7 @@ def spawn_button(
         text=[text_data],
         click_start_func=data.click_start_func,
         click_func=data.click_func,
-        clicking_func=data.click_funcing,
+        clicking_func=data.clicking_func,
         click_cancel_func=data.click_cancel_func,
         hover_func=data.hover_func,
         start_hover_func=data.start_hover_func,

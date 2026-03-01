@@ -39,6 +39,7 @@ class Colors:
     ERROR = Color("#ff00ff")
     MASK_SET = Color("#ffffff50")
     MASK_UNSET = Color("#00000050")
+    BB_DISPLAY = Color("#a0a0a050")
 
 
 COLOR_REF = Colors()

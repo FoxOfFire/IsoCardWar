@@ -30,12 +30,6 @@ class MaskRenderer:
         super().__init__()
         self.bb = None
 
-    def _get_masked_sprite(self, ent: int) -> Optional[MaskedSprite]:
-        return esper.try_component(ent, MaskedSprite)
-
-    def _has_masked_sprite(self, ent: int) -> bool:
-        return esper.has_component(ent, MaskedSprite)
-
     def _draw_sprite_owerlap(
         self,
         target: MaskedSprite,
@@ -77,7 +71,7 @@ class MaskRenderer:
         def filterer(ent: int) -> bool:
             return (
                 esper.entity_exists(ent)
-                and self._has_masked_sprite(ent)
+                and esper.has_component(ent, MaskedSprite)
                 and (
                     esper.has_component(ent, Card)
                     or esper.has_component(ent, Tile)
@@ -100,14 +94,15 @@ class MaskRenderer:
 
     def _draw_hand_masks(self, ent_list: List[int]) -> None:
         for ent in ent_list:
-            if esper.has_component(ent, Tile):
-                continue
             card = esper.try_component(ent, Card)
-            if card is None:
+            sprite = esper.try_component(ent, MaskedSprite)
+            if (
+                esper.has_component(ent, Tile)
+                or card is None
+                or sprite is None
+            ):
                 continue
-            sprite = self._get_masked_sprite(ent)
-            if sprite is None:
-                continue
+
             sprite.mask.invert()
             this = ent_list.index(ent)
 
@@ -115,9 +110,8 @@ class MaskRenderer:
                 if esper.has_component(ent, Tile):
                     continue
                 ent = ent_list[next_ent]
-                assert esper.entity_exists(ent)
 
-                next_card_sprite = self._get_masked_sprite(ent)
+                next_card_sprite = esper.try_component(ent, MaskedSprite)
                 if next_card_sprite is None:
                     continue
                 self._draw_sprite_owerlap(sprite, next_card_sprite)
@@ -128,43 +122,35 @@ class MaskRenderer:
         for ent in selection_list:
             if esper.has_component(ent, Tile):
                 continue
-            assert esper.entity_exists(ent)
 
-            sprite = self._get_masked_sprite(ent)
-            assert sprite is not None
+            sprite = esper.component_for_entity(ent, MaskedSprite)
 
             for hand_ent in ent_list:
                 if esper.has_component(ent, Tile):
                     continue
-                assert esper.entity_exists(hand_ent)
 
-                hand_sprite = self._get_masked_sprite(hand_ent)
-                assert hand_sprite is not None
+                hand_sprite = esper.component_for_entity(
+                    hand_ent, MaskedSprite
+                )
 
                 self._draw_sprite_owerlap(hand_sprite, sprite)
 
     def _invert_hand(self, ent_list: List[int]) -> None:
         for ent in ent_list:
-            assert esper.entity_exists(ent)
             if esper.has_component(ent, Tile):
                 continue
 
-            sprite = self._get_masked_sprite(ent)
-            assert sprite is not None
-
+            sprite = esper.component_for_entity(ent, MaskedSprite)
             sprite.mask.invert()
 
     def _draw_selection_to_selected(self) -> None:
-        if STATE_REF.hovered_ent is None or STATE_REF.selected_card is None:
+        hover = STATE_REF.hovered_ent
+        select = STATE_REF.selected_card
+        if hover is None or select is None:
             return
 
-        assert esper.entity_exists(
-            STATE_REF.selected_card
-        ) and esper.entity_exists(STATE_REF.hovered_ent)
-
-        hovered_sprite = self._get_masked_sprite(STATE_REF.hovered_ent)
-        selected_sprite = self._get_masked_sprite(STATE_REF.selected_card)
-
+        hovered_sprite = esper.try_component(hover, MaskedSprite)
+        selected_sprite = esper.try_component(select, MaskedSprite)
         if hovered_sprite is None or selected_sprite is None:
             return
 
@@ -173,19 +159,16 @@ class MaskRenderer:
     def _draw_mask_on_screen(
         self, screen: pygame.Surface, ent_list: List[int]
     ) -> None:
-        mask_sprite = MaskedSprite()
         mask_surf = pygame.mask.Mask(screen.get_size())
         mask_surf.fill()
-        mask_sprite.mask = mask_surf
-        mask_sprite.rect = screen.get_rect()
 
         for ent in ent_list:
-            sprite = self._get_masked_sprite(ent)
+            sprite = esper.component_for_entity(ent, MaskedSprite)
 
-            assert sprite is not None
             screen.blit(
                 sprite.mask.to_surface(
-                    setcolor=COLOR_REF.MASK_SET, unsetcolor=COLOR_REF.MASK_UNSET
+                    setcolor=COLOR_REF.MASK_SET,
+                    unsetcolor=COLOR_REF.MASK_UNSET,
                 ),
                 sprite.rect,
             )

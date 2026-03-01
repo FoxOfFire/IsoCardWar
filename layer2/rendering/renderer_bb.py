@@ -32,8 +32,6 @@ class BBRenderer:
             key=partial(sort_by_bb, side=3),
         )
 
-        col = pygame.Color(COLOR_REF.SWAMP)
-        col.a = 50
         for ent in ent_list:
             assert esper.entity_exists(ent)
 
@@ -41,6 +39,6 @@ class BBRenderer:
 
             surf = pygame.Surface((bb.width, bb.height), flags=pygame.SRCALPHA)
 
-            surf.fill(col)
+            surf.fill(COLOR_REF.BB_DISPLAY)
 
             screen.blit(surf, bb_to_rect(bb))

@@ -54,8 +54,6 @@ class CardRenderer:
         )
 
         for ent in ent_list:
-            assert esper.entity_exists(ent)
-
             sprite = esper.try_component(ent, MaskedSprite)
             card = esper.try_component(ent, Card)
             if sprite is None or card is None:

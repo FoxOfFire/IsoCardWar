@@ -83,7 +83,7 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
                     "Slider",
                     UIElemType.SLIDER,
                     button_default_data=0.5,
-                    click_funcing=[set_slider_val],
+                    clicking_func=[set_slider_val],
                 ),
                 (0, 2),
                 ButtonData(
@@ -211,7 +211,7 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
                 ButtonData(
                     "Spawn Particles",
                     UIElemType.BUTTON,
-                    click_funcing=[
+                    clicking_func=[
                         get_random_spawn_particle_action(
                             t=ParticleType.CIRCLE,
                             col=COLOR_REF.WHITE,
@@ -229,7 +229,7 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
                 ButtonData(
                     "Spawn Line",
                     UIElemType.BUTTON,
-                    click_funcing=[
+                    clicking_func=[
                         get_spawn_dots_between_coords_action(
                             (0, 0),
                             (

@@ -7,7 +7,7 @@ from .colors import COLOR_REF
 class Settings:
     # debug
     RENDER_BBS = False
-    RENDER_MASKS = True
+    RENDER_MASKS = False
 
     # Logging
     LOG_TICK_PERFORMANCE = False

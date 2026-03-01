@@ -32,24 +32,22 @@ def quit_game(_: ActionArgs = None) -> None:
 
 def flip_ui_elem_val(ent: ActionArgs) -> None:
     assert ent is not None
-    ui_elem = esper.try_component(ent, UIElementComponent)
-    assert ui_elem is not None
+    ui_elem = esper.component_for_entity(ent, UIElementComponent)
     ui_elem.button_val = not ui_elem.button_val
 
 
 def toggle_sound(ent: ActionArgs) -> None:
     flip_ui_elem_val(ent)
     assert ent is not None
-    ui_elem = esper.try_component(ent, UIElementComponent)
-    assert ui_elem is not None and isinstance(ui_elem.button_val, bool)
+    ui_elem = esper.component_for_entity(ent, UIElementComponent)
+    assert isinstance(ui_elem.button_val, bool)
     SETTINGS_REF.GAME_MUTE = ui_elem.button_val
 
 
 def set_slider_val(ent: ActionArgs) -> None:
     assert ent is not None
-    ui_elem = esper.try_component(ent, UIElementComponent)
-    bb = esper.try_component(ent, BoundingBox)
-    assert ui_elem is not None and bb is not None
+    ui_elem = esper.component_for_entity(ent, UIElementComponent)
+    bb = esper.component_for_entity(ent, BoundingBox)
 
     mx, my = get_mouse_pos_in_px()
 

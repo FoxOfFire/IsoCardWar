@@ -38,9 +38,5 @@ def bb_to_rect(bb: BoundingBox) -> pygame.Rect:
 
 
 def sort_by_bb(ent: int, side: int) -> float:
-    assert esper.entity_exists(ent)
-
-    """
-    0-left 1-right 2-top 3-bottom
-    """
+    # 0-left 1-right 2-top 3-bottom
     return esper.component_for_entity(ent, BoundingBox).points[side]

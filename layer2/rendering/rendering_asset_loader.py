@@ -18,8 +18,6 @@ class RenderAssetContainer:
     _FONT: Optional[pygame.font.Font] = None
 
     def draw_text_on_surf(self, screen: pygame.Surface, ent: int) -> None:
-        assert esper.entity_exists(ent)
-
         if self._FONT is None:
 
             if SETTINGS_REF.LOG_ASSET_LOADING:
@@ -29,8 +27,7 @@ class RenderAssetContainer:
                 SETTINGS_REF.FONT_SIZE,
             )
 
-        ui_elem = esper.try_component(ent, UIElementComponent)
-        assert ui_elem is not None
+        ui_elem = esper.component_for_entity(ent, UIElementComponent)
 
         for text in ui_elem.text:
             text_surf = self._FONT.render(
