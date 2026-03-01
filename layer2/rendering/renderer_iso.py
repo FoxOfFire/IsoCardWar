@@ -76,9 +76,8 @@ class IsoRenderer:
                     select = None
                 y -= SETTINGS_REF.ISO_TILE_SELECT_OFFSET
             else:
-                if crosshair is not None:
-                    select = crosshair
-                elif tile.is_targeted:
+                select = crosshair
+                if tile.is_targeted:
                     select = PriceEnum.BLOOD
             surf = ISO_ASSET_REF.get_surf(tile.terrain, tile.unit, select)
             sprite.mask = ISO_ASSET_REF.get_mask()

@@ -185,7 +185,7 @@ class MaskRenderer:
             assert sprite is not None
             screen.blit(
                 sprite.mask.to_surface(
-                    setcolor=COLOR_REF.TRANSPARENT, unsetcolor=COLOR_REF.ERROR
+                    setcolor=COLOR_REF.MASK_SET, unsetcolor=COLOR_REF.MASK_UNSET
                 ),
                 sprite.rect,
             )
