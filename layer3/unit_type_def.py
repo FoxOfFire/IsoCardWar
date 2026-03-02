@@ -50,6 +50,7 @@ def set_type_actions() -> None:
             ],
         }
     )
+
     MAP_DATA_REF.set_actions_for_type(
         {
             None: [

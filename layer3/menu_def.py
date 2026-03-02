@@ -35,8 +35,9 @@ from .text_functions import (
     get_game_phase_str,
     get_game_world_str,
     get_particle_count_str,
-    get_resource_amount,
+    get_resource_amount_str,
     get_tracked_bb_of_type_str,
+    get_turn_counter_str,
 )
 from .utils import ButtonData
 
@@ -125,28 +126,28 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
             4,
             [
                 ButtonData(
-                    partial(get_resource_amount, PriceEnum.MANA),
+                    partial(get_resource_amount_str, PriceEnum.MANA),
                     UIElemType.ICON,
                     (3, 1),
                     button_default_data=0,
                 ),
                 (2, 0),
                 ButtonData(
-                    partial(get_resource_amount, PriceEnum.HERBS),
+                    partial(get_resource_amount_str, PriceEnum.HERBS),
                     UIElemType.ICON,
                     (3, 1),
                     button_default_data=1,
                 ),
                 (2, 0),
                 ButtonData(
-                    partial(get_resource_amount, PriceEnum.BLOOD),
+                    partial(get_resource_amount_str, PriceEnum.BLOOD),
                     UIElemType.ICON,
                     (3, 1),
                     button_default_data=2,
                 ),
                 (2, 0),
                 ButtonData(
-                    partial(get_resource_amount, PriceEnum.BREW),
+                    partial(get_resource_amount_str, PriceEnum.BREW),
                     UIElemType.ICON,
                     (3, 1),
                     button_default_data=3,
@@ -167,15 +168,9 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
                 (0, 1),
                 ButtonData(get_game_world_str, UIElemType.TEXTBOX),
                 (0, 4),
-                ButtonData(
-                    get_tracked_bb_of_type_str,
-                    UIElemType.TEXTBOX,
-                ),
+                ButtonData(get_tracked_bb_of_type_str, UIElemType.TEXTBOX),
                 (0, 1),
-                ButtonData(
-                    get_tracked_bb_of_type_str,
-                    UIElemType.TEXTBOX,
-                ),
+                ButtonData(get_turn_counter_str, UIElemType.TEXTBOX),
                 (0, 1),
                 ButtonData(get_particle_count_str, UIElemType.TEXTBOX),
                 (0, 4),

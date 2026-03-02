@@ -21,6 +21,12 @@ def end_player_phase_action(_: ActionEnt = None) -> bool:
 
 
 @ActionDecor
+def turn_counter_plus_one_action(_: ActionEnt = None) -> bool:
+    STATE_REF.turn += 1
+    return True
+
+
+@ActionDecor
 def play_card(ent: ActionEnt) -> bool:
     if STATE_REF.play_card_func is None:
         return False

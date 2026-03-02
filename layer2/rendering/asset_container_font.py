@@ -13,7 +13,7 @@ from .rendering_asset_loader import RENDER_ASSET_REF
 class FontAssetContainer:
     _FONT: Optional[pygame.font.Font] = None
     _FONT_ASSET_DIR = "fonts"
-    _FONT_NAME = "tiny.ttf"
+    _FONT_NAME = "virtupetpixies.ttf"
     _TEXT_SURF_DICT: Dict[str, pygame.Surface] = {}
 
     def draw_text_on_surf(self, screen: pygame.Surface, ent: int) -> None:

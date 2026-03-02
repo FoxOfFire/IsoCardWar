@@ -9,6 +9,7 @@ from common import (
     GamePhaseType,
     get_select_tile_action,
     reset_trigger,
+    turn_counter_plus_one_action,
 )
 from layer1 import (
     MAP_DATA_REF,
@@ -23,18 +24,24 @@ from .log import logger
 
 def _begin_game() -> List[Action]:
     effects: List[Action] = [
-        get_wait_ms_action(2000),
+        reset_trigger,
+        get_wait_ms_action(500),
     ]
     return effects
 
 
 def _production() -> List[Action]:
-    effects: List[Action] = []
+    effects: List[Action] = [
+        reset_trigger,
+        turn_counter_plus_one_action,
+        get_wait_ms_action(75),
+    ]
     return effects
 
 
 def _draw() -> List[Action]:
     effects: List[Action] = [
+        reset_trigger,
         draw_card,
         get_wait_ms_action(75),
         draw_card,
@@ -49,20 +56,25 @@ def _draw() -> List[Action]:
 
 
 def _player_action() -> List[Action]:
-    effects: List[Action] = []
+    effects: List[Action] = [
+        reset_trigger,
+    ]
     # TODO
     return effects
 
 
 def _end_of_turn() -> List[Action]:
     effects: List[Action] = [
+        reset_trigger,
         discard_hand,
     ]
     return effects
 
 
 def _enemy_action(telegraphs: bool) -> List[Action]:
-    effects: List[Action] = []
+    effects: List[Action] = [
+        reset_trigger,
+    ]
     for w in range(SETTINGS_REF.ISO_MAP_WIDTH):
         for h in range(SETTINGS_REF.ISO_MAP_HEIGHT):
             tile = MAP_DATA_REF.ent_at((h, w))
@@ -83,7 +95,9 @@ def _enemy_action(telegraphs: bool) -> List[Action]:
 
 
 def _end_game() -> List[Action]:
-    effects: List[Action] = []
+    effects: List[Action] = [
+        reset_trigger,
+    ]
     return effects
 
 

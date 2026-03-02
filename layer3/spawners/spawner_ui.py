@@ -68,7 +68,7 @@ def spawn_button(
     ):
         offset_x += SETTINGS_REF.BUTTON_TILE_SIZE / 3
 
-    text_data = TextData(mod_text, (offset_x, offset_y))
+    text_data = TextData(mod_text, (offset_x, offset_y - 1))
 
     clickable: bool = (
         data.ui_elem_type == UIElemType.BUTTON

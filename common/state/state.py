@@ -13,6 +13,7 @@ class GameState:
     hovered_ent: Optional[int] = None
     game_phase: GamePhaseType = GamePhaseType.INIT
     end_player_phase: bool = False
+    turn: int = 0
 
 
 STATE_REF = GameState({})
