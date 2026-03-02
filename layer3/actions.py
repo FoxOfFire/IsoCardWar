@@ -2,7 +2,15 @@ from typing import Optional, Tuple
 
 import esper
 
-from common import COLOR_REF, SETTINGS_REF, Action, ActionArgs, add2i, lerp2
+from common import (
+    SETTINGS_REF,
+    Action,
+    ActionDecor,
+    ActionEnt,
+    ColorEnum,
+    add2i,
+    lerp2,
+)
 from layer1 import (
     MAP_DATA_REF,
     ParticleType,
@@ -21,7 +29,8 @@ def get_spawn_dots_between_coords_action(
     cnt: int,
     cutoff: int,
 ) -> Action:
-    def action(ent: ActionArgs) -> None:
+    @ActionDecor
+    def action(ent: ActionEnt) -> bool:
         a_x, a_y = pos_a
         b_x, b_y = pos_b
 
@@ -35,7 +44,7 @@ def get_spawn_dots_between_coords_action(
         for i in range(cnt):
             alpha: float = 0
             t = i / (cnt - 1)
-            col = COLOR_REF.RED
+            col = ColorEnum.RED.value
             if i < cutoff:
                 alpha += 1 - (i) / (cutoff)
             if i >= cnt - cutoff:
@@ -43,25 +52,28 @@ def get_spawn_dots_between_coords_action(
             if alpha < 0.00001:
                 continue
 
-            get_spawn_static_particle_action(
+            if not get_spawn_static_particle_action(
                 t=ParticleType.CIRCLE,
                 col=col,
                 alpha=alpha,
                 pos=lerp2(start, end, t, arch=arch),
                 size=2,
-            )(ent)
+            )(ent, True):
+                return False
+        return True
 
     return action
 
 
 def get_spawn_dots_between_ent_and_target(cutoff: Optional[int]) -> Action:
 
-    def action(ent: ActionArgs) -> None:
+    @ActionDecor
+    def action(ent: ActionEnt) -> bool:
         if ent is None or not esper.has_component(ent, Tile):
-            return
+            return False
         tile = esper.component_for_entity(ent, Tile)
         if tile.target is None:
-            return
+            return False
 
         ent_pos = MAP_DATA_REF.pos_at(ent)
         ent_x, ent_y = ent_pos
@@ -75,13 +87,13 @@ def get_spawn_dots_between_ent_and_target(cutoff: Optional[int]) -> Action:
             cut = diff
         else:
             cut = cutoff
-        get_spawn_dots_between_coords_action(
+        return get_spawn_dots_between_coords_action(
             ent_pos,
             target_pos,
             arch=60,
             height=0,
             cnt=max(diff, 8),
             cutoff=cut,
-        )(ent)
+        )(ent, True)
 
     return action

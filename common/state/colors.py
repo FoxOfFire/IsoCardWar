@@ -1,10 +1,9 @@
-from dataclasses import dataclass
+from enum import Enum
 
 from pygame import Color
 
 
-@dataclass
-class Colors:
+class ColorEnum(Enum):
     WHITE = Color("#f2f0e5")
     GRAY_WHITE = Color("#b8b5b9")
     GRAY_LIGHT = Color("#868188")
@@ -40,6 +39,3 @@ class Colors:
     MASK_SET = Color("#ffffff50")
     MASK_UNSET = Color("#00000050")
     BB_DISPLAY = Color("#a0a0a050")
-
-
-COLOR_REF = Colors()

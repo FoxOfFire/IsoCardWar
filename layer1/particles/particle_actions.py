@@ -5,7 +5,7 @@ from typing import Tuple
 import esper
 import pygame
 
-from common import Action, ActionArgs, Health
+from common import Action, ActionDecor, ActionEnt, Health
 
 from .particle_generator import ParticleGenerator
 from .particles import PARTICLE_PROC_REF, Particle, ParticleType
@@ -18,7 +18,8 @@ def get_spawn_static_particle_action(
     pos: Tuple[float, float],
     size: int,
 ) -> Action:
-    def action(ent: ActionArgs) -> None:
+    @ActionDecor
+    def action(ent: ActionEnt) -> bool:
         if ent is None or not esper.has_component(ent, ParticleGenerator):
             generator = ParticleGenerator()
         else:
@@ -32,6 +33,7 @@ def get_spawn_static_particle_action(
             alpha=alpha,
         )
         generator.add_particle(p)
+        return True
 
     return action
 
@@ -46,7 +48,8 @@ def get_random_spawn_particle_action(
     time: int,
     particle_count: int,
 ) -> Action:
-    def action(ent: ActionArgs) -> None:
+    @ActionDecor
+    def action(ent: ActionEnt) -> bool:
         if ent is None or not esper.has_component(ent, ParticleGenerator):
             generator = ParticleGenerator()
         else:
@@ -69,17 +72,21 @@ def get_random_spawn_particle_action(
             )
             h = Health(time)
             generator.add_particle(p, h)
+        return True
 
     return action
 
 
-def clear_particles_action(ent: ActionArgs) -> None:
+@ActionDecor
+def clear_particles_action(ent: ActionEnt) -> bool:
     if ent is None or not esper.has_component(ent, ParticleGenerator):
-        PARTICLE_PROC_REF().clear_particles()
-    else:
-        generator = esper.component_for_entity(ent, ParticleGenerator)
-        generator.clear_particles()
+        return True
+    generator = esper.component_for_entity(ent, ParticleGenerator)
+    generator.clear_particles()
+    return True
 
 
-def clear_all_particles_action(_: ActionArgs) -> None:
-    clear_particles_action(None)
+@ActionDecor
+def clear_all_particles_action(_: ActionEnt) -> bool:
+    PARTICLE_PROC_REF().clear_particles()
+    return True

@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from .colors import COLOR_REF
+from .colors import ColorEnum
 
 
 @dataclass
@@ -20,7 +20,7 @@ class Settings:
     GAME_CAM_WIDTH = GAME_CAM_HEIGHT // 9 * 16
 
     GAME_FULLSCREEN = True
-    GAME_MUTE = True
+    GAME_MUTE = False
 
     FPS = 600
 
@@ -86,7 +86,7 @@ class Settings:
     ISO_TARGET_CUTOFF = 4
 
     # UI
-    FONT_COLOR = COLOR_REF.SHADE_DARK
+    FONT_COLOR = ColorEnum.SHADE_DARK.value
     FONT_SIZE = 6
 
     BUTTON_TILE_SIZE = 12

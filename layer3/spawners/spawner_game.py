@@ -11,6 +11,7 @@ from common import (
     Untracked,
     hover,
     play_card,
+    reset_trigger,
     select_card,
 )
 from layer1 import (
@@ -36,12 +37,15 @@ from .log import logger
 
 def get_ui_component() -> UIElementComponent:
     click_func: List[Action] = [
-        card_guard(play_card),
         clear_particles_action,
+        reset_trigger,
         get_spawn_dots_between_ent_and_target(SETTINGS_REF.ISO_TARGET_CUTOFF),
+        reset_trigger,
+        card_guard(play_card),
     ]
     click_start_func: List[Action] = [
         clear_particles_action,
+        reset_trigger,
         get_spawn_dots_between_ent_and_target(None),
     ]
     click_cancel_func: List[Action] = [

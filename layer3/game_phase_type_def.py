@@ -3,7 +3,13 @@ from typing import Callable, Dict, List
 
 import esper
 
-from common import SETTINGS_REF, Action, GamePhaseType, get_select_tile_action
+from common import (
+    SETTINGS_REF,
+    Action,
+    GamePhaseType,
+    get_select_tile_action,
+    reset_trigger,
+)
 from layer1 import (
     MAP_DATA_REF,
     Tile,
@@ -72,6 +78,7 @@ def _enemy_action(telegraphs: bool) -> List[Action]:
             effects += tile_effects
 
             effects.append(get_select_tile_action(tile))
+            effects.append(reset_trigger)
     return effects
 
 

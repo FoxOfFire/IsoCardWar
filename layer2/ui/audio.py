@@ -32,11 +32,12 @@ def init_audio() -> None:
     SFX_AUDIO_DICT[SoundTypeEnum.TERRAFORM].set_volume(0.2)
 
 
-def play_sfx(sound: SoundTypeEnum) -> None:
+def play_sfx(sound: SoundTypeEnum) -> bool:
     if SETTINGS_REF.GAME_MUTE:
-        return
+        return False
     if sound not in SFX_AUDIO_DICT.keys():
-        return
+        return False
     if SETTINGS_REF.LOG_PLAY_SOUND:
         logger.info(f"Playing sound:{sound.name}")
     SFX_AUDIO_DICT[sound].play()
+    return True

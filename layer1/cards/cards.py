@@ -27,8 +27,9 @@ class Deck:
         self.discard: List[Card] = []
         self.order: OrganizationEnum = OrganizationEnum.NAME
 
-    def set_order(self, order: OrganizationEnum) -> None:
+    def set_order(self, order: OrganizationEnum) -> bool:
         self.order = order
+        return True
 
     # card positioning functions
     def get_card_center_offset(self, card: Card) -> float:

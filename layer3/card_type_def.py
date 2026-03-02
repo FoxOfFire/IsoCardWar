@@ -30,7 +30,7 @@ CARD_TYPES_DICT_REF: Dict[CardTypeEnum, Callable[[], Card]] = {
         name="Mana Pylon",
         description="Spawns a mana pylon",
         effects=[
-            get_change_target_unit_action(UnitTypeEnum.MANA_PYLON),
+            get_change_target_unit_action(UnitTypeEnum.MANA_PYLON, True),
             get_sound_action(SoundTypeEnum.POP),
         ],
         price={
@@ -44,7 +44,7 @@ CARD_TYPES_DICT_REF: Dict[CardTypeEnum, Callable[[], Card]] = {
         name="Blood Bucket",
         description="Spawns a blood bucket",
         effects=[
-            get_change_target_unit_action(UnitTypeEnum.BLOOD_BUCKET),
+            get_change_target_unit_action(UnitTypeEnum.BLOOD_BUCKET, True),
             get_sound_action(SoundTypeEnum.POP),
         ],
         price={
@@ -72,7 +72,7 @@ CARD_TYPES_DICT_REF: Dict[CardTypeEnum, Callable[[], Card]] = {
         name="Berry Bush",
         description="Spawns a Berry Bush",
         effects=[
-            get_change_target_unit_action(UnitTypeEnum.BUSH),
+            get_change_target_unit_action(UnitTypeEnum.BUSH, True),
             get_sound_action(SoundTypeEnum.POP),
         ],
         price={
@@ -86,7 +86,7 @@ CARD_TYPES_DICT_REF: Dict[CardTypeEnum, Callable[[], Card]] = {
         name="Cauldron",
         description="Spawns a cauldron",
         effects=[
-            get_change_target_unit_action(UnitTypeEnum.CAULDRON),
+            get_change_target_unit_action(UnitTypeEnum.CAULDRON, True),
             get_sound_action(SoundTypeEnum.POP),
         ],
         price={
@@ -100,7 +100,7 @@ CARD_TYPES_DICT_REF: Dict[CardTypeEnum, Callable[[], Card]] = {
         name="Big Cauldron",
         description="Spawns a big cauldron",
         effects=[
-            get_change_target_unit_action(UnitTypeEnum.BIG_CAULDRON),
+            get_change_target_unit_action(UnitTypeEnum.BIG_CAULDRON, True),
             get_sound_action(SoundTypeEnum.POP),
         ],
         price={
@@ -114,7 +114,7 @@ CARD_TYPES_DICT_REF: Dict[CardTypeEnum, Callable[[], Card]] = {
         name="Remove unit",
         description="Removes target unit",
         effects=[
-            get_change_target_unit_action(None),
+            get_change_target_unit_action(None, False),
             get_gain_resource_action(PriceEnum.BLOOD, 2),
             get_sound_action(SoundTypeEnum.POP),
         ],

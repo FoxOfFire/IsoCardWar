@@ -70,14 +70,14 @@ class IsoRenderer:
             tile = esper.component_for_entity(ent, Tile)
             x, y = tile.offset
             if ent != selected:
-                if tile.is_targeted:
+                if tile.is_targeted > 0:
                     select = PriceEnum.BLOOD
                 else:
                     select = None
                 y -= SETTINGS_REF.ISO_TILE_SELECT_OFFSET
             else:
                 select = crosshair
-                if tile.is_targeted:
+                if tile.is_targeted > 0:
                     select = PriceEnum.BLOOD
             surf = ISO_ASSET_REF.get_surf(tile.terrain, tile.unit, select)
             sprite.mask = ISO_ASSET_REF.get_mask()

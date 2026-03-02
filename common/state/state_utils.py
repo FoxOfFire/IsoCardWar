@@ -1,9 +1,20 @@
 from enum import IntEnum, auto
 from typing import Callable, Optional
 
-ActionArgs = Optional[int]
-Action = Callable[[ActionArgs], None]
+ActionEnt = Optional[int]
+Trigger = bool
+Action = Callable[[ActionEnt, Trigger], bool]
+ActionBase = Callable[[ActionEnt], bool]
 TextFunc = Callable[[], str]
+
+
+def ActionDecor(action_base: ActionBase) -> Action:
+    def action(ent: ActionEnt, trig: Trigger) -> bool:
+        if not trig:
+            return False
+        return action_base(ent)
+
+    return action
 
 
 class PriceEnum(IntEnum):

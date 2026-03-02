@@ -3,7 +3,7 @@ from typing import Dict, List, Optional, Tuple
 
 import pygame
 
-from common import COLOR_REF, SETTINGS_REF, PriceEnum
+from common import SETTINGS_REF, ColorEnum, PriceEnum
 
 from .log import logger
 from .rendering_asset_loader import RENDER_ASSET_REF
@@ -42,7 +42,7 @@ class UIAssetContainer:
             ),
             flags=pygame.SRCALPHA,
         )
-        fin.fill(COLOR_REF.TRANSPARENT)
+        fin.fill(ColorEnum.TRANSPARENT.value)
         tilemap_len = len(tilemap)
         if flag_x:
             x += 1

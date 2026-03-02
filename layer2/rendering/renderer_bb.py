@@ -4,7 +4,7 @@ from typing import Optional, Type
 import esper
 import pygame
 
-from common import COLOR_REF, POS_PROC_REF, SETTINGS_REF, BoundingBox
+from common import POS_PROC_REF, SETTINGS_REF, BoundingBox, ColorEnum
 
 from .utils import bb_to_rect, sort_by_bb
 
@@ -39,6 +39,6 @@ class BBRenderer:
 
             surf = pygame.Surface((bb.width, bb.height), flags=pygame.SRCALPHA)
 
-            surf.fill(COLOR_REF.BB_DISPLAY)
+            surf.fill(ColorEnum.BB_DISPLAY.value)
 
             screen.blit(surf, bb_to_rect(bb))

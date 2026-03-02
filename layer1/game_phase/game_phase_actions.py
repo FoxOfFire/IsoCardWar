@@ -1,22 +1,23 @@
-from common import STATE_REF, Action, ActionArgs, GamePhaseType
+from common import STATE_REF, Action, ActionDecor, ActionEnt, GamePhaseType
 
 from .game_phase_processor import GAME_PHASE_PROC_REF
 from .log import logger
 
 
 def get_wait_ms_action(ms: int) -> Action:
-    def wait_ms(_: ActionArgs) -> None:
+    @ActionDecor
+    def action(_: ActionEnt) -> bool:
         logger.info(f"wait for {ms}ms")
         GAME_PHASE_PROC_REF.wait += ms
+        return True
 
-    fn = wait_ms
-
-    return fn
+    return action
 
 
-def end_phase(_: ActionArgs = None) -> None:
-
-    assert STATE_REF.game_phase != GamePhaseType.END_GAME
+@ActionDecor
+def end_phase(_: ActionEnt = None) -> bool:
+    if STATE_REF.game_phase == GamePhaseType.END_GAME:
+        return False
     logger.info(f"ending phase: {STATE_REF.game_phase.name}")
 
     current_state = STATE_REF.game_phase.value
@@ -30,3 +31,4 @@ def end_phase(_: ActionArgs = None) -> None:
     GAME_PHASE_PROC_REF.next_funk_queue = GAME_PHASE_PROC_REF.phase_funk_queue[
         STATE_REF.game_phase
     ]()
+    return True

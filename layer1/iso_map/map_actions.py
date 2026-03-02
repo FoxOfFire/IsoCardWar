@@ -3,14 +3,14 @@ from typing import Optional, Tuple
 
 import esper
 
-from common import SETTINGS_REF, Action, ActionArgs
+from common import SETTINGS_REF, Action, ActionDecor, ActionEnt
 
 from .log import logger
 from .map import MAP_DATA_REF
 from .tile import TerrainEnum, Tile, UnitTypeEnum
 
 
-def get_ent_tile(ent: ActionArgs) -> Optional[Tile]:
+def get_ent_tile(ent: ActionEnt) -> Optional[Tile]:
     if ent is None:
         return None
     tile = esper.try_component(ent, Tile)
@@ -20,63 +20,84 @@ def get_ent_tile(ent: ActionArgs) -> Optional[Tile]:
 
 
 def get_change_target_tile_action(terrain: TerrainEnum) -> Action:
-    def change_target_tile(args: ActionArgs) -> None:
+    @ActionDecor
+    def change_target_tile(args: ActionEnt) -> bool:
         tile = get_ent_tile(args)
         if tile is None:
-            return
+            return False
         tile.terrain = terrain
         logger.info(tile.terrain)
+        return True
 
     return change_target_tile
 
 
-def rotate_target_tile(args: ActionArgs) -> None:
+@ActionDecor
+def rotate_target_tile(args: ActionEnt) -> bool:
     tile = get_ent_tile(args)
     if tile is None:
-        return
+        return False
     terrain = TerrainEnum(tile.terrain.value % len(list(TerrainEnum)) + 1)
-    get_change_target_tile_action(terrain)(args)
+    return get_change_target_tile_action(terrain)(args, True)
 
 
-def get_change_target_unit_action(unit: Optional[UnitTypeEnum]) -> Action:
-    def change(args: ActionArgs) -> None:
+def get_change_target_unit_action(
+    unit: Optional[UnitTypeEnum], modify_empty_only: bool
+) -> Action:
+    @ActionDecor
+    def change(args: ActionEnt) -> bool:
         logger.info(f"set unit to {unit}")
         tile = get_ent_tile(args)
         if tile is None:
-            return
+            return False
+        if modify_empty_only and tile.unit is not None:
+            return False
+        if tile.target is not None:
+            target = get_ent_tile(tile.target)
+            if target is not None:
+                target.is_targeted = max(0, target.is_targeted - 1)
+                tile.target = None
         tile.unit = unit
+        return True
 
     return change
 
 
-def switch_unit_types(ent: ActionArgs) -> None:
+@ActionDecor
+def switch_unit_types(ent: ActionEnt) -> bool:
     ent_tile = get_ent_tile(ent)
     if ent_tile is None:
-        return
+        return False
 
     target = ent_tile.target
     target_tile = get_ent_tile(target)
     if target_tile is None:
-        return
+        return False
 
     logger.info(f"switch units {ent} - {target}")
     ent_unit = ent_tile.unit
     target_unit = target_tile.unit
-    get_change_target_unit_action(ent_unit)(target)
-    get_change_target_unit_action(target_unit)(ent)
+    if not get_change_target_unit_action(ent_unit, False)(target, True):
+        return False
+    if not get_change_target_unit_action(target_unit, False)(ent, True):
+        get_change_target_unit_action(target_unit, False)(target, True)
+        return False
+    return True
 
 
 def get_set_target_tile_target_action(pos: Tuple[int, int]) -> Action:
-    def action(ent: ActionArgs) -> None:
+    @ActionDecor
+    def action(ent: ActionEnt) -> bool:
         ent_tile = get_ent_tile(ent)
         if ent_tile is None:
-            return
+            return False
 
         logger.info(f"set target to {pos}")
         target = MAP_DATA_REF.ent_at(pos)
         target_tile = esper.component_for_entity(target, Tile)
-        target_tile.is_targeted = True
+        target_tile.is_targeted += 1
         ent_tile.target = target
+        return True
 
     return action
 
@@ -84,38 +105,44 @@ def get_set_target_tile_target_action(pos: Tuple[int, int]) -> Action:
 def get_spawn_unit_at_random(
     roll_size: int, chance: int, unit: UnitTypeEnum
 ) -> Action:
-    def action(ent: ActionArgs) -> None:
+    @ActionDecor
+    def action(ent: ActionEnt) -> bool:
         if randint(0, roll_size) < chance:
-            get_change_target_unit_action(unit)(ent)
+            return get_change_target_unit_action(unit, True)(ent, True)
+        return False
 
     return action
 
 
-def set_random_target(ent: ActionArgs) -> None:
-    get_set_target_tile_target_action(
+@ActionDecor
+def set_random_target(ent: ActionEnt) -> bool:
+    return get_set_target_tile_target_action(
         (
             randint(0, SETTINGS_REF.ISO_MAP_WIDTH - 1),
             randint(0, SETTINGS_REF.ISO_MAP_HEIGHT - 1),
         )
-    )(ent)
+    )(ent, True)
 
 
-def reset_tile_target(ent: ActionArgs) -> None:
+@ActionDecor
+def reset_tile_target(ent: ActionEnt) -> bool:
     if ent is None or not esper.has_component(ent, Tile):
-        return
+        return False
     tile = esper.component_for_entity(ent, Tile)
     if tile.target is None:
-        return
+        return True
     target_tile = esper.component_for_entity(tile.target, Tile)
-    target_tile.is_targeted = False
+    target_tile.is_targeted = max(0, target_tile.is_targeted - 1)
     tile.target = None
+    return True
 
 
 def transfer_action_to_tile_target(action: Action) -> Action:
-    def sub_action(ent: ActionArgs) -> None:
+    @ActionDecor
+    def sub_action(ent: ActionEnt) -> bool:
         tile = get_ent_tile(ent)
         if tile is None:
-            return
-        action(tile.target)
+            return False
+        return action(tile.target, True)
 
     return sub_action
