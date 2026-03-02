@@ -7,7 +7,8 @@ from common import (
     STATE_REF,
     WORLD_REF,
     Action,
-    ActionArgs,
+    ActionDecor,
+    ActionEnt,
     TempObjectTag,
     WorldEnum,
 )
@@ -40,11 +41,12 @@ class SceneSwitcherProcessor(esper.Processor):
 
 
 def get_switch_world_action(world: WorldEnum) -> Action:
-    def sw_a(_: ActionArgs = None) -> None:
+    @ActionDecor
+    def action(_: ActionEnt = None) -> bool:
         SCENE_SWITCH_PROC_REF.switch_world_to((world))
+        return True
 
-    fn = sw_a
-    return fn
+    return action
 
 
 SCENE_SWITCH_PROC_REF = SceneSwitcherProcessor()

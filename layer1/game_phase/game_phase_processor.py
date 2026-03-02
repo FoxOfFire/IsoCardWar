@@ -9,6 +9,7 @@ from .log import logger
 
 class GamePhaseProcessor(esper.Processor):
     end_phase: Optional[Action]
+    trigger: bool = True
 
     def __init__(self) -> None:
         self.wait = 0
@@ -30,19 +31,21 @@ class GamePhaseProcessor(esper.Processor):
         if len(self.next_funk_queue) > 0:
             logger.info(self.wait)
             while self.wait == 0 and len(self.next_funk_queue) > 0:
-                self.next_funk_queue.pop()(STATE_REF.selected_tile)
+                self.trigger = self.next_funk_queue.pop()(
+                    STATE_REF.selected_tile, self.trigger
+                )
             return
         if phase == GamePhaseType.END_GAME:
             return
         assert self.end_phase is not None
-        self.end_phase(None)
+        self.end_phase(None, True)
 
     def _player_action_phase(self) -> None:
         if STATE_REF.end_player_phase:
             STATE_REF.end_player_phase = False
             self.wait = 0
             assert self.end_phase is not None
-            self.end_phase(None)
+            self.end_phase(None, True)
 
     def process(self) -> None:
         phase = STATE_REF.game_phase

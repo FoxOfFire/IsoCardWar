@@ -3,37 +3,47 @@ from typing import Any, Optional
 
 import esper
 
-from common import SETTINGS_REF, STATE_REF, Action, ActionArgs, Health
+from common import (
+    SETTINGS_REF,
+    STATE_REF,
+    Action,
+    ActionDecor,
+    ActionEnt,
+    Health,
+)
 
 from .card_utils import OrganizationEnum
 from .cards import DECK_REF, Card
 from .log import logger
 
 
-def play_card(target: ActionArgs) -> None:
+@ActionDecor
+def play_card(target: ActionEnt) -> bool:
     ent = STATE_REF.selected_card
     card: Optional[Card] = None
 
     if ent is None:
         if len(DECK_REF.hand) <= 0:
-            return
+            return False
         card = DECK_REF.hand[0]
         for search_ent, search_card in esper.get_component(Card):
             if search_card == card:
                 ent = search_ent
                 logger.info("break")
                 break
-        assert ent is not None
+        if ent is None:
+            return False
     else:
         card = esper.try_component(ent, Card)
         if card is None:
-            return
+            return False
     if target is not None:
         for price in card.price:
             if STATE_REF.resources[price] < card.price[price]:
-                return
+                return False
         for effect in card.effects:
-            effect(target)
+            if not effect(target, True):
+                return False
         for price in card.price:
             STATE_REF.resources[price] -= card.price[price]
 
@@ -42,50 +52,60 @@ def play_card(target: ActionArgs) -> None:
     DECK_REF.hand.remove(card)
     DECK_REF.discard.append(card)
     esper.component_for_entity(ent, Health).hp = 0
+    return True
 
 
 def get_set_order_action(order: OrganizationEnum) -> Action:
-    return lambda _: DECK_REF.set_order(order)
+    return ActionDecor(lambda _: DECK_REF.set_order(order))
 
 
-def discard_hand(_: ActionArgs) -> None:
+@ActionDecor
+def discard_hand(_: ActionEnt) -> bool:
+    trig = True
     while len(DECK_REF.hand) > 0:
-        play_card(None)
+        trig = play_card(None, trig)
+    return trig
 
 
-def draw_card(_: ActionArgs = None) -> None:
-    assert DECK_REF.spawn_card is not None
+@ActionDecor
+def draw_card(ent: ActionEnt) -> bool:
+    if DECK_REF.spawn_card is None:
+        return False
 
     if len(DECK_REF.hand) == SETTINGS_REF.MAX_CARD_COUNT:
         logger.info("hand is full")
-        return
+        return False
     if len(DECK_REF.deck) == 0:
         DECK_REF.deck = DECK_REF.discard
         DECK_REF.discard = []
-        shuffle_deck()
+        if not shuffle_deck(ent, True):
+            return False
 
     if len(DECK_REF.deck) == 0:
         logger.info("out of cards!")
-        return
+        return False
 
     card = DECK_REF.deck.pop()
     card_ent = DECK_REF.spawn_card(card)
     DECK_REF.hand.append(card)
-    sort_hand()
     logger.info(f"Spawned Card {card.name, card_ent}")
+    return sort_hand(None, True)
 
 
 def get_draw_cards_action(count: int) -> Action:
-    def _draw(__: ActionArgs = None) -> None:
+    @ActionDecor
+    def action(ent: ActionEnt) -> bool:
+        trig = True
         for _ in range(count):
-            draw_card()
+            draw_card(ent, trig)
+        return trig
 
-    fn = _draw
-    return fn
+    return action
 
 
 # deck management functions
-def sort_hand(_: ActionArgs = None) -> None:
+@ActionDecor
+def sort_hand(_: ActionEnt = None) -> bool:
 
     def sorter(card: Card) -> Any:
         match DECK_REF.order:
@@ -97,9 +117,11 @@ def sort_hand(_: ActionArgs = None) -> None:
                 raise RuntimeError("unexpected organizer")
 
     DECK_REF.hand.sort(key=sorter)
+    return True
 
 
-def shuffle_deck(_: ActionArgs = None) -> None:
+@ActionDecor
+def shuffle_deck(_: ActionEnt = None) -> bool:
     new = []
     while len(DECK_REF.deck) > 0:
         new.append(
@@ -108,6 +130,7 @@ def shuffle_deck(_: ActionArgs = None) -> None:
             )
         )
     DECK_REF.deck = new
+    return True
 
 
 STATE_REF.play_card_func = play_card

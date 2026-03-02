@@ -54,9 +54,10 @@ def get_change_target_unit_action(
             return False
         if tile.target is not None:
             target = get_ent_tile(tile.target)
-            if target is not None:
-                target.is_targeted = max(0, target.is_targeted - 1)
-                tile.target = None
+            if target is None:
+                return False
+            target.is_targeted = max(0,target.is_targeted-1)
+            tile.target = None
         tile.unit = unit
         return True
 
@@ -77,10 +78,10 @@ def switch_unit_types(ent: ActionEnt) -> bool:
     logger.info(f"switch units {ent} - {target}")
     ent_unit = ent_tile.unit
     target_unit = target_tile.unit
-    if not get_change_target_unit_action(ent_unit, False)(target, True):
+    if not get_change_target_unit_action(ent_unit, False)(target):
         return False
-    if not get_change_target_unit_action(target_unit, False)(ent, True):
-        get_change_target_unit_action(target_unit, False)(target, True)
+    if not get_change_target_unit_action(target_unit, False)(ent):
+        get_change_target_unit_action(target_unit, False)(target)
         return False
     return True
 
@@ -108,7 +109,7 @@ def get_spawn_unit_at_random(
     @ActionDecor
     def action(ent: ActionEnt) -> bool:
         if randint(0, roll_size) < chance:
-            return get_change_target_unit_action(unit, True)(ent, True)
+            return get_change_target_unit_action(unit, True)(ent)
         return False
 
     return action
@@ -121,7 +122,7 @@ def set_random_target(ent: ActionEnt) -> bool:
             randint(0, SETTINGS_REF.ISO_MAP_WIDTH - 1),
             randint(0, SETTINGS_REF.ISO_MAP_HEIGHT - 1),
         )
-    )(ent, True)
+    )(ent)
 
 
 @ActionDecor
@@ -130,9 +131,9 @@ def reset_tile_target(ent: ActionEnt) -> bool:
         return False
     tile = esper.component_for_entity(ent, Tile)
     if tile.target is None:
-        return True
+        return False
     target_tile = esper.component_for_entity(tile.target, Tile)
-    target_tile.is_targeted = max(0, target_tile.is_targeted - 1)
+    target_tile.is_targeted = max(0,target_tile.is_targeted-1)
     tile.target = None
     return True
 
@@ -142,7 +143,7 @@ def transfer_action_to_tile_target(action: Action) -> Action:
     def sub_action(ent: ActionEnt) -> bool:
         tile = get_ent_tile(ent)
         if tile is None:
-            return False
-        return action(tile.target, True)
+            return True
+        return action(tile.target)
 
     return sub_action

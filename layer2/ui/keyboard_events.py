@@ -9,14 +9,14 @@ from .ui_actions import quit_game
 def key_bind_handler(event: Event) -> None:
     if event.key is not None:
         if event.key == pygame.K_F4 and event.mod & pygame.KMOD_ALT:
-            quit_game()
+            quit_game(None, True)
         elif event.key == pygame.K_w:
-            play_card(None)
+            play_card(None, True)
 
 
 def mouse_handler(event: Event) -> None:
     if event.dict["button"] == 3:
-        select_card(None)
+        select_card(None, True)
 
 
 def bind_events() -> None:

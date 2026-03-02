@@ -84,16 +84,17 @@ class UIProcessor(esper.Processor):
         clicked = list(self.clicked)
         for ent in clicked:
             ui_elem = esper.component_for_entity(ent, UIElementComponent)
+            trig = True
             if not self.__mouse_overlap(ent) or not self._ui_elem_visible(
                 ui_elem
             ):
                 self.clicked.remove(ent)
                 ui_elem.state = UIStateEnum.BASE
                 for func in ui_elem.click_cancel_func:
-                    func(ent)
+                    trig = func(ent, trig)
             else:
                 for func in ui_elem.clicking_func:
-                    func(ent)
+                    trig = func(ent, trig)
 
     def press_button_on_release(self) -> None:
         assert self.mouse_bb is not None
@@ -114,8 +115,9 @@ class UIProcessor(esper.Processor):
                 continue
 
             tag.state = UIStateEnum.BASE
+            trig = True
             for func in tag.click_func:
-                func(ent)
+                trig = func(ent, trig)
 
         self.clicked = set()
 
@@ -134,8 +136,9 @@ class UIProcessor(esper.Processor):
 
             tag.state = UIStateEnum.BASE
             self.hover.remove(ent)
+            trig = True
             for func in tag.end_hover_func:
-                func(None)
+                trig = func(None, trig)
 
     def process(self) -> None:
         assert self.display_size is not None
@@ -180,19 +183,20 @@ class UIProcessor(esper.Processor):
             ):
                 continue
 
+            trig = True
             if self.left_clicking and ui_tag.is_clickable:
                 ui_tag.state = UIStateEnum.PRESSED
                 self.clicked.add(ent)
                 for func in ui_tag.click_start_func:
-                    func(ent)
+                    trig = func(ent, trig)
             elif ent not in self.hover:
                 for func in ui_tag.start_hover_func:
-                    func(ent)
+                    trig = func(ent, trig)
                 ui_tag.state = UIStateEnum.HOVER
                 self.hover.add(ent)
             else:
                 for func in ui_tag.hover_func:
-                    func(ent)
+                    trig = func(ent, trig)
 
 
 _UI_PROC_WORLD_DICT: Dict[WorldEnum, UIProcessor] = {}
