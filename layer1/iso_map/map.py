@@ -26,16 +26,20 @@ class MapData:
         scale = 0.2
 
         noise1 = PerlinNoise(octaves=9, seed=seed)
-        noise2 = PerlinNoise(octaves=9, seed=seed)
-        noise3 = PerlinNoise(octaves=9, seed=seed)
+        noise2 = PerlinNoise(octaves=9, seed=seed // 4)
+        noise3 = PerlinNoise(octaves=9, seed=seed // 4 * 3)
 
         self._perlin_noise: List[List[float]] = []
         for i in range(x):
             row = []
             for j in range(y):
                 noise_val = noise1([i / (x / scale), j / (y / scale)])
-                noise_val += 0.5 * noise2([i / (x / scale), j / (y / scale)])
-                noise_val += 0.25 * noise3([i / (x / scale), j / (y / scale)])
+                noise_val += 0.5 * noise2(
+                    [i / (x / scale * 2), j / (y / scale * 2)]
+                )
+                noise_val += 0.25 * noise3(
+                    [i / (x / scale * 4), j / (y / scale * 4)]
+                )
 
                 noise_val = (noise_val + 1) / 2
                 row.append(noise_val)
@@ -132,6 +136,9 @@ class MapData:
         for i in range(h):
             for j in range(w):
                 self._spawn_iso_item_at(i, j, rpos, get_ui_component)
+
+    def valid_ent_pos(self, pos: Tuple[int, int]) -> bool:
+        return self._tiles.get(pos) is not None
 
     def ent_at(self, pos: Tuple[int, int]) -> int:
         return self._tiles[pos]

@@ -1,6 +1,18 @@
 from dataclasses import dataclass
 from math import pi, sin
-from typing import Tuple
+from random import randint
+from typing import Any, List, Tuple
+
+
+def shuffle_list(ls: List[Any]) -> List[Any]:
+    new = []
+    while len(ls) > 0:
+        new.append(
+            ls.pop(
+                randint(0, len(ls) - 1),
+            )
+        )
+    return new
 
 
 def lerp1(a: float, b: float, t: float) -> float:

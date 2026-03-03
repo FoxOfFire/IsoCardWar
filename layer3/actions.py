@@ -4,20 +4,44 @@ import esper
 
 from common import (
     SETTINGS_REF,
+    STATE_REF,
     Action,
     ActionDecor,
     ActionEnt,
     ColorEnum,
     add2i,
     lerp2,
+    shuffle_list,
 )
 from layer1 import (
     MAP_DATA_REF,
     ParticleType,
     TerrainEnum,
     Tile,
+    get_move_realtive_action,
     get_spawn_static_particle_action,
+    get_wait_ms_action,
+    reset_tile_target,
 )
+
+
+def random_walk(dist: int = 4, pause_ms: int = 100) -> Action:
+    @ActionDecor
+    def action(ent: ActionEnt) -> bool:
+        if not reset_tile_target(ent, True):
+            return False
+        dirs = [(1, 0), (0, 1), (-1, 0), (0, -1)]
+        for _ in range(dist):
+            dirs = shuffle_list(dirs)
+            for i in range(4):
+                if get_move_realtive_action(dirs[i])(ent, True):
+                    break
+            get_wait_ms_action(pause_ms)(ent, True)
+            ent = STATE_REF.selected_tile
+
+        return True
+
+    return action
 
 
 def get_spawn_dots_between_coords_action(

@@ -2,21 +2,23 @@ from common import (
     SETTINGS_REF,
     PriceEnum,
     get_gain_resource_action,
+    repeat_action,
     reset_trigger,
 )
 from layer1 import (
     MAP_DATA_REF,
     UnitTypeEnum,
     clear_particles_action,
+    get_change_target_unit_action,
     get_spawn_unit_at_random,
+    get_target_random_neighbour,
     get_wait_ms_action,
     reset_tile_target,
     set_random_target,
-    switch_unit_types,
     transfer_action_to_tile_target,
 )
 
-from .actions import get_spawn_dots_between_ent_and_target
+from .actions import get_spawn_dots_between_ent_and_target, random_walk
 from .log import logger
 
 
@@ -38,7 +40,10 @@ def set_type_actions() -> None:
                 get_spawn_dots_between_ent_and_target(
                     SETTINGS_REF.ISO_TARGET_CUTOFF
                 ),
-                set_random_target,
+                get_target_random_neighbour(),
+                random_walk(1),
+                random_walk(1),
+                random_walk(1),
             ],
             UnitTypeEnum.KNIGHT: [
                 get_wait_ms_action(500),
@@ -46,7 +51,11 @@ def set_type_actions() -> None:
                 get_spawn_dots_between_ent_and_target(
                     SETTINGS_REF.ISO_TARGET_CUTOFF
                 ),
-                set_random_target,
+                repeat_action(set_random_target),
+                random_walk(1),
+                random_walk(1),
+                random_walk(1),
+                random_walk(1),
             ],
         }
     )
@@ -93,7 +102,9 @@ def set_type_actions() -> None:
                 clear_particles_action,
                 transfer_action_to_tile_target(clear_particles_action),
                 reset_trigger,
-                switch_unit_types,
+                transfer_action_to_tile_target(
+                    get_change_target_unit_action(None, False)
+                ),
             ],
             UnitTypeEnum.KNIGHT: [
                 get_wait_ms_action(500),
@@ -105,7 +116,9 @@ def set_type_actions() -> None:
                 transfer_action_to_tile_target(clear_particles_action),
                 clear_particles_action,
                 reset_trigger,
-                switch_unit_types,
+                transfer_action_to_tile_target(
+                    get_change_target_unit_action(None, False)
+                ),
             ],
         }
     )

@@ -3,7 +3,15 @@ from typing import Optional, Tuple
 
 import esper
 
-from common import SETTINGS_REF, Action, ActionDecor, ActionEnt
+from common import (
+    SETTINGS_REF,
+    Action,
+    ActionDecor,
+    ActionEnt,
+    add2i,
+    select_tile,
+    shuffle_list,
+)
 
 from .log import logger
 from .map import MAP_DATA_REF
@@ -90,6 +98,11 @@ def switch_unit_types(ent: ActionEnt) -> bool:
 def get_set_target_tile_target_action(pos: Tuple[int, int]) -> Action:
     @ActionDecor
     def action(ent: ActionEnt) -> bool:
+        x, y = pos
+        if (x < 0 or x >= SETTINGS_REF.ISO_MAP_WIDTH) or (
+            y < 0 or y >= SETTINGS_REF.ISO_MAP_HEIGHT
+        ):
+            return False
         ent_tile = get_ent_tile(ent)
         if ent_tile is None:
             return False
@@ -100,6 +113,23 @@ def get_set_target_tile_target_action(pos: Tuple[int, int]) -> Action:
         target_tile.is_targeted += 1
         ent_tile.target = target
         return True
+
+    return action
+
+
+def get_set_target_tile_relative_target_action(pos: Tuple[int, int]) -> Action:
+    @ActionDecor
+    def action(ent: ActionEnt) -> bool:
+        if ent is None:
+            return False
+        x, y = MAP_DATA_REF.pos_at(ent)
+        dx, dy = pos
+        if get_set_target_tile_target_action((x + dx, y + dy))(ent, True):
+            return True
+        if MAP_DATA_REF.valid_ent_pos((x + dx, y + dy)):
+            reset_tile_target(MAP_DATA_REF.ent_at((x + dx, y + dy)), True)
+        reset_tile_target(MAP_DATA_REF.ent_at((x, y)), True)
+        return False
 
     return action
 
@@ -118,12 +148,23 @@ def get_spawn_unit_at_random(
 
 @ActionDecor
 def set_random_target(ent: ActionEnt) -> bool:
-    return get_set_target_tile_target_action(
+    success = get_set_target_tile_target_action(
         (
             randint(0, SETTINGS_REF.ISO_MAP_WIDTH - 1),
             randint(0, SETTINGS_REF.ISO_MAP_HEIGHT - 1),
         )
     )(ent, True)
+    if not success:
+        return False
+    tile = get_ent_tile(ent)
+    assert tile is not None
+    target_tile = get_ent_tile(tile.target)
+    assert target_tile is not None
+    if target_tile.terrain != TerrainEnum.WATER:
+        return True
+    reset_tile_target(ent, True)
+
+    return False
 
 
 @ActionDecor
@@ -148,3 +189,49 @@ def transfer_action_to_tile_target(action: Action) -> Action:
         return action(tile.target, True)
 
     return sub_action
+
+
+def get_move_realtive_action(pos: Tuple[int, int]) -> Action:
+    @ActionDecor
+    def action(ent: ActionEnt) -> bool:
+        if not get_set_target_tile_relative_target_action(pos)(ent, True):
+            return False
+
+        tile = get_ent_tile(ent)
+        assert tile is not None
+        target_ent = tile.target
+        target_tile = get_ent_tile(target_ent)
+
+        if (
+            target_tile is None
+            or target_tile.terrain == TerrainEnum.WATER
+            or target_tile.unit is not None
+            or not switch_unit_types(ent, True)
+        ):
+            reset_tile_target(ent, True)
+            return False
+        reset_tile_target(ent, True)
+
+        return select_tile(target_ent, True)
+
+    return action
+
+
+def get_target_random_neighbour() -> Action:
+    @ActionDecor
+    def action(ent: ActionEnt) -> bool:
+        if not reset_tile_target(ent, True) or ent is None:
+            return False
+        dirs = [(1, 0), (0, 1), (-1, 0), (0, -1)]
+        pos = MAP_DATA_REF.pos_at(ent)
+        dirs = shuffle_list(dirs)
+        for i in range(4):
+            if get_set_target_tile_relative_target_action(add2i(pos, dirs[i]))(
+                ent, True
+            ):
+                break
+            reset_tile_target(ent, True)
+
+        return True
+
+    return action

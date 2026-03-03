@@ -1,3 +1,5 @@
+from typing import List
+
 from .state import STATE_REF
 from .state_utils import Action, ActionDecor, ActionEnt, PriceEnum, Trigger
 
@@ -10,6 +12,33 @@ def discard_trigger_effect(action: Action) -> Action:
     def sub_action(ent: ActionEnt, trig: Trigger) -> bool:
         action(ent, trig)
         return trig
+
+    return sub_action
+
+
+def repeat_action(
+    action: Action, *, break_on_success: bool = True, loop_max: int = 20
+) -> Action:
+    @ActionDecor
+    def sub_action(ent: ActionEnt) -> bool:
+        max_l = loop_max
+        if max_l < 0:
+            max_l = 1_000_000_000
+        for _ in range(max_l):
+            if action(ent, True) and break_on_success:
+                return True
+        return False
+
+    return sub_action
+
+
+def group_actions(actions: List[Action]) -> Action:
+    @ActionDecor
+    def sub_action(ent: ActionEnt) -> bool:
+        for action in actions:
+            if not action(ent, True):
+                return False
+        return True
 
     return sub_action
 
