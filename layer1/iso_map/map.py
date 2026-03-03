@@ -3,7 +3,7 @@ from typing import Any, Callable, Dict, List, Optional, Tuple, Type
 
 import esper
 import pygame
-from perlin_noise import PerlinNoise  # type: ignore
+from perlin_noise import PerlinNoise
 
 from common import SETTINGS_REF, Action, BoundingBox, Untracked
 
@@ -23,20 +23,24 @@ class MapData:
         seed = SETTINGS_REF.ISO_MAP_SEED
         x = SETTINGS_REF.ISO_MAP_WIDTH
         y = SETTINGS_REF.ISO_MAP_HEIGHT
+        scale = 0.2
 
         noise1 = PerlinNoise(octaves=9, seed=seed)
-        noise2 = PerlinNoise(octaves=9, seed=int(0.25 * seed))
-        noise3 = PerlinNoise(octaves=9, seed=int(0.75 * seed))
+        noise2 = PerlinNoise(octaves=9, seed=seed)
+        noise3 = PerlinNoise(octaves=9, seed=seed)
 
+        self._perlin_noise: List[List[float]] = []
         for i in range(x):
             row = []
             for j in range(y):
-                noise_val = noise1([i / x, j / y], [16, 16])
-                noise_val += 0.5 * noise2([i / x, j / y], [16, 16])
-                noise_val += 0.25 * noise3([i / x, j / y], [16, 16])
+                noise_val = noise1([i / (x / scale), j / (y / scale)])
+                noise_val += 0.5 * noise2([i / (x / scale), j / (y / scale)])
+                noise_val += 0.25 * noise3([i / (x / scale), j / (y / scale)])
 
+                noise_val = (noise_val + 1) / 2
                 row.append(noise_val)
             self._perlin_noise.append(row)
+        print(self._perlin_noise)
 
     def __init__(self) -> None:
         self._generate_noise()
@@ -76,9 +80,9 @@ class MapData:
     ) -> None:
         noise_val = self._perlin_noise[i][j]
         terrain = TerrainEnum(1)
-        for i in range(len(list(TerrainEnum))):
-            if noise_val < SETTINGS_REF.ISO_NOISE_THRESHOLDS[i]:
-                terrain = TerrainEnum(i + 1)
+        for k in range(len(list(TerrainEnum))):
+            if noise_val < SETTINGS_REF.ISO_NOISE_THRESHOLDS[k]:
+                terrain = TerrainEnum(k + 1)
                 break
         unit: Optional[UnitTypeEnum] = None
 

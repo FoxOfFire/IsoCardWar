@@ -6,9 +6,9 @@ from common import SETTINGS_REF
 
 
 class TerrainEnum(IntEnum):
-    CONCRETE = auto()
-    GRASS = auto()
     WATER = auto()
+    GRASS = auto()
+    CONCRETE = auto()
 
 
 class UnitTypeEnum(IntEnum):

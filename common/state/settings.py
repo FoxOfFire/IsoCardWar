@@ -60,8 +60,8 @@ class Settings:
 
     # map
 
-    ISO_MAP_SEED = 100000
-    ISO_NOISE_THRESHOLDS = [0.25, 0.75, 1.0]
+    ISO_MAP_SEED = 100
+    ISO_NOISE_THRESHOLDS = [0.425, 0.575, 1.0]
     ISO_MAP_HEIGHT = 9
     ISO_MAP_WIDTH = 9
 
