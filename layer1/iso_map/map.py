@@ -3,6 +3,7 @@ from typing import Any, Callable, Dict, List, Optional, Tuple, Type
 
 import esper
 import pygame
+from perlin_noise import PerlinNoise  # type: ignore
 
 from common import SETTINGS_REF, Action, BoundingBox, Untracked
 
@@ -16,6 +17,29 @@ class MapData:
     _ents: Dict[int, Tuple[int, int]] = {}
     _unit_actions: Dict[UnitTypeEnum | None, List[Action]] = {}
     _unit_telegraphs: Dict[UnitTypeEnum | None, List[Action]] = {}
+    _perlin_noise: List[List[float]] = []
+
+    def _generate_noise(self) -> None:
+        seed = SETTINGS_REF.ISO_MAP_SEED
+        x = SETTINGS_REF.ISO_MAP_WIDTH
+        y = SETTINGS_REF.ISO_MAP_HEIGHT
+
+        noise1 = PerlinNoise(octaves=9, seed=seed)
+        noise2 = PerlinNoise(octaves=9, seed=int(0.25 * seed))
+        noise3 = PerlinNoise(octaves=9, seed=int(0.75 * seed))
+
+        for i in range(x):
+            row = []
+            for j in range(y):
+                noise_val = noise1([i / x, j / y], [16, 16])
+                noise_val += 0.5 * noise2([i / x, j / y], [16, 16])
+                noise_val += 0.25 * noise3([i / x, j / y], [16, 16])
+
+                row.append(noise_val)
+            self._perlin_noise.append(row)
+
+    def __init__(self) -> None:
+        self._generate_noise()
 
     def set_particle_generator(self, tag: Type) -> None:
         self._particle_generator = tag
@@ -50,13 +74,21 @@ class MapData:
         rpos: Tuple[int, int],
         get_ui_component: Callable[[], Any],
     ) -> None:
-        terrain = TerrainEnum(randint(1, len(list(TerrainEnum))))
+        noise_val = self._perlin_noise[i][j]
+        terrain = TerrainEnum(1)
+        for i in range(len(list(TerrainEnum))):
+            if noise_val < SETTINGS_REF.ISO_NOISE_THRESHOLDS[i]:
+                terrain = TerrainEnum(i + 1)
+                break
         unit: Optional[UnitTypeEnum] = None
 
         if (j, i) == rpos:
             terrain = TerrainEnum.GRASS
             unit = UnitTypeEnum.WITCH
-        elif randint(0, 2) == 0 and terrain != TerrainEnum.WATER:
+        elif (
+            randint(0, SETTINGS_REF.ISO_MAP_HEIGHT // 2) == 0
+            and terrain != TerrainEnum.WATER
+        ):
             while unit == UnitTypeEnum.WITCH or unit is None:
                 unit = UnitTypeEnum(randint(1, len(list(UnitTypeEnum))))
 
