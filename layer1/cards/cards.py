@@ -16,6 +16,7 @@ class Card:
     description: str
     price: Dict[PriceEnum, int]
     effects: List[Action]
+    type_enum: CardTypeEnum
 
 
 class Deck:

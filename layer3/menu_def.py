@@ -71,7 +71,7 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
             (SnapHorisontalEnum.CENTER, SnapVerticalEnum.CENTER),
             4,
             [
-                ButtonData("Settings", UIElemType.TEXTBOX, (6, 1), (0, 4)),
+                ButtonData("Settings", UIElemType.TEXTBOX, (8, 1), (0, 6)),
                 (0, 4),
                 ButtonData(
                     "Mute Game",
@@ -101,7 +101,7 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
             (SnapHorisontalEnum.CENTER, SnapVerticalEnum.CENTER),
             4,
             [
-                ButtonData("Main Menu", UIElemType.TEXTBOX, (6, 1), (0, 6)),
+                ButtonData("Main Menu", UIElemType.TEXTBOX, (8, 1), (0, 6)),
                 (0, 4),
                 ButtonData(
                     "Continue",
@@ -160,7 +160,7 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
             (SnapHorisontalEnum.RIGHT, SnapVerticalEnum.TOP),
             4,
             [
-                ButtonData("Info", UIElemType.TEXTBOX, (6, 1), (0, 4)),
+                ButtonData("Info", UIElemType.TEXTBOX, (7, 1), (0, 6)),
                 (0, 4),
                 ButtonData(get_fps_str, UIElemType.TEXTBOX),
                 (0, 1),
@@ -181,7 +181,7 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
             (SnapHorisontalEnum.LEFT, SnapVerticalEnum.TOP),
             4,
             [
-                ButtonData("Menu", UIElemType.TEXTBOX, (6, 1), (0, 4)),
+                ButtonData("Menu", UIElemType.TEXTBOX, (7, 1), (0, 6)),
                 (0, 2),
                 ButtonData(
                     "Main Menu",
@@ -189,7 +189,7 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
                     click_func=[get_switch_world_action(WorldEnum.MAIN)],
                 ),
                 (0, 5),
-                ButtonData("Debug", UIElemType.TEXTBOX, sub_size=(0, 4)),
+                ButtonData("Debug", UIElemType.TEXTBOX, sub_size=(0, 6)),
                 (0, 2),
                 ButtonData(
                     "End Turn",
@@ -246,7 +246,7 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
                     click_func=[clear_all_particles_action],
                 ),
                 (0, 4),
-                ButtonData("Organise by", UIElemType.TEXTBOX, sub_size=(0, 4)),
+                ButtonData("Organise by", UIElemType.TEXTBOX, sub_size=(0, 6)),
                 (0, 2),
                 ButtonData(
                     "Name",

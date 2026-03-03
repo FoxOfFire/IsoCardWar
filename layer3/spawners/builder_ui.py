@@ -25,11 +25,11 @@ class UIBuilder:
             s_w, s_h = 0, 0
             if not isinstance(button, ButtonData):
                 s_w, s_h = button
-            elif button.size is not None:
-                w, h = button.size
-                s_w, s_h = button.sub_size
             else:
-                w, h = 1, 1
+                if button.size is not None:
+                    w, h = button.size
+                else:
+                    w, h = 1, 1
                 s_w, s_h = button.sub_size
 
             if menu.align_horizontal:

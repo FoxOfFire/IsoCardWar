@@ -1,9 +1,10 @@
 from enum import IntEnum
-from typing import Dict, List, Tuple
+from typing import Dict, List, Optional, Tuple
 
 import pygame
 
 from common import SETTINGS_REF, PriceEnum
+from layer1 import CardTypeEnum as CardType
 
 from .log import logger
 from .rendering_asset_loader import RENDER_ASSET_REF
@@ -17,10 +18,15 @@ class CardAssetContainer:
     _CARD_MARKER_SURFS: Dict[IntEnum, pygame.Surface] = {}
     _CARD_IMAGE_SURFS: Dict[IntEnum, List[pygame.Surface]] = {}
     _LOADED_CARD_SURFS: bool = False
-    _CARD_SURFS: Dict[
-        Tuple[IntEnum, Tuple[int, int, int, int], IntEnum],
-        List[pygame.Surface],
-    ] = {}
+    _CARD_SURFS: Dict[CardType, List[pygame.Surface]] = {}
+
+    def get_saved_card_surf(
+        self, frame: int, card_type: CardType
+    ) -> Optional[pygame.Surface]:
+        surfs = self._CARD_SURFS.get(card_type)
+        if surfs is None:
+            return None
+        return surfs[frame]
 
     def get_card_surf(
         self,
@@ -29,8 +35,9 @@ class CardAssetContainer:
         prices: Tuple[int, int, int, int],
         image: IntEnum,
         frame: int,
+        card_type: CardType,
     ) -> pygame.Surface:
-        surfs = self._CARD_SURFS.get((border, prices, image))
+        surfs = self._CARD_SURFS.get(card_type)
         if surfs is None:
             if not self._LOADED_CARD_SURFS:
                 self._load_anim_types()
@@ -40,8 +47,8 @@ class CardAssetContainer:
                 if SETTINGS_REF.LOG_ASSET_LOADING:
                     logger.info("loaded card images")
 
-            self._load_card_surf(border, prices, image)
-            surfs = self._CARD_SURFS.get((border, prices, image))
+            self._load_card_surf(border, prices, image, card_type)
+            surfs = self._CARD_SURFS.get((card_type))
             assert surfs is not None
         assert frame < len(surfs) and frame >= 0, frame
         return surfs[frame]
@@ -51,6 +58,7 @@ class CardAssetContainer:
         border: IntEnum,
         prices: Tuple[int, int, int, int],
         image: IntEnum,
+        card_type: CardType,
     ) -> None:
         if SETTINGS_REF.LOG_ASSET_LOADING:
             logger.info(f"added card{border.name, image.name, prices}")
@@ -76,7 +84,7 @@ class CardAssetContainer:
                     )
                     offset += SETTINGS_REF.MARKER_OFFSET_X
             surfs.append(surf)
-        self._CARD_SURFS.update({(border, prices, image): surfs})
+        self._CARD_SURFS.update({card_type: surfs})
 
     def _load_anim_types(self) -> None:
         RENDER_ASSET_REF.load_animation_type(
