@@ -6,7 +6,6 @@ from common import SETTINGS_REF
 
 
 class TerrainEnum(IntEnum):
-    EMPTY = auto()
     CONCRETE = auto()
     GRASS = auto()
     WATER = auto()

@@ -56,11 +56,7 @@ class MapData:
         if (j, i) == rpos:
             terrain = TerrainEnum.GRASS
             unit = UnitTypeEnum.WITCH
-        elif (
-            randint(0, 2) == 0
-            and terrain != TerrainEnum.WATER
-            and terrain != TerrainEnum.EMPTY
-        ):
+        elif randint(0, 2) == 0 and terrain != TerrainEnum.WATER:
             while unit == UnitTypeEnum.WITCH or unit is None:
                 unit = UnitTypeEnum(randint(1, len(list(UnitTypeEnum))))
 

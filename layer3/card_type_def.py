@@ -5,6 +5,7 @@ from layer1 import (
     Card,
     CardTypeEnum,
     UnitTypeEnum,
+    clear_particles_action,
     get_change_target_unit_action,
     get_draw_cards_action,
     rotate_target_tile,
@@ -122,6 +123,7 @@ CARD_TYPES_DICT_REF: Dict[CardTypeEnum, Callable[[], Card]] = {
         description="Removes target unit",
         effects=[
             get_change_target_unit_action(None, False),
+            clear_particles_action,
             get_gain_resource_action(PriceEnum.BLOOD, 2),
             get_sound_action(SoundTypeEnum.POP),
         ],

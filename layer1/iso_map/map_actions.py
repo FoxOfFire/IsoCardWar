@@ -52,6 +52,8 @@ def get_change_target_unit_action(
             return False
         if modify_empty_only and tile.unit is not None:
             return False
+        if tile.unit == unit:
+            return False
         if tile.target is not None:
             target = get_ent_tile(tile.target)
             if target is not None:
