@@ -8,7 +8,6 @@ from common import (
     Action,
     ActionDecor,
     ActionEnt,
-    add2i,
     select_tile,
     shuffle_list,
 )
@@ -139,6 +138,9 @@ def get_spawn_unit_at_random(
 ) -> Action:
     @ActionDecor
     def action(ent: ActionEnt) -> bool:
+        tile = get_ent_tile(ent)
+        if tile is None or tile.terrain == TerrainEnum.WATER:
+            return False
         if randint(0, roll_size) < chance:
             return get_change_target_unit_action(unit, True)(ent, True)
         return False
@@ -220,16 +222,26 @@ def get_move_realtive_action(pos: Tuple[int, int]) -> Action:
 def get_target_random_neighbour() -> Action:
     @ActionDecor
     def action(ent: ActionEnt) -> bool:
+        tile = get_ent_tile(ent)
+        if tile is None:
+            return False
         if not reset_tile_target(ent, True) or ent is None:
             return False
         dirs = [(1, 0), (0, 1), (-1, 0), (0, -1)]
-        pos = MAP_DATA_REF.pos_at(ent)
         dirs = shuffle_list(dirs)
         for i in range(4):
-            if get_set_target_tile_relative_target_action(add2i(pos, dirs[i]))(
-                ent, True
-            ):
-                break
+            if get_set_target_tile_relative_target_action(dirs[i])(ent, True):
+                if tile.target is None:
+                    continue
+                target_tile = get_ent_tile(tile.target)
+                if target_tile is None:
+                    continue
+                if (
+                    target_tile.unit is not None
+                    and target_tile.unit != UnitTypeEnum.WITCH
+                ):
+                    break
+
             reset_tile_target(ent, True)
 
         return True

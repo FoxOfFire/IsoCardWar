@@ -2,7 +2,6 @@ from common import (
     SETTINGS_REF,
     PriceEnum,
     get_gain_resource_action,
-    repeat_action,
     reset_trigger,
 )
 from layer1 import (
@@ -14,7 +13,6 @@ from layer1 import (
     get_target_random_neighbour,
     get_wait_ms_action,
     reset_tile_target,
-    set_random_target,
     transfer_action_to_tile_target,
 )
 
@@ -51,7 +49,7 @@ def set_type_actions() -> None:
                 get_spawn_dots_between_ent_and_target(
                     SETTINGS_REF.ISO_TARGET_CUTOFF
                 ),
-                repeat_action(set_random_target),
+                get_target_random_neighbour(),
                 random_walk(1),
                 random_walk(1),
                 random_walk(1),

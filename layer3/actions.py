@@ -36,8 +36,8 @@ def random_walk(dist: int = 4, pause_ms: int = 100) -> Action:
             for i in range(4):
                 if get_move_realtive_action(dirs[i])(ent, True):
                     break
-            get_wait_ms_action(pause_ms)(ent, True)
             ent = STATE_REF.selected_tile
+            get_wait_ms_action(pause_ms)(ent, True)
 
         return True
 
