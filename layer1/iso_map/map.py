@@ -17,6 +17,7 @@ class MapData:
     _ents: Dict[int, Tuple[int, int]] = {}
     _unit_actions: Dict[UnitTypeEnum | None, List[Action]] = {}
     _unit_telegraphs: Dict[UnitTypeEnum | None, List[Action]] = {}
+    _unit_productions: Dict[UnitTypeEnum | None, List[Action]] = {}
     _perlin_noise: List[List[float]] = []
 
     def _generate_noise(self) -> None:
@@ -63,9 +64,25 @@ class MapData:
     def get_actions_for_type(
         self, unit: Optional[UnitTypeEnum]
     ) -> List[Action]:
-        return self._unit_actions[unit]
+        actions = self._unit_actions.get(unit)
+        if actions is None:
+            return []
+        return actions
 
-    def set_telegraph_for_type(
+    def set_productions_for_type(
+        self, actions: Dict[Optional[UnitTypeEnum], List[Action]]
+    ) -> None:
+        self._unit_productions.update(actions)
+
+    def get_productions_for_type(
+        self, unit: Optional[UnitTypeEnum]
+    ) -> List[Action]:
+        actions = self._unit_productions.get(unit)
+        if actions is None:
+            return []
+        return actions
+
+    def set_telegraphs_for_type(
         self, telegraphs: Dict[Optional[UnitTypeEnum], List[Action]]
     ) -> None:
         self._unit_telegraphs.update(telegraphs)
@@ -73,7 +90,10 @@ class MapData:
     def get_telegraphs_for_type(
         self, unit: Optional[UnitTypeEnum]
     ) -> List[Action]:
-        return self._unit_telegraphs[unit]
+        actions = self._unit_telegraphs.get(unit)
+        if actions is None:
+            return []
+        return actions
 
     def _spawn_iso_item_at(
         self,

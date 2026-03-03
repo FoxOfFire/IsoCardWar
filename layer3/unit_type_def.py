@@ -23,15 +23,8 @@ from .log import logger
 def set_type_actions() -> None:
     logger.info("set_type_actions")
 
-    MAP_DATA_REF.set_telegraph_for_type(
+    MAP_DATA_REF.set_telegraphs_for_type(
         {
-            None: [],
-            UnitTypeEnum.CAULDRON: [],
-            UnitTypeEnum.MANA_PYLON: [],
-            UnitTypeEnum.BLOOD_BUCKET: [],
-            UnitTypeEnum.WITCH: [],
-            UnitTypeEnum.BIG_CAULDRON: [],
-            UnitTypeEnum.BUSH: [],
             UnitTypeEnum.FARMER: [
                 get_wait_ms_action(500),
                 reset_trigger,
@@ -58,7 +51,7 @@ def set_type_actions() -> None:
         }
     )
 
-    MAP_DATA_REF.set_actions_for_type(
+    MAP_DATA_REF.set_productions_for_type(
         {
             None: [
                 get_spawn_unit_at_random(
@@ -91,6 +84,11 @@ def set_type_actions() -> None:
             UnitTypeEnum.BUSH: [
                 get_gain_resource_action(PriceEnum.HERBS, 2),
             ],
+        }
+    )
+
+    MAP_DATA_REF.set_actions_for_type(
+        {
             UnitTypeEnum.FARMER: [
                 get_wait_ms_action(500),
                 reset_trigger,
