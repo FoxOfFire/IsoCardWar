@@ -18,6 +18,8 @@ from layer1 import (
     discard_hand,
     draw_card,
     get_wait_ms_action,
+    reset_active_tile,
+    set_active_tile,
 )
 
 from .log import logger
@@ -52,6 +54,7 @@ def _draw() -> List[Action]:
         draw_card,
         get_wait_ms_action(75),
         draw_card,
+        reset_active_tile,
     ]
     return effects
 
@@ -60,7 +63,6 @@ def _player_action() -> List[Action]:
     effects: List[Action] = [
         reset_trigger,
     ]
-    # TODO
     return effects
 
 
@@ -87,6 +89,7 @@ def _enemy_action(
 
             effects += tile_effects
 
+            effects.append(set_active_tile)
             effects.append(get_select_tile_action(tile))
             effects.append(reset_trigger)
     return effects
@@ -99,21 +102,30 @@ def _end_game() -> List[Action]:
     return effects
 
 
+def _spawning() -> List[Action]:
+    effects: List[Action] = [
+        reset_trigger,
+        get_wait_ms_action(500),
+    ]
+    return effects
+
+
 def get_base_game_phase_dict() -> (
     Dict[GamePhaseType, Callable[[], List[Action]]]
 ):
     logger.info("getting phase dict")
     return {
         GamePhaseType.BEGIN_GAME: _begin_game,
-        GamePhaseType.TELEGRAPH: partial(
-            _enemy_action, MAP_DATA_REF.get_actions_for_type
-        ),
         GamePhaseType.PRODUCTION: _production,
+        GamePhaseType.SPAWNING: _spawning,
+        GamePhaseType.TELEGRAPH: partial(
+            _enemy_action, MAP_DATA_REF.get_telegraphs_for_type
+        ),
         GamePhaseType.DRAW: _draw,
         GamePhaseType.PLAYER_ACTION: _player_action,
         GamePhaseType.END_OF_TURN: _end_of_turn,
         GamePhaseType.ENEMY_ACTION: partial(
-            _enemy_action, MAP_DATA_REF.get_telegraphs_for_type
+            _enemy_action, MAP_DATA_REF.get_actions_for_type
         ),
         GamePhaseType.END_GAME: _end_game,
     }

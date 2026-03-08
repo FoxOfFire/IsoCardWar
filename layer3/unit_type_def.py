@@ -1,5 +1,6 @@
 from common import (
     SETTINGS_REF,
+    ColorEnum,
     PriceEnum,
     get_gain_resource_action,
     reset_trigger,
@@ -23,14 +24,14 @@ from .log import logger
 def set_type_actions() -> None:
     logger.info("set_type_actions")
 
+    cutoff = SETTINGS_REF.ISO_TARGET_CUTOFF
+    red = ColorEnum.RED.value
     MAP_DATA_REF.set_telegraphs_for_type(
         {
             UnitTypeEnum.FARMER: [
                 get_wait_ms_action(500),
                 reset_trigger,
-                get_spawn_dots_between_ent_and_target(
-                    SETTINGS_REF.ISO_TARGET_CUTOFF
-                ),
+                get_spawn_dots_between_ent_and_target(cutoff, 0, red),
                 get_target_random_neighbour(),
                 random_walk(1),
                 random_walk(1),
@@ -39,9 +40,7 @@ def set_type_actions() -> None:
             UnitTypeEnum.KNIGHT: [
                 get_wait_ms_action(500),
                 reset_trigger,
-                get_spawn_dots_between_ent_and_target(
-                    SETTINGS_REF.ISO_TARGET_CUTOFF
-                ),
+                get_spawn_dots_between_ent_and_target(cutoff, 0, red),
                 get_target_random_neighbour(),
                 random_walk(1),
                 random_walk(1),
@@ -54,12 +53,14 @@ def set_type_actions() -> None:
     MAP_DATA_REF.set_productions_for_type(
         {
             None: [
+                get_wait_ms_action(50),
                 get_spawn_unit_at_random(
                     SETTINGS_REF.ISO_SPAWN_CHANCE_MAX,
                     SETTINGS_REF.ISO_FARMER_SPAWN_CHANCE,
                     UnitTypeEnum.FARMER,
                 ),
                 reset_trigger,
+                get_wait_ms_action(50),
                 get_spawn_unit_at_random(
                     SETTINGS_REF.ISO_SPAWN_CHANCE_MAX,
                     SETTINGS_REF.ISO_KNIGHT_SPAWN_CHANCE,
@@ -68,21 +69,27 @@ def set_type_actions() -> None:
             ],
             UnitTypeEnum.CAULDRON: [
                 get_gain_resource_action(PriceEnum.BREW, 1),
+                get_wait_ms_action(50),
             ],
             UnitTypeEnum.MANA_PYLON: [
                 get_gain_resource_action(PriceEnum.MANA, 2),
+                get_wait_ms_action(50),
             ],
             UnitTypeEnum.BLOOD_BUCKET: [
                 get_gain_resource_action(PriceEnum.BLOOD, 2),
+                get_wait_ms_action(50),
             ],
             UnitTypeEnum.WITCH: [
                 get_gain_resource_action(PriceEnum.MANA, 5),
+                get_wait_ms_action(50),
             ],
             UnitTypeEnum.BIG_CAULDRON: [
                 get_gain_resource_action(PriceEnum.BREW, 3),
+                get_wait_ms_action(50),
             ],
             UnitTypeEnum.BUSH: [
                 get_gain_resource_action(PriceEnum.HERBS, 2),
+                get_wait_ms_action(50),
             ],
         }
     )

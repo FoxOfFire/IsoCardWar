@@ -111,6 +111,7 @@ class MapData:
         unit: Optional[UnitTypeEnum] = None
 
         if (j, i) == rpos:
+            noise_val = 0.5
             terrain = TerrainEnum.GRASS
             unit = UnitTypeEnum.WITCH
         elif (
@@ -120,7 +121,7 @@ class MapData:
             while unit == UnitTypeEnum.WITCH or unit is None:
                 unit = UnitTypeEnum(randint(1, len(list(UnitTypeEnum))))
 
-        tile = Tile(i, j, terrain, unit=unit)
+        tile = Tile(i, j, noise_val, terrain, unit=unit)
 
         sprite_offset = (
             tile.x_offset,

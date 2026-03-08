@@ -5,6 +5,7 @@ import esper
 
 from common import (
     SETTINGS_REF,
+    STATE_REF,
     Action,
     ActionDecor,
     ActionEnt,
@@ -193,6 +194,17 @@ def transfer_action_to_tile_target(action: Action) -> Action:
     return sub_action
 
 
+@ActionDecor
+def set_active_tile(ent: ActionEnt) -> bool:
+    STATE_REF.active_tile = ent
+    return True
+
+
+@ActionDecor
+def reset_active_tile(ent: ActionEnt) -> bool:
+    return set_active_tile(None, True)
+
+
 def get_move_realtive_action(pos: Tuple[int, int]) -> Action:
     @ActionDecor
     def action(ent: ActionEnt) -> bool:
@@ -213,6 +225,8 @@ def get_move_realtive_action(pos: Tuple[int, int]) -> Action:
             reset_tile_target(ent, True)
             return False
         reset_tile_target(ent, True)
+
+        set_active_tile(target_ent, True)
 
         return select_tile(target_ent, True)
 

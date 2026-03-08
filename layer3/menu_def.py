@@ -5,18 +5,13 @@ from typing import Dict, List, Tuple
 
 from common import (
     SETTINGS_REF,
-    ColorEnum,
     PriceEnum,
     WorldEnum,
     end_player_phase_action,
 )
 from layer1 import (
     OrganizationEnum,
-    ParticleType,
-    clear_all_particles_action,
-    clear_particles_action,
     draw_card,
-    get_random_spawn_particle_action,
     get_set_order_action,
     sort_hand,
 )
@@ -28,7 +23,6 @@ from layer2 import (
     set_slider_val,
     toggle_sound,
 )
-from layer3.actions import get_spawn_dots_between_coords_action
 
 from .text_functions import (
     get_fps_str,
@@ -201,49 +195,6 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
                     "Draw Card",
                     UIElemType.BUTTON,
                     click_func=[draw_card],
-                ),
-                (0, 4),
-                ButtonData(
-                    "Spawn Particles",
-                    UIElemType.BUTTON,
-                    clicking_func=[
-                        get_random_spawn_particle_action(
-                            t=ParticleType.CIRCLE,
-                            col=ColorEnum.WHITE.value,
-                            random_range=50,
-                            pos=(200, 100),
-                            drag=5,
-                            mass=10,
-                            time=6000,
-                            particle_count=1,
-                        )
-                    ],
-                    click_func=[clear_particles_action],
-                ),
-                (0, 1),
-                ButtonData(
-                    "Spawn Line",
-                    UIElemType.BUTTON,
-                    clicking_func=[
-                        get_spawn_dots_between_coords_action(
-                            (0, 0),
-                            (
-                                SETTINGS_REF.ISO_MAP_WIDTH - 1,
-                                SETTINGS_REF.ISO_MAP_HEIGHT - 1,
-                            ),
-                            arch=60,
-                            height=0,
-                            cnt=13 + 14,
-                            cutoff=4,
-                        )
-                    ],
-                    click_func=[clear_particles_action],
-                ),
-                (0, 1),
-                ButtonData(
-                    "Clear Particles",
-                    UIElemType.BUTTON,
-                    click_func=[clear_all_particles_action],
                 ),
                 (0, 4),
                 ButtonData("Organise by", UIElemType.TEXTBOX, sub_size=(0, 6)),

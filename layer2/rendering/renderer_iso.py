@@ -9,6 +9,7 @@ from common import (
     STATE_REF,
     BoundingBox,
     PriceEnum,
+    lerp1,
 )
 from layer1 import Card, Tile
 from layer2.tags import MaskedSprite
@@ -69,16 +70,23 @@ class IsoRenderer:
             sprite = esper.component_for_entity(ent, MaskedSprite)
             tile = esper.component_for_entity(ent, Tile)
             x, y = tile.offset
-            if ent != selected:
+            select = crosshair
+
+            max_h = SETTINGS_REF.ISO_HEIGHT_MAX_OFFSET
+            min_h = SETTINGS_REF.ISO_HEIGHT_MIN_OFFSET
+            h = lerp1(min_h, max_h, tile.noise_val)
+            y -= round(h)
+
+            if ent != selected and ent != STATE_REF.active_tile:
                 if tile.is_targeted > 0:
                     select = PriceEnum.BLOOD
                 else:
                     select = None
                 y -= SETTINGS_REF.ISO_TILE_SELECT_OFFSET
-            else:
-                select = crosshair
-                if tile.is_targeted > 0:
-                    select = PriceEnum.BLOOD
+            elif ent == STATE_REF.active_tile:
+                y += SETTINGS_REF.ISO_ACTIVE_TILE_SELECT_OFFSET
+            elif tile.is_targeted > 0:
+                select = PriceEnum.BLOOD
             surf = ISO_ASSET_REF.get_surf(tile.terrain, tile.unit, select)
             sprite.mask = ISO_ASSET_REF.get_mask()
 

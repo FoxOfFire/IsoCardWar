@@ -26,6 +26,7 @@ class UnitTypeEnum(IntEnum):
 class Tile:
     x: int
     y: int
+    noise_val: float
     terrain: TerrainEnum
     target: Optional[int] = None
     unit: Optional[UnitTypeEnum] = None

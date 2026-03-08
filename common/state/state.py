@@ -10,6 +10,7 @@ class GameState:
     play_card_func: Optional[Action] = None
     selected_card: Optional[int] = None
     selected_tile: Optional[int] = None
+    active_tile: Optional[int] = None
     hovered_ent: Optional[int] = None
     game_phase: GamePhaseType = GamePhaseType.INIT
     end_player_phase: bool = False
