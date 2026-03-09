@@ -57,8 +57,8 @@ def get_spawn_dots_between_coords_action(
         a_x, a_y = pos_a
         b_x, b_y = pos_b
 
-        start = Tile(a_x, a_y, 0.5, TerrainEnum(1)).offset
-        end = Tile(b_x, b_y, 0.5, TerrainEnum(1)).offset
+        start = Tile(a_x, a_y, 0, 0.5, TerrainEnum(1)).offset
+        end = Tile(b_x, b_y, 0, 0.5, TerrainEnum(1)).offset
         w = SETTINGS_REF.ISO_TILE_OFFSET_X
         h = SETTINGS_REF.ISO_TILE_OFFSET_Y * 3 - height
         start = add2i(start, (w, h))

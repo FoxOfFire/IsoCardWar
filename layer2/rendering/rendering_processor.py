@@ -1,4 +1,4 @@
-from typing import Dict, Optional
+from typing import Dict, List, Optional, Type
 
 import esper
 import pygame
@@ -55,6 +55,14 @@ class RenderingProcessor(esper.Processor):
         if SETTINGS_REF.RENDER_BBS:
             self.bb_renderer.set_camera_type(GameCameraTag)
         logger.info("cameras set")
+
+    def render_custom_masks(
+        self,
+        ent_list: List[int],
+        required_comp: Type,
+        
+    ) -> None:
+        self.mask_renderer.draw_hand_masks(ent_list, required_comp,False)
 
     def process(self) -> None:
         assert self.display is not None

@@ -66,6 +66,8 @@ class MaskRenderer:
             card = esper.try_component(ent, Card)
             if card is not None and card in DECK_REF.hand:
                 return DECK_REF.hand.index(card)
+            if esper.has_component(ent, Tile):
+                return -2
             return -1
 
         def filterer(ent: int) -> bool:
@@ -92,29 +94,45 @@ class MaskRenderer:
 
         return ent_list, selection_list
 
-    def _draw_hand_masks(self, ent_list: List[int]) -> None:
+    def draw_hand_masks(
+        self,
+        ent_list: List[int],
+        required_comp: Type = Card,
+        card_mask: bool = True,
+    ) -> None:
         for ent in ent_list:
-            card = esper.try_component(ent, Card)
+            card = esper.try_component(ent, required_comp)
             sprite = esper.try_component(ent, MaskedSprite)
+
             if (
-                esper.has_component(ent, Tile)
+                (
+                    esper.has_component(ent, Tile)
+                    and isinstance(required_comp(), Card)
+                )
                 or card is None
                 or sprite is None
             ):
                 continue
 
-            sprite.mask.invert()
+            if card_mask:
+                sprite.mask.invert()
             this = ent_list.index(ent)
 
-            for next_ent in range(this + 1, len(ent_list)):
-                if esper.has_component(ent, Tile):
+            for next_ent_id in range(this + 1, len(ent_list)):
+                next_ent = ent_list[next_ent_id]
+                if esper.has_component(next_ent, Tile) and isinstance(
+                    required_comp(), Card
+                ):
                     continue
-                ent = ent_list[next_ent]
 
-                next_card_sprite = esper.try_component(ent, MaskedSprite)
+                next_card_sprite = esper.try_component(next_ent, MaskedSprite)
                 if next_card_sprite is None:
                     continue
-                self._draw_sprite_owerlap(sprite, next_card_sprite)
+                self._draw_sprite_owerlap(
+                    sprite,
+                    next_card_sprite,
+                    erase=not card_mask
+                )
 
     def _draw_selection_to_hand(
         self, ent_list: List[int], selection_list: List[int]
@@ -162,23 +180,26 @@ class MaskRenderer:
         mask_surf = pygame.mask.Mask(screen.get_size())
         mask_surf.fill()
 
+        scol = ColorEnum.MASK_SET.value
+        ucol = ColorEnum.MASK_UNSET.value
+        if not SETTINGS_REF.RENDER_MASKS_IN:
+            scol = ColorEnum.TRANSPARENT.value
+        if not SETTINGS_REF.RENDER_MASKS_OUT:
+            ucol = ColorEnum.TRANSPARENT.value
         for ent in ent_list:
             sprite = esper.component_for_entity(ent, MaskedSprite)
 
             screen.blit(
-                sprite.mask.to_surface(
-                    setcolor=ColorEnum.MASK_SET.value,
-                    unsetcolor=ColorEnum.MASK_UNSET.value,
-                ),
+                sprite.mask.to_surface(setcolor=scol, unsetcolor=ucol),
                 sprite.rect,
             )
 
     def draw(self, screen: pygame.Surface) -> None:
         ent_list, selection_list = self._get_sorted_hand_and_selection()
 
-        self._draw_hand_masks(ent_list)
+        self.draw_hand_masks(ent_list)
         self._draw_selection_to_hand(ent_list, selection_list)
         self._invert_hand(ent_list)
         self._draw_selection_to_selected()
-        if SETTINGS_REF.RENDER_MASKS:
+        if SETTINGS_REF.RENDER_MASKS_IN or SETTINGS_REF.RENDER_MASKS_OUT:
             self._draw_mask_on_screen(screen, ent_list + selection_list)

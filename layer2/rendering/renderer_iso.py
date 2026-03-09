@@ -9,7 +9,6 @@ from common import (
     STATE_REF,
     BoundingBox,
     PriceEnum,
-    lerp1,
 )
 from layer1 import Card, Tile
 from layer2.tags import MaskedSprite
@@ -72,10 +71,7 @@ class IsoRenderer:
             x, y = tile.offset
             select = crosshair
 
-            max_h = SETTINGS_REF.ISO_HEIGHT_MAX_OFFSET
-            min_h = SETTINGS_REF.ISO_HEIGHT_MIN_OFFSET
-            h = lerp1(min_h, max_h, tile.noise_val)
-            y -= round(h)
+            y += tile.z
 
             if ent != selected and ent != STATE_REF.active_tile:
                 if tile.is_targeted > 0:
@@ -88,6 +84,5 @@ class IsoRenderer:
             elif tile.is_targeted > 0:
                 select = PriceEnum.BLOOD
             surf = ISO_ASSET_REF.get_surf(tile.terrain, tile.unit, select)
-            sprite.mask = ISO_ASSET_REF.get_mask()
 
             screen.blit(surf, (x, y))

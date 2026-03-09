@@ -5,7 +5,7 @@ import esper
 import pygame
 from perlin_noise import PerlinNoise
 
-from common import SETTINGS_REF, Action, BoundingBox, Untracked
+from common import SETTINGS_REF, Action, BoundingBox, Untracked, lerp1
 
 from .tile import TerrainEnum, Tile, UnitTypeEnum
 
@@ -45,7 +45,6 @@ class MapData:
                 noise_val = (noise_val + 1) / 2
                 row.append(noise_val)
             self._perlin_noise.append(row)
-        print(self._perlin_noise)
 
     def __init__(self) -> None:
         self._generate_noise()
@@ -121,11 +120,14 @@ class MapData:
             while unit == UnitTypeEnum.WITCH or unit is None:
                 unit = UnitTypeEnum(randint(1, len(list(UnitTypeEnum))))
 
-        tile = Tile(i, j, noise_val, terrain, unit=unit)
+        min_z = SETTINGS_REF.ISO_HEIGHT_MIN_OFFSET
+        max_z = SETTINGS_REF.ISO_HEIGHT_MAX_OFFSET
+        z = -round(lerp1(min_z, max_z, noise_val))
+        tile = Tile(i, j, z, noise_val, terrain, unit=unit)
 
         sprite_offset = (
             tile.x_offset,
-            tile.y_offset + SETTINGS_REF.ISO_TILE_OFFSET_Y * 2,
+            tile.y_offset + SETTINGS_REF.ISO_TILE_OFFSET_Y * 2 + z,
         )
         sprite_size = (
             SETTINGS_REF.ISO_TILE_OFFSET_X * 2,
@@ -134,8 +136,8 @@ class MapData:
         bb = BoundingBox(
             tile.x_offset,
             tile.x_offset + SETTINGS_REF.ISO_TILE_OFFSET_X * 2,
-            tile.y_offset + SETTINGS_REF.ISO_TILE_OFFSET_Y * 2,
-            tile.y_offset + SETTINGS_REF.ISO_TILE_OFFSET_Y * 4,
+            tile.y_offset + SETTINGS_REF.ISO_TILE_OFFSET_Y * 2 + z,
+            tile.y_offset + SETTINGS_REF.ISO_TILE_OFFSET_Y * 4 + z,
         )
         assert (
             self._sprite is not None and self._particle_generator is not None

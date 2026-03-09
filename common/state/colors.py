@@ -36,6 +36,6 @@ class ColorEnum(Enum):
     TRANSPARENT = Color("#00000000")
 
     ERROR = Color("#ff00ff")
-    MASK_SET = Color("#ffffff50")
-    MASK_UNSET = Color("#00000050")
+    MASK_SET = Color("#ffffff80")
+    MASK_UNSET = Color("#00000080")
     BB_DISPLAY = Color("#a0a0a050")

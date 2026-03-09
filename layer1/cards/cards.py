@@ -12,11 +12,11 @@ from .log import logger
 
 @dataclass
 class Card:
-    name: str
-    description: str
-    price: Dict[PriceEnum, int]
-    effects: List[Action]
-    type_enum: CardTypeEnum
+    name: str = ""
+    description: str = ""
+    price: Optional[Dict[PriceEnum, int]] = None
+    effects: Optional[List[Action]] = None
+    type_enum: CardTypeEnum = CardTypeEnum.DRAW
 
 
 class Deck:

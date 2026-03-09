@@ -24,10 +24,11 @@ class UnitTypeEnum(IntEnum):
 
 @dataclass
 class Tile:
-    x: int
-    y: int
-    noise_val: float
-    terrain: TerrainEnum
+    x: int = 0
+    y: int = 0
+    z: int = 0
+    noise_val: float = 0.5
+    terrain: TerrainEnum = TerrainEnum(1)
     target: Optional[int] = None
     unit: Optional[UnitTypeEnum] = None
     is_targeted: int = 0
