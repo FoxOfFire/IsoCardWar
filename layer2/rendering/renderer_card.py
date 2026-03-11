@@ -62,6 +62,7 @@ class CardRenderer:
             bb = esper.component_for_entity(ent, BoundingBox)
             surf = CARD_ASSET_REF.get_saved_card_surf(0, card.type_enum)
             if surf is None:
+                assert card.price is not None
                 prices = []
                 for res in PriceEnum:
                     prices.append(card.price[res])

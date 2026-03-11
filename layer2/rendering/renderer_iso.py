@@ -66,7 +66,6 @@ class IsoRenderer:
                 crosshair = PriceEnum.MANA
 
         for ent in ent_list:
-            sprite = esper.component_for_entity(ent, MaskedSprite)
             tile = esper.component_for_entity(ent, Tile)
             x, y = tile.offset
             select = crosshair

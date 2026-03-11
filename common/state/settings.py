@@ -8,7 +8,7 @@ class Settings:
     # debug
     RENDER_BBS = False
     RENDER_MASKS_OUT = False
-    RENDER_MASKS_IN = True
+    RENDER_MASKS_IN = False
 
     # Logging
     LOG_TICK_PERFORMANCE = False
@@ -63,8 +63,8 @@ class Settings:
 
     ISO_MAP_SEED = 1013
     ISO_NOISE_THRESHOLDS = [0.425, 0.575, 1.0]
-    ISO_MAP_HEIGHT =8 
-    ISO_MAP_WIDTH =8 
+    ISO_MAP_HEIGHT = 8
+    ISO_MAP_WIDTH = 8
 
     ISO_TILE_SPRITE_HEIGHT = 64
     ISO_TILE_SPRITE_WIDTH = 32

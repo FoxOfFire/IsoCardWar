@@ -113,7 +113,7 @@ def spawn_iso_elem(map_sprite: Type) -> None:
 
     def sorter(ent: int) -> int:
         sprite = esper.component_for_entity(ent, MaskedSprite)
-        return sprite.rect.top
+        return -sprite.rect.top
 
     ent_list = sorted(ent_list, key=sorter, reverse=True)
     for ent in ent_list:

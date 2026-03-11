@@ -129,9 +129,7 @@ class MaskRenderer:
                 if next_card_sprite is None:
                     continue
                 self._draw_sprite_owerlap(
-                    sprite,
-                    next_card_sprite,
-                    erase=not card_mask
+                    sprite, next_card_sprite, erase=not card_mask
                 )
 
     def _draw_selection_to_hand(
@@ -196,10 +194,15 @@ class MaskRenderer:
 
     def draw(self, screen: pygame.Surface) -> None:
         ent_list, selection_list = self._get_sorted_hand_and_selection()
+        isoless_ent_list = list(
+            filter(
+                lambda ent: not esper.has_component(ent, Tile), ent_list.copy()
+            )
+        )
 
-        self.draw_hand_masks(ent_list)
-        self._draw_selection_to_hand(ent_list, selection_list)
-        self._invert_hand(ent_list)
+        self.draw_hand_masks(isoless_ent_list)
+        self._draw_selection_to_hand(isoless_ent_list, selection_list)
+        self._invert_hand(isoless_ent_list)
         self._draw_selection_to_selected()
         if SETTINGS_REF.RENDER_MASKS_IN or SETTINGS_REF.RENDER_MASKS_OUT:
             self._draw_mask_on_screen(screen, ent_list + selection_list)

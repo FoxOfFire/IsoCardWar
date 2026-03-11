@@ -38,6 +38,7 @@ def play_card(target: ActionEnt) -> bool:
         if card is None:
             return False
     if target is not None:
+        assert card.price is not None and card.effects is not None
         for price in card.price:
             if STATE_REF.resources[price] < card.price[price]:
                 return False

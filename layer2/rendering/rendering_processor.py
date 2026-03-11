@@ -60,9 +60,8 @@ class RenderingProcessor(esper.Processor):
         self,
         ent_list: List[int],
         required_comp: Type,
-        
     ) -> None:
-        self.mask_renderer.draw_hand_masks(ent_list, required_comp,False)
+        self.mask_renderer.draw_hand_masks(ent_list, required_comp, False)
 
     def process(self) -> None:
         assert self.display is not None
