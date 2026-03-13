@@ -60,17 +60,21 @@ class CardRenderer:
                 continue
 
             bb = esper.component_for_entity(ent, BoundingBox)
-            prices = []
-            for res in PriceEnum:
-                prices.append(card.price[res])
-            mana, herbs, blood, brew = tuple(prices)
-            surf = CARD_ASSET_REF.get_card_surf(
-                border=CardTypeEnum.BASIC,
-                image=CardImageEnum.BASIC_IMAGE,
-                prices=(mana, herbs, blood, brew),
-                frame=0,
-            ).copy()
-            FONT_ASSET_REF.draw_text_on_surf(surf, ent)
+            surf = CARD_ASSET_REF.get_saved_card_surf(0, card.type_enum)
+            if surf is None:
+                assert card.price is not None
+                prices = []
+                for res in PriceEnum:
+                    prices.append(card.price[res])
+                mana, herbs, blood, brew = tuple(prices)
+                surf = CARD_ASSET_REF.get_card_surf(
+                    border=CardTypeEnum.BASIC,
+                    image=CardImageEnum.BASIC_IMAGE,
+                    prices=(mana, herbs, blood, brew),
+                    frame=0,
+                    card_type=card.type_enum,
+                )
+                FONT_ASSET_REF.draw_text_on_surf(surf, ent)
 
             sprite.mask = pygame.mask.from_surface(surf)
 

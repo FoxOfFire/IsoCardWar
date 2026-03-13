@@ -3,8 +3,9 @@ from typing import Any, Callable, Dict, List, Optional, Tuple, Type
 
 import esper
 import pygame
+from perlin_noise import PerlinNoise
 
-from common import SETTINGS_REF, Action, BoundingBox, Untracked
+from common import SETTINGS_REF, Action, BoundingBox, Untracked, lerp1
 
 from .tile import TerrainEnum, Tile, UnitTypeEnum
 
@@ -16,6 +17,42 @@ class MapData:
     _ents: Dict[int, Tuple[int, int]] = {}
     _unit_actions: Dict[UnitTypeEnum | None, List[Action]] = {}
     _unit_telegraphs: Dict[UnitTypeEnum | None, List[Action]] = {}
+    _unit_productions: Dict[UnitTypeEnum | None, List[Action]] = {}
+    _perlin_noise: List[List[float]] = []
+
+    def _generate_noise(self) -> None:
+        seed = SETTINGS_REF.NOISE_SEED
+        octaves = SETTINGS_REF.NOISE_LAYERS
+        scale = SETTINGS_REF.NOISE_SCALE
+        roughness = SETTINGS_REF.NOISE_ROUGHNESS
+        persistence = SETTINGS_REF.NOISE_PERISITANCE
+
+        x = SETTINGS_REF.ISO_MAP_WIDTH
+        y = SETTINGS_REF.ISO_MAP_HEIGHT
+
+        noise = PerlinNoise(octaves=octaves, seed=seed)
+
+        self._perlin_noise: List[List[float]] = []
+        for i in range(x):
+            row: List[float] = []
+            for j in range(y):
+                pos_x = i / (x / scale)
+                pos_y = j / (y / scale)
+                noise_val = 0.0
+                freq = 1
+                fac = 1.0
+                for k in range(octaves):
+                    pos_x = pos_x * freq + k * 0.72354
+                    pos_y = pos_y * freq + k * 0.72354
+                    noise_val += noise([pos_x, pos_y]) * fac
+                    freq *= roughness
+                    fac *= persistence
+                noise_val = (noise_val + 1) / 2
+                row.append(noise_val)
+            self._perlin_noise.append(row)
+
+    def __init__(self) -> None:
+        self._generate_noise()
 
     def set_particle_generator(self, tag: Type) -> None:
         self._particle_generator = tag
@@ -31,9 +68,25 @@ class MapData:
     def get_actions_for_type(
         self, unit: Optional[UnitTypeEnum]
     ) -> List[Action]:
-        return self._unit_actions[unit]
+        actions = self._unit_actions.get(unit)
+        if actions is None:
+            return []
+        return actions
 
-    def set_telegraph_for_type(
+    def set_productions_for_type(
+        self, actions: Dict[Optional[UnitTypeEnum], List[Action]]
+    ) -> None:
+        self._unit_productions.update(actions)
+
+    def get_productions_for_type(
+        self, unit: Optional[UnitTypeEnum]
+    ) -> List[Action]:
+        actions = self._unit_productions.get(unit)
+        if actions is None:
+            return []
+        return actions
+
+    def set_telegraphs_for_type(
         self, telegraphs: Dict[Optional[UnitTypeEnum], List[Action]]
     ) -> None:
         self._unit_telegraphs.update(telegraphs)
@@ -41,7 +94,10 @@ class MapData:
     def get_telegraphs_for_type(
         self, unit: Optional[UnitTypeEnum]
     ) -> List[Action]:
-        return self._unit_telegraphs[unit]
+        actions = self._unit_telegraphs.get(unit)
+        if actions is None:
+            return []
+        return actions
 
     def _spawn_iso_item_at(
         self,
@@ -50,25 +106,38 @@ class MapData:
         rpos: Tuple[int, int],
         get_ui_component: Callable[[], Any],
     ) -> None:
-        terrain = TerrainEnum(randint(1, len(list(TerrainEnum))))
+        noise_val = self._perlin_noise[i][j]
+        terrain = TerrainEnum(1)
+        for k in range(len(list(TerrainEnum))):
+            if noise_val < SETTINGS_REF.NOISE_THRESHOLDS[k]:
+                terrain = TerrainEnum(k + 1)
+                break
         unit: Optional[UnitTypeEnum] = None
 
         if (j, i) == rpos:
+            noise_val = 0.5
             terrain = TerrainEnum.GRASS
             unit = UnitTypeEnum.WITCH
         elif (
-            randint(0, 2) == 0
+            randint(0, SETTINGS_REF.ISO_MAP_HEIGHT // 2) == 0
             and terrain != TerrainEnum.WATER
-            and terrain != TerrainEnum.EMPTY
         ):
             while unit == UnitTypeEnum.WITCH or unit is None:
                 unit = UnitTypeEnum(randint(1, len(list(UnitTypeEnum))))
 
-        tile = Tile(i, j, terrain, unit=unit)
+        min_z = SETTINGS_REF.ISO_HEIGHT_MIN_OFFSET
+        max_z = SETTINGS_REF.ISO_HEIGHT_MAX_OFFSET
+        if terrain == TerrainEnum.WATER:
+            z = -round(
+                lerp1(min_z, max_z, SETTINGS_REF.NOISE_THRESHOLDS[0]) - 1.5
+            )
+        else:
+            z = -round(lerp1(min_z, max_z, noise_val))
+        tile = Tile(i, j, z, noise_val, terrain, unit=unit)
 
         sprite_offset = (
             tile.x_offset,
-            tile.y_offset + SETTINGS_REF.ISO_TILE_OFFSET_Y * 2,
+            tile.y_offset + SETTINGS_REF.ISO_TILE_OFFSET_Y * 2 + z,
         )
         sprite_size = (
             SETTINGS_REF.ISO_TILE_OFFSET_X * 2,
@@ -77,8 +146,8 @@ class MapData:
         bb = BoundingBox(
             tile.x_offset,
             tile.x_offset + SETTINGS_REF.ISO_TILE_OFFSET_X * 2,
-            tile.y_offset + SETTINGS_REF.ISO_TILE_OFFSET_Y * 2,
-            tile.y_offset + SETTINGS_REF.ISO_TILE_OFFSET_Y * 4,
+            tile.y_offset + SETTINGS_REF.ISO_TILE_OFFSET_Y * 2 + z,
+            tile.y_offset + SETTINGS_REF.ISO_TILE_OFFSET_Y * 4 + z,
         )
         assert (
             self._sprite is not None and self._particle_generator is not None
@@ -100,6 +169,9 @@ class MapData:
         for i in range(h):
             for j in range(w):
                 self._spawn_iso_item_at(i, j, rpos, get_ui_component)
+
+    def valid_ent_pos(self, pos: Tuple[int, int]) -> bool:
+        return self._tiles.get(pos) is not None
 
     def ent_at(self, pos: Tuple[int, int]) -> int:
         return self._tiles[pos]

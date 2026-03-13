@@ -8,6 +8,7 @@ from common import (
     SETTINGS_REF,
     STATE_REF,
     BoundingBox,
+    ColorEnum,
     PriceEnum,
 )
 from layer1 import Card, Tile
@@ -66,20 +67,31 @@ class IsoRenderer:
                 crosshair = PriceEnum.MANA
 
         for ent in ent_list:
-            sprite = esper.component_for_entity(ent, MaskedSprite)
             tile = esper.component_for_entity(ent, Tile)
             x, y = tile.offset
-            if ent != selected:
+            select = crosshair
+
+            y += tile.z
+
+            if ent != selected and ent != STATE_REF.active_tile:
                 if tile.is_targeted > 0:
                     select = PriceEnum.BLOOD
                 else:
                     select = None
                 y -= SETTINGS_REF.ISO_TILE_SELECT_OFFSET
-            else:
-                select = crosshair
-                if tile.is_targeted > 0:
-                    select = PriceEnum.BLOOD
+            elif ent == STATE_REF.active_tile:
+                y += SETTINGS_REF.ISO_ACTIVE_TILE_SELECT_OFFSET
+            elif tile.is_targeted > 0:
+                select = PriceEnum.BLOOD
             surf = ISO_ASSET_REF.get_surf(tile.terrain, tile.unit, select)
-            sprite.mask = ISO_ASSET_REF.get_mask()
 
             screen.blit(surf, (x, y))
+            if SETTINGS_REF.RENDER_PERLIN_HEIGHT:
+                k = round(255.0 * (1.0 - tile.noise_val))
+                n = round(255.0 * tile.noise_val)
+                mask = esper.component_for_entity(ent, MaskedSprite)
+                m_surf = mask.mask.to_surface(
+                    setcolor=pygame.Color(k, n, (n + k) // 3, 255),
+                    unsetcolor=ColorEnum.TRANSPARENT.value,
+                )
+                screen.blit(m_surf, mask.rect)

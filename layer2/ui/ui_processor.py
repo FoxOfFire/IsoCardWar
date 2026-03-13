@@ -114,7 +114,7 @@ class UIProcessor(esper.Processor):
             ):
                 continue
 
-            tag.state = UIStateEnum.BASE
+            tag.state = UIStateEnum.HOVER
             trig = True
             for func in tag.click_func:
                 trig = func(ent, trig)

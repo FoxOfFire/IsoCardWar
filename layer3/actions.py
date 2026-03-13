@@ -1,23 +1,45 @@
 from typing import Optional, Tuple
 
 import esper
+import pygame
 
 from common import (
     SETTINGS_REF,
     Action,
     ActionDecor,
     ActionEnt,
-    ColorEnum,
     add2i,
     lerp2,
+    shuffle_list,
 )
 from layer1 import (
     MAP_DATA_REF,
     ParticleType,
     TerrainEnum,
     Tile,
+    get_move_realtive_action,
     get_spawn_static_particle_action,
+    get_wait_ms_action,
+    reset_tile_target,
 )
+
+
+def random_walk(dist: int = 4, pause_ms: int = 100) -> Action:
+    @ActionDecor
+    def action(ent: ActionEnt) -> bool:
+        if not reset_tile_target(ent, True):
+            return False
+        dirs = [(1, 0), (0, 1), (-1, 0), (0, -1)]
+        for _ in range(dist):
+            dirs = shuffle_list(dirs)
+            for i in range(4):
+                if get_move_realtive_action(dirs[i])(ent, True):
+                    break
+            get_wait_ms_action(pause_ms)(ent, True)
+
+        return True
+
+    return action
 
 
 def get_spawn_dots_between_coords_action(
@@ -28,14 +50,15 @@ def get_spawn_dots_between_coords_action(
     height: int,
     cnt: int,
     cutoff: int,
+    col: pygame.Color,
 ) -> Action:
     @ActionDecor
     def action(ent: ActionEnt) -> bool:
         a_x, a_y = pos_a
         b_x, b_y = pos_b
 
-        start = Tile(a_x, a_y, TerrainEnum.EMPTY).offset
-        end = Tile(b_x, b_y, TerrainEnum.EMPTY).offset
+        start = Tile(a_x, a_y, 0, 0.5, TerrainEnum(1)).offset
+        end = Tile(b_x, b_y, 0, 0.5, TerrainEnum(1)).offset
         w = SETTINGS_REF.ISO_TILE_OFFSET_X
         h = SETTINGS_REF.ISO_TILE_OFFSET_Y * 3 - height
         start = add2i(start, (w, h))
@@ -44,7 +67,6 @@ def get_spawn_dots_between_coords_action(
         for i in range(cnt):
             alpha: float = 0
             t = i / (cnt - 1)
-            col = ColorEnum.RED.value
             if i < cutoff:
                 alpha += 1 - (i) / (cutoff)
             if i >= cnt - cutoff:
@@ -65,7 +87,9 @@ def get_spawn_dots_between_coords_action(
     return action
 
 
-def get_spawn_dots_between_ent_and_target(cutoff: Optional[int]) -> Action:
+def get_spawn_dots_between_ent_and_target(
+    cutoff: Optional[int], arch: int, col: pygame.Color
+) -> Action:
 
     @ActionDecor
     def action(ent: ActionEnt) -> bool:
@@ -84,16 +108,17 @@ def get_spawn_dots_between_ent_and_target(cutoff: Optional[int]) -> Action:
         diff = diff * 4 - 1
 
         if cutoff is None:
-            cut = diff
+            cut = 5 * diff
         else:
             cut = cutoff
         return get_spawn_dots_between_coords_action(
             ent_pos,
             target_pos,
-            arch=60,
+            arch=arch,
             height=0,
             cnt=max(diff, 8),
             cutoff=cut,
+            col=col,
         )(ent, True)
 
     return action

@@ -1,4 +1,3 @@
-import random
 from typing import Any, Optional
 
 import esper
@@ -10,6 +9,7 @@ from common import (
     ActionDecor,
     ActionEnt,
     Health,
+    shuffle_list,
 )
 
 from .card_utils import OrganizationEnum
@@ -38,6 +38,7 @@ def play_card(target: ActionEnt) -> bool:
         if card is None:
             return False
     if target is not None:
+        assert card.price is not None and card.effects is not None
         for price in card.price:
             if STATE_REF.resources[price] < card.price[price]:
                 return False
@@ -122,14 +123,7 @@ def sort_hand(_: ActionEnt = None) -> bool:
 
 @ActionDecor
 def shuffle_deck(_: ActionEnt = None) -> bool:
-    new = []
-    while len(DECK_REF.deck) > 0:
-        new.append(
-            DECK_REF.deck.pop(
-                random.randint(0, len(DECK_REF.deck) - 1),
-            )
-        )
-    DECK_REF.deck = new
+    DECK_REF.deck = shuffle_list(DECK_REF.deck)
     return True
 
 

@@ -7,6 +7,7 @@ from common import (
     SETTINGS_REF,
     Action,
     BoundingBox,
+    ColorEnum,
     Health,
     Untracked,
     hover,
@@ -19,9 +20,12 @@ from layer1 import (
     Card,
     CardTypeEnum,
     ParticleGenerator,
+    Tile,
     clear_particles_action,
 )
 from layer2 import (
+    ISO_ASSET_REF,
+    RENDER_PROC_REF,
     MaskedSprite,
     SoundTypeEnum,
     TextData,
@@ -36,21 +40,24 @@ from .log import logger
 
 
 def get_ui_component() -> UIElementComponent:
+    cutoff = SETTINGS_REF.ISO_TARGET_CUTOFF
+    red = ColorEnum.RED.value
+    orange = ColorEnum.BROWN_LIGHT.value
     click_func: List[Action] = [
         clear_particles_action,
         reset_trigger,
-        get_spawn_dots_between_ent_and_target(SETTINGS_REF.ISO_TARGET_CUTOFF),
+        get_spawn_dots_between_ent_and_target(cutoff, 0, red),
         reset_trigger,
         card_guard(play_card),
     ]
     click_start_func: List[Action] = [
         clear_particles_action,
         reset_trigger,
-        get_spawn_dots_between_ent_and_target(None),
+        get_spawn_dots_between_ent_and_target(None, 0, orange),
     ]
     click_cancel_func: List[Action] = [
         clear_particles_action,
-        get_spawn_dots_between_ent_and_target(SETTINGS_REF.ISO_TARGET_CUTOFF),
+        get_spawn_dots_between_ent_and_target(cutoff, 0, red),
     ]
     hover_func: List[Action] = [
         hover,
@@ -58,7 +65,7 @@ def get_ui_component() -> UIElementComponent:
     clicking_func: List[Action] = []
     start_hover_func: List[Action] = [
         clear_particles_action,
-        get_spawn_dots_between_ent_and_target(SETTINGS_REF.ISO_TARGET_CUTOFF),
+        get_spawn_dots_between_ent_and_target(cutoff, 0, red),
     ]
     end_hover_func: List[Action] = [
         hover,
@@ -101,6 +108,18 @@ def spawn_iso_elem(map_sprite: Type) -> None:
     if SETTINGS_REF.LOG_SPAWNING:
         logger.info(f"map ui elem created:{ui_bb.points}")
     MAP_DATA_REF.make_map(get_ui_component)
+
+    ent_list = [ent for ent, _ in esper.get_component(Tile)]
+
+    def sorter(ent: int) -> int:
+        sprite = esper.component_for_entity(ent, MaskedSprite)
+        return -sprite.rect.top
+
+    ent_list = sorted(ent_list, key=sorter, reverse=True)
+    for ent in ent_list:
+        sprite = esper.component_for_entity(ent, MaskedSprite)
+        sprite.mask = ISO_ASSET_REF.get_mask()
+    RENDER_PROC_REF().render_custom_masks(ent_list, Tile)
 
 
 def spawn_card_ent(card: Card, /) -> int:

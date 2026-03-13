@@ -5,18 +5,13 @@ from typing import Dict, List, Tuple
 
 from common import (
     SETTINGS_REF,
-    ColorEnum,
     PriceEnum,
     WorldEnum,
     end_player_phase_action,
 )
 from layer1 import (
     OrganizationEnum,
-    ParticleType,
-    clear_all_particles_action,
-    clear_particles_action,
     draw_card,
-    get_random_spawn_particle_action,
     get_set_order_action,
     sort_hand,
 )
@@ -28,15 +23,15 @@ from layer2 import (
     set_slider_val,
     toggle_sound,
 )
-from layer3.actions import get_spawn_dots_between_coords_action
 
 from .text_functions import (
     get_fps_str,
     get_game_phase_str,
     get_game_world_str,
     get_particle_count_str,
-    get_resource_amount,
+    get_resource_amount_str,
     get_tracked_bb_of_type_str,
+    get_turn_counter_str,
 )
 from .utils import ButtonData
 
@@ -70,7 +65,7 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
             (SnapHorisontalEnum.CENTER, SnapVerticalEnum.CENTER),
             4,
             [
-                ButtonData("Settings", UIElemType.TEXTBOX, (6, 1), (0, 4)),
+                ButtonData("Settings", UIElemType.TEXTBOX, (8, 1), (0, 6)),
                 (0, 4),
                 ButtonData(
                     "Mute Game",
@@ -100,7 +95,7 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
             (SnapHorisontalEnum.CENTER, SnapVerticalEnum.CENTER),
             4,
             [
-                ButtonData("Main Menu", UIElemType.TEXTBOX, (6, 1), (0, 6)),
+                ButtonData("Main Menu", UIElemType.TEXTBOX, (8, 1), (0, 6)),
                 (0, 4),
                 ButtonData(
                     "Continue",
@@ -125,28 +120,28 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
             4,
             [
                 ButtonData(
-                    partial(get_resource_amount, PriceEnum.MANA),
+                    partial(get_resource_amount_str, PriceEnum.MANA),
                     UIElemType.ICON,
                     (3, 1),
                     button_default_data=0,
                 ),
                 (2, 0),
                 ButtonData(
-                    partial(get_resource_amount, PriceEnum.HERBS),
+                    partial(get_resource_amount_str, PriceEnum.HERBS),
                     UIElemType.ICON,
                     (3, 1),
                     button_default_data=1,
                 ),
                 (2, 0),
                 ButtonData(
-                    partial(get_resource_amount, PriceEnum.BLOOD),
+                    partial(get_resource_amount_str, PriceEnum.BLOOD),
                     UIElemType.ICON,
                     (3, 1),
                     button_default_data=2,
                 ),
                 (2, 0),
                 ButtonData(
-                    partial(get_resource_amount, PriceEnum.BREW),
+                    partial(get_resource_amount_str, PriceEnum.BREW),
                     UIElemType.ICON,
                     (3, 1),
                     button_default_data=3,
@@ -159,7 +154,7 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
             (SnapHorisontalEnum.RIGHT, SnapVerticalEnum.TOP),
             4,
             [
-                ButtonData("Info", UIElemType.TEXTBOX, (6, 1), (0, 4)),
+                ButtonData("Info", UIElemType.TEXTBOX, (7, 1), (0, 6)),
                 (0, 4),
                 ButtonData(get_fps_str, UIElemType.TEXTBOX),
                 (0, 1),
@@ -167,15 +162,9 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
                 (0, 1),
                 ButtonData(get_game_world_str, UIElemType.TEXTBOX),
                 (0, 4),
-                ButtonData(
-                    get_tracked_bb_of_type_str,
-                    UIElemType.TEXTBOX,
-                ),
+                ButtonData(get_tracked_bb_of_type_str, UIElemType.TEXTBOX),
                 (0, 1),
-                ButtonData(
-                    get_tracked_bb_of_type_str,
-                    UIElemType.TEXTBOX,
-                ),
+                ButtonData(get_turn_counter_str, UIElemType.TEXTBOX),
                 (0, 1),
                 ButtonData(get_particle_count_str, UIElemType.TEXTBOX),
                 (0, 4),
@@ -186,7 +175,7 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
             (SnapHorisontalEnum.LEFT, SnapVerticalEnum.TOP),
             4,
             [
-                ButtonData("Menu", UIElemType.TEXTBOX, (6, 1), (0, 4)),
+                ButtonData("Menu", UIElemType.TEXTBOX, (7, 1), (0, 6)),
                 (0, 2),
                 ButtonData(
                     "Main Menu",
@@ -194,7 +183,7 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
                     click_func=[get_switch_world_action(WorldEnum.MAIN)],
                 ),
                 (0, 5),
-                ButtonData("Debug", UIElemType.TEXTBOX, sub_size=(0, 4)),
+                ButtonData("Debug", UIElemType.TEXTBOX, sub_size=(0, 6)),
                 (0, 2),
                 ButtonData(
                     "End Turn",
@@ -208,50 +197,7 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
                     click_func=[draw_card],
                 ),
                 (0, 4),
-                ButtonData(
-                    "Spawn Particles",
-                    UIElemType.BUTTON,
-                    clicking_func=[
-                        get_random_spawn_particle_action(
-                            t=ParticleType.CIRCLE,
-                            col=ColorEnum.WHITE.value,
-                            random_range=50,
-                            pos=(200, 100),
-                            drag=5,
-                            mass=10,
-                            time=6000,
-                            particle_count=1,
-                        )
-                    ],
-                    click_func=[clear_particles_action],
-                ),
-                (0, 1),
-                ButtonData(
-                    "Spawn Line",
-                    UIElemType.BUTTON,
-                    clicking_func=[
-                        get_spawn_dots_between_coords_action(
-                            (0, 0),
-                            (
-                                SETTINGS_REF.ISO_MAP_WIDTH - 1,
-                                SETTINGS_REF.ISO_MAP_HEIGHT - 1,
-                            ),
-                            arch=60,
-                            height=0,
-                            cnt=13 + 14,
-                            cutoff=4,
-                        )
-                    ],
-                    click_func=[clear_particles_action],
-                ),
-                (0, 1),
-                ButtonData(
-                    "Clear Particles",
-                    UIElemType.BUTTON,
-                    click_func=[clear_all_particles_action],
-                ),
-                (0, 4),
-                ButtonData("Organise by", UIElemType.TEXTBOX, sub_size=(0, 4)),
+                ButtonData("Organise by", UIElemType.TEXTBOX, sub_size=(0, 6)),
                 (0, 2),
                 ButtonData(
                     "Name",

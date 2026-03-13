@@ -10,8 +10,12 @@ def get_tracked_bb_of_type_str() -> str:
     return f"tracked: {str(POS_PROC_REF().tracked_count())}"
 
 
-def get_resource_amount(resource: PriceEnum) -> str:
+def get_resource_amount_str(resource: PriceEnum) -> str:
     return f"{STATE_REF.resources[resource]}"
+
+
+def get_turn_counter_str() -> str:
+    return f"Turn: {STATE_REF.turn}"
 
 
 def get_game_world_str() -> str:

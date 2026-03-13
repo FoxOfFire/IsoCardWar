@@ -14,8 +14,8 @@ fi
 #	SCRIPT_RET=1
 #fi
 
-echo "Running: vulture ."
-if ! vulture .; then
+echo "Running: vulture --exclude *.venv/**.py ."
+if ! vulture . --exclude *.venv/**.py; then
 	SCRIPT_RET=1
 fi
 

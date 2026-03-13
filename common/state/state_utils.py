@@ -27,8 +27,9 @@ class PriceEnum(IntEnum):
 class GamePhaseType(IntEnum):
     INIT = auto()
     BEGIN_GAME = auto()
-    TELEGRAPH = auto()
     PRODUCTION = auto()
+    SPAWNING = auto()
+    TELEGRAPH = auto()
     DRAW = auto()
     PLAYER_ACTION = auto()
     END_OF_TURN = auto()

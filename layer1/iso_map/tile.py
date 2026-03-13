@@ -6,10 +6,9 @@ from common import SETTINGS_REF
 
 
 class TerrainEnum(IntEnum):
-    EMPTY = auto()
-    CONCRETE = auto()
-    GRASS = auto()
     WATER = auto()
+    GRASS = auto()
+    CONCRETE = auto()
 
 
 class UnitTypeEnum(IntEnum):
@@ -25,9 +24,11 @@ class UnitTypeEnum(IntEnum):
 
 @dataclass
 class Tile:
-    x: int
-    y: int
-    terrain: TerrainEnum
+    x: int = 0
+    y: int = 0
+    z: int = 0
+    noise_val: float = 0.5
+    terrain: TerrainEnum = TerrainEnum(1)
     target: Optional[int] = None
     unit: Optional[UnitTypeEnum] = None
     is_targeted: int = 0

@@ -5,6 +5,7 @@ from layer1 import (
     Card,
     CardTypeEnum,
     UnitTypeEnum,
+    clear_particles_action,
     get_change_target_unit_action,
     get_draw_cards_action,
     rotate_target_tile,
@@ -25,6 +26,7 @@ CARD_TYPES_DICT_REF: Dict[CardTypeEnum, Callable[[], Card]] = {
             PriceEnum.BLOOD: 0,
             PriceEnum.BREW: 2,
         },
+        type_enum=CardTypeEnum.DRAW,
     ),
     CardTypeEnum.MANA_PYLON: lambda: Card(
         name="Mana Pylon",
@@ -39,6 +41,7 @@ CARD_TYPES_DICT_REF: Dict[CardTypeEnum, Callable[[], Card]] = {
             PriceEnum.BLOOD: 1,
             PriceEnum.BREW: 1,
         },
+        type_enum=CardTypeEnum.MANA_PYLON,
     ),
     CardTypeEnum.BLOOD_BUCKET: lambda: Card(
         name="Blood Bucket",
@@ -53,6 +56,7 @@ CARD_TYPES_DICT_REF: Dict[CardTypeEnum, Callable[[], Card]] = {
             PriceEnum.BLOOD: 2,
             PriceEnum.BREW: 1,
         },
+        type_enum=CardTypeEnum.BLOOD_BUCKET,
     ),
     CardTypeEnum.CHANGE_TERRAIN: lambda: Card(
         name="Terraform",
@@ -67,6 +71,7 @@ CARD_TYPES_DICT_REF: Dict[CardTypeEnum, Callable[[], Card]] = {
             PriceEnum.BLOOD: 1,
             PriceEnum.BREW: 2,
         },
+        type_enum=CardTypeEnum.CHANGE_TERRAIN,
     ),
     CardTypeEnum.BUSH: lambda: Card(
         name="Berry Bush",
@@ -81,6 +86,7 @@ CARD_TYPES_DICT_REF: Dict[CardTypeEnum, Callable[[], Card]] = {
             PriceEnum.BLOOD: 1,
             PriceEnum.BREW: 0,
         },
+        type_enum=CardTypeEnum.BUSH,
     ),
     CardTypeEnum.CAULDRON: lambda: Card(
         name="Cauldron",
@@ -95,6 +101,7 @@ CARD_TYPES_DICT_REF: Dict[CardTypeEnum, Callable[[], Card]] = {
             PriceEnum.BLOOD: 0,
             PriceEnum.BREW: 0,
         },
+        type_enum=CardTypeEnum.CAULDRON,
     ),
     CardTypeEnum.BIG_CAULDRON: lambda: Card(
         name="Big Cauldron",
@@ -109,12 +116,14 @@ CARD_TYPES_DICT_REF: Dict[CardTypeEnum, Callable[[], Card]] = {
             PriceEnum.BLOOD: 2,
             PriceEnum.BREW: 2,
         },
+        type_enum=CardTypeEnum.BIG_CAULDRON,
     ),
     CardTypeEnum.REMOVE_UNIT: lambda: Card(
         name="Remove unit",
         description="Removes target unit",
         effects=[
             get_change_target_unit_action(None, False),
+            clear_particles_action,
             get_gain_resource_action(PriceEnum.BLOOD, 2),
             get_sound_action(SoundTypeEnum.POP),
         ],
@@ -124,5 +133,6 @@ CARD_TYPES_DICT_REF: Dict[CardTypeEnum, Callable[[], Card]] = {
             PriceEnum.BLOOD: 0,
             PriceEnum.BREW: 2,
         },
+        type_enum=CardTypeEnum.REMOVE_UNIT,
     ),
 }
