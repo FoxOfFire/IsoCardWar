@@ -7,6 +7,7 @@ from .colors import ColorEnum
 class Settings:
     # debug
     RENDER_BBS = False
+    RENDER_PERLIN_HEIGHT = False
     RENDER_MASKS_OUT = False
     RENDER_MASKS_IN = False
 
@@ -59,12 +60,17 @@ class Settings:
 
     MAX_CARD_COUNT = 10
 
-    # map
+    # perlin
+    NOISE_SEED = 1013
+    NOISE_LAYERS = 5
+    NOISE_SCALE = 0.5
+    NOISE_ROUGHNESS = 8
+    NOISE_PERISITANCE = 0.2
+    NOISE_THRESHOLDS = [0.4, 0.6, 1.0]
 
-    ISO_MAP_SEED = 1013
-    ISO_NOISE_THRESHOLDS = [0.425, 0.575, 1.0]
-    ISO_MAP_HEIGHT = 8
-    ISO_MAP_WIDTH = 8
+    # map
+    ISO_MAP_HEIGHT = 10
+    ISO_MAP_WIDTH = 10
 
     ISO_TILE_SPRITE_HEIGHT = 64
     ISO_TILE_SPRITE_WIDTH = 32

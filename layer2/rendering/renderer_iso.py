@@ -8,6 +8,7 @@ from common import (
     SETTINGS_REF,
     STATE_REF,
     BoundingBox,
+    ColorEnum,
     PriceEnum,
 )
 from layer1 import Card, Tile
@@ -85,3 +86,12 @@ class IsoRenderer:
             surf = ISO_ASSET_REF.get_surf(tile.terrain, tile.unit, select)
 
             screen.blit(surf, (x, y))
+            if SETTINGS_REF.RENDER_PERLIN_HEIGHT:
+                k = round(255.0 * (1.0 - tile.noise_val))
+                n = round(255.0 * tile.noise_val)
+                mask = esper.component_for_entity(ent, MaskedSprite)
+                m_surf = mask.mask.to_surface(
+                    setcolor=pygame.Color(k, n, (n + k) // 3, 255),
+                    unsetcolor=ColorEnum.TRANSPARENT.value,
+                )
+                screen.blit(m_surf, mask.rect)

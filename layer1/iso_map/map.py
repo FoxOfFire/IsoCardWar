@@ -21,27 +21,32 @@ class MapData:
     _perlin_noise: List[List[float]] = []
 
     def _generate_noise(self) -> None:
-        seed = SETTINGS_REF.ISO_MAP_SEED
+        seed = SETTINGS_REF.NOISE_SEED
+        octaves = SETTINGS_REF.NOISE_LAYERS
+        scale = SETTINGS_REF.NOISE_SCALE
+        roughness = SETTINGS_REF.NOISE_ROUGHNESS
+        persistence = SETTINGS_REF.NOISE_PERISITANCE
+
         x = SETTINGS_REF.ISO_MAP_WIDTH
         y = SETTINGS_REF.ISO_MAP_HEIGHT
-        scale = 0.2
 
-        noise1 = PerlinNoise(octaves=9, seed=seed)
-        noise2 = PerlinNoise(octaves=9, seed=seed // 4)
-        noise3 = PerlinNoise(octaves=9, seed=seed // 4 * 3)
+        noise = PerlinNoise(octaves=octaves, seed=seed)
 
         self._perlin_noise: List[List[float]] = []
         for i in range(x):
-            row = []
+            row: List[float] = []
             for j in range(y):
-                noise_val = noise1([i / (x / scale), j / (y / scale)])
-                noise_val += 0.5 * noise2(
-                    [i / (x / scale * 2), j / (y / scale * 2)]
-                )
-                noise_val += 0.25 * noise3(
-                    [i / (x / scale * 4), j / (y / scale * 4)]
-                )
-
+                pos_x = i / (x / scale)
+                pos_y = j / (y / scale)
+                noise_val = 0.0
+                freq = 1
+                fac = 1.0
+                for k in range(octaves):
+                    pos_x = pos_x * freq + k * 0.72354
+                    pos_y = pos_y * freq + k * 0.72354
+                    noise_val += noise([pos_x, pos_y]) * fac
+                    freq *= roughness
+                    fac *= persistence
                 noise_val = (noise_val + 1) / 2
                 row.append(noise_val)
             self._perlin_noise.append(row)
@@ -104,7 +109,7 @@ class MapData:
         noise_val = self._perlin_noise[i][j]
         terrain = TerrainEnum(1)
         for k in range(len(list(TerrainEnum))):
-            if noise_val < SETTINGS_REF.ISO_NOISE_THRESHOLDS[k]:
+            if noise_val < SETTINGS_REF.NOISE_THRESHOLDS[k]:
                 terrain = TerrainEnum(k + 1)
                 break
         unit: Optional[UnitTypeEnum] = None
@@ -124,7 +129,7 @@ class MapData:
         max_z = SETTINGS_REF.ISO_HEIGHT_MAX_OFFSET
         if terrain == TerrainEnum.WATER:
             z = -round(
-                lerp1(min_z, max_z, SETTINGS_REF.ISO_NOISE_THRESHOLDS[0]) - 1.5
+                lerp1(min_z, max_z, SETTINGS_REF.NOISE_THRESHOLDS[0]) - 1.5
             )
         else:
             z = -round(lerp1(min_z, max_z, noise_val))
