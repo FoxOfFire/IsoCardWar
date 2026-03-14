@@ -20,7 +20,7 @@ from layer2 import (
     UIElemType,
     get_switch_world_action,
     quit_game,
-    set_slider_val,
+    set_master_volume,
     toggle_sound,
 )
 
@@ -77,8 +77,8 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
                 ButtonData(
                     "Slider",
                     UIElemType.SLIDER,
-                    button_default_data=0.5,
-                    clicking_func=[set_slider_val],
+                    button_default_data=1.0,
+                    clicking_func=[set_master_volume],
                 ),
                 (0, 2),
                 ButtonData(

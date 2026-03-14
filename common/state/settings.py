@@ -22,9 +22,12 @@ class Settings:
     GAME_CAM_WIDTH = GAME_CAM_HEIGHT // 9 * 16
 
     GAME_FULLSCREEN = True
-    GAME_MUTE = True
 
     FPS = 600
+
+    # audio
+    GAME_MUTE = True
+    MASTER_VOLUME: float = 1.0
 
     # defaults
     DEFAULT_RESOURCE_MANA = 99
