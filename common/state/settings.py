@@ -23,7 +23,7 @@ class Settings:
 
     GAME_FULLSCREEN = True
 
-    FPS = 60
+    FPS = 600
 
     # audio
     GAME_MUTE = True
@@ -69,7 +69,7 @@ class Settings:
     NOISE_SCALE = 0.5
     NOISE_ROUGHNESS = 8
     NOISE_PERISITANCE = 0.2
-    NOISE_THRESHOLDS = [0.4, 0.6, 1.0]
+    NOISE_THRESHOLDS = [0.4, 0.6, 0.8, 1.0]
 
     # map
     ISO_MAP_HEIGHT = 10
