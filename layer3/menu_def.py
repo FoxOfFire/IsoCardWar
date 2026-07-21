@@ -167,7 +167,15 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
                 ButtonData(get_turn_counter_str, UIElemType.TEXTBOX),
                 (0, 1),
                 ButtonData(get_particle_count_str, UIElemType.TEXTBOX),
-                (0, 4),
+                (0, 1),
+            ],
+        ),
+        MenuContainer(
+            (0, 0),
+            (SnapHorisontalEnum.CENTER, SnapVerticalEnum.BOTTOM),
+            0,
+            [
+                (SETTINGS_REF.GAME_CAM_WIDTH, SETTINGS_REF.CARD_HEIGHT - 25)
             ],
         ),
         MenuContainer(
@@ -218,7 +226,7 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
                         sort_hand,
                     ],
                 ),
-                (0, 4),
+                (0, 1),
             ],
         ),
     ],

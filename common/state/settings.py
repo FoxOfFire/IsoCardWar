@@ -22,6 +22,7 @@ class Settings:
     GAME_CAM_WIDTH = GAME_CAM_HEIGHT // 9 * 16
 
     GAME_FULLSCREEN = True
+    GAME_MUTE = True
 
     FPS = 600
 
@@ -71,9 +72,8 @@ class Settings:
     NOISE_PERISITANCE = 0.2
     NOISE_THRESHOLDS = [0.4, 0.6, 0.8, 1.0]
 
-    # map
-    ISO_MAP_HEIGHT = 10
-    ISO_MAP_WIDTH = 10
+    ISO_MAP_HEIGHT = 9
+    ISO_MAP_WIDTH = 9
 
     ISO_TILE_SPRITE_HEIGHT = 64
     ISO_TILE_SPRITE_WIDTH = 32
