@@ -83,9 +83,9 @@ class IsoRenderer:
                 y += SETTINGS_REF.ISO_ACTIVE_TILE_SELECT_OFFSET
             elif tile.is_targeted > 0:
                 select = PriceEnum.BLOOD
-            surf = ISO_ASSET_REF.get_surf(tile.terrain, tile.unit, select)
+            surf, offset_x, offset_y = ISO_ASSET_REF.get_surf(tile.terrain, tile.unit, select)
 
-            screen.blit(surf, (x, y))
+            screen.blit(surf, (x+ offset_x, y+offset_y))
             if SETTINGS_REF.RENDER_PERLIN_HEIGHT:
                 k = round(255.0 * (1.0 - tile.noise_val))
                 n = round(255.0 * tile.noise_val)
