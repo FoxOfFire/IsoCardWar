@@ -19,7 +19,7 @@ class IsoAssetContainer:
     _SELECTION_SURFS: Dict[IntEnum, pygame.Surface] = {}
     _COMBINDED_SURFS: Dict[
         Tuple[IntEnum, Optional[IntEnum], Optional[IntEnum]],
-        Tuple[pygame.Surface, int, int],
+        pygame.Surface,
     ] = {}
     _LOADED_IMAGES: bool = False
 
@@ -68,19 +68,11 @@ class IsoAssetContainer:
 
         if SETTINGS_REF.LOG_ASSET_LOADING:
             logger.info(f"added tile sprite: {tile.name, unit, select}")
-        surf_small_rect = surf.get_bounding_rect()
-        surf_small = pygame.Surface(
-            (surf_small_rect.width, surf_small_rect.height),
-            flags=pygame.SRCALPHA,
-        )
-        logger.info("surf rect", surf.get_rect())
-        logger.info("small surf rect", surf_small.get_rect())
-        surf_data = (surf, surf_small_rect.left, surf_small_rect.top)
-        self._COMBINDED_SURFS.update({(tile, unit, select): surf_data})
+        self._COMBINDED_SURFS.update({(tile, unit, select): surf})
 
     def get_surf(
         self, tile: IntEnum, unit: Optional[IntEnum], select: Optional[IntEnum]
-    ) -> Tuple[pygame.Surface, int, int]:
+    ) -> pygame.Surface:
         surf_data = self._COMBINDED_SURFS.get((tile, unit, select))
 
         if surf_data is None:
