@@ -11,7 +11,7 @@ from common import (
     ColorEnum,
     PriceEnum,
 )
-from layer1 import Card, Tile
+from layer1 import Card, TerrainEnum, Tile, UnitTypeEnum
 from layer2.tags import MaskedSprite
 
 from .asset_container_iso import ISO_ASSET_REF
@@ -25,6 +25,7 @@ class IsoRenderer:
         cams = esper.get_component(cam_tag)
         if len(cams) > 0:
             self.bb = esper.component_for_entity(cams[0][0], BoundingBox)
+        ISO_ASSET_REF.init(TerrainEnum, UnitTypeEnum, PriceEnum)
 
     def __init__(self) -> None:
         super().__init__()

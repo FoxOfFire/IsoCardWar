@@ -2,7 +2,7 @@ from typing import Callable, Dict, List, Optional
 
 import esper
 
-from common import RUN_DATA_REF, STATE_REF, Action, GamePhaseType
+from common import RUN_DATA_REF, SETTINGS_REF, STATE_REF, Action, GamePhaseType
 
 from .log import logger
 
@@ -17,7 +17,8 @@ class GamePhaseProcessor(esper.Processor):
             GamePhaseType, Callable[[], List[Action]]
         ] = {}
         self.next_funk_queue: List[Action] = []
-        logger.info("GamePhaseProcessor init finished")
+        if SETTINGS_REF.LOG_GAME_PHASE:
+            logger.info("GamePhaseProcessor init finished")
         self.end_phase = None
 
     def _non_player_phase(self) -> None:
@@ -27,9 +28,11 @@ class GamePhaseProcessor(esper.Processor):
 
         phase: GamePhaseType = STATE_REF.game_phase
 
-        logger.info(f"{esper.current_world, len(self.next_funk_queue)}")
+        if SETTINGS_REF.LOG_GAME_PHASE:
+            logger.info(f"{esper.current_world, len(self.next_funk_queue)}")
         if len(self.next_funk_queue) > 0:
-            logger.info(self.wait)
+            if SETTINGS_REF.LOG_GAME_PHASE:
+                logger.info(self.wait)
             while self.wait == 0 and len(self.next_funk_queue) > 0:
                 self.trigger = self.next_funk_queue.pop()(
                     STATE_REF.selected_tile, self.trigger
@@ -57,11 +60,13 @@ class GamePhaseProcessor(esper.Processor):
     def add_game_phase(
         self, phase: GamePhaseType, func_list: Callable[[], List[Action]]
     ) -> None:
-        logger.info("adding game phase:" + str(phase.name))
+        if SETTINGS_REF.LOG_GAME_PHASE:
+            logger.info("adding game phase:" + str(phase.name))
         self.phase_funk_queue.update({phase: func_list})
 
     def set_end_phase(self, fun: Action) -> None:
-        logger.info("set end phase")
+        if SETTINGS_REF.LOG_GAME_PHASE:
+            logger.info("set end phase")
         self.end_phase = fun
 
 

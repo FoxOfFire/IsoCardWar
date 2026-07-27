@@ -13,9 +13,11 @@ class Settings:
 
     # Logging
     LOG_TICK_PERFORMANCE = False
-    LOG_ASSET_LOADING = True
+    LOG_ASSET_LOADING = False
     LOG_SPAWNING = False
     LOG_PLAY_SOUND = False
+    LOG_MAP_ACTIONS = False
+    LOG_GAME_PHASE = False
 
     # rendering
     GAME_CAM_HEIGHT = 270

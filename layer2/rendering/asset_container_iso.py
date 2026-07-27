@@ -22,6 +22,7 @@ class IsoAssetContainer:
         pygame.Surface,
     ] = {}
     _LOADED_IMAGES: bool = False
+    _GENERATED_DYNAMIC_SURFS = False
 
     def init(
         self,
@@ -29,10 +30,13 @@ class IsoAssetContainer:
         units: Type[IntEnum],
         selects: Type[IntEnum],
     ) -> None:
+        if self._GENERATED_DYNAMIC_SURFS:
+            return
         for tile in list(tiles):
             for unit in list(units) + [None]:
                 for select in list(selects) + [None]:
                     self._generate_surf(tile, unit, select)
+        self._GENERATED_DYNAMIC_SURFS = True
 
     def _generate_surf(
         self, tile: IntEnum, unit: Optional[IntEnum], select: Optional[IntEnum]
