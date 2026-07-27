@@ -66,6 +66,8 @@ class IsoAssetContainer:
             (surf_small_rect.width, surf_small_rect.height),
             flags=pygame.SRCALPHA,
         )
+        logger.info("surf rect", surf.get_rect())
+        logger.info("small surf rect", surf_small.get_rect())
         surf_data = (surf, surf_small_rect.left, surf_small_rect.top)
         self._COMBINDED_SURFS.update({(tile, unit, select): surf_data})
         return surf_data
