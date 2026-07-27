@@ -174,9 +174,7 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
             (0, 0),
             (SnapHorisontalEnum.CENTER, SnapVerticalEnum.BOTTOM),
             0,
-            [
-                (SETTINGS_REF.GAME_CAM_WIDTH, SETTINGS_REF.CARD_HEIGHT - 25)
-            ],
+            [(SETTINGS_REF.GAME_CAM_WIDTH, SETTINGS_REF.CARD_HEIGHT - 25)],
         ),
         MenuContainer(
             (0, 0),

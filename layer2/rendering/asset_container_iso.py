@@ -1,5 +1,5 @@
 from enum import IntEnum
-from typing import Dict, Optional, Tuple
+from typing import Dict, Optional, Tuple, Type
 
 import pygame
 
@@ -23,13 +23,20 @@ class IsoAssetContainer:
     ] = {}
     _LOADED_IMAGES: bool = False
 
-    def get_surf(
-        self, tile: IntEnum, unit: Optional[IntEnum], select: Optional[IntEnum]
-    ) -> Tuple[pygame.Surface, int, int]:
-        surf_data = self._COMBINDED_SURFS.get((tile, unit, select))
-        if surf_data is not None:
-            return surf_data
+    def init(
+        self,
+        tiles: Type[IntEnum],
+        units: Type[IntEnum],
+        selects: Type[IntEnum],
+    ) -> None:
+        for tile in list(tiles):
+            for unit in list(units) + [None]:
+                for select in list(selects) + [None]:
+                    self._generate_surf(tile, unit, select)
 
+    def _generate_surf(
+        self, tile: IntEnum, unit: Optional[IntEnum], select: Optional[IntEnum]
+    ) -> None:
         if not self._LOADED_IMAGES:
             if SETTINGS_REF.LOG_ASSET_LOADING:
                 logger.info("Loaded base images")
@@ -68,6 +75,17 @@ class IsoAssetContainer:
         )
         surf_data = (surf, surf_small_rect.left, surf_small_rect.top)
         self._COMBINDED_SURFS.update({(tile, unit, select): surf_data})
+
+    def get_surf(
+        self, tile: IntEnum, unit: Optional[IntEnum], select: Optional[IntEnum]
+    ) -> Tuple[pygame.Surface, int, int]:
+        surf_data = self._COMBINDED_SURFS.get((tile, unit, select))
+
+        if surf_data is None:
+            self._generate_surf(tile, unit, select)
+            surf_data = self._COMBINDED_SURFS.get((tile, unit, select))
+            assert surf_data is not None
+
         return surf_data
 
     def get_mask(self) -> pygame.Mask:
