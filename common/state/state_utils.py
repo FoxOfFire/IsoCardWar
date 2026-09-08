@@ -18,9 +18,9 @@ def ActionDecor(action_base: ActionBase) -> Action:
 
 
 class PriceEnum(IntEnum):
-    MANA = auto()
-    HERBS = auto()
     BLOOD = auto()
+    HERBS = auto()
+    MANA = auto()
     BREW = auto()
 
 

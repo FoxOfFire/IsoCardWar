@@ -27,6 +27,7 @@ class Settings:
     GAME_MUTE = True
 
     FPS = 600
+    ANIMATION_LENGTH = 1
 
     # audio
     GAME_MUTE = True

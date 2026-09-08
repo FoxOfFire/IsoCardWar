@@ -14,11 +14,11 @@ from .utils import CardImageEnum, CardTypeEnum
 class CardAssetContainer:
 
     _CARD_ASSETS_DIR = "cards"
-    _CARD_TYPE_SURFS: Dict[IntEnum, pygame.Surface] = {}
-    _CARD_MARKER_SURFS: Dict[IntEnum, pygame.Surface] = {}
-    _CARD_IMAGE_SURFS: Dict[IntEnum, List[pygame.Surface]] = {}
+    _CARD_TYPE_SURFS: List[pygame.Surface] = []
+    _CARD_MARKER_SURFS: List[pygame.Surface] = []
+    _CARD_IMAGE_SURFS: List[List[pygame.Surface]] = []
     _LOADED_CARD_SURFS: bool = False
-    _CARD_SURFS: Dict[CardType, List[pygame.Surface]] = {}
+    _CARD_SURFS: Dict[IntEnum, List[pygame.Surface]] = {}
 
     def get_saved_card_surf(
         self, frame: int, card_type: CardType
@@ -63,15 +63,15 @@ class CardAssetContainer:
         if SETTINGS_REF.LOG_ASSET_LOADING:
             logger.info(f"added card{border.name, image.name, prices}")
         surfs = []
-        for img_frame in self._CARD_IMAGE_SURFS[image]:
+        for img_frame in self._CARD_IMAGE_SURFS[image.value - 1]:
             surf: pygame.Surface = img_frame.copy()
 
-            surf.blit(self._CARD_TYPE_SURFS[border])
+            surf.blit(self._CARD_TYPE_SURFS[border - 1])
 
             offset = 0
             for res in PriceEnum:
                 for _ in range(prices[res.value - 1]):
-                    marker_surf = self._CARD_MARKER_SURFS[res]
+                    marker_surf = self._CARD_MARKER_SURFS[res.value - 1]
 
                     surf.blit(
                         marker_surf,
@@ -87,22 +87,16 @@ class CardAssetContainer:
         self._CARD_SURFS.update({card_type: surfs})
 
     def _load_anim_types(self) -> None:
-        RENDER_ASSET_REF.load_animation_type(
-            CardImageEnum,
-            surfs=self._CARD_IMAGE_SURFS,
-            path=self._CARD_ASSETS_DIR,
-        )
+        self._CARD_IMAGE_SURFS += [
+            RENDER_ASSET_REF.load_tile_map(self._CARD_ASSETS_DIR, "card_arts")
+        ]
 
     def _load_image_types(self) -> None:
-        RENDER_ASSET_REF.load_image_type(
-            CardTypeEnum,
-            surfs=self._CARD_TYPE_SURFS,
-            path=self._CARD_ASSETS_DIR,
+        self._CARD_TYPE_SURFS += RENDER_ASSET_REF.load_tile_map(
+            self._CARD_ASSETS_DIR, "card_borders"
         )
-        RENDER_ASSET_REF.load_image_type(
-            PriceEnum,
-            surfs=self._CARD_MARKER_SURFS,
-            path=self._CARD_ASSETS_DIR,
+        self._CARD_MARKER_SURFS += RENDER_ASSET_REF.load_tile_map(
+            self._CARD_ASSETS_DIR, "costs"
         )
 
 

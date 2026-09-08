@@ -1,5 +1,5 @@
 from enum import IntEnum
-from typing import Dict, Optional, Tuple, Type
+from typing import Dict, List, Optional, Tuple, Type
 
 import pygame
 
@@ -14,9 +14,9 @@ class IsoAssetContainer:
 
     _ISO_ASSETS_DIR = "iso"
     _ISO_MASK: Optional[pygame.Mask] = None
-    _TILE_TYPE_SURFS: Dict[IntEnum, pygame.Surface] = {}
-    _UNIT_TYPE_SURFS: Dict[IntEnum, pygame.Surface] = {}
-    _SELECTION_SURFS: Dict[IntEnum, pygame.Surface] = {}
+    _TILE_TYPE_SURFS: List[pygame.Surface] = []
+    _UNIT_TYPE_SURFS: List[pygame.Surface] = []
+    _SELECTION_SURFS: List[pygame.Surface] = []
     _COMBINDED_SURFS: Dict[
         Tuple[IntEnum, Optional[IntEnum], Optional[IntEnum]],
         pygame.Surface,
@@ -55,18 +55,18 @@ class IsoAssetContainer:
             flags=pygame.SRCALPHA,
         )
 
-        t_surf = self._TILE_TYPE_SURFS[tile]
+        t_surf = self._TILE_TYPE_SURFS[tile.value - 1]
         t_offset = SETTINGS_REF.ISO_TILE_OFFSET_Y * 2
         t_rect = t_surf.get_rect(topleft=(0, t_offset))
         surf.blit(t_surf, t_rect)
 
         if select is not None:
-            s_surf = self._SELECTION_SURFS[select]
+            s_surf = self._SELECTION_SURFS[select.value - 1]
             s_rect = s_surf.get_rect(topleft=(0, 0))
             surf.blit(s_surf, s_rect)
 
         if unit is not None:
-            u_surf = self._UNIT_TYPE_SURFS[unit]
+            u_surf = self._UNIT_TYPE_SURFS[unit.value - 1]
             u_rect = u_surf.get_rect(topleft=(0, 0))
             surf.blit(u_surf, u_rect)
 
@@ -88,28 +88,23 @@ class IsoAssetContainer:
 
     def get_mask(self) -> pygame.Mask:
         if self._ISO_MASK is None:
-            mask_surf = RENDER_ASSET_REF.load_single_image(
+            mask_surf = RENDER_ASSET_REF.load_tile_map(
                 self._ISO_ASSETS_DIR, "tile_mask"
-            ).convert_alpha()
+            )[0].convert_alpha()
             mask = pygame.mask.from_surface(mask_surf)
             self._ISO_MASK = mask
         return self._ISO_MASK.copy()
 
     def _load_image_types(self) -> None:
-        RENDER_ASSET_REF.load_image_type(
-            TerrainEnum,
-            surfs=self._TILE_TYPE_SURFS,
-            path=self._ISO_ASSETS_DIR,
+
+        self._TILE_TYPE_SURFS += RENDER_ASSET_REF.load_tile_map(
+            self._ISO_ASSETS_DIR, "tiles"
         )
-        RENDER_ASSET_REF.load_image_type(
-            UnitTypeEnum,
-            surfs=self._UNIT_TYPE_SURFS,
-            path=self._ISO_ASSETS_DIR,
+        self._UNIT_TYPE_SURFS += RENDER_ASSET_REF.load_tile_map(
+            self._ISO_ASSETS_DIR, "units"
         )
-        RENDER_ASSET_REF.load_image_type(
-            PriceEnum,
-            surfs=self._SELECTION_SURFS,
-            path=self._ISO_ASSETS_DIR,
+        self._SELECTION_SURFS += RENDER_ASSET_REF.load_tile_map(
+            self._ISO_ASSETS_DIR, "tile_selections"
         )
 
 
