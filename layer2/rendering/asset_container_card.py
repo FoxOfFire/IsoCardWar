@@ -8,7 +8,6 @@ from layer1 import CardTypeEnum as CardType
 
 from .log import logger
 from .rendering_asset_loader import RENDER_ASSET_REF
-from .utils import CardImageEnum, CardTypeEnum
 
 
 class CardAssetContainer:

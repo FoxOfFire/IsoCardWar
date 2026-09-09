@@ -3,8 +3,7 @@ from typing import Dict, List, Optional, Tuple, Type
 
 import pygame
 
-from common import SETTINGS_REF, PriceEnum
-from layer1 import TerrainEnum, UnitTypeEnum
+from common import SETTINGS_REF
 
 from .log import logger
 from .rendering_asset_loader import RENDER_ASSET_REF
