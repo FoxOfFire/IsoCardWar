@@ -1,7 +1,8 @@
-.venv/
-.vscode/
-**/__pycache__/
-.cache/
+.venv/*
+.pyenv/*
+.vscode/*
+**/__pycache__/*
+.cache/*
 .coverage
 *.log
 

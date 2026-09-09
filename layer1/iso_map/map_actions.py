@@ -34,7 +34,8 @@ def get_change_target_tile_action(terrain: TerrainEnum) -> Action:
         if tile is None:
             return False
         tile.terrain = terrain
-        logger.info(tile.terrain)
+        if SETTINGS_REF.LOG_MAP_ACTIONS:
+            logger.info(tile.terrain)
         return True
 
     return change_target_tile
@@ -54,7 +55,8 @@ def get_change_target_unit_action(
 ) -> Action:
     @ActionDecor
     def change(args: ActionEnt) -> bool:
-        logger.info(f"set unit to {unit}")
+        if SETTINGS_REF.LOG_MAP_ACTIONS:
+            logger.info(f"set unit to {unit}")
         tile = get_ent_tile(args)
         if tile is None:
             return False
@@ -84,7 +86,8 @@ def switch_unit_types(ent: ActionEnt) -> bool:
     if target_tile is None:
         return False
 
-    logger.info(f"switch units {ent} - {target}")
+    if SETTINGS_REF.LOG_MAP_ACTIONS:
+        logger.info(f"switch units {ent} - {target}")
     ent_unit = ent_tile.unit
     target_unit = target_tile.unit
     if not get_change_target_unit_action(ent_unit, False)(target, True):
@@ -107,7 +110,8 @@ def get_set_target_tile_target_action(pos: Tuple[int, int]) -> Action:
         if ent_tile is None:
             return False
 
-        logger.info(f"set target to {pos}")
+        if SETTINGS_REF.LOG_MAP_ACTIONS:
+            logger.info(f"set target to {pos}")
         target = MAP_DATA_REF.ent_at(pos)
         target_tile = esper.component_for_entity(target, Tile)
         target_tile.is_targeted += 1

@@ -12,7 +12,7 @@ from common import (
 )
 from layer2.tags import UIElementComponent
 
-from .audio import SoundTypeEnum, play_sfx
+from .audio import SoundTypeEnum, play_sfx, set_master_vol
 from .ui_utils import get_mouse_pos_in_px
 
 
@@ -74,4 +74,18 @@ def set_slider_val(ent: ActionEnt) -> bool:
         t = (mx - bb.left - t_size / 2) / w
 
     ui_elem.button_val = min(1.0, max(0.0, t))
+    return True
+
+
+@ActionDecor
+def set_master_volume(ent: ActionEnt) -> bool:
+    if not set_slider_val(ent, True):
+        return False
+    if ent is None:
+        return False
+    ui_elem = esper.component_for_entity(ent, UIElementComponent)
+    vol = ui_elem.button_val
+    assert isinstance(vol, float)
+    SETTINGS_REF.MASTER_VOLUME = vol
+    set_master_vol(vol)
     return True

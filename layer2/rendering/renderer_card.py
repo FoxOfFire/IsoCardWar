@@ -63,14 +63,11 @@ class CardRenderer:
             surf = CARD_ASSET_REF.get_saved_card_surf(0, card.type_enum)
             if surf is None:
                 assert card.price is not None
-                prices = []
-                for res in PriceEnum:
-                    prices.append(card.price[res])
-                mana, herbs, blood, brew = tuple(prices)
+                prices = [card.price[res] for res in list(PriceEnum)]
                 surf = CARD_ASSET_REF.get_card_surf(
                     border=CardTypeEnum.BASIC,
                     image=CardImageEnum.BASIC_IMAGE,
-                    prices=(mana, herbs, blood, brew),
+                    prices=(prices[0], prices[1], prices[2], prices[3]),
                     frame=0,
                     card_type=card.type_enum,
                 )

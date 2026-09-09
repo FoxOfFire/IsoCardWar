@@ -13,9 +13,11 @@ class Settings:
 
     # Logging
     LOG_TICK_PERFORMANCE = False
-    LOG_ASSET_LOADING = True
+    LOG_ASSET_LOADING = False
     LOG_SPAWNING = False
     LOG_PLAY_SOUND = False
+    LOG_MAP_ACTIONS = False
+    LOG_GAME_PHASE = False
 
     # rendering
     GAME_CAM_HEIGHT = 270
@@ -25,6 +27,11 @@ class Settings:
     GAME_MUTE = True
 
     FPS = 600
+    ANIMATION_LENGTH = 1
+
+    # audio
+    GAME_MUTE = True
+    MASTER_VOLUME: float = 1.0
 
     # defaults
     DEFAULT_RESOURCE_MANA = 99
@@ -66,11 +73,10 @@ class Settings:
     NOISE_SCALE = 0.5
     NOISE_ROUGHNESS = 8
     NOISE_PERISITANCE = 0.2
-    NOISE_THRESHOLDS = [0.4, 0.6, 1.0]
+    NOISE_THRESHOLDS = [0.4, 0.6, 0.8, 1.0]
 
-    # map
-    ISO_MAP_HEIGHT = 10
-    ISO_MAP_WIDTH = 10
+    ISO_MAP_HEIGHT = 9
+    ISO_MAP_WIDTH = 9
 
     ISO_TILE_SPRITE_HEIGHT = 64
     ISO_TILE_SPRITE_WIDTH = 32
