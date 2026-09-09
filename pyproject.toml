@@ -1,10 +1,10 @@
 [tool.black]
-extend-exclude = "(examples|.venv)"
+extend-exclude = "(examples|.venv|.pyenv)"
 force-exclude = "examples"
 line-length = 79
 
 [tool.vulture]
-exclude = ["*/.venv/*.py","*file*.py", "dir/"]
+exclude = ["*/.pyenv/.py","*/.venv/*.py","*file*.py", "dir/"]
 ignore_decorators = ["@app.route", "@require_*"]
 ignore_names = ["visit_*", "do_*"]
 make_whitelist = true
@@ -31,7 +31,7 @@ ignore_missing_imports = true
 [tool.isort]
 profile = "black"
 virtual_env = ".venv"
-skip = ".venv,examples"
+skip = ".venv,examples,.pyenv"
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
