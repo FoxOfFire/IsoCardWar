@@ -20,7 +20,7 @@ from layer2 import (
     UIElemType,
     get_switch_world_action,
     quit_game,
-    set_slider_val,
+    set_master_volume,
     toggle_sound,
 )
 
@@ -77,8 +77,8 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
                 ButtonData(
                     "Slider",
                     UIElemType.SLIDER,
-                    button_default_data=0.5,
-                    clicking_func=[set_slider_val],
+                    button_default_data=1.0,
+                    clicking_func=[set_master_volume],
                 ),
                 (0, 2),
                 ButtonData(
@@ -120,31 +120,31 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
             4,
             [
                 ButtonData(
-                    partial(get_resource_amount_str, PriceEnum.MANA),
+                    partial(get_resource_amount_str, PriceEnum.BLOOD),
                     UIElemType.ICON,
                     (3, 1),
-                    button_default_data=0,
+                    button_default_data=PriceEnum.BLOOD.value - 1,
                 ),
                 (2, 0),
                 ButtonData(
                     partial(get_resource_amount_str, PriceEnum.HERBS),
                     UIElemType.ICON,
                     (3, 1),
-                    button_default_data=1,
+                    button_default_data=PriceEnum.HERBS.value - 1,
                 ),
                 (2, 0),
                 ButtonData(
-                    partial(get_resource_amount_str, PriceEnum.BLOOD),
+                    partial(get_resource_amount_str, PriceEnum.MANA),
                     UIElemType.ICON,
                     (3, 1),
-                    button_default_data=2,
+                    button_default_data=PriceEnum.MANA.value - 1,
                 ),
                 (2, 0),
                 ButtonData(
                     partial(get_resource_amount_str, PriceEnum.BREW),
                     UIElemType.ICON,
                     (3, 1),
-                    button_default_data=3,
+                    button_default_data=PriceEnum.BREW.value - 1,
                 ),
             ],
             True,
@@ -167,8 +167,14 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
                 ButtonData(get_turn_counter_str, UIElemType.TEXTBOX),
                 (0, 1),
                 ButtonData(get_particle_count_str, UIElemType.TEXTBOX),
-                (0, 4),
+                (0, 1),
             ],
+        ),
+        MenuContainer(
+            (0, 0),
+            (SnapHorisontalEnum.CENTER, SnapVerticalEnum.BOTTOM),
+            0,
+            [(SETTINGS_REF.GAME_CAM_WIDTH, SETTINGS_REF.CARD_HEIGHT - 25)],
         ),
         MenuContainer(
             (0, 0),
@@ -218,7 +224,7 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
                         sort_hand,
                     ],
                 ),
-                (0, 4),
+                (0, 1),
             ],
         ),
     ],

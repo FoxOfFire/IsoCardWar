@@ -27,9 +27,12 @@ def init_audio() -> None:
             logger.info(f"loaded sound: {sound.name}")
         file = SFX_DIR / f"{sound.name.lower()}.wav"
         SFX_AUDIO_DICT.update({sound: pygame.mixer.Sound(file)})
-        SFX_AUDIO_DICT[sound].set_volume(0.05)
-    SFX_AUDIO_DICT[SoundTypeEnum.POP].set_volume(0.2)
-    SFX_AUDIO_DICT[SoundTypeEnum.TERRAFORM].set_volume(0.2)
+    set_master_vol(1)
+
+
+def set_master_vol(vol: float) -> None:
+    for sound in [e for e in SoundTypeEnum]:
+        SFX_AUDIO_DICT[sound].set_volume(vol)
 
 
 def play_sfx(sound: SoundTypeEnum) -> bool:

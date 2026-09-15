@@ -12,7 +12,7 @@ from .utils import UIElemSprite, UIElemType
 
 class UIAssetContainer:
     _UI_ASSETS_DIR = "ui"
-    _BUTTON_TILE_MAPS: Dict[IntEnum, List[pygame.Surface]] = {}
+    _BUTTON_TILE_MAPS: List[List[pygame.Surface]] = []
     _ICON_SURFS: List[pygame.Surface] = []
     _ICON_BACKGROUND_SURFS: List[pygame.Surface] = []
     _LOADED_TILE_MAPS: bool = False
@@ -30,7 +30,7 @@ class UIAssetContainer:
         offset: int,
         sub_size: Tuple[int, int] = (0, 0),
     ) -> pygame.Surface:
-        tilemap: List[pygame.Surface] = self._BUTTON_TILE_MAPS[enum]
+        tilemap: List[pygame.Surface] = self._BUTTON_TILE_MAPS[enum - 1]
         x, y = size
         sub_x, sub_y = sub_size
         flag_x, flag_y = sub_x > 0, sub_y > 0
@@ -86,7 +86,7 @@ class UIAssetContainer:
     def _get_icon_surf(
         self, icon_type: UIElemType, offset: int
     ) -> List[pygame.Surface]:
-        tiles = self._BUTTON_TILE_MAPS[icon_type]
+        tiles = self._BUTTON_TILE_MAPS[icon_type - 1]
         ret = []
         for i in range(3 * offset, 3 * (offset + 1)):
             ret.append(tiles[i])
@@ -109,14 +109,13 @@ class UIAssetContainer:
                     logger.info("loaded ui tile maps")
 
             is_checkbox = elem == UIElemType.CHECKBOX
+            is_icon = elem == UIElemType.ICON
             if is_checkbox:
                 assert isinstance(data, bool)
                 offset = 0 if data else 1
                 checksurf = self._get_icon_surf(elem, offset)
                 elem = UIElemType.BUTTON
-
-            is_icon = elem == UIElemType.ICON
-            if is_icon:
+            elif is_icon:
                 assert isinstance(data, int)
                 icon_surf = self._get_icon_surf(elem, data)
                 elem = UIElemType.TEXTBOX
@@ -156,23 +155,27 @@ class UIAssetContainer:
             surfs.append(surf)
         for i in range(3):
             surfs.append(self._ICON_BACKGROUND_SURFS[i].copy())
-        self._BUTTON_TILE_MAPS.update({UIElemType.CHECKBOX: surfs})
+        self._BUTTON_TILE_MAPS += [surfs]
 
     def _load_icon_tiles(self, icon_start: int, background: int) -> None:
         surfs: List[pygame.Surface] = []
         for resource in PriceEnum:
             for i in range(3):
                 surf = self._ICON_BACKGROUND_SURFS[i + background * 3].copy()
+                print(icon_start + resource.value - 1)
                 surf.blit(self._ICON_SURFS[icon_start + resource.value - 1])
                 surfs.append(surf)
-        self._BUTTON_TILE_MAPS.update({UIElemType.ICON: surfs})
+        self._BUTTON_TILE_MAPS += [surfs]
 
     def _load_tile_types(self) -> None:
-        RENDER_ASSET_REF.load_tile_map_enum(
-            UIElemType,
-            surfs=self._BUTTON_TILE_MAPS,
-            path=self._UI_ASSETS_DIR,
-        )
+        for en in list(UIElemType):
+            if en == UIElemType.ICON or en == UIElemType.CHECKBOX:
+                continue
+            self._BUTTON_TILE_MAPS += [
+                RENDER_ASSET_REF.load_tile_map(
+                    self._UI_ASSETS_DIR, en.name.lower()
+                )
+            ]
         self._ICON_BACKGROUND_SURFS = RENDER_ASSET_REF.load_tile_map(
             self._UI_ASSETS_DIR, "icon_backgrounds"
         )

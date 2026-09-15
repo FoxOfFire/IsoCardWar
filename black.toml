@@ -1,4 +1,4 @@
 [tool.black]
-extend-exclude = "(examples|.venv)"
+extend-exclude = "(examples|.venv|.pyenv)"
 force-exclude = "examples"
 line-length = 79

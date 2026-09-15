@@ -14,33 +14,33 @@ fi
 #	SCRIPT_RET=1
 #fi
 
-echo "Running: vulture --exclude *.venv/**.py ."
-if ! vulture . --exclude *.venv/**.py; then
+echo "Running: vulture . --exclude '**/.pyenv/**','**/.venv/**' "
+if ! vulture .  --exclude '**/.pyenv/**','**/.venv/**' ; then
 	SCRIPT_RET=1
 fi
 
-echo "Running: flake8 ."
-if ! pyenv exec flake8 . ; then
+echo "Running: flake8 --exclude=.venv,.pyenv ."
+if ! pyenv exec flake8 --exclude=.venv,.pyenv . ; then
         SCRIPT_RET=1
 fi
 
-echo "Running: mypy ."
-if ! pyenv exec mypy . ; then
+echo "Running: mypy . --exclude '(^|/)\.venv(/|$)' --exclude '(^|/)\.pyenv(/|$)'"
+if ! pyenv exec mypy . --exclude '(^|/)\.venv(/|$)' --exclude '(^|/)\.pyenv(/|$)' ; then
         SCRIPT_RET=1
 fi
 
-echo "Running: isort ."
-if ! pyenv exec isort . ; then
+echo "Running: isort . --skip .pyenv --skip .venv'"
+if ! pyenv exec isort . --skip .pyenv --skip .venv; then
         SCRIPT_RET=1
 fi
 
-echo "Running: mdformat ."
-if ! mdformat .; then
+echo "Running: mdformat . "
+if ! mdformat . ; then
 	SCRIPT_RET=1
 fi
 
-echo "Running: mado check ."
-if ! mado check .; then
+echo "Running: mado check . "
+if ! mado check . ; then
 	SCRIPT_RET=1
 fi
 

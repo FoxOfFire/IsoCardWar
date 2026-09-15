@@ -63,6 +63,7 @@ def _player_action() -> List[Action]:
     effects: List[Action] = [
         reset_trigger,
     ]
+    # TODO
     return effects
 
 
@@ -116,6 +117,9 @@ def get_base_game_phase_dict() -> (
     logger.info("getting phase dict")
     return {
         GamePhaseType.BEGIN_GAME: _begin_game,
+        GamePhaseType.TELEGRAPH: partial(
+            _enemy_action, MAP_DATA_REF.get_actions_for_type
+        ),
         GamePhaseType.PRODUCTION: _production,
         GamePhaseType.SPAWNING: _spawning,
         GamePhaseType.TELEGRAPH: partial(

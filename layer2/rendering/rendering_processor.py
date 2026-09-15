@@ -69,9 +69,9 @@ class RenderingProcessor(esper.Processor):
         self.screen.fill(ColorEnum.GRAY.value)
 
         self.iso_renderer.draw(self.screen)
+        self.button_renderer.draw(self.screen)
         self.card_renderer.draw(self.screen)
         self.mask_renderer.draw(self.screen)
-        self.button_renderer.draw(self.screen)
         self.particle_renderer.draw(self.screen)
 
         # debug purposes

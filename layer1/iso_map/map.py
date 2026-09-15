@@ -127,13 +127,12 @@ class MapData:
 
         min_z = SETTINGS_REF.ISO_HEIGHT_MIN_OFFSET
         max_z = SETTINGS_REF.ISO_HEIGHT_MAX_OFFSET
-        if terrain == TerrainEnum.WATER:
-            z = -round(
-                lerp1(min_z, max_z, SETTINGS_REF.NOISE_THRESHOLDS[0]) - 1.5
-            )
-        else:
-            z = -round(lerp1(min_z, max_z, noise_val))
-        tile = Tile(i, j, z, noise_val, terrain, unit=unit)
+        z = (
+            lerp1(min_z, max_z, SETTINGS_REF.NOISE_THRESHOLDS[terrain - 1])
+            / 1.5
+        )
+
+        tile = Tile(i, j, -round(z), noise_val, terrain, unit=unit)
 
         sprite_offset = (
             tile.x_offset,
