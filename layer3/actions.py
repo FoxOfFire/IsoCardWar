@@ -25,7 +25,9 @@ from layer1 import (
 )
 
 
-def random_walk(dist: int = 4, pause_ms: int = 100) -> Action:
+def random_walk(
+    dist: int = 4, pause_ms: int = SETTINGS_REF.WALK_WAIT
+) -> Action:
     @ActionDecor
     def action(ent: ActionEnt) -> bool:
         if not reset_tile_target(ent, True):

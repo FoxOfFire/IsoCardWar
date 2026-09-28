@@ -13,11 +13,11 @@ class IsoAssetContainer:
 
     _ISO_ASSETS_DIR = "iso"
     _ISO_MASK: Optional[pygame.Mask] = None
-    _TILE_TYPE_SURFS: List[pygame.Surface] = []
-    _UNIT_TYPE_SURFS: List[pygame.Surface] = []
-    _SELECTION_SURFS: List[pygame.Surface] = []
+    _TILE_TYPE_SURFS: List[List[pygame.Surface]] = []
+    _UNIT_TYPE_SURFS: List[List[pygame.Surface]] = []
+    _SELECTION_SURFS: List[List[pygame.Surface]] = []
     _COMBINDED_SURFS: Dict[
-        Tuple[IntEnum, Optional[IntEnum], Optional[IntEnum]],
+        Tuple[IntEnum, Optional[IntEnum], Optional[IntEnum], int],
         pygame.Surface,
     ] = {}
     _LOADED_IMAGES: bool = False
@@ -54,33 +54,38 @@ class IsoAssetContainer:
             flags=pygame.SRCALPHA,
         )
 
-        t_surf = self._TILE_TYPE_SURFS[tile.value - 1]
+        frame = 0
+        t_surf = self._TILE_TYPE_SURFS[tile.value - 1][frame]
         t_offset = SETTINGS_REF.ISO_TILE_OFFSET_Y * 2
         t_rect = t_surf.get_rect(topleft=(0, t_offset))
         surf.blit(t_surf, t_rect)
 
         if select is not None:
-            s_surf = self._SELECTION_SURFS[select.value - 1]
+            s_surf = self._SELECTION_SURFS[select.value - 1][frame]
             s_rect = s_surf.get_rect(topleft=(0, 0))
             surf.blit(s_surf, s_rect)
 
         if unit is not None:
-            u_surf = self._UNIT_TYPE_SURFS[unit.value - 1]
+            u_surf = self._UNIT_TYPE_SURFS[unit.value - 1][frame]
             u_rect = u_surf.get_rect(topleft=(0, 0))
             surf.blit(u_surf, u_rect)
 
         if SETTINGS_REF.LOG_ASSET_LOADING:
             logger.info(f"added tile sprite: {tile.name, unit, select}")
-        self._COMBINDED_SURFS.update({(tile, unit, select): surf})
+        self._COMBINDED_SURFS.update({(tile, unit, select, frame): surf})
 
     def get_surf(
-        self, tile: IntEnum, unit: Optional[IntEnum], select: Optional[IntEnum]
+        self,
+        tile: IntEnum,
+        unit: Optional[IntEnum],
+        select: Optional[IntEnum],
+        frame: int = 0,
     ) -> pygame.Surface:
-        surf_data = self._COMBINDED_SURFS.get((tile, unit, select))
+        surf_data = self._COMBINDED_SURFS.get((tile, unit, select, frame))
 
         if surf_data is None:
             self._generate_surf(tile, unit, select)
-            surf_data = self._COMBINDED_SURFS.get((tile, unit, select))
+            surf_data = self._COMBINDED_SURFS.get((tile, unit, select, frame))
             assert surf_data is not None
 
         return surf_data
@@ -89,7 +94,7 @@ class IsoAssetContainer:
         if self._ISO_MASK is None:
             mask_surf = RENDER_ASSET_REF.load_tile_map(
                 self._ISO_ASSETS_DIR, "tile_mask"
-            )[0].convert_alpha()
+            )[0][0].convert_alpha()
             mask = pygame.mask.from_surface(mask_surf)
             self._ISO_MASK = mask
         return self._ISO_MASK.copy()

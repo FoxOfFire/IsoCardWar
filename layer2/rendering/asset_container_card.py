@@ -13,8 +13,8 @@ from .rendering_asset_loader import RENDER_ASSET_REF
 class CardAssetContainer:
 
     _CARD_ASSETS_DIR = "cards"
-    _CARD_TYPE_SURFS: List[pygame.Surface] = []
-    _CARD_MARKER_SURFS: List[pygame.Surface] = []
+    _CARD_TYPE_SURFS: List[List[pygame.Surface]] = []
+    _CARD_MARKER_SURFS: List[List[pygame.Surface]] = []
     _CARD_IMAGE_SURFS: List[List[pygame.Surface]] = []
     _LOADED_CARD_SURFS: bool = False
     _CARD_SURFS: Dict[IntEnum, List[pygame.Surface]] = {}
@@ -58,19 +58,21 @@ class CardAssetContainer:
         prices: Tuple[int, int, int, int],
         image: IntEnum,
         card_type: CardType,
+        frame: int = 0,
     ) -> None:
         if SETTINGS_REF.LOG_ASSET_LOADING:
             logger.info(f"added card{border.name, image.name, prices}")
         surfs = []
         for img_frame in self._CARD_IMAGE_SURFS[image.value - 1]:
+
             surf: pygame.Surface = img_frame.copy()
 
-            surf.blit(self._CARD_TYPE_SURFS[border - 1])
+            surf.blit(self._CARD_TYPE_SURFS[border - 1][frame])
 
             offset = 0
             for res in PriceEnum:
                 for _ in range(prices[res.value - 1]):
-                    marker_surf = self._CARD_MARKER_SURFS[res.value - 1]
+                    marker_surf = self._CARD_MARKER_SURFS[res.value - 1][frame]
 
                     surf.blit(
                         marker_surf,
@@ -86,9 +88,9 @@ class CardAssetContainer:
         self._CARD_SURFS.update({card_type: surfs})
 
     def _load_anim_types(self) -> None:
-        self._CARD_IMAGE_SURFS += [
-            RENDER_ASSET_REF.load_tile_map(self._CARD_ASSETS_DIR, "card_arts")
-        ]
+        self._CARD_IMAGE_SURFS += RENDER_ASSET_REF.load_tile_map(
+            self._CARD_ASSETS_DIR, "card_arts"
+        )
 
     def _load_image_types(self) -> None:
         self._CARD_TYPE_SURFS += RENDER_ASSET_REF.load_tile_map(

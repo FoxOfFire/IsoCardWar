@@ -9,7 +9,7 @@
     "duration": 100
    },
    {
-    "filename": "button 0.aseprite",
+    "filename": "button 1.aseprite",
     "frame": { "x": 12, "y": 0, "w": 12, "h": 12 },
     "rotated": false,
     "trimmed": false,
@@ -18,7 +18,7 @@
     "duration": 100
    },
    {
-    "filename": "button 0.aseprite",
+    "filename": "button 2.aseprite",
     "frame": { "x": 24, "y": 0, "w": 12, "h": 12 },
     "rotated": false,
     "trimmed": false,
@@ -27,7 +27,7 @@
     "duration": 100
    },
    {
-    "filename": "button 0.aseprite",
+    "filename": "button 3.aseprite",
     "frame": { "x": 36, "y": 0, "w": 12, "h": 12 },
     "rotated": false,
     "trimmed": false,
@@ -36,7 +36,7 @@
     "duration": 100
    },
    {
-    "filename": "button 0.aseprite",
+    "filename": "button 4.aseprite",
     "frame": { "x": 0, "y": 12, "w": 12, "h": 12 },
     "rotated": false,
     "trimmed": false,
@@ -45,7 +45,7 @@
     "duration": 100
    },
    {
-    "filename": "button 0.aseprite",
+    "filename": "button 5.aseprite",
     "frame": { "x": 12, "y": 12, "w": 12, "h": 12 },
     "rotated": false,
     "trimmed": false,
@@ -54,7 +54,7 @@
     "duration": 100
    },
    {
-    "filename": "button 0.aseprite",
+    "filename": "button 6.aseprite",
     "frame": { "x": 24, "y": 12, "w": 12, "h": 12 },
     "rotated": false,
     "trimmed": false,
@@ -63,7 +63,7 @@
     "duration": 100
    },
    {
-    "filename": "button 0.aseprite",
+    "filename": "button 7.aseprite",
     "frame": { "x": 36, "y": 12, "w": 12, "h": 12 },
     "rotated": false,
     "trimmed": false,
@@ -72,7 +72,7 @@
     "duration": 100
    },
    {
-    "filename": "button 0.aseprite",
+    "filename": "button 8.aseprite",
     "frame": { "x": 0, "y": 24, "w": 12, "h": 12 },
     "rotated": false,
     "trimmed": false,
@@ -81,7 +81,7 @@
     "duration": 100
    },
    {
-    "filename": "button 0.aseprite",
+    "filename": "button 9.aseprite",
     "frame": { "x": 12, "y": 24, "w": 12, "h": 12 },
     "rotated": false,
     "trimmed": false,
@@ -90,7 +90,7 @@
     "duration": 100
    },
    {
-    "filename": "button 0.aseprite",
+    "filename": "button 10.aseprite",
     "frame": { "x": 24, "y": 24, "w": 12, "h": 12 },
     "rotated": false,
     "trimmed": false,
@@ -99,7 +99,7 @@
     "duration": 100
    },
    {
-    "filename": "button 0.aseprite",
+    "filename": "button 11.aseprite",
     "frame": { "x": 36, "y": 24, "w": 12, "h": 12 },
     "rotated": false,
     "trimmed": false,
@@ -108,7 +108,7 @@
     "duration": 100
    },
    {
-    "filename": "button 0.aseprite",
+    "filename": "button 12.aseprite",
     "frame": { "x": 0, "y": 36, "w": 12, "h": 12 },
     "rotated": false,
     "trimmed": false,
@@ -117,7 +117,7 @@
     "duration": 100
    },
    {
-    "filename": "button 0.aseprite",
+    "filename": "button 13.aseprite",
     "frame": { "x": 12, "y": 36, "w": 12, "h": 12 },
     "rotated": false,
     "trimmed": false,
@@ -126,7 +126,7 @@
     "duration": 100
    },
    {
-    "filename": "button 0.aseprite",
+    "filename": "button 14.aseprite",
     "frame": { "x": 24, "y": 36, "w": 12, "h": 12 },
     "rotated": false,
     "trimmed": false,
@@ -135,7 +135,7 @@
     "duration": 100
    },
    {
-    "filename": "button 0.aseprite",
+    "filename": "button 15.aseprite",
     "frame": { "x": 36, "y": 36, "w": 12, "h": 12 },
     "rotated": false,
     "trimmed": false,
@@ -144,7 +144,7 @@
     "duration": 100
    },
    {
-    "filename": "button 0.aseprite",
+    "filename": "button 16.aseprite",
     "frame": { "x": 0, "y": 48, "w": 12, "h": 12 },
     "rotated": false,
     "trimmed": false,
@@ -153,7 +153,7 @@
     "duration": 100
    },
    {
-    "filename": "button 0.aseprite",
+    "filename": "button 17.aseprite",
     "frame": { "x": 12, "y": 48, "w": 12, "h": 12 },
     "rotated": false,
     "trimmed": false,
@@ -162,7 +162,7 @@
     "duration": 100
    },
    {
-    "filename": "button 0.aseprite",
+    "filename": "button 18.aseprite",
     "frame": { "x": 24, "y": 48, "w": 12, "h": 12 },
     "rotated": false,
     "trimmed": false,
@@ -171,7 +171,7 @@
     "duration": 100
    },
    {
-    "filename": "button 0.aseprite",
+    "filename": "button 19.aseprite",
     "frame": { "x": 36, "y": 48, "w": 12, "h": 12 },
     "rotated": false,
     "trimmed": false,
@@ -180,7 +180,7 @@
     "duration": 100
    },
    {
-    "filename": "button 0.aseprite",
+    "filename": "button 20.aseprite",
     "frame": { "x": 0, "y": 60, "w": 12, "h": 12 },
     "rotated": false,
     "trimmed": false,
@@ -189,7 +189,7 @@
     "duration": 100
    },
    {
-    "filename": "button 0.aseprite",
+    "filename": "button 21.aseprite",
     "frame": { "x": 12, "y": 60, "w": 12, "h": 12 },
     "rotated": false,
     "trimmed": false,
@@ -198,7 +198,7 @@
     "duration": 100
    },
    {
-    "filename": "button 0.aseprite",
+    "filename": "button 22.aseprite",
     "frame": { "x": 24, "y": 60, "w": 12, "h": 12 },
     "rotated": false,
     "trimmed": false,
@@ -207,7 +207,7 @@
     "duration": 100
    },
    {
-    "filename": "button 0.aseprite",
+    "filename": "button 23.aseprite",
     "frame": { "x": 36, "y": 60, "w": 12, "h": 12 },
     "rotated": false,
     "trimmed": false,
@@ -216,7 +216,7 @@
     "duration": 100
    },
    {
-    "filename": "button 0.aseprite",
+    "filename": "button 24.aseprite",
     "frame": { "x": 0, "y": 72, "w": 12, "h": 12 },
     "rotated": false,
     "trimmed": false,
@@ -225,7 +225,7 @@
     "duration": 100
    },
    {
-    "filename": "button 0.aseprite",
+    "filename": "button 25.aseprite",
     "frame": { "x": 12, "y": 72, "w": 12, "h": 12 },
     "rotated": false,
     "trimmed": false,
@@ -234,7 +234,7 @@
     "duration": 100
    },
    {
-    "filename": "button 0.aseprite",
+    "filename": "button 26.aseprite",
     "frame": { "x": 24, "y": 72, "w": 12, "h": 12 },
     "rotated": false,
     "trimmed": false,
@@ -243,7 +243,7 @@
     "duration": 100
    },
    {
-    "filename": "button 0.aseprite",
+    "filename": "button 27.aseprite",
     "frame": { "x": 36, "y": 72, "w": 12, "h": 12 },
     "rotated": false,
     "trimmed": false,
@@ -252,7 +252,7 @@
     "duration": 100
    },
    {
-    "filename": "button 0.aseprite",
+    "filename": "button 28.aseprite",
     "frame": { "x": 0, "y": 84, "w": 12, "h": 12 },
     "rotated": false,
     "trimmed": false,
@@ -261,7 +261,7 @@
     "duration": 100
    },
    {
-    "filename": "button 0.aseprite",
+    "filename": "button 29.aseprite",
     "frame": { "x": 12, "y": 84, "w": 12, "h": 12 },
     "rotated": false,
     "trimmed": false,
@@ -270,7 +270,7 @@
     "duration": 100
    },
    {
-    "filename": "button 0.aseprite",
+    "filename": "button 30.aseprite",
     "frame": { "x": 24, "y": 84, "w": 12, "h": 12 },
     "rotated": false,
     "trimmed": false,
@@ -279,7 +279,7 @@
     "duration": 100
    },
    {
-    "filename": "button 0.aseprite",
+    "filename": "button 31.aseprite",
     "frame": { "x": 36, "y": 84, "w": 12, "h": 12 },
     "rotated": false,
     "trimmed": false,
@@ -288,7 +288,7 @@
     "duration": 100
    },
    {
-    "filename": "button 0.aseprite",
+    "filename": "button 32.aseprite",
     "frame": { "x": 0, "y": 96, "w": 12, "h": 12 },
     "rotated": false,
     "trimmed": false,
@@ -297,7 +297,7 @@
     "duration": 100
    },
    {
-    "filename": "button 0.aseprite",
+    "filename": "button 33.aseprite",
     "frame": { "x": 12, "y": 96, "w": 12, "h": 12 },
     "rotated": false,
     "trimmed": false,
@@ -306,7 +306,7 @@
     "duration": 100
    },
    {
-    "filename": "button 0.aseprite",
+    "filename": "button 34.aseprite",
     "frame": { "x": 24, "y": 96, "w": 12, "h": 12 },
     "rotated": false,
     "trimmed": false,
@@ -315,7 +315,7 @@
     "duration": 100
    },
    {
-    "filename": "button 0.aseprite",
+    "filename": "button 35.aseprite",
     "frame": { "x": 36, "y": 96, "w": 12, "h": 12 },
     "rotated": false,
     "trimmed": false,
@@ -324,7 +324,7 @@
     "duration": 100
    },
    {
-    "filename": "button 0.aseprite",
+    "filename": "button 36.aseprite",
     "frame": { "x": 0, "y": 108, "w": 12, "h": 12 },
     "rotated": false,
     "trimmed": false,
@@ -333,7 +333,7 @@
     "duration": 100
    },
    {
-    "filename": "button 0.aseprite",
+    "filename": "button 37.aseprite",
     "frame": { "x": 12, "y": 108, "w": 12, "h": 12 },
     "rotated": false,
     "trimmed": false,
@@ -342,7 +342,7 @@
     "duration": 100
    },
    {
-    "filename": "button 0.aseprite",
+    "filename": "button 38.aseprite",
     "frame": { "x": 24, "y": 108, "w": 12, "h": 12 },
     "rotated": false,
     "trimmed": false,
@@ -351,7 +351,7 @@
     "duration": 100
    },
    {
-    "filename": "button 0.aseprite",
+    "filename": "button 39.aseprite",
     "frame": { "x": 36, "y": 108, "w": 12, "h": 12 },
     "rotated": false,
     "trimmed": false,
@@ -360,7 +360,7 @@
     "duration": 100
    },
    {
-    "filename": "button 0.aseprite",
+    "filename": "button 40.aseprite",
     "frame": { "x": 0, "y": 120, "w": 12, "h": 12 },
     "rotated": false,
     "trimmed": false,
@@ -369,7 +369,7 @@
     "duration": 100
    },
    {
-    "filename": "button 0.aseprite",
+    "filename": "button 41.aseprite",
     "frame": { "x": 12, "y": 120, "w": 12, "h": 12 },
     "rotated": false,
     "trimmed": false,
@@ -378,7 +378,7 @@
     "duration": 100
    },
    {
-    "filename": "button 0.aseprite",
+    "filename": "button 42.aseprite",
     "frame": { "x": 24, "y": 120, "w": 12, "h": 12 },
     "rotated": false,
     "trimmed": false,
@@ -387,7 +387,7 @@
     "duration": 100
    },
    {
-    "filename": "button 0.aseprite",
+    "filename": "button 43.aseprite",
     "frame": { "x": 36, "y": 120, "w": 12, "h": 12 },
     "rotated": false,
     "trimmed": false,
@@ -396,7 +396,7 @@
     "duration": 100
    },
    {
-    "filename": "button 0.aseprite",
+    "filename": "button 44.aseprite",
     "frame": { "x": 0, "y": 132, "w": 12, "h": 12 },
     "rotated": false,
     "trimmed": false,
@@ -405,7 +405,7 @@
     "duration": 100
    },
    {
-    "filename": "button 0.aseprite",
+    "filename": "button 45.aseprite",
     "frame": { "x": 12, "y": 132, "w": 12, "h": 12 },
     "rotated": false,
     "trimmed": false,
@@ -414,7 +414,7 @@
     "duration": 100
    },
    {
-    "filename": "button 0.aseprite",
+    "filename": "button 46.aseprite",
     "frame": { "x": 24, "y": 132, "w": 12, "h": 12 },
     "rotated": false,
     "trimmed": false,
@@ -423,7 +423,7 @@
     "duration": 100
    },
    {
-    "filename": "button 0.aseprite",
+    "filename": "button 47.aseprite",
     "frame": { "x": 36, "y": 132, "w": 12, "h": 12 },
     "rotated": false,
     "trimmed": false,
@@ -434,10 +434,15 @@
  ],
  "meta": {
   "app": "http://www.aseprite.org/",
-  "version": "1.3.16.1-dev",
+  "version": "1.3.18.6-dev",
   "image": "button.png",
   "format": "RGBA8888",
   "size": { "w": 48, "h": 144 },
-  "scale": "1"
+  "scale": "1",
+  "frameTags": [
+   { "name": "Default", "from": 0, "to": 15, "direction": "forward", "color": "#000000ff" },
+   { "name": "Hover", "from": 16, "to": 31, "direction": "forward", "color": "#000000ff" },
+   { "name": "Pressed", "from": 32, "to": 47, "direction": "forward", "color": "#000000ff" }
+  ]
  }
 }
