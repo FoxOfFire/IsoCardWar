@@ -17,8 +17,8 @@ class IsoAssetContainer:
     _UNIT_TYPE_SURFS: List[List[pygame.Surface]] = []
     _SELECTION_SURFS: List[List[pygame.Surface]] = []
     _COMBINDED_SURFS: Dict[
-        Tuple[IntEnum, Optional[IntEnum], Optional[IntEnum], int],
-        pygame.Surface,
+        Tuple[IntEnum, Optional[IntEnum], Optional[IntEnum]],
+        List[pygame.Surface],
     ] = {}
     _LOADED_IMAGES: bool = False
     _GENERATED_DYNAMIC_SURFS = False
@@ -72,7 +72,7 @@ class IsoAssetContainer:
 
         if SETTINGS_REF.LOG_ASSET_LOADING:
             logger.info(f"added tile sprite: {tile.name, unit, select}")
-        self._COMBINDED_SURFS.update({(tile, unit, select, frame): surf})
+        self._COMBINDED_SURFS.update({(tile, unit, select): [surf]})
 
     def get_surf(
         self,
@@ -81,11 +81,11 @@ class IsoAssetContainer:
         select: Optional[IntEnum],
         frame: int = 0,
     ) -> pygame.Surface:
-        surf_data = self._COMBINDED_SURFS.get((tile, unit, select, frame))
+        surf_data = self._COMBINDED_SURFS.get((tile, unit, select))[frame]
 
         if surf_data is None:
             self._generate_surf(tile, unit, select)
-            surf_data = self._COMBINDED_SURFS.get((tile, unit, select, frame))
+            surf_data = self._COMBINDED_SURFS.get((tile, unit, select))[frame]
             assert surf_data is not None
 
         return surf_data

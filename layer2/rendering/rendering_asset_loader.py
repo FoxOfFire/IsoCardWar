@@ -1,7 +1,8 @@
 import json
+from enum import IntEnum
 from os.path import exists
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional, Tuple, Type
 
 import pygame
 
@@ -20,6 +21,86 @@ class RenderAssetContainer:
             self._BASE_ASSET_DIR / path / name,
             SETTINGS_REF.FONT_SIZE,
         )
+
+    def _generate_blank_frame(self, size: Tuple[int, int]) -> pygame.Surface:
+        return pygame.Surface(
+            size,
+            flags=pygame.SRCALPHA,
+        )
+
+    def _greatest_common_divisor(self, a: int, b: int) -> int:
+        while a != b:
+            if a > b:
+                a -= b
+            else:
+                b -= a
+        return a
+
+    def _lowest_common_multiple_of_list(self, int_list: List[int]) -> int:
+        res: int = 1
+        for n in int_list:
+            gcd = self._greatest_common_divisor(n, res)
+            res = (res * n) // gcd
+        return res
+
+    def _enum_permutator(
+        self,
+        meta: List[Tuple[Type[IntEnum], int, int]],
+    ) -> List[List[int]]:
+        enum_permutations: List[List[int]] = [[]]
+
+        for i in range(len(meta)):
+            new_permutations: List[List[int]] = []
+            for perm in enum_permutations:
+                for curr_enum in [None] + list(meta[i][0]):
+                    next_item = perm.copy()
+                    if curr_enum is None:
+                        next_item.append(0)
+                    else:
+                        next_item.append(meta[i][0](curr_enum).value)
+                    new_permutations.append(next_item)
+            enum_permutations = new_permutations
+        return enum_permutations
+
+    def create_animation(
+        self,
+        size: Tuple[int, int],
+        meta: List[Tuple[Type[IntEnum], int, int]],
+        frames: List[List[List[pygame.Surface]]],
+    ) -> Dict[Tuple[Optional[IntEnum], ...], List[pygame.Surface]]:
+        output: Dict[Tuple[Optional[IntEnum], ...], List[pygame.Surface]] = {}
+        assert len(meta) == len(frames)
+
+        enum_permutations = self._enum_permutator(meta)
+
+        for perm in enum_permutations:
+            keylist: List[Optional[IntEnum]] = []
+            perm_anim_lens = []
+
+            for i in range(len(perm)):
+                enum, w, h = meta[i]
+                if perm[i] != 0:
+                    perm_anim_lens.append(len(frames[i][perm[i] - 1]))
+                    keylist.append(enum(perm[i]))
+                else:
+                    perm_anim_lens.append(1)
+                    keylist.append(None)
+            lcm = self._lowest_common_multiple_of_list(perm_anim_lens)
+            key = tuple(keylist)
+
+            combined_frames: List[pygame.Surface] = []
+            for i in range(lcm):
+                img_out = self._generate_blank_frame(size)
+                for j in range(len(perm)):
+                    enum, w, h = meta[j]
+                    if perm[j] == 0:
+                        continue
+                    img_out.blit(frames[j][perm[j]][i % perm_anim_lens[j]])
+                combined_frames.append(img_out)
+
+            output.update({key: combined_frames})
+
+        return output
 
     def load_tile_map(
         self, path: str, name: str
