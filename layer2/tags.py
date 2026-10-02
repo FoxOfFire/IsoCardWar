@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from random import randint
 from typing import Any, List, Optional, Tuple
 
 import pygame

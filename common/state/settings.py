@@ -7,7 +7,7 @@ from .colors import ColorEnum
 class Settings:
     # debug
     RENDER_BBS = False
-    RENDER_PERLIN_HEIGHT = False
+    RENDER_PERLIN_HEIGHT = True
     RENDER_MASKS_OUT = False
     RENDER_MASKS_IN = False
 

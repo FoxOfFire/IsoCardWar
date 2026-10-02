@@ -67,8 +67,14 @@ class RenderAssetContainer:
         size: Tuple[int, int],
         meta: List[Tuple[Type[IntEnum], int, int]],
         frames: List[List[List[pygame.Surface]]],
-    ) -> Dict[Tuple[Optional[IntEnum], ...], List[pygame.Surface]]:
-        output: Dict[Tuple[Optional[IntEnum], ...], List[pygame.Surface]] = {}
+    ) -> Dict[
+        Tuple[Optional[IntEnum], ...],
+        List[Tuple[pygame.Surface, Tuple[int, int]]],
+    ]:
+        output: Dict[
+            Tuple[Optional[IntEnum], ...],
+            List[Tuple[pygame.Surface, Tuple[int, int]]],
+        ] = {}
         assert len(meta) == len(frames)
 
         enum_permutations = self._enum_permutator(meta)
@@ -76,7 +82,7 @@ class RenderAssetContainer:
         for perm in enum_permutations:
             keylist: List[Optional[IntEnum]] = []
             perm_animation_lengths = []
-            combined_frames: List[pygame.Surface] = []
+            combined_frames: List[Tuple[pygame.Surface, Tuple[int, int]]] = []
 
             for enum_id in range(len(perm)):
                 enum, w, h = meta[enum_id]
@@ -95,7 +101,7 @@ class RenderAssetContainer:
             key = tuple(keylist)
 
             for frame in range(lcm):
-                img_out = self._generate_blank_frame(size)
+                img_combined = self._generate_blank_frame(size)
 
                 for enum_id in range(len(perm)):
                     enum, w, h = meta[enum_id]
@@ -112,12 +118,18 @@ class RenderAssetContainer:
 
                     surf = enum_id_frames[anim_frame_num]
 
-                    img_out.blit(
+                    img_combined.blit(
                         surf,
                         offset,
                     )
+                bounding_rect = img_combined.get_bounding_rect()
+                width = bounding_rect.width
+                height = bounding_rect.height
+                top, left = bounding_rect.topleft
+                img_out = self._generate_blank_frame((width, height))
+                img_out.blit(img_combined, (-top, -left))
 
-                combined_frames.append(img_out)
+                combined_frames.append((img_out, (top, left)))
 
             output.update({key: combined_frames})
 
