@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from random import randint
 from typing import Any, List, Optional, Tuple
 
 import pygame
@@ -15,12 +16,14 @@ class GameCameraTag:
 class MaskedSprite:
     mask: pygame.Mask
     rect: pygame.Rect
+    animation_offset: int = 0
 
     def __init__(self, rect: Optional[pygame.Rect] = None) -> None:
         if rect is None:
             self.rect = pygame.Rect((0, 0), (1, 1))
             self.mask = pygame.Mask((1, 1), fill=True)
         else:
+            self.animation_offset = randint(0, 1000)
             self.rect = rect
             self.mask = pygame.Mask(rect.size, fill=False)
             self.mask.fill()

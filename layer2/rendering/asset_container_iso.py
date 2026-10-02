@@ -63,10 +63,13 @@ class IsoAssetContainer:
         tile: IntEnum,
         unit: Optional[IntEnum],
         select: Optional[IntEnum],
+        anim_offset: int,
     ) -> pygame.Surface:
         surf_data = self._COMBINDED_SURFS.get((tile, unit, select))
         assert surf_data is not None
-        frame = ANIMATION_PROC_REF.get_frame_number() % len(surf_data)
+        frame = (ANIMATION_PROC_REF.get_frame_number() + anim_offset) % len(
+            surf_data
+        )
         return surf_data[frame]
 
     def get_mask(self) -> pygame.Mask:
