@@ -19,9 +19,7 @@ class RenderingProcessor(esper.Processor):
 
     display: Optional[pygame.Surface]
 
-    def __init__(
-        self,
-    ) -> None:
+    def __init__(self) -> None:
         self.display = None
 
         self.screen = pygame.Surface(

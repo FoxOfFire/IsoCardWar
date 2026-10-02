@@ -75,27 +75,48 @@ class RenderAssetContainer:
 
         for perm in enum_permutations:
             keylist: List[Optional[IntEnum]] = []
-            perm_anim_lens = []
+            perm_animation_lengths = []
+            combined_frames: List[pygame.Surface] = []
 
-            for i in range(len(perm)):
-                enum, w, h = meta[i]
-                if perm[i] != 0:
-                    perm_anim_lens.append(len(frames[i][perm[i] - 1]))
-                    keylist.append(enum(perm[i]))
+            for enum_id in range(len(perm)):
+                enum, w, h = meta[enum_id]
+                enum_val = perm[enum_id]
+
+                if enum_val != 0:
+                    perm_animation_lengths.append(
+                        len(frames[enum_id][enum_val - 1])
+                    )
+                    keylist.append(enum(enum_val))
                 else:
-                    perm_anim_lens.append(1)
+                    perm_animation_lengths.append(1)
                     keylist.append(None)
-            lcm = self._lowest_common_multiple_of_list(perm_anim_lens)
+
+            lcm = self._lowest_common_multiple_of_list(perm_animation_lengths)
             key = tuple(keylist)
 
-            combined_frames: List[pygame.Surface] = []
-            for i in range(lcm):
+            for frame in range(lcm):
                 img_out = self._generate_blank_frame(size)
-                for j in range(len(perm)):
-                    enum, w, h = meta[j]
-                    if perm[j] == 0:
+
+                for enum_id in range(len(perm)):
+                    enum, w, h = meta[enum_id]
+                    offset = w, h
+
+                    if perm[enum_id] == 0:
                         continue
-                    img_out.blit(frames[j][perm[j]][i % perm_anim_lens[j]])
+
+                    anim_frame_num = frame % perm_animation_lengths[enum_id]
+
+                    enum_val = perm[enum_id]
+                    enum_frames = frames[enum_id]
+                    enum_id_frames = enum_frames[enum_val - 1]
+
+                    surf = enum_id_frames[anim_frame_num]
+
+                    img_out.blit(
+                        surf,
+                        offset,
+                    )
+
                 combined_frames.append(img_out)
 
             output.update({key: combined_frames})

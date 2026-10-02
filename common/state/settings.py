@@ -27,8 +27,8 @@ class Settings:
     GAME_FULLSCREEN = True
     GAME_MUTE = True
 
-    FPS = 600
-    ANIMATION_LENGTH = 1
+    FPS = 60
+    ANIMATION_SPEED = 200
 
     # audio
     GAME_MUTE = True

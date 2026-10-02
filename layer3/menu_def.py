@@ -26,6 +26,7 @@ from layer2 import (
 
 from .text_functions import (
     get_fps_str,
+    get_frame_number_str,
     get_game_phase_str,
     get_game_world_str,
     get_particle_count_str,
@@ -157,6 +158,8 @@ MENU_DEF_REF: Dict[WorldEnum, List[MenuContainer]] = {
                 ButtonData("Info", UIElemType.TEXTBOX, (7, 1), (0, 6)),
                 (0, 4),
                 ButtonData(get_fps_str, UIElemType.TEXTBOX),
+                (0, 1),
+                ButtonData(get_frame_number_str, UIElemType.TEXTBOX),
                 (0, 1),
                 ButtonData(get_game_phase_str, UIElemType.TEXTBOX),
                 (0, 1),

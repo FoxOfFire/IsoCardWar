@@ -23,6 +23,7 @@ from layer1 import (
     end_phase,
 )
 from layer2 import (
+    ANIMATION_PROC_REF,
     DYING_PROC_REF,
     RENDER_PROC_REF,
     SCENE_SWITCH_PROC_REF,
@@ -99,6 +100,7 @@ def init_processors(*, game_proc: bool = False) -> None:  # adding processors
         esper.add_processor(GAME_PHASE_PROC_REF)
 
     esper.add_processor(RENDER_PROC_REF())
+    esper.add_processor(ANIMATION_PROC_REF)
     esper.add_processor(DYING_PROC_REF)
     esper.add_processor(SCENE_SWITCH_PROC_REF)
 
