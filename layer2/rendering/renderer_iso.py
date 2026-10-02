@@ -71,7 +71,6 @@ class IsoRenderer:
             tile = esper.component_for_entity(ent, Tile)
             x, y = tile.offset
             select = crosshair
-            mask = esper.component_for_entity(ent, MaskedSprite)
 
             y += tile.z
 
@@ -86,11 +85,12 @@ class IsoRenderer:
             elif tile.is_targeted > 0:
                 select = PriceEnum.BLOOD
             surf = ISO_ASSET_REF.get_surf(
-                tile.terrain, tile.unit, select, mask.animation_offset
+                tile.terrain, tile.unit, select, tile.animation_offset
             )
 
             screen.blit(surf, (x, y))
             if SETTINGS_REF.RENDER_PERLIN_HEIGHT:
+                mask = esper.component_for_entity(ent, MaskedSprite)
                 k = round(255.0 * (1.0 - tile.noise_val))
                 n = round(255.0 * tile.noise_val)
                 m_surf = mask.mask.to_surface(

@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from enum import IntEnum, auto
+from random import randint
 from typing import Optional, Tuple
 
 from common import SETTINGS_REF
@@ -32,6 +33,8 @@ class Tile:
     target: Optional[int] = None
     unit: Optional[UnitTypeEnum] = None
     is_targeted: int = 0
+
+    animation_offset: int = randint(0, 10000)
 
     @property
     def x_offset(self) -> int:
