@@ -127,7 +127,7 @@ class MapData:
 
         min_z = SETTINGS_REF.ISO_HEIGHT_MIN_OFFSET
         max_z = SETTINGS_REF.ISO_HEIGHT_MAX_OFFSET
-        z = (
+        z = round(
             lerp1(min_z, max_z, SETTINGS_REF.NOISE_THRESHOLDS[terrain - 1])
             / 1.5
         )
@@ -136,7 +136,7 @@ class MapData:
 
         sprite_offset = (
             tile.x_offset,
-            tile.y_offset + SETTINGS_REF.ISO_TILE_OFFSET_Y * 2 + z,
+            tile.y_offset + SETTINGS_REF.ISO_TILE_OFFSET_Y * 2 - z,
         )
         sprite_size = (
             SETTINGS_REF.ISO_TILE_OFFSET_X * 2,

@@ -1,6 +1,11 @@
 [tool.black]
-extend-exclude = "(examples|.venv|.pyenv)"
-force-exclude = "examples"
+extend-exclude = '''
+/(
+    \.venv
+  | venv
+  examples
+)/
+'''
 line-length = 79
 
 [tool.vulture]
@@ -18,7 +23,8 @@ max-line-length = 79
 exclude = [
     ".git",
     "__pycache__",
-    ".venv"
+    ".venv",
+    "venv",
 ]
 extend-ignore = [
 ]
@@ -31,7 +37,7 @@ ignore_missing_imports = true
 [tool.isort]
 profile = "black"
 virtual_env = ".venv"
-skip = ".venv,examples,.pyenv"
+skip = ".venv,examples,.pyenv,venv,pyenv"
 
 [tool.pytest.ini_options]
 pythonpath = ["."]

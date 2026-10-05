@@ -25,7 +25,8 @@ class IsoRenderer:
         cams = esper.get_component(cam_tag)
         if len(cams) > 0:
             self.bb = esper.component_for_entity(cams[0][0], BoundingBox)
-        ISO_ASSET_REF.init(TerrainEnum, UnitTypeEnum, PriceEnum)
+        ISO_ASSET_REF.assign_enums([TerrainEnum, UnitTypeEnum, PriceEnum])
+        ISO_ASSET_REF.init()
 
     def __init__(self) -> None:
         super().__init__()
@@ -84,13 +85,15 @@ class IsoRenderer:
                 y += SETTINGS_REF.ISO_ACTIVE_TILE_SELECT_OFFSET
             elif tile.is_targeted > 0:
                 select = PriceEnum.BLOOD
-            surf = ISO_ASSET_REF.get_surf(tile.terrain, tile.unit, select)
+            surf, (offset_x, offset_y) = ISO_ASSET_REF.get_surf(
+                tile.terrain, tile.unit, select, tile.animation_offset
+            )
 
-            screen.blit(surf, (x, y))
+            screen.blit(surf, (x + offset_x, y + offset_y))
             if SETTINGS_REF.RENDER_PERLIN_HEIGHT:
+                mask = esper.component_for_entity(ent, MaskedSprite)
                 k = round(255.0 * (1.0 - tile.noise_val))
                 n = round(255.0 * tile.noise_val)
-                mask = esper.component_for_entity(ent, MaskedSprite)
                 m_surf = mask.mask.to_surface(
                     setcolor=pygame.Color(k, n, (n + k) // 3, 255),
                     unsetcolor=ColorEnum.TRANSPARENT.value,

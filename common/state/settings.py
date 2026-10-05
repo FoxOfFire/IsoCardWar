@@ -18,6 +18,7 @@ class Settings:
     LOG_PLAY_SOUND = False
     LOG_MAP_ACTIONS = False
     LOG_GAME_PHASE = False
+    LOG_CARDS = False
 
     # rendering
     GAME_CAM_HEIGHT = 270
@@ -27,7 +28,7 @@ class Settings:
     GAME_MUTE = True
 
     FPS = 600
-    ANIMATION_LENGTH = 1
+    ANIMATION_SPEED = 150
 
     # audio
     GAME_MUTE = True
@@ -103,6 +104,13 @@ class Settings:
 
     ISO_TARGET_CUTOFF = 4
     ISO_RANGED_ARCH = 60
+
+    WAIT_UNIT = 0
+    WALK_WAIT = 0
+    WAIT_BEGIN_GAME = 0
+    WAIT_DRAW = 0
+    WAIT_PRODUCE = 0
+    WAIT_SPAWNING = 0
 
     # UI
     FONT_COLOR = ColorEnum.SHADE_DARK.value

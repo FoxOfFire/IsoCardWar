@@ -70,6 +70,7 @@ def get_change_target_unit_action(
                 target.is_targeted = max(0, target.is_targeted - 1)
                 tile.target = None
         tile.unit = unit
+        tile.animation_offset = randint(0, 10000)
         return True
 
     return change

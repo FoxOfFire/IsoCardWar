@@ -4,6 +4,11 @@ import esper
 
 from common import POS_PROC_REF, RUN_DATA_REF, STATE_REF, PriceEnum
 from layer1 import Particle
+from layer2 import ANIMATION_PROC_REF
+
+
+def get_frame_number_str() -> str:
+    return f"frame: {ANIMATION_PROC_REF.get_frame_number()}"
 
 
 def get_tracked_bb_of_type_str() -> str:

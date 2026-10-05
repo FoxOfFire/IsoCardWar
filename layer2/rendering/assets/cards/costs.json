@@ -38,10 +38,16 @@
  ],
  "meta": {
   "app": "http://www.aseprite.org/",
-  "version": "1.3.18.3-dev",
+  "version": "1.3.18.6-dev",
   "image": "costs.png",
   "format": "RGBA8888",
   "size": { "w": 36, "h": 6 },
-  "scale": "1"
+  "scale": "1",
+  "frameTags": [
+   { "name": "Blood", "from": 0, "to": 0, "direction": "forward", "color": "#000000ff" },
+   { "name": "Herb", "from": 1, "to": 1, "direction": "forward", "color": "#000000ff" },
+   { "name": "Mana", "from": 2, "to": 2, "direction": "forward", "color": "#000000ff" },
+   { "name": "Brew", "from": 3, "to": 3, "direction": "forward", "color": "#000000ff" }
+  ]
  }
 }

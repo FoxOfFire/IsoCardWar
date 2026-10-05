@@ -28,7 +28,7 @@ from .log import logger
 def _begin_game() -> List[Action]:
     effects: List[Action] = [
         reset_trigger,
-        get_wait_ms_action(500),
+        get_wait_ms_action(SETTINGS_REF.WAIT_BEGIN_GAME),
     ]
     return effects
 
@@ -37,7 +37,7 @@ def _production() -> List[Action]:
     effects: List[Action] = [
         reset_trigger,
         turn_counter_plus_one_action,
-        get_wait_ms_action(75),
+        get_wait_ms_action(SETTINGS_REF.WAIT_PRODUCE),
     ]
     return _enemy_action(MAP_DATA_REF.get_productions_for_type) + effects
 
@@ -46,13 +46,13 @@ def _draw() -> List[Action]:
     effects: List[Action] = [
         reset_trigger,
         draw_card,
-        get_wait_ms_action(75),
+        get_wait_ms_action(SETTINGS_REF.WAIT_DRAW),
         draw_card,
-        get_wait_ms_action(75),
+        get_wait_ms_action(SETTINGS_REF.WAIT_DRAW),
         draw_card,
-        get_wait_ms_action(75),
+        get_wait_ms_action(SETTINGS_REF.WAIT_DRAW),
         draw_card,
-        get_wait_ms_action(75),
+        get_wait_ms_action(SETTINGS_REF.WAIT_DRAW),
         draw_card,
         reset_active_tile,
     ]
@@ -106,7 +106,7 @@ def _end_game() -> List[Action]:
 def _spawning() -> List[Action]:
     effects: List[Action] = [
         reset_trigger,
-        get_wait_ms_action(500),
+        get_wait_ms_action(SETTINGS_REF.WAIT_SPAWNING),
     ]
     return effects
 

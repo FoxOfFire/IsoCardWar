@@ -29,7 +29,6 @@ def play_card(target: ActionEnt) -> bool:
         for search_ent, search_card in esper.get_component(Card):
             if search_card == card:
                 ent = search_ent
-                logger.info("break")
                 break
         if ent is None:
             return False
@@ -74,7 +73,8 @@ def draw_card(ent: ActionEnt) -> bool:
         return False
 
     if len(DECK_REF.hand) == SETTINGS_REF.MAX_CARD_COUNT:
-        logger.info("hand is full")
+        if SETTINGS_REF.LOG_CARDS:
+            logger.info("hand is full")
         return False
     if len(DECK_REF.deck) == 0:
         DECK_REF.deck = DECK_REF.discard
@@ -83,13 +83,15 @@ def draw_card(ent: ActionEnt) -> bool:
             return False
 
     if len(DECK_REF.deck) == 0:
-        logger.info("out of cards!")
+        if SETTINGS_REF.LOG_CARDS:
+            logger.info("out of cards!")
         return False
 
     card = DECK_REF.deck.pop()
     card_ent = DECK_REF.spawn_card(card)
     DECK_REF.hand.append(card)
-    logger.info(f"Spawned Card {card.name, card_ent}")
+    if SETTINGS_REF.LOG_CARDS:
+        logger.info(f"Spawned Card {card.name, card_ent}")
     return sort_hand(None, True)
 
 

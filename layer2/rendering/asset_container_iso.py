@@ -5,6 +5,7 @@ import pygame
 
 from common import SETTINGS_REF
 
+from .animation_processor import ANIMATION_PROC_REF
 from .log import logger
 from .rendering_asset_loader import RENDER_ASSET_REF
 
@@ -13,83 +14,77 @@ class IsoAssetContainer:
 
     _ISO_ASSETS_DIR = "iso"
     _ISO_MASK: Optional[pygame.Mask] = None
-    _TILE_TYPE_SURFS: List[pygame.Surface] = []
-    _UNIT_TYPE_SURFS: List[pygame.Surface] = []
-    _SELECTION_SURFS: List[pygame.Surface] = []
+    _TILE_TYPE_SURFS: List[List[pygame.Surface]] = []
+    _UNIT_TYPE_SURFS: List[List[pygame.Surface]] = []
+    _SELECTION_SURFS: List[List[pygame.Surface]] = []
     _COMBINDED_SURFS: Dict[
-        Tuple[IntEnum, Optional[IntEnum], Optional[IntEnum]],
-        pygame.Surface,
+        Tuple[Optional[IntEnum], Optional[IntEnum], Optional[IntEnum]],
+        List[Tuple[pygame.Surface, Tuple[int, int]]],
     ] = {}
     _LOADED_IMAGES: bool = False
     _GENERATED_DYNAMIC_SURFS = False
+    _ENUMS: Optional[List[Type[IntEnum]]] = None
 
-    def init(
-        self,
-        tiles: Type[IntEnum],
-        units: Type[IntEnum],
-        selects: Type[IntEnum],
-    ) -> None:
+    def assign_enums(self, enums: List[Type[IntEnum]]) -> None:
+        self._ENUMS = enums
+
+    def init(self) -> None:
+        assert self._ENUMS is not None
+        assert len(self._ENUMS) == 3
+        tiles, units, selects = tuple(self._ENUMS)
+
         if self._GENERATED_DYNAMIC_SURFS:
             return
-        for tile in list(tiles):
-            for unit in list(units) + [None]:
-                for select in list(selects) + [None]:
-                    self._generate_surf(tile, unit, select)
-        self._GENERATED_DYNAMIC_SURFS = True
-
-    def _generate_surf(
-        self, tile: IntEnum, unit: Optional[IntEnum], select: Optional[IntEnum]
-    ) -> None:
-        if not self._LOADED_IMAGES:
-            if SETTINGS_REF.LOG_ASSET_LOADING:
-                logger.info("Loaded base images")
-            self._load_image_types()
-            self._LOADED_IMAGES = True
-
-        surf = pygame.Surface(
+        if SETTINGS_REF.LOG_ASSET_LOADING:
+            logger.info("Loaded base images")
+        self._load_image_types()
+        if SETTINGS_REF.LOG_ASSET_LOADING:
+            logger.info("Combining iso animation surfs")
+        combinded_dict = RENDER_ASSET_REF.create_animation(
             (
                 SETTINGS_REF.ISO_TILE_SPRITE_WIDTH,
                 SETTINGS_REF.ISO_TILE_SPRITE_HEIGHT,
             ),
-            flags=pygame.SRCALPHA,
+            [
+                (tiles, 0, SETTINGS_REF.ISO_TILE_OFFSET_Y * 2),
+                (units, 0, 0),
+                (selects, 0, 0),
+            ],
+            [
+                self._TILE_TYPE_SURFS,
+                self._UNIT_TYPE_SURFS,
+                self._SELECTION_SURFS,
+            ],
         )
+        assert isinstance(combinded_dict, type(self._COMBINDED_SURFS))
 
-        t_surf = self._TILE_TYPE_SURFS[tile.value - 1]
-        t_offset = SETTINGS_REF.ISO_TILE_OFFSET_Y * 2
-        t_rect = t_surf.get_rect(topleft=(0, t_offset))
-        surf.blit(t_surf, t_rect)
-
-        if select is not None:
-            s_surf = self._SELECTION_SURFS[select.value - 1]
-            s_rect = s_surf.get_rect(topleft=(0, 0))
-            surf.blit(s_surf, s_rect)
-
-        if unit is not None:
-            u_surf = self._UNIT_TYPE_SURFS[unit.value - 1]
-            u_rect = u_surf.get_rect(topleft=(0, 0))
-            surf.blit(u_surf, u_rect)
-
-        if SETTINGS_REF.LOG_ASSET_LOADING:
-            logger.info(f"added tile sprite: {tile.name, unit, select}")
-        self._COMBINDED_SURFS.update({(tile, unit, select): surf})
+        self._COMBINDED_SURFS.update(combinded_dict)
+        self._GENERATED_DYNAMIC_SURFS = True
 
     def get_surf(
-        self, tile: IntEnum, unit: Optional[IntEnum], select: Optional[IntEnum]
-    ) -> pygame.Surface:
+        self,
+        tile: IntEnum,
+        unit: Optional[IntEnum],
+        select: Optional[IntEnum],
+        anim_offset: int,
+    ) -> Tuple[pygame.Surface, Tuple[int, int]]:
         surf_data = self._COMBINDED_SURFS.get((tile, unit, select))
-
         if surf_data is None:
-            self._generate_surf(tile, unit, select)
+            self.init()
             surf_data = self._COMBINDED_SURFS.get((tile, unit, select))
-            assert surf_data is not None
 
-        return surf_data
+        assert surf_data is not None
+
+        frame = (ANIMATION_PROC_REF.get_frame_number() + anim_offset) % len(
+            surf_data
+        )
+        return surf_data[frame]
 
     def get_mask(self) -> pygame.Mask:
         if self._ISO_MASK is None:
             mask_surf = RENDER_ASSET_REF.load_tile_map(
                 self._ISO_ASSETS_DIR, "tile_mask"
-            )[0].convert_alpha()
+            )[0][0].convert_alpha()
             mask = pygame.mask.from_surface(mask_surf)
             self._ISO_MASK = mask
         return self._ISO_MASK.copy()
