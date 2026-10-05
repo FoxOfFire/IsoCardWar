@@ -53,8 +53,6 @@ class Deck:
         for _ in range(SETTINGS_REF.STARTER_DECK_COUNT // cardtype_num):
             for c_type in CardTypeEnum:
                 cards.append(self.create_card(c_type))
-        for _ in range(10):
-            cards.append(self.create_card(CardTypeEnum.REMOVE_UNIT))
 
         self.deck = cards
 
