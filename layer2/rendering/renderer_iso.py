@@ -25,7 +25,8 @@ class IsoRenderer:
         cams = esper.get_component(cam_tag)
         if len(cams) > 0:
             self.bb = esper.component_for_entity(cams[0][0], BoundingBox)
-        ISO_ASSET_REF.init(TerrainEnum, UnitTypeEnum, PriceEnum)
+        ISO_ASSET_REF.assign_enums([TerrainEnum, UnitTypeEnum, PriceEnum])
+        ISO_ASSET_REF.init()
 
     def __init__(self) -> None:
         super().__init__()

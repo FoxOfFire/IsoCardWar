@@ -22,12 +22,6 @@ class RenderAssetContainer:
             SETTINGS_REF.FONT_SIZE,
         )
 
-    def _generate_blank_frame(self, size: Tuple[int, int]) -> pygame.Surface:
-        return pygame.Surface(
-            size,
-            flags=pygame.SRCALPHA,
-        )
-
     def _greatest_common_divisor(self, a: int, b: int) -> int:
         while a != b:
             if a > b:
@@ -98,10 +92,9 @@ class RenderAssetContainer:
                     keylist.append(None)
 
             lcm = self._lowest_common_multiple_of_list(perm_animation_lengths)
-            key = tuple(keylist)
 
             for frame in range(lcm):
-                img_combined = self._generate_blank_frame(size)
+                img_combined = pygame.Surface(size, flags=pygame.SRCALPHA)
 
                 for enum_id in range(len(perm)):
                     enum, w, h = meta[enum_id]
@@ -118,20 +111,19 @@ class RenderAssetContainer:
 
                     surf = enum_id_frames[anim_frame_num]
 
-                    img_combined.blit(
-                        surf,
-                        offset,
-                    )
+                    img_combined.blit(surf, offset)
                 bounding_rect = img_combined.get_bounding_rect()
                 width = bounding_rect.width
                 height = bounding_rect.height
                 top, left = bounding_rect.topleft
-                img_out = self._generate_blank_frame((width, height))
+                img_out = pygame.Surface(
+                    (width, height), flags=pygame.SRCALPHA
+                )
                 img_out.blit(img_combined, (-top, -left))
 
                 combined_frames.append((img_out, (top, left)))
 
-            output.update({key: combined_frames})
+            output.update({tuple(keylist): combined_frames})
 
         return output
 

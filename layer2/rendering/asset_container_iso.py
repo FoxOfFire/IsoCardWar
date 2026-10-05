@@ -23,13 +23,16 @@ class IsoAssetContainer:
     ] = {}
     _LOADED_IMAGES: bool = False
     _GENERATED_DYNAMIC_SURFS = False
+    _ENUMS: Optional[List[Type[IntEnum]]] = None
 
-    def init(
-        self,
-        tiles: Type[IntEnum],
-        units: Type[IntEnum],
-        selects: Type[IntEnum],
-    ) -> None:
+    def assign_enums(self, enums: List[Type[IntEnum]]) -> None:
+        self._ENUMS = enums
+
+    def init(self) -> None:
+        assert self._ENUMS is not None
+        assert len(self._ENUMS) == 3
+        tiles, units, selects = tuple(self._ENUMS)
+
         if self._GENERATED_DYNAMIC_SURFS:
             return
         if SETTINGS_REF.LOG_ASSET_LOADING:
@@ -66,7 +69,12 @@ class IsoAssetContainer:
         anim_offset: int,
     ) -> Tuple[pygame.Surface, Tuple[int, int]]:
         surf_data = self._COMBINDED_SURFS.get((tile, unit, select))
+        if surf_data is None:
+            self.init()
+            surf_data = self._COMBINDED_SURFS.get((tile, unit, select))
+
         assert surf_data is not None
+
         frame = (ANIMATION_PROC_REF.get_frame_number() + anim_offset) % len(
             surf_data
         )

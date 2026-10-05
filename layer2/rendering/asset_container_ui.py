@@ -127,9 +127,9 @@ class UIAssetContainer:
                 )
 
                 if is_checkbox:
-                    surf.blit(checksurf[i])
+                    surf.blit(checksurf[i], (0, 0))
                 if is_icon:
-                    surf.blit(icon_surf[i])
+                    surf.blit(icon_surf[i], (0, 0))
 
                 surfs.append(surf)
             if is_checkbox:
@@ -154,7 +154,7 @@ class UIAssetContainer:
             surfs: List[pygame.Surface] = []
             for frame in range(len(icon_surfs)):
                 surf = self._ICON_BACKGROUND_SURFS[background][i].copy()
-                surf.blit(icon_surfs[frame])
+                surf.blit(icon_surfs[frame], (0, 0))
                 surfs.append(surf)
             surfs.append(self._ICON_BACKGROUND_SURFS[background][i].copy())
             organised_surfs.append(surfs)
@@ -168,7 +168,7 @@ class UIAssetContainer:
                 icon_surfs = self._ICON_SURFS[icon_start + resource.value - 1]
                 for frame in range(len(icon_surfs)):
                     surf = self._ICON_BACKGROUND_SURFS[background][i].copy()
-                    surf.blit(icon_surfs[frame])
+                    surf.blit(icon_surfs[frame], (0, 0))
                     surfs[i].append(surf)
         self._BUTTON_TILE_MAPS += [surfs]
 
