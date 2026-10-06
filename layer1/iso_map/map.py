@@ -13,8 +13,14 @@ from .tile import TerrainEnum, Tile, UnitTypeEnum
 class MapData:
     _sprite: Optional[Type] = None
     _particle_generator: Optional[Type] = None
+
     _tiles: Dict[Tuple[int, int], int] = {}
     _ents: Dict[int, Tuple[int, int]] = {}
+
+    _enemys: List[Tuple[int, Tuple[int, int]]] = []
+    _neutrals: List[Tuple[int, Tuple[int, int]]] = []
+    _friendlys: List[Tuple[int, Tuple[int, int]]] = []
+
     _unit_actions: Dict[UnitTypeEnum | None, List[Action]] = {}
     _unit_telegraphs: Dict[UnitTypeEnum | None, List[Action]] = {}
     _unit_productions: Dict[UnitTypeEnum | None, List[Action]] = {}
