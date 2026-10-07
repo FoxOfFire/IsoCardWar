@@ -60,7 +60,7 @@ class CardRenderer:
                 continue
 
             bb = esper.component_for_entity(ent, BoundingBox)
-            surf = CARD_ASSET_REF.get_saved_card_surf(0, card.type_enum)
+            surf = CARD_ASSET_REF.get_saved_card_surf(card.type_enum)
             if surf is None:
                 assert card.price is not None
                 prices = [card.price[res] for res in list(PriceEnum)]
@@ -68,7 +68,6 @@ class CardRenderer:
                     border=CardTypeEnum.BASIC,
                     image=CardImageEnum.BASIC_IMAGE,
                     prices=(prices[0], prices[1], prices[2], prices[3]),
-                    frame=0,
                     card_type=card.type_enum,
                 )
                 FONT_ASSET_REF.draw_text_on_surf(surf, ent)

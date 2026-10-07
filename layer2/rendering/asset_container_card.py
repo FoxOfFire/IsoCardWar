@@ -6,6 +6,7 @@ import pygame
 from common import SETTINGS_REF, PriceEnum
 from layer1 import CardTypeEnum as CardType
 
+from .animation_processor import ANIMATION_PROC_REF
 from .log import logger
 from .rendering_asset_loader import RENDER_ASSET_REF
 
@@ -18,13 +19,16 @@ class CardAssetContainer:
     _CARD_IMAGE_SURFS: List[List[pygame.Surface]] = []
     _LOADED_CARD_SURFS: bool = False
     _CARD_SURFS: Dict[IntEnum, List[pygame.Surface]] = {}
+    _CARD_ANIM_LENS: Dict[IntEnum, int] = {}
 
     def get_saved_card_surf(
-        self, frame: int, card_type: CardType
+        self, card_type: CardType
     ) -> Optional[pygame.Surface]:
         surfs = self._CARD_SURFS.get(card_type)
         if surfs is None:
             return None
+        length = len(surfs)
+        frame = ANIMATION_PROC_REF.get_frame_number(length)
         return surfs[frame]
 
     def get_card_surf(
@@ -33,24 +37,22 @@ class CardAssetContainer:
         border: IntEnum,
         prices: Tuple[int, int, int, int],
         image: IntEnum,
-        frame: int,
         card_type: CardType,
     ) -> pygame.Surface:
-        surfs = self._CARD_SURFS.get(card_type)
-        if surfs is None:
-            if not self._LOADED_CARD_SURFS:
-                self._load_anim_types()
-                self._load_image_types()
-                self._LOADED_CARD_SURFS = True
+        if not self._LOADED_CARD_SURFS:
+            self._load_anim_types()
+            self._load_image_types()
+            self._LOADED_CARD_SURFS = True
 
-                if SETTINGS_REF.LOG_ASSET_LOADING:
-                    logger.info("loaded card images")
+            if SETTINGS_REF.LOG_ASSET_LOADING:
+                logger.info("loaded card images")
 
-            self._load_card_surf(border, prices, image, card_type)
-            surfs = self._CARD_SURFS.get((card_type))
-            assert surfs is not None
-        assert frame < len(surfs) and frame >= 0, frame
-        return surfs[frame]
+        self._load_card_surf(border, prices, image, card_type)
+
+        frame = ANIMATION_PROC_REF.get_frame_number(
+            self._CARD_ANIM_LENS[card_type]
+        )
+        return self._CARD_SURFS[card_type][frame]
 
     def _load_card_surf(
         self,
@@ -63,11 +65,12 @@ class CardAssetContainer:
         if SETTINGS_REF.LOG_ASSET_LOADING:
             logger.info(f"added card{border.name, image.name, prices}")
         surfs = []
+        length = 0
         for img_frame in self._CARD_IMAGE_SURFS[image.value - 1]:
 
             surf: pygame.Surface = img_frame.copy()
 
-            surf.blit(self._CARD_TYPE_SURFS[border - 1][frame])
+            surf.blit(self._CARD_TYPE_SURFS[border - 1][frame], (0, 0))
 
             offset = 0
             for res in PriceEnum:
@@ -85,7 +88,9 @@ class CardAssetContainer:
                     )
                     offset += SETTINGS_REF.MARKER_OFFSET_X
             surfs.append(surf)
+            length += 1
         self._CARD_SURFS.update({card_type: surfs})
+        self._CARD_ANIM_LENS.update({card_type: length})
 
     def _load_anim_types(self) -> None:
         self._CARD_IMAGE_SURFS += RENDER_ASSET_REF.load_tile_map(

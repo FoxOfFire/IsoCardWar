@@ -13,17 +13,23 @@ from .rendering_asset_loader import RENDER_ASSET_REF
 class IsoAssetContainer:
 
     _ISO_ASSETS_DIR = "iso"
+
     _ISO_MASK: Optional[pygame.Mask] = None
+    _ENUMS: Optional[List[Type[IntEnum]]] = None
+
     _TILE_TYPE_SURFS: List[List[pygame.Surface]] = []
     _UNIT_TYPE_SURFS: List[List[pygame.Surface]] = []
     _SELECTION_SURFS: List[List[pygame.Surface]] = []
+
     _COMBINDED_SURFS: Dict[
         Tuple[Optional[IntEnum], Optional[IntEnum], Optional[IntEnum]],
         List[Tuple[pygame.Surface, int, int]],
     ] = {}
-    _LOADED_IMAGES: bool = False
+    _COMBINDED_ANIM_LENS: Dict[
+        Tuple[Optional[IntEnum], Optional[IntEnum], Optional[IntEnum]], int
+    ] = {}
+
     _GENERATED_DYNAMIC_SURFS = False
-    _ENUMS: Optional[List[Type[IntEnum]]] = None
 
     def assign_enums(self, enums: List[Type[IntEnum]]) -> None:
         self._ENUMS = enums
@@ -59,24 +65,23 @@ class IsoAssetContainer:
         assert isinstance(combinded_dict, type(self._COMBINDED_SURFS))
 
         self._COMBINDED_SURFS.update(combinded_dict)
+        for key, val in self._COMBINDED_SURFS.items():
+            self._COMBINDED_ANIM_LENS.update({key: len(val)})
+
         self._GENERATED_DYNAMIC_SURFS = True
 
     def get_surf(
         self,
-        tile: IntEnum,
-        unit: Optional[IntEnum],
-        select: Optional[IntEnum],
+        key: Tuple[Optional[IntEnum], Optional[IntEnum], Optional[IntEnum]],
         anim_offset: int,
     ) -> Tuple[pygame.Surface, int, int]:
-        surf_data = self._COMBINDED_SURFS.get((tile, select, unit))
-        if surf_data is None:
+        if not self._GENERATED_DYNAMIC_SURFS:
             self.init()
-            surf_data = self._COMBINDED_SURFS.get((tile, select, unit))
 
-        assert surf_data is not None
+        surf_data = self._COMBINDED_SURFS[key]
 
-        frame = (ANIMATION_PROC_REF.get_frame_number() + anim_offset) % len(
-            surf_data
+        frame = ANIMATION_PROC_REF.get_frame_number(
+            self._COMBINDED_ANIM_LENS[key], start_offset=anim_offset
         )
         return surf_data[frame]
 

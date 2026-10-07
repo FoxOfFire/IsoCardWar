@@ -10,8 +10,12 @@ class AnimationInfoObject(esper.Processor):
     def __init__(self) -> None:
         self._animation_frame = 0
 
-    def get_frame_number(self) -> int:
-        return self._animation_frame
+    def get_frame_number(
+        self, anim_length: int, *, start_offset: int = 0
+    ) -> int:
+        if anim_length < 2:
+            return 0
+        return (self._animation_frame + start_offset) % anim_length
 
     def process(self) -> None:
         self._elapsed_time += RUN_DATA_REF.delta_time

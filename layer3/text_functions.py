@@ -8,7 +8,7 @@ from layer2 import ANIMATION_PROC_REF
 
 
 def get_frame_number_str() -> str:
-    return f"frame: {ANIMATION_PROC_REF.get_frame_number()}"
+    return f"frame: {ANIMATION_PROC_REF.get_frame_number(100)}"
 
 
 def get_tracked_bb_of_type_str() -> str:
