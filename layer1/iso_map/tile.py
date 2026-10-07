@@ -20,8 +20,15 @@ class UnitTypeEnum(IntEnum):
     MANA_PYLON = auto()
     WITCH = auto()
     ROCK = auto()
+    TREE = auto()
     KNIGHT = auto()
     FARMER = auto()
+
+
+class POIEnum(IntEnum):
+    FRIENDLY = auto()
+    NEUTRAL = auto()
+    ENEMY = auto()
 
 
 @dataclass

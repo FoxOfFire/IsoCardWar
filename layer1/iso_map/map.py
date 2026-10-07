@@ -7,7 +7,7 @@ from perlin_noise import PerlinNoise
 
 from common import SETTINGS_REF, Action, BoundingBox, Untracked, lerp1
 
-from .tile import TerrainEnum, Tile, UnitTypeEnum
+from .tile import POIEnum, TerrainEnum, Tile, UnitTypeEnum
 
 
 class MapData:
@@ -17,9 +17,7 @@ class MapData:
     _tiles: Dict[Tuple[int, int], int] = {}
     _ents: Dict[int, Tuple[int, int]] = {}
 
-    _enemys: List[Tuple[int, Tuple[int, int]]] = []
-    _neutrals: List[Tuple[int, Tuple[int, int]]] = []
-    _friendlys: List[Tuple[int, Tuple[int, int]]] = []
+    _points_of_interest: Dict[POIEnum, List[Tuple[int, int]]] = {}
 
     _unit_actions: Dict[UnitTypeEnum | None, List[Action]] = {}
     _unit_telegraphs: Dict[UnitTypeEnum | None, List[Action]] = {}
@@ -183,6 +181,34 @@ class MapData:
 
     def pos_at(self, ent: int) -> Tuple[int, int]:
         return self._ents[ent]
+
+    def generate_pois(self) -> None:
+        self._points_of_interest.clear()
+        for (x, y), ent in self._tiles.items():
+            tile = esper.try_component(ent, Tile)
+            assert tile is not None
+            if tile.unit is None:
+                continue
+            unit = tile.unit.value
+            if unit <= UnitTypeEnum.WITCH.value:
+                self._points_of_interest[POIEnum.FRIENDLY].append((x, y))
+            elif unit <= UnitTypeEnum.TREE.value:
+                self._points_of_interest[POIEnum.NEUTRAL].append((x, y))
+            else:
+                self._points_of_interest[POIEnum.ENEMY].append((x, y))
+
+    def get_closest_poi(
+        self, x: int, y: int, poi: POIEnum
+    ) -> Optional[Tuple[int, int]]:
+        mindist: Optional[int] = None
+        minpos: Optional[Tuple[int, int]] = None
+        for posx, posy in self._points_of_interest[poi]:
+            dist = (x - posx) ** 2 + (y - posy) ** 2
+            if mindist is None or dist < mindist:
+                mindist = dist
+                minpos = posx, posy
+
+        return minpos
 
 
 MAP_DATA_REF = MapData()

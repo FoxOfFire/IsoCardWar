@@ -15,7 +15,7 @@ from common import (
 
 from .log import logger
 from .map import MAP_DATA_REF
-from .tile import TerrainEnum, Tile, UnitTypeEnum
+from .tile import POIEnum, TerrainEnum, Tile, UnitTypeEnum
 
 
 def get_ent_tile(ent: ActionEnt) -> Optional[Tile]:
@@ -234,6 +234,30 @@ def get_move_realtive_action(pos: Tuple[int, int]) -> Action:
         set_active_tile(target_ent, True)
 
         return select_tile(target_ent, True)
+
+    return action
+
+
+def get_step_towards_nearest_poi(poi: POIEnum) -> Action:
+    @ActionDecor
+    def action(ent: ActionEnt) -> bool:
+        if ent is None:
+            return False
+        x, y = MAP_DATA_REF.pos_at(ent)
+        poipos = MAP_DATA_REF.get_closest_poi(x, y, poi)
+        if poipos is None:
+            return False
+        delta_x, delta_y = poipos[0] - x, poipos[1] - y
+
+        dirs = [(abs(delta_x) // delta_x, 0), (0, abs(delta_y) // delta_y)]
+        assert abs(dirs[0][0]) == 1 or abs(dirs[1][1]) == 1
+        if abs(delta_x) == abs(delta_y):
+            dirs = shuffle_list(dirs)
+        elif abs(delta_x) < abs(delta_y):
+            dirs.reverse()
+        if get_move_realtive_action(dirs[0])(ent, True):
+            return True
+        return get_move_realtive_action(dirs[1])(ent, True)
 
     return action
 

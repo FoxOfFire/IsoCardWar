@@ -31,7 +31,7 @@ class IsoAssetContainer:
     def init(self) -> None:
         assert self._ENUMS is not None
         assert len(self._ENUMS) == 3
-        tiles, units, selects = tuple(self._ENUMS)
+        tiles, selects, units = tuple(self._ENUMS)
 
         if self._GENERATED_DYNAMIC_SURFS:
             return
@@ -47,13 +47,13 @@ class IsoAssetContainer:
             ),
             [
                 (tiles, 0, SETTINGS_REF.ISO_TILE_OFFSET_Y * 2),
-                (units, 0, 0),
                 (selects, 0, 0),
+                (units, 0, 0),
             ],
             [
                 self._TILE_TYPE_SURFS,
-                self._UNIT_TYPE_SURFS,
                 self._SELECTION_SURFS,
+                self._UNIT_TYPE_SURFS,
             ],
         )
         assert isinstance(combinded_dict, type(self._COMBINDED_SURFS))
@@ -68,10 +68,10 @@ class IsoAssetContainer:
         select: Optional[IntEnum],
         anim_offset: int,
     ) -> Tuple[pygame.Surface, Tuple[int, int]]:
-        surf_data = self._COMBINDED_SURFS.get((tile, unit, select))
+        surf_data = self._COMBINDED_SURFS.get((tile, select, unit))
         if surf_data is None:
             self.init()
-            surf_data = self._COMBINDED_SURFS.get((tile, unit, select))
+            surf_data = self._COMBINDED_SURFS.get((tile, select, unit))
 
         assert surf_data is not None
 
