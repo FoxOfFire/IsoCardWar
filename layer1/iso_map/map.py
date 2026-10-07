@@ -191,7 +191,7 @@ class MapData:
         return self._ents[ent]
 
     def generate_pois(self) -> None:
-        ticks = pygame.time.get_ticks()
+        ticks = RUN_DATA_REF.game_clock.get_rawtime()
         if ticks == self._poi_gen_last:
             return
         self._poi_gen_last = ticks
