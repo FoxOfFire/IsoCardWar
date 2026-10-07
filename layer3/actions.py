@@ -16,13 +16,36 @@ from common import (
 from layer1 import (
     MAP_DATA_REF,
     ParticleType,
+    POIEnum,
     TerrainEnum,
     Tile,
     get_move_realtive_action,
     get_spawn_static_particle_action,
+    get_step_towards_nearest_poi,
     get_wait_ms_action,
     reset_tile_target,
 )
+
+
+def walk_to_poi(
+    poi: POIEnum, dist: int = 4, pause_ms: int = SETTINGS_REF.WALK_WAIT
+) -> Action:
+    @ActionDecor
+    def action(ent: ActionEnt) -> bool:
+        if ent is None:
+            return False
+        MAP_DATA_REF.generate_pois()
+        if MAP_DATA_REF.poi_of_type_count(poi) == 0:
+            return random_walk(dist, pause_ms)(ent, True)
+
+        for i in range(dist):
+            get_step_towards_nearest_poi(poi)(ent, True)
+            ent = STATE_REF.selected_tile
+            get_wait_ms_action(pause_ms)(ent, True)
+
+        return True
+
+    return action
 
 
 def random_walk(

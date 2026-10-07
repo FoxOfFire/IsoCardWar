@@ -1,5 +1,5 @@
 from random import randint
-from typing import Optional, Tuple
+from typing import List, Optional, Tuple
 
 import esper
 
@@ -241,6 +241,7 @@ def get_move_realtive_action(pos: Tuple[int, int]) -> Action:
 def get_step_towards_nearest_poi(poi: POIEnum) -> Action:
     @ActionDecor
     def action(ent: ActionEnt) -> bool:
+        MAP_DATA_REF.generate_pois()
         if ent is None:
             return False
         x, y = MAP_DATA_REF.pos_at(ent)
@@ -249,15 +250,32 @@ def get_step_towards_nearest_poi(poi: POIEnum) -> Action:
             return False
         delta_x, delta_y = poipos[0] - x, poipos[1] - y
 
-        dirs = [(abs(delta_x) // delta_x, 0), (0, abs(delta_y) // delta_y)]
-        assert abs(dirs[0][0]) == 1 or abs(dirs[1][1]) == 1
+        if abs(delta_x) + abs(delta_y) == 1:
+            return False
+
+        dirs: List[Tuple[int, int]] = []
+        if delta_x != 0:
+            dx = abs(delta_x) // delta_x
+            assert abs(dx) == 1
+            dirs.append((dx, 0))
+        else:
+            dirs.append((randint(0, 1) * 2 - 1, 0))
+        if delta_y != 0:
+            dy = abs(delta_y) // delta_y
+            assert abs(dy) == 1
+            dirs.append((0, dy))
+        else:
+            dirs.append((0, randint(0, 1) * 2 - 1))
+
         if abs(delta_x) == abs(delta_y):
             dirs = shuffle_list(dirs)
         elif abs(delta_x) < abs(delta_y):
             dirs.reverse()
-        if get_move_realtive_action(dirs[0])(ent, True):
-            return True
-        return get_move_realtive_action(dirs[1])(ent, True)
+        for i in range(len(dirs)):
+            success = get_move_realtive_action(dirs[i])(ent, True)
+            if success:
+                return True
+        return False
 
     return action
 

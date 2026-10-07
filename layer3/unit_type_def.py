@@ -7,6 +7,7 @@ from common import (
 )
 from layer1 import (
     MAP_DATA_REF,
+    POIEnum,
     UnitTypeEnum,
     clear_particles_action,
     get_change_target_unit_action,
@@ -17,7 +18,7 @@ from layer1 import (
     transfer_action_to_tile_target,
 )
 
-from .actions import get_spawn_dots_between_ent_and_target, random_walk
+from .actions import get_spawn_dots_between_ent_and_target, walk_to_poi
 from .log import logger
 
 
@@ -33,14 +34,19 @@ def set_type_actions() -> None:
                 reset_trigger,
                 get_spawn_dots_between_ent_and_target(cutoff, 0, red),
                 get_target_random_neighbour(),
-                random_walk(3),
+                walk_to_poi(POIEnum.FRIENDLY, 1),
+                walk_to_poi(POIEnum.FRIENDLY, 1),
+                walk_to_poi(POIEnum.FRIENDLY, 1),
             ],
             UnitTypeEnum.KNIGHT: [
                 get_wait_ms_action(SETTINGS_REF.WAIT_UNIT),
                 reset_trigger,
                 get_spawn_dots_between_ent_and_target(cutoff, 0, red),
                 get_target_random_neighbour(),
-                random_walk(4),
+                walk_to_poi(POIEnum.FRIENDLY, 1),
+                walk_to_poi(POIEnum.FRIENDLY, 1),
+                walk_to_poi(POIEnum.FRIENDLY, 1),
+                walk_to_poi(POIEnum.FRIENDLY, 1),
             ],
         }
     )

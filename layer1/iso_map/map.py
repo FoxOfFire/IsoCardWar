@@ -5,7 +5,14 @@ import esper
 import pygame
 from perlin_noise import PerlinNoise
 
-from common import SETTINGS_REF, Action, BoundingBox, Untracked, lerp1
+from common import (
+    RUN_DATA_REF,
+    SETTINGS_REF,
+    Action,
+    BoundingBox,
+    Untracked,
+    lerp1,
+)
 
 from .tile import POIEnum, TerrainEnum, Tile, UnitTypeEnum
 
@@ -18,6 +25,7 @@ class MapData:
     _ents: Dict[int, Tuple[int, int]] = {}
 
     _points_of_interest: Dict[POIEnum, List[Tuple[int, int]]] = {}
+    _poi_gen_last = 0
 
     _unit_actions: Dict[UnitTypeEnum | None, List[Action]] = {}
     _unit_telegraphs: Dict[UnitTypeEnum | None, List[Action]] = {}
@@ -183,7 +191,15 @@ class MapData:
         return self._ents[ent]
 
     def generate_pois(self) -> None:
+        ticks = pygame.time.get_ticks()
+        if ticks == self._poi_gen_last:
+            return
+        self._poi_gen_last = ticks
+
         self._points_of_interest.clear()
+        self._points_of_interest.update(
+            {POIEnum.FRIENDLY: [], POIEnum.NEUTRAL: [], POIEnum.ENEMY: []}
+        )
         for (x, y), ent in self._tiles.items():
             tile = esper.try_component(ent, Tile)
             assert tile is not None
@@ -209,6 +225,9 @@ class MapData:
                 minpos = posx, posy
 
         return minpos
+
+    def poi_of_type_count(self, poi: POIEnum) -> int:
+        return len(self._points_of_interest[poi])
 
 
 MAP_DATA_REF = MapData()
