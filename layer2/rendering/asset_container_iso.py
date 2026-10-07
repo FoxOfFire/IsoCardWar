@@ -19,7 +19,7 @@ class IsoAssetContainer:
     _SELECTION_SURFS: List[List[pygame.Surface]] = []
     _COMBINDED_SURFS: Dict[
         Tuple[Optional[IntEnum], Optional[IntEnum], Optional[IntEnum]],
-        List[Tuple[pygame.Surface, Tuple[int, int]]],
+        List[Tuple[pygame.Surface, int, int]],
     ] = {}
     _LOADED_IMAGES: bool = False
     _GENERATED_DYNAMIC_SURFS = False
@@ -67,7 +67,7 @@ class IsoAssetContainer:
         unit: Optional[IntEnum],
         select: Optional[IntEnum],
         anim_offset: int,
-    ) -> Tuple[pygame.Surface, Tuple[int, int]]:
+    ) -> Tuple[pygame.Surface, int, int]:
         surf_data = self._COMBINDED_SURFS.get((tile, select, unit))
         if surf_data is None:
             self.init()

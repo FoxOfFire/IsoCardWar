@@ -85,7 +85,7 @@ class IsoRenderer:
                 y += SETTINGS_REF.ISO_ACTIVE_TILE_SELECT_OFFSET
             elif tile.is_targeted > 0:
                 select = PriceEnum.BLOOD
-            surf, (offset_x, offset_y) = ISO_ASSET_REF.get_surf(
+            surf, offset_x, offset_y = ISO_ASSET_REF.get_surf(
                 tile.terrain, tile.unit, select, tile.animation_offset
             )
 

@@ -63,11 +63,11 @@ class RenderAssetContainer:
         frames: List[List[List[pygame.Surface]]],
     ) -> Dict[
         Tuple[Optional[IntEnum], ...],
-        List[Tuple[pygame.Surface, Tuple[int, int]]],
+        List[Tuple[pygame.Surface, int, int]],
     ]:
         output: Dict[
             Tuple[Optional[IntEnum], ...],
-            List[Tuple[pygame.Surface, Tuple[int, int]]],
+            List[Tuple[pygame.Surface, int, int]],
         ] = {}
         assert len(meta) == len(frames)
 
@@ -76,7 +76,7 @@ class RenderAssetContainer:
         for perm in enum_permutations:
             keylist: List[Optional[IntEnum]] = []
             perm_animation_lengths = []
-            combined_frames: List[Tuple[pygame.Surface, Tuple[int, int]]] = []
+            combined_frames: List[Tuple[pygame.Surface, int, int]] = []
 
             for enum_id in range(len(perm)):
                 enum, w, h = meta[enum_id]
@@ -121,7 +121,7 @@ class RenderAssetContainer:
                 )
                 img_out.blit(img_combined, (-top, -left))
 
-                combined_frames.append((img_out, (top, left)))
+                combined_frames.append((img_out, top, left))
 
             output.update({tuple(keylist): combined_frames})
 

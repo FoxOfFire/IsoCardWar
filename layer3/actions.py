@@ -38,7 +38,7 @@ def walk_to_poi(
         if MAP_DATA_REF.poi_of_type_count(poi) == 0:
             return random_walk(dist, pause_ms)(ent, True)
 
-        for i in range(dist):
+        for _ in range(dist):
             get_step_towards_nearest_poi(poi)(ent, True)
             ent = STATE_REF.selected_tile
             get_wait_ms_action(pause_ms)(ent, True)
