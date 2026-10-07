@@ -135,4 +135,19 @@ CARD_TYPES_DICT_REF: Dict[CardTypeEnum, Callable[[], Card]] = {
         },
         type_enum=CardTypeEnum.REMOVE_UNIT,
     ),
+    CardTypeEnum.ROCK: lambda: Card(
+        name="Rock",
+        description="Spawns a rock",
+        effects=[
+            get_change_target_unit_action(UnitTypeEnum.ROCK, True),
+            get_sound_action(SoundTypeEnum.POP),
+        ],
+        price={
+            PriceEnum.BLOOD: 0,
+            PriceEnum.HERBS: 0,
+            PriceEnum.MANA: 1,
+            PriceEnum.BREW: 0,
+        },
+        type_enum=CardTypeEnum.ROCK,
+    ),
 }

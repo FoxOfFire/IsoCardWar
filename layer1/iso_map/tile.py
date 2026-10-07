@@ -19,6 +19,7 @@ class UnitTypeEnum(IntEnum):
     BLOOD_BUCKET = auto()
     MANA_PYLON = auto()
     WITCH = auto()
+    ROCK = auto()
     KNIGHT = auto()
     FARMER = auto()
 

@@ -15,3 +15,4 @@ class CardTypeEnum(IntEnum):
     BUSH = auto()
     BLOOD_BUCKET = auto()
     MANA_PYLON = auto()
+    ROCK = auto()
